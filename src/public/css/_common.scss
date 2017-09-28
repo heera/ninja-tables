@@ -1,0 +1,15 @@
+.foo-table  {
+  span.label.label-default {
+    display: none;
+    visibility: hidden;
+  }
+  
+  table.footable-details tr th {
+      white-space: initial;
+      overflow: visible !important;
+      text-overflow: unset !important;
+  }
+  tr.footable-filtering th {
+    overflow: visible !important;
+  }
+}

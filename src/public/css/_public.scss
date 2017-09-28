@@ -1,0 +1,11 @@
+@import "common";
+@import "foo_icons";
+.bootstrap3 {
+  @import "table_boostrap3";
+}
+.bootstrap4 {
+  @import "table_bootstrap4";
+}
+.semantic_ui {
+  @import "table_semantic_ui";
+}
