@@ -190,7 +190,7 @@ class NinjaTableClass {
 			'register_ajax_routes'
 		);
 
-		$this->loader->add_action('wp_ajax_nopriv_wp_table_press_public_action',
+		$this->loader->add_action('wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
