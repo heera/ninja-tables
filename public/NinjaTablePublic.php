@@ -55,7 +55,8 @@ class NinjaTablePublic {
 		$validRoutes = array(
 			'get-all-data'    => 'getAllData',
 		);
-		$requestedRoute = $_REQUEST['target_action'];
+		
+		$requestedRoute = esc_attr($_REQUEST['target_action']);
 
 		if (isset($validRoutes[$requestedRoute])) {
 			$this->{$validRoutes[$requestedRoute]}();

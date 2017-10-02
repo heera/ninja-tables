@@ -1,4 +1,7 @@
-Vue.use(window.VueRouter);
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+Vue.use(VueRouter);
+
 import wysiwyg from "vue-wysiwyg";
 Vue.use(wysiwyg, {});
 

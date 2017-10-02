@@ -13,7 +13,7 @@ class NinjaFooTable
     private static function enqueue_assets()
     {
         $min = '';
-        if (defined('WP_DEBUG') && WP_DEBUG) {
+        if (ninja_table_is_in_production_mood()) {
             $min = '.min';
         }
         
@@ -77,7 +77,7 @@ class NinjaFooTable
                       && $settings['show_title']
             ) : ?>
                 <?php do_action('ninja_tables_before_table_title', $table); ?>
-                <h3 class="table_title footable_title"><?php echo $table->post_title; ?></h3>
+                <h3 class="table_title footable_title"><?php echo esc_attr($table->post_title); ?></h3>
                 <?php do_action('ninja_tables_after_table_title', $table); ?>
             <?php endif; ?>
             <?php if (isset($settings['show_description'])
@@ -85,7 +85,7 @@ class NinjaFooTable
             ) : ?>
                 <?php do_action('ninja_tables_before_table_description',
                     $table); ?>
-                <div class="table_description footable_description"><?php echo $table->post_content; ?></div>
+                <div class="table_description footable_description"><?php echo wp_kses_post($table->post_content); ?></div>
                 <?php do_action('ninja_tables_after_table_description',
                     $table); ?>
             <?php endif; ?>
@@ -94,9 +94,9 @@ class NinjaFooTable
 
             <table data-config_settings='<?php echo json_encode($configSettings); ?>'
                    data-columns='<?php echo json_encode($formatted_columns,
-                       true); ?>' data-footable_id="<?php echo $table_id; ?>"
-                   id="footable_<?php echo $table_id; ?>"
-                   class=" foo-table foo_table_<?php echo $table_id; ?> <?php echo $table_classes; ?>"
+                       true); ?>' data-footable_id="<?php echo intval($table_id); ?>"
+                   id="footable_<?php echo intval($table_id); ?>"
+                   class=" foo-table foo_table_<?php echo intval($table_id); ?> <?php echo esc_attr($table_classes); ?>"
             >
             </table>
             <?php do_action('ninja_tables_after_table_print', $table); ?>

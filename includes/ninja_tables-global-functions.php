@@ -101,3 +101,8 @@ if( ! function_exists('ninja_table_renameDuplicateValues') ) {
         return $result;
     }
 }
+if( ! function_exists('ninja_table_is_in_production_mood') ) {
+	function ninja_table_is_in_production_mood() {
+		return apply_filters('ninja_table_is_in_production_mood', true);
+	}
+}

@@ -151,30 +151,10 @@ class NinjaTablesAdmin
     {
         $min = '';
         
-        if (defined('WP_DEBUG') &&  !WP_DEBUG) {
+        if (ninja_table_is_in_production_mood()) {
             $min = '.min';
         }
-        
-        $vue_js_url     = plugin_dir_url(__FILE__) . "libs/vue{$min}.js";
-        $vue_router_url = plugin_dir_url(__FILE__) . "libs/vue-router{$min}.js";
-        
-
-        wp_enqueue_script(
-            'vue',
-            $vue_js_url,
-            [],
-            '2.4.2'
-        );
-
-
-        wp_enqueue_script(
-            'vue-router',
-            $vue_router_url,
-            [],
-            '2.7.0'
-        );
-
-
+	    
         wp_enqueue_script(
             $this->plugin_name,
             plugin_dir_url(__FILE__) . "js/ninja-tables-admin{$min}.js",
@@ -261,11 +241,13 @@ class NinjaTablesAdmin
             die();
         }
 
-        $postId = $_REQUEST['tableId'];
-
+        $postId = intval($_REQUEST['tableId']);
+		
+        
+        
         $attributes = array(
-            'post_title'   => $_REQUEST['post_title'],
-            'post_content' => $_REQUEST['post_content'],
+            'post_title'   => sanitize_text_field($_REQUEST['post_title']),
+            'post_content' => wp_kses_post($_REQUEST['post_content']),
             'post_type'    => $this->cpt_name,
             'post_status'  => 'publish'
         );
@@ -331,9 +313,9 @@ class NinjaTablesAdmin
 
         foreach ($tables as $table) {
             $ninjaTableId = $this->createTable(array(
-                'post_author'  => $table->post_author,
-                'post_title'   => '[Table Press] ' . $table->post_title,
-                'post_content' => $table->post_excerpt,
+                'post_author'  => intval($table->post_author),
+                'post_title'   => sanitize_text_field('[Table Press] ' . $table->post_title),
+                'post_content' => wp_kses_post($table->post_excerpt),
                 'post_status'  => $table->post_status,
                 'post_type'    => $this->cpt_name,
             ));
@@ -430,13 +412,13 @@ class NinjaTablesAdmin
         // validation
         if (! $content['post'] || ! $content['columns'] || ! $content['settings']) {
             wp_send_json(array(
-                'message' => 'You have a faulty JSON file. Please export a new one.'
+                'message' => __('You have a faulty JSON file. Please export a new one.', 'ninja-tables')
             ), 423);
         }
 
         $tableAttributes = array(
-            'post_title'   => $content['post']['post_title'],
-            'post_content' => $content['post']['post_content'],
+            'post_title'   => sanitize_title($content['post']['post_title']),
+            'post_content' => wp_kses_post($content['post']['post_content']),
             'post_type'    => $this->cpt_name,
             'post_status'  => 'publish'
         );
@@ -454,7 +436,7 @@ class NinjaTablesAdmin
         }
 
         wp_send_json(array(
-            'message' => 'Successfully added a table.',
+            'message' => __('Successfully added a table.', 'ninja-tables'),
             'tableId' => $tableId
         ));
     }
@@ -464,8 +446,8 @@ class NinjaTablesAdmin
         return wp_insert_post($data
             ? $data
             : array(
-                'post_title'   => 'Temporary table name',
-                'post_content' => 'Temporary table description',
+                'post_title'   => __('Temporary table name', 'ninja-tables'),
+                'post_content' => __('Temporary table description', 'ninja-tables'),
                 'post_type'    => $this->cpt_name,
                 'post_status'  => 'publish'
             ));
@@ -481,8 +463,8 @@ class NinjaTablesAdmin
         $ninjaTableColumns = array();
         foreach ($header as $key => $name) {
             $ninjaTableColumns[] = array(
-                'key'         => $key,
-                'name'        => $name,
+                'key'         => esc_attr($key),
+                'name'        => esc_attr($name),
                 'breakpoints' => ''
             );
         }
@@ -516,9 +498,10 @@ class NinjaTablesAdmin
 
     public function getTableSettings()
     {
-        $tableID       = $_REQUEST['table_id'];
+        $tableID       = intval($_REQUEST['table_id']);
         $table         = get_post($tableID);
         $tableColumns  = ninja_table_get_table_columns($tableID, 'admin');
+        
         $tableSettings = ninja_table_get_table_settings($tableID, 'admin');
 
         wp_send_json(array(
@@ -530,57 +513,76 @@ class NinjaTablesAdmin
 
     public function updateTableSettings()
     {
-        $tableColumns    = $_REQUEST['columns'];
-        $tablePreference = $_REQUEST['table_settings'];
+	    $tableId = intval($_REQUEST['table_id']);
+	    
+    	$rawColumns = $_REQUEST['columns'];
+	    $tableColumns = array();
+	    
+    	if($rawColumns && is_array($rawColumns)) {
+		    foreach ($rawColumns as $column) {
+			    $tableColumns[] =  array_map('sanitize_text_field', $column);
+		    }
+		    update_post_meta($tableId, '_ninja_table_columns', $tableColumns);
+	    }
+	    
 
-        $tableId = $_REQUEST['table_id'];
-
-        update_post_meta($tableId, '_ninja_table_columns', $tableColumns);
-
-        if ($tablePreference) {
-            $formatted = [];
+	    $tablePreference = $_REQUEST['table_settings'];
+	    $formattedTablePreference = [];
+        if ($tablePreference && is_array($tablePreference)) {
             foreach ($tablePreference as $key => $tab_pref) {
+            	
                 if ($tab_pref == 'false') {
                     $tab_pref = false;
                 }
+                
                 if ($tab_pref == 'true') {
                     $tab_pref = true;
                 }
 
-                $formatted[$key] = $tab_pref;
+	            if( is_array($tab_pref) ) {
+		            $tab_pref = array_map('sanitize_text_field', $tab_pref);
+	            } else {
+		            $tab_pref = sanitize_text_field($tab_pref);
+	            }
+
+	            $formattedTablePreference[$key] = $tab_pref;
             }
-            update_post_meta($tableId, '_ninja_table_settings', $formatted);
+            update_post_meta($tableId, '_ninja_table_settings', $formattedTablePreference);
         }
 
         wp_send_json(array(
             'message'  => __('Successfully updated configuration.', 'ninja-tables'),
             'columns'  => $tableColumns,
-            'settings' => $tablePreference
+            'settings' => $formattedTablePreference
         ), 200);
     }
 
     public function getTable()
     {
-        $tableId = $_REQUEST['id'];
+        $tableId = intval($_REQUEST['id']);
         $table   = get_post($tableId);
-
-        $config = null;
-
-        if ($table) {
-            $config = get_post_meta($tableId, 'data_table_config', true);
-        }
-
+        
         wp_send_json(array(
-            'data'   => $table,
-            'config' => $config
+            'data'   => $table
         ), 200);
     }
 
     public function deleteTable()
     {
-        $tableId = $_REQUEST['table_id'];
+	    $tableId = intval($_REQUEST['table_id']);
+	    
+	    if( get_post_type( $tableId ) != $this->cpt_name ) {
+		    wp_send_json(array(
+			    'message' => __('Invalid Table to Delete', 'ninja-tables')
+		    ), 300);
+        }
+        
 
         wp_delete_post($tableId, true);
+        // Delete the post metas
+	    delete_post_meta($tableId, '_ninja_table_columns');
+	    delete_post_meta($tableId, '_ninja_table_settings');
+	    
         // now delete the data
         try {
             ninja_tables_DbTable()->where('table_id', $tableId)->delete();
@@ -596,15 +598,15 @@ class NinjaTablesAdmin
 
     public function getTableData()
     {
-        $perPage = $_REQUEST['per_page'] ?: 10;
+        $perPage = intval($_REQUEST['per_page']) ?: 10;
 
-        $currentPage = $_GET['page'] ? intval($_GET['page']) : 1;
+        $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
 
         $skip = $perPage * ($currentPage - 1);
 
         $tableId = intval($_REQUEST['table_id']);
 
-        $search = $_REQUEST['search'];
+        $search = esc_attr($_REQUEST['search']);
 
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
 
@@ -639,7 +641,7 @@ class NinjaTablesAdmin
 
     public function storeData()
     {
-        $tableId = $_REQUEST['table_id'];
+        $tableId = intval($_REQUEST['table_id']);
 
         $row          = $_REQUEST['row'];
         $formattedRow = array();
@@ -674,9 +676,9 @@ class NinjaTablesAdmin
 
     public function deleteData()
     {
-        $tableId = $_REQUEST['table_id'];
+        $tableId = intval($_REQUEST['table_id']);
 
-        $id = $_REQUEST['id'];
+        $id = intval($_REQUEST['id']);
 
         $ids = is_array($id) ? $id : [$id];
 
@@ -690,14 +692,15 @@ class NinjaTablesAdmin
 
     public function uploadData()
     {
-        $tableId = $_REQUEST['table_id'];
+        $tableId = intval($_REQUEST['table_id']);
         $tmpName = $_FILES['file']['tmp_name'];
 
         $reader
                    = \League\Csv\Reader::createFromFileObject(new SplFileObject($tmpName))
                                        ->fetchAll();
         $csvHeader = array_shift($reader);
-
+	    $csvHeader = array_map('esc_attr', $csvHeader);
+	    
         $config = get_post_meta($tableId, '_ninja_table_columns', true);
 
         if ( ! $config) {
@@ -710,6 +713,7 @@ class NinjaTablesAdmin
 
         foreach ($csvHeader as $item) {
             foreach ($config as $column) {
+	            $column = array_map('esc_attr', $column);
                 if ($item == $column['key'] || $item == $column['name']) {
                     $header[] = $column['key'];
                 }
@@ -745,7 +749,7 @@ class NinjaTablesAdmin
 
     public function exportData()
     {
-        $format = $_REQUEST['format'];
+        $format = esc_attr($_REQUEST['format']);
 
         $tableId = intval($_REQUEST['table_id']);
 
@@ -767,7 +771,6 @@ class NinjaTablesAdmin
 
             foreach ($data as $item) {
                 $temp = array();
-
                 $item = json_decode($item->value, true);
 
                 foreach ($header as $accessor => $name) {
@@ -806,7 +809,6 @@ class NinjaTablesAdmin
             = \League\Csv\Writer::createFromFileObject(new SplTempFileObject());
         $writer->setDelimiter(",");
         $writer->setNewline("\r\n");
-//        $writer->setOutputBOM(\League\Csv\Writer::BOM_UTF8);
         $writer->insertOne($header);
         $writer->insertAll($data);
         $writer->output($fileName . '.csv');
