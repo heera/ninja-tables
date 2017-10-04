@@ -133,8 +133,13 @@ class NinjaTablesAdmin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
+		$min = '';
+		if ( ninja_table_is_in_production_mood() ) {
+			$min = '.min';
+		}
+		
 		wp_enqueue_style( $this->plugin_name,
-			plugin_dir_url( __FILE__ ) . 'css/ninja-tables-admin.min.css',
+			plugin_dir_url( __DIR__ ) . "assets/css/ninja-tables-admin{$min}.css",
 			array(), $this->version, 'all' );
 	}
 
@@ -152,7 +157,7 @@ class NinjaTablesAdmin {
 
 		wp_enqueue_script(
 			$this->plugin_name,
-			plugin_dir_url( __FILE__ ) . "js/ninja-tables-admin{$min}.js",
+			plugin_dir_url( __DIR__ ) . "assets/js/ninja-tables-admin{$min}.js",
 			array( 'jquery' ),
 			$this->version,
 			false
@@ -637,7 +642,7 @@ class NinjaTablesAdmin {
 		$row          = $_REQUEST['row'];
 		$formattedRow = array();
 		foreach ( $row as $key => $item ) {
-			$formattedRow[ $key ] = stripslashes( $item );
+			$formattedRow[ $key ] = wp_kses( $item, wp_kses_allowed_html('post') );
 		}
 
 		$attributes = array(

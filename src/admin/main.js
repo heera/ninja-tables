@@ -2,10 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
-import wysiwyg from "vue-wysiwyg";
-Vue.use(wysiwyg, {});
+import VueQuillEditor from 'vue-quill-editor';
+Vue.use(VueQuillEditor);
 
-import "vue-wysiwyg/dist/vueWysiwyg.css";
 import 'element-ui/lib/theme-default/table.css'
 import 'element-ui/lib/theme-default/popover.css'
 import 'element-ui/lib/theme-default/loading.css'

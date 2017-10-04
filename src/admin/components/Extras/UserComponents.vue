@@ -7,7 +7,7 @@
 </template>
 
 <script type="text/babel">
-    import { tableHomeTabComponents } from '@/admin/data/data';
+    import { tableHomeTabComponents } from '../../data/data';
     import each from 'lodash/each'
     export default {
         name: 'userComponents',

@@ -108,7 +108,7 @@
 </template>
 <script type="text/babel">
     import addDataModal from './_AddDataModal';
-    import pagination from '@/common/pagination.vue';
+    import pagination from '../../common/pagination.vue';
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
 

@@ -1,18 +1,11 @@
-const mix      = require('wp-mix');
-const min      = Mix.inProduction() ? '.min' : '';
+const mix      = require('laravel-mix');
+const min = '.min';
 
-// Autoload
+mix.setPublicPath('assets');
+mix.setResourceRoot('../');
 
+mix.js('src/admin/main.js', `assets/js/ninja-tables-admin${min}.js`);
+mix.js('src/public/js/ninja-tables-footable.js', `assets/js/ninja-tables-footable${min}.js`);
 
-mix.query =  {
-    presets: [
-        require.resolve('babel-preset-es2015'),
-        require.resolve('babel-preset-stage-0'),
-    ],
-};
-
-mix.js('src/admin/main.js', `admin/js/ninja-tables-admin${min}.js`);
-mix.js('src/public/js/ninja-tables-footable.js', `public/js/ninja-tables-footable${min}.js`);
-
-mix.sass('src/public/css/_public.scss', `public/css/ninja-tables-public${min}.css`);
-mix.sass('src/admin/css/ninja-tables-admin.scss', `admin/css/ninja-tables-admin${min}.css`);
+mix.sass('src/public/css/_public.scss', `assets/css/ninja-tables-public${min}.css`);
+mix.sass('src/admin/css/ninja-tables-admin.scss', `assets/css/ninja-tables-admin${min}.css`);

@@ -1,27 +1,5 @@
-@import "styles.css";
 @import "_element_icons.css";
 
-.fooicon {
-    display: inline-block;
-    font: normal normal normal 14px/1 wptabledatapress-fontawesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    animation: spin 900ms infinite linear;
-}
-.fooicon-spin {
-    animation: spin 900ms infinite linear;
-} 
-
-@-webkit-keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(359deg);
-    }
-}
 .pageLoading {
     text-align: center;
     display: flex;
@@ -695,4 +673,7 @@ textarea.form-control {
 }
 .pull-right {
     float: right;
+}
+.ql-container.ql-snow {
+  min-height: 220px;
 }

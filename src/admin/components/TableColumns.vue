@@ -256,7 +256,7 @@
 <script type="text/babel">
     import draggable from 'vuedraggable'
     import { findIndex, snakeCase, size, get, keys, forEach, intersection }  from 'lodash'
-    import { tableLibs } from '@/admin/data/data'
+    import { tableLibs } from '../data/data'
     
     export default {
         name: 'TableConfiguration',
@@ -514,14 +514,48 @@
     }
     .section-container {
         display: flex;
-        -webkit-flex-flow: column wrap;
+        width: 100%;
     }
     .section-column-9 {
-        width: 75%;
+        flex: 3;
         padding: 10px;
     }
     .section-column-3 {
-        width: 25%;
+        flex: 1;
+    }
+
+    /* mobile layout */
+    @media (max-width: 480px){
+        .section-container{
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+
+            width: 100%;
+
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            -ms-flex-orient: vertical;
+            -webkit-orient: vertical;
+            orient: vertical;
+        }
+        .section-column-9 {
+            -webkit-box-ordinal-group: 1;
+            -moz-box-ordinal-group: 1;
+            -ms-flex-order: 1;
+            -webkit-order: 1;
+            order: 1;
+        }
+        .section-column-3 {
+            
+            -webkit-box-ordinal-group: 2;
+            -moz-box-ordinal-group: 2;
+            -ms-flex-order: 2;
+            -webkit-order: 2;
+            order: 2;
+        }
     }
     .section-column:first-child {
         margin-right: 20px;

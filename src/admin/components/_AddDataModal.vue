@@ -16,7 +16,10 @@
                                 <textarea :id="column.key" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>
                             <div v-else-if="column.data_type == 'html'">
-                                <wysiwyg v-model="newColumn[column.key]" />
+                                <quill-editor :content="newColumn[column.key]"
+                                              :options="editorOption"
+                                              @change="onEditorChange(column.key, $event)">
+                                </quill-editor>
                             </div>
                             <div v-else>
                                 <input type="text" :id="column.key" class="form-control" v-model="newColumn[column.key]">
@@ -51,6 +54,7 @@
         props: ['modal_visible', 'columns', 'table_id', 'item'],
         data() {
             return {
+                editorOption: {},
                 btnLoading: false,
                 editId: null,
                 continueAdding: true,
@@ -136,6 +140,9 @@
                         : '';
                 });
                 this.newColumn = columnObj;
+            },
+            onEditorChange(key, {editor, html, text }) {
+                this.newColumn[key] = html;
             }
         },
         mounted() {

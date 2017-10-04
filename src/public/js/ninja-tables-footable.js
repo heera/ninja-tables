@@ -14,15 +14,14 @@ jQuery(document).ready(function ($) {
         let initConfig = {
             "cascade": true,
             "columns": tableConfig.columns,
-            "rows": $.get('/wp-admin/admin-ajax.php?action=wp_ajax_ninja_tables_public_action&table_id='+tableConfig.table_id+'&target_action=get-all-data')
+            "rows": $.get(window.ninja_tables.ajax_url+'?action=wp_ajax_ninja_tables_public_action&table_id='+tableConfig.table_id+'&target_action=get-all-data')
         };
         
         initConfig.sorting = {
-            "enabled": tableConfig.settings.sorting
+            "enabled": !!tableConfig.settings.sorting
         };
-        
         initConfig.filtering = {
-            "enabled":  tableConfig.settings.filtering,
+            "enabled":  !!tableConfig.settings.filtering,
             "delay": 1,
             "dropdownTitle": "Search in:",
             "connectors": false

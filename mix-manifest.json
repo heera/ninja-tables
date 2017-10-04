@@ -1,6 +1,6 @@
 {
-    "/admin/js/ninja-tables-admin.js": "/admin/js/ninja-tables-admin.js",
-    "/public/css/ninja-tables-public.min.css": "/public/css/ninja-tables-public.min.css",
-    "/admin/css/ninja-tables-admin.min.css": "/admin/css/ninja-tables-admin.min.css",
-    "/public/js/ninja-tables-footable.min.js": "/public/js/ninja-tables-footable.min.js"
+    "/assets/js/ninja-tables-admin.js": "/assets/js/ninja-tables-admin.js",
+    "/assets/css/ninja-tables-public.css": "/assets/css/ninja-tables-public.css",
+    "/assets/css/ninja-tables-admin.css": "/assets/css/ninja-tables-admin.css",
+    "/assets/js/ninja-tables-footable.js": "/assets/js/ninja-tables-footable.js"
 }

@@ -50,7 +50,7 @@
 </template>
 
 <script type="text/babel">
-    const pagination = require('@/common/pagination.vue')
+    const pagination = require('../../common/pagination.vue')
     export default {
         name: 'Home',
         components: {

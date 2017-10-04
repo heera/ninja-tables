@@ -22,7 +22,7 @@ class NinjaFooTable
             array('jquery'), '3.1.5', true);
 
 	    wp_enqueue_script('footable_init',
-		    NINJA_TABLES_PUBLIC_DIR_URL . "js/ninja-tables-footable{$min}.js",
+		    NINJA_TABLES_DIR_URL . "assets/js/ninja-tables-footable{$min}.js",
 		    array('footable'), self::$version, true);
         
 	    
@@ -35,7 +35,7 @@ class NinjaFooTable
                                      . "libs/footable/css/footable.standalone{$min}.css",
             array(), '3.1.5', 'all');
         wp_enqueue_style('footable_styles',
-            NINJA_TABLES_PUBLIC_DIR_URL . "css/ninja-tables-public{$min}.css",
+	        NINJA_TABLES_DIR_URL . "assets/css/ninja-tables-public{$min}.css",
             array(), self::$version, 'all');
         
         
@@ -58,8 +58,7 @@ class NinjaFooTable
                 'breakpoints' => $column['breakpoints']
             );
         }
-
-
+        
         if ($settings['show_all']) {
             $pagingSettings = false;
         } else {

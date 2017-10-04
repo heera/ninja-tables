@@ -17,7 +17,10 @@
                     </div>
                     <div class="form-group">
                         <label>{{ $t('Description') }}</label>
-                        <wysiwyg v-model="table.post_content" />
+                        <quill-editor :content="table.post_content"
+                                      :options="editorOption"
+                                      @change="onEditorChange($event)">
+                        </quill-editor>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -52,7 +55,8 @@
         },
         data() {
             return {
-                btnLoading: false
+                btnLoading: false,
+                editorOption: {}
             }
         },
         methods: {
@@ -101,6 +105,9 @@
             },
             closeModal() {
                 this.$emit('modal_close');
+            },
+            onEditorChange({ editor, html, text }) {
+                this.table.post_content = html
             }
         }
     }
