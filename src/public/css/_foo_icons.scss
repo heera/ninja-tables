@@ -6,12 +6,27 @@
   src:url("../../fonts/ninja-tables-fontawesome.eot?#iefix") format("embedded-opentype"),
   url("../../fonts/ninja-tables-fontawesome.woff") format("woff"),
   url("../../fonts/ninja-tables-fontawesome.ttf") format("truetype"),
-  url("../../fonts/ninja-tables-fontawesome.svg#wptabledatapress-fontawesome") format("svg");
+  url("../../fonts/ninja-tables-fontawesome.svg#ninja-tables-fontawesome") format("svg");
   font-weight: normal;
   font-style: normal;
+
 }
 
-.fooicon:before {
+[data-icon]:before {
+  font-family: "ninja-tables-fontawesome" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="fooicon-"]:before,
+[class*=" fooicon-"]:before {
   font-family: "ninja-tables-fontawesome" !important;
   font-style: normal !important;
   font-weight: normal !important;
@@ -40,4 +55,19 @@
 }
 .fooicon-plus:before {
   content: "\f067";
+}
+.fooicon-circle-o-notch:before {
+  content: "\e000";
+}
+.fooicon-remove-1:before {
+  content: "\f00d";
+}
+.fooicon-loader-alt:before {
+  content: "\f01";
+}
+.fooicon-refresh:before {
+  content: "\e001";
+}
+.fooicon-loader:before {
+  content: "\f01e";
 }

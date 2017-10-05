@@ -41,11 +41,6 @@ const tableLibs = function() {
                     description: 'Apply Twitter Bootstrap 4 styles in the table',
                     styles: [
                         {
-                            key: 'table-inverse',
-                            title: 'Table Inverse',
-                            description: 'Light text on dark backgrounds'
-                        },
-                        {
                             key: 'table-striped',
                             title: 'Striped rows',
                             description: 'add zebra-striping to any table row'
@@ -92,11 +87,6 @@ const tableLibs = function() {
                             description: 'borders on all sides of the table and cells'
                         },
                         {
-                            key: 'inverted',
-                            title: 'Table Inverse',
-                            description: 'Light text on dark backgrounds'
-                        },
-                        {
                             key: 'striped',
                             title: 'Striped rows',
                             description: 'add zebra-striping to any table row'
@@ -107,22 +97,23 @@ const tableLibs = function() {
                             description: 'make tables more compact by cutting cell padding in half'
                         }
 
-                    ],
-                    colors: {
-                        red: 'Red',
-                        orange: 'Orange',
-                        yellow: 'Yellow',
-                        olive: 'Olive',
-                        green: 'Green',
-                        teal: 'Teal',
-                        blue: 'Blue',
-                        violet: 'Violet',
-                        purple: 'Purple',
-                        pink: 'Pink',
-                        grey: 'Grey',
-                        black: 'Black'
-                    }
+                    ]
                 },
+            },
+            colors: {
+                ninja_no_color_table: 'Default',
+                red: 'Red',
+                orange: 'Orange',
+                yellow: 'Yellow',
+                olive: 'Olive',
+                green: 'Green',
+                teal: 'Teal',
+                blue: 'Blue',
+                violet: 'Violet',
+                purple: 'Purple',
+                pink: 'Pink',
+                grey: 'Grey',
+                black: 'Black'
             }
         }
     };

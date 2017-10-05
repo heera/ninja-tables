@@ -73,13 +73,19 @@ class NinjaFooTable
             'sorting'   => (isset($settings['column_sorting']))
                 ? $settings['column_sorting'] : false,
         );
-
-
+        
         $table_classes = self::getTableCssClass($settings);
+
+        $tableHasColor = '';
+        
+        if(isset($settings['table_color']) && $settings['table_color'] && $settings['table_color'] != 'ninja_no_color_table') {
+	        $tableHasColor = 'colored_table';
+	        $table_classes .= ' inverted';
+        }
         ?>
 
         <div id="footable_parent_<?php echo $table_id; ?>"
-             class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?>">
+             class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
 
             <?php if (isset($settings['show_title'])
                       && $settings['show_title']

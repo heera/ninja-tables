@@ -642,6 +642,8 @@ class NinjaTablesAdmin {
 		$row          = $_REQUEST['row'];
 		$formattedRow = array();
 		foreach ( $row as $key => $item ) {
+			$item = str_replace("\'", "'", $item);
+			$item = str_replace("\'", "'", $item);
 			$formattedRow[ $key ] = wp_kses( $item, wp_kses_allowed_html('post') );
 		}
 

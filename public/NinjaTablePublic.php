@@ -72,7 +72,6 @@ class NinjaTablePublic {
 			->orderBy('id', 'desc')
 			->get();
 		
-		
 		$formatted_data = [];
 		foreach ($data as $item) {
 			$formatted_data[] = json_decode($item->value, true);

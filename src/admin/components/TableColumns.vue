@@ -135,7 +135,7 @@
                     <div class="widget_body">
                         <div class="form_group">
                             <label for="items_per_page">{{ $t('Pagination Items Per Page') }}</label>
-                            <input id="items_per_page" class="form_control" type="number" v-model="tableSettings.perPage" :disabled="tableSettings.show_all" />
+                            <input id="items_per_page" class="form_control" type="number" v-model="tableSettings.perPage" :disabled="tableSettings.show_all == true" />
                         </div>
                         <div class="form_group">
                             <label for="disable_pagination"><input v-model="tableSettings.show_all" id="disable_pagination" type="checkbox" /> {{ $t('Disable Pagination ( Will show all items at once )') }}</label>
@@ -228,14 +228,13 @@
                     </div>
                 </div>
                 
-                <div v-if="currentTableLibs[tableSettings.css_lib] && size(currentTableLibs[tableSettings.css_lib].colors)" class="ninja_widget">
+                <div v-if="size(colors)" class="ninja_widget">
                     <h4 class="title">{{ $t('Table Color Schema') }}</h4>
                     <div class="widget_body">
                         <div class="form_group">
-                            <label v-for="(colorName, colorKey) in currentTableLibs[tableSettings.css_lib].colors" :for="colorKey">
+                            <label v-for="(colorName, colorKey) in colors" :for="colorKey">
                                 <input v-model="tableSettings.table_color" type="radio" :value="colorKey" name="table_color" :id="colorKey"/> {{ colorName }}
                             </label>
-                            {{ $t('* Please select "Table Inverse" if you want to make the whole table as selected color') }}
                         </div>
                     </div>
                 </div>
@@ -301,6 +300,9 @@
             currentTableLibs() {
                 return this.tableLibs[this.tableSettings.library].css_libs;
             },
+            colors() {
+                return this.tableLibs[this.tableSettings.library].colors;
+            },
             availableStyles() {
                 let lib = this.currentTableLibs[this.tableSettings.css_lib];
                 if(lib)
@@ -347,9 +349,7 @@
                     validStyles.push(style.key);
                 });
                 settings.css_classes = intersection(validStyles, this.tableSettings.css_classes);
-                if(!size(this.currentTableLibs[this.tableSettings.css_lib].colors)) {
-                    settings.table_color = '';
-                }
+                
                 return settings;
             },
             openDrawer(index) {
