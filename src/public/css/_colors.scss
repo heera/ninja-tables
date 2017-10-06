@@ -119,7 +119,10 @@ table.foo-table.inverted {
   }
 
 
-
+&.table-striped  tbody  tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+  
 
   /*******************************
            Site Overrides
@@ -140,5 +143,5 @@ table.foo-table.inverted {
       border-color: rgba(255, 255, 255, 0.1) !important;
       color: rgba(255, 255, 255, 0.9) !important;
     }
-  }  
+  }
 }
