@@ -75,7 +75,7 @@ e.g.
 
 Tables form created by NinjaTables is mobile responsive and looks beautiful on any device.
 
-= I am not technical, can I use weForms? =
+= I am not technical, can I use Ninja Tables? =
 
 NinjaTables is the most beginner friendly and fastest WordPress Tables plugin available and getting started is so easy!
 
