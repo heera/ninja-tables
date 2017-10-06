@@ -429,7 +429,9 @@ class NinjaTablesAdmin {
 			$content['settings'] );
 
 		if ( $rows = $content['rows'] ) {
-			$header = array_keys( array_pop( array_reverse( $rows ) ) );
+			$header = array_map(function ($column) {
+			    return $column['key'];
+            }, $content['columns']);
 
 			$this->insertDataToTable( $tableId, $rows, $header );
 		}
@@ -483,7 +485,16 @@ class NinjaTablesAdmin {
 		$time = current_time( 'mysql' );
 
 		foreach ( $values as $item ) {
-			$itemTemp = array_combine( $header, $item );
+			$itemTemp = array_combine(
+			    $header,
+                array_merge($item,
+                    array_fill_keys(
+                        array_diff(array_values($header), array_keys($item)),
+                        null
+                    )
+                )
+            );
+
 			array_push( $data, array(
 				'table_id'   => $tableId,
 				'attribute'  => 'value',
