@@ -81,11 +81,15 @@ NinjaTables is the most beginner friendly and fastest WordPress Tables plugin av
 
 == Screenshots ==
 
-1. All Tables
-2. Table data Rows
-3. Table data Row Edit Screen
-4. Table Configuration Screen
-5. Table Export-Import Screen 
+1. Backend - Table Data View
+2. Backend - Table Data Update
+3. Backend - Table Configuration 
+4. Backend - Add Table Column 
+5. Backend - Import / Export Table Data
+6. Import or Export Table from CSV,JSON or from TablePress
+7. Default Table View in Frontend
+8. Teal Color Table View in Frontend
+9. Black Color Table View in Frontend
 
 == Changelog ==
 
