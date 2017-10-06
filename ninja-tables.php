@@ -14,11 +14,11 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Ninja Tables
- * Plugin URI:        https://wpmanageninja.com/
- * Description:       A customized WordPress Tables where you can show data in smarter way.
+ * Plugin URI:        https://wpmanageninja.com/plugins/ninja-tables/
+ * Description:       The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
  * Version:           1.0.0
  * Author:            WPManageNinja
- * Author URI:        https://hellojewel.net
+ * Author URI:        https://wpmanageninja.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       ninja-tables

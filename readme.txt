@@ -1,7 +1,7 @@
 === Ninja Tables - Best Responsive Table Plugin for WordPress ===
 Contributors: techjewel, adreastrian
 Donate link: https://paypal.me/zalam
-Tags: tables, wpdatatables, data tables, tables from csv, datatables, footables, responsive tables,bootstrap table,symmetric ui table
+Tags: tables, ninja tables, data tables, tables from csv, datatables, footables, responsive tables,bootstrap table,symmetric ui table, bootstrap4 table, colorful table
 Requires at least: 3.5
 Requires PHP: 5.3 or greater
 Tested up to: 4.8
@@ -12,13 +12,14 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
 
 == Description ==
-
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
-= The Easiest Responsive Table Plugin on WordPress  =
+== For Online Preview Please <a href="https://wpmanageninja.com/plugins/ninja-tables/" target="blank">Check Here</a> ==
+
+=The Easiest Responsive Table Plugin on WordPress  =
 Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
 
-= 100+ Table Styles  =
+== 100+ Table Styles ==
 NinjaTables shipped with 3 most popular CSS library with multiple color schema and table style.
 Here are few styling options you can choose or mix different styles for a table:
 <ul><li>Single Line Cells</li>
@@ -44,9 +45,9 @@ Rendering tables in all devices are critical. Ninja Tables will solve this probl
 You can export your table in CSV or JSON format and save them in a safe place or you can take your table data and use them in any other program. So, your data will always be portable and safe. In the same way, You can import any table from CSV, JSON data source.
 
 = Import Tables from other table Plugins =
-Already using other plugins for tables and have many data with it. We have covered it. In this plugin, You can easily import table with data from other Table Plugins like "TablePress".
+Already using other plugins for tables and have any data with it. We have covered it. In this plugin, You can easily import table with data from other Table Plugins like "TablePress".
 
-= Usage =
+==Usage==
 To show one of your tables in a post, on a page, or in a text widget, just embed the Shortcode [ninja_tables id="TABLE_ID"] into the post/page/text widget, where <TABLE_ID> is the ID of your table (can be found on the “All Tables” screen.)
 
 = Awesome Support =
@@ -64,13 +65,13 @@ e.g.
 
 1. Upload the plugin files to the /wp-content/plugins/ directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the ‘Plugins’ screen in WordPress
-1. Use the Ninja Tables -> All Tables -> Add table to create a table and get started.
+1. Use the Ninja Tables -> All Tables -> Add a table to create a table and get started.
 
 == Frequently Asked Questions ==
 
 = Is Ninja Tables Responsive? =
 
-Tables form created by NinjaTables is mobile responsive and looks beautiful in any device.
+Tables form created by NinjaTables is mobile responsive and looks beautiful on any device.
 
 = I am not technical, can I use weForms? =
 

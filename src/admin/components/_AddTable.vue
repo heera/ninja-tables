@@ -56,7 +56,20 @@
         data() {
             return {
                 btnLoading: false,
-                editorOption: {}
+                editorOption: {
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+                            ['blockquote', 'code-block'],
+
+                            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+                            [{ 'align': [] }],
+                            [{ 'direction': 'rtl' }]
+                        ]
+                    }
+                }
             }
         },
         methods: {
