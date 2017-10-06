@@ -52,10 +52,12 @@ class NinjaFooTable
         $formatted_columns = [];
 
         foreach ($columns as $column) {
+            
             $formatted_columns[] = array(
                 'name'        => $column['key'],
                 'title'       => $column['name'],
-                'breakpoints' => $column['breakpoints']
+                'breakpoints' => $column['breakpoints'],
+                'visible' => ($column['breakpoints'] == 'hidden') ? false : true
             );
         }
         
