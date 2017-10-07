@@ -690,9 +690,13 @@ class NinjaTablesAdmin {
 	public function deleteData() {
 		$tableId = intval( $_REQUEST['table_id'] );
 
-		$id = intval( $_REQUEST['id'] );
+		$id = $_REQUEST['id'];
 
 		$ids = is_array( $id ) ? $id : [ $id ];
+
+		$ids = array_map(function ($item) {
+		    return intval($item);
+        }, $ids);
 
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId )
 		                               ->whereIn( 'id', $ids )->delete();
