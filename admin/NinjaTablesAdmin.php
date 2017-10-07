@@ -483,16 +483,21 @@ class NinjaTablesAdmin {
 		$data = [];
 		$time = current_time( 'mysql' );
 
+		$headerCount = count($header);
 		foreach ( $values as $item ) {
-			$itemTemp = array_combine(
-			    $header,
-                array_merge($item,
-                    array_fill_keys(
-                        array_diff(array_values($header), array_keys($item)),
-                        null
+            if ($headerCount == count($item)) {
+                $itemTemp = array_combine($header, $item);
+            } else {
+                $itemTemp = array_combine(
+                    $header,
+                    array_merge($item,
+                        array_fill_keys(
+                            array_diff(array_values($header), array_keys($item)),
+                            null
+                        )
                     )
-                )
-            );
+                );
+            }
 
 			array_push( $data, array(
 				'table_id'   => $tableId,
