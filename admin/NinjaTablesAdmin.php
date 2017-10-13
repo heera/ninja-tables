@@ -172,12 +172,14 @@ class NinjaTablesAdmin {
 		if ( ! current_user_can( ninja_table_admin_role() ) ) {
 			return;
 		}
+
 		$valid_routes = array(
 			'get-all-tables'           => 'getAllTables',
 			'store-a-table'            => 'storeTable',
 			'delete-a-table'           => 'deleteTable',
 			'import-table'             => 'importTable',
 			'import-table-from-plugin' => 'importTableFromPlugin',
+			'get-tables-from-plugin'   => 'getTablesFromPlugin',
 			'update-table-settings'    => 'updateTableSettings',
 			'get-table-settings'       => 'getTableSettings',
 			'get-table-data'           => 'getTableData',
@@ -284,66 +286,75 @@ class NinjaTablesAdmin {
 			'Table Press' => 'TablePress'
 		);
 
-		$plugin = esc_attr( $_REQUEST['plugin'] );
+		$plugin = esc_attr($_REQUEST['plugin']);
 
-		if ( class_exists( $class = $mapper[ $plugin ] ) ) {
-			$this->{lcfirst( $class ) . 'Import'}();
-		} else {
-			wp_send_json( array(
-				'message' => $plugin . __( ' is not installed', 'ninja-tables' )
-			), 423 );
-		}
+        $this->{lcfirst($mapper[$plugin]).'Import'}();
 	}
 
 	private function tablePressImport() {
-		$arguments = array(
-			'post_type'   => 'tablepress_table',
-			'post_status' => 'any'
-		);
+	    try {
+            $tableId = intval($_REQUEST['tableId']);
 
-		$tables = get_posts( $arguments );
+            $table = get_post($tableId);
 
-		foreach ( $tables as $table ) {
-			$ninjaTableId = $this->createTable( array(
-				'post_author'  => intval( $table->post_author ),
-				'post_title'   => sanitize_text_field( '[Table Press] '
-				                                       . $table->post_title ),
-				'post_content' => wp_kses_post( $table->post_excerpt ),
-				'post_status'  => $table->post_status,
-				'post_type'    => $this->cpt_name,
-			) );
+            $ninjaTableId = $this->createTable(array(
+                'post_author' => intval( $table->post_author ),
+                'post_title' => sanitize_text_field('[Table Press] '.$table->post_title),
+                'post_content' => wp_kses_post($table->post_excerpt),
+                'post_status' => $table->post_status,
+                'post_type' => $this->cpt_name,
+            ) );
 
-			$rows = json_decode( $table->post_content, true );
+            $rows = json_decode($table->post_content, true);
 
-			$tableSettings = get_post_meta( $table->ID,
-				'_tablepress_table_options', true );
+            $tableSettings = get_post_meta($table->ID, '_tablepress_table_options', true);
 
-			$tableSettings = json_decode( $tableSettings, true );
+            $tableSettings = json_decode($tableSettings, true);
 
-			if ( $tableSettings['table_head'] ) {
-				$header = array_shift( $rows );
-			} else {
-				$header = array();
-				for ( $i = 0; $i < count( $rows ); $i ++ ) {
-					$header[] = 'header-' . $i;
-				}
-			}
+            if ($tableSettings['table_head']) {
+                $header = array_shift($rows);
+            } else {
+                $header = array();
+                for ( $i = 0; $i < count( $rows ); $i ++ ) {
+                    $header[] = 'header-' . $i;
+                }
+            }
 
-			$this->storeTableConfigWhenImporting( $ninjaTableId, $header );
-			$this->insertDataToTable( $ninjaTableId, $rows, $header );
-		}
-		if ( count( $tables ) ) {
-			$message
-				= sprintf( __( 'Successfully imported %d tables from Table Press Plugin, Please go to all tables and review your tables.',
-				'ninja-tables' ), count( $tables ) );
-		} else {
-			$message = __( 'No TablePress tables found to import',
-				'ninja-tables' );
-		}
+            $this->storeTableConfigWhenImporting($ninjaTableId, $header);
 
-		wp_send_json( array(
+            $this->insertDataToTable($ninjaTableId, $rows, $header);
+
+            $message = __('Successfully imported '
+                .$table->post_title.
+                ' table from Table Press Plugin. Please go to all tables and review your table.'
+            );
+        } catch (Exception $exception) {
+            $message = __('Sorry, we could not import the table.', 'ninja-tables');
+        }
+
+		wp_send_json(array(
 			'message' => $message
-		), 200 );
+		), 200);
+	}
+
+    private function getTablesFromPlugin()
+    {
+        $postTypes = array(
+            'Table Press' => 'tablepress_table'
+        );
+
+        $plugin = sanitize_text_field($_REQUEST['plugin']);
+
+        $arguments = array(
+            'post_type'   => $postTypes[$plugin],
+            'post_status' => 'any'
+        );
+
+        $tables = get_posts($arguments);
+
+        wp_send_json(array(
+            'tables' => $tables
+        ), 200);
 	}
 
 	private function formatHeader( $header ) {

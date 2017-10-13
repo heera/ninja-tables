@@ -1,5 +1,5 @@
 const mix      = require('laravel-mix');
-const min = '';
+const min = '.min';
 
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');

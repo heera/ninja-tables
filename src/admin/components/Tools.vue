@@ -71,7 +71,7 @@
                                     @click="importFromOtherPlugin(plugin)"
                             >
                                 <template v-if="btnsLoading[plugin]">
-                                    {{ $t('Importing...') }}
+                                    {{ $t('Processing...') }}
                                     <i class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
                                 </template>
                                 <template v-else>
@@ -83,6 +83,51 @@
                     </tbody>
                 </table>
             </el-collapse-item>
+
+            <el-dialog
+                    title="Your current tables"
+                    :visible.sync="showPluginModal"
+                    @close="closePluginModal()"
+            >
+                <template v-if="otherPluginTables.length">
+                    <el-table
+                            :data="otherPluginTables"
+                            style="width: 100%"
+                    >
+                        <el-table-column
+                                prop="post_title"
+                                label="Name"
+                        ></el-table-column>
+                        <el-table-column
+                                label="Action"
+                                width="100"
+                                fixed="right"
+                        >
+                            <template scope="scope">
+                                <button class="btn btn-primary btn-sm"
+                                        @click="importThisTable(scope.row, scope.$index)"
+                                >Import</button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <template v-if="importing">
+                        <br><br>
+                        <div class="updated notice notice-success"
+                             style="padding: 10px;"
+                        >
+                            Importing the table, please wait a bit ...
+                        </div>
+                    </template>
+                </template>
+
+                <div class="updated notice notice-success"
+                     style="padding: 10px;"
+                     v-else
+                >
+                    You don't have any tables in your {{ selectedPlugin }} plugin.
+                </div>
+            </el-dialog>
         </el-collapse>
     </div>
 </template>
@@ -112,7 +157,11 @@
                 ],
                 btnsLoading: {
                     'Table Press': false
-                }
+                },
+                showPluginModal: false,
+                selectedPlugin: null,
+                otherPluginTables: [],
+                importing: false
             }
         },
         methods: {
@@ -163,25 +212,61 @@
                 });
             },
             importFromOtherPlugin(plugin) {
+                this.selectedPlugin = plugin;
+
                 this.btnsLoading[plugin] = true;
 
                 let data = {
                     action: 'ninja_tables_ajax_actions',
-                    target_action: 'import-table-from-plugin',
+                    target_action: 'get-tables-from-plugin',
                     plugin
-                }
+                };
 
                 jQuery.ajax({
                     url: ajaxurl,
                     data: data,
                     type: 'POST',
                     success: (response) => {
+                        this.showPluginModal = true;
+                        this.otherPluginTables = response.tables;
                         this.btnsLoading[plugin] = false;
-                        this.$message.success(response.message);
                     },
                     error: (error) => {
                         this.btnsLoading[plugin] = false;
                         this.$message.error(error.responseJSON.message);
+                    }
+                });
+            },
+            closePluginModal() {
+                this.otherPluginTables = [];
+                this.btnsLoading[this.selectedPlugin] = false;
+                this.showPluginModal = false;
+                this.selectedPlugin = null;
+
+            },
+            importThisTable(table, index) {
+                this.importing = true;
+
+                let data = {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'import-table-from-plugin',
+                    plugin: this.selectedPlugin,
+                    tableId: table.ID
+                };
+
+                jQuery.ajax({
+                    url: ajaxurl,
+                    data: data,
+                    type: 'POST',
+                    success: (response) => {
+                        this.$message.success(response.message);
+
+                        this.importing = false;
+                    },
+                    error: (error) => {
+                        this.$message.error(error.responseJSON.message);
+
+                        this.importing = false;
                     }
                 });
             }

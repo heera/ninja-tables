@@ -14,6 +14,7 @@ import 'element-ui/lib/theme-default/tooltip.css'
 import 'element-ui/lib/theme-default/pagination.css'
 import 'element-ui/lib/theme-default/collapse.css'
 import 'element-ui/lib/theme-default/collapse-item.css'
+import 'element-ui/lib/theme-default/dialog.css'
 
 import {
     Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox, Icon,Tooltip,
@@ -34,6 +35,8 @@ Vue.use(Icon);
 Vue.use(Tooltip);
 Vue.use(Collapse);
 Vue.use(CollapseItem);
+Vue.use(Dialog);
+
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
@@ -85,8 +88,7 @@ Vue.mixin({
                         template: '<div><h1>second</h1></div>'
                     }
                 }
-            },
-            context_help: '<h1>hello doc</h1>'
+            }
         }
     },
     filters: {
