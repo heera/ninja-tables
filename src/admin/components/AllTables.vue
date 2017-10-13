@@ -6,6 +6,9 @@
                 <a href="#" class="btn btn-primary btn-sm" @click="modalVisible = !modalVisible">
                     <span class="">{{ $t('Add Table') }}</span>
                 </a>
+                <a href="#tools" class="btn btn-danger btn-sm">
+                    <span class="">{{ $t('Import from CSV') }}</span>
+                </a>
             </div>
         </div>
         <hr />

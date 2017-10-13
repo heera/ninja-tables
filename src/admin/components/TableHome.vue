@@ -1,8 +1,10 @@
 <template>
-    <div>
+    <div> 
         <div class="settings_header">
             <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span class="section_title">{{ table.post_title }}</span><input type="text" :value="'[ninja_tables id='+tableId+']'">
-            <span class="pull-right" v-html="context_help"></span>
+            <span style="margin-right: 20px" class="pull-right">
+                <router-link class="btn" :to="{ name: 'help' }">Documentation</router-link>
+            </span>
         </div>
         
         <fieldset :class="[is_form_saving ? 'disabled' : '']" :disabled="is_form_saving">

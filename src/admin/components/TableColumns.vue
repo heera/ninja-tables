@@ -123,6 +123,10 @@
                         </draggable>
                     </div>
                 </div>
+                <div class="help_section updated notice notice-success">
+                    <p>Need help to configure the columns and responsive breakdowns, Please check tutorial with video <a href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables" target="_blank">here</a></p>
+                </div>
+                
             </div>
             <div class="section-column-3 ninja_sidebar">
                 <div class="ninja_widget">
@@ -587,6 +591,9 @@
             opacity: 1;
             transition: opacity .15s;
         }
+    }
+    .help_section {
+        margin-top: 45px !important;
     }
     
 </style>

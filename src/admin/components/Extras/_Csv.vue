@@ -14,13 +14,13 @@
 
             <h3>
                 {{ $t('CSV Header Structure') }}
-
                 <button type="button" class="btn btn-primary btn-sm"
                         style="float: right"
                         @click="download">
                     {{ $t('Download Sample CSV') }}
                 </button>
             </h3>
+            <div class="updated notice notice-success">Please note that, Your CSV data need to be as bellow to import from CSV. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here</a></div>
 
             <el-table :data="sampleData" style="width: 100%" stripe>
                 <el-table-column v-for="column in columns"

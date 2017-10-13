@@ -40,6 +40,13 @@
                                     v-for="(option, format) in imports.formatOptions"
                             >{{ $t(option) }}</option>
                         </select>
+                        
+                        <span v-show="imports.format == 'csv'" class="help">
+                            Check tutorial for importing data from CSV file <a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables" target="_blank">here</a>
+                        </span>
+                        <span v-show="imports.format == 'json' || imports.format == 'ninjaJson'" class="help">
+                            Check tutorial for importing Table from JSON file <a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-json-file/?utm_source=ninja-tables" target="_blank">here</a>
+                        </span>
                     </div>
 
                     <div class="form-item">

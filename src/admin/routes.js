@@ -24,7 +24,7 @@ export const routes = [
                 name: 'tools',
                 component: Tools
             },
-            {
+            { 
                 path: '/help',
                 name: 'help',
                 component: Help
