@@ -5,7 +5,7 @@ Tags: tables, ninja tables, data tables, tables from csv, datatables, footables,
 Requires at least: 3.5
 Requires PHP: 5.3 or greater
 Tested up to: 4.8
-Stable tag: trunk
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,9 +16,9 @@ Ninja Tables is the most advanced, and modern Table builder plugin on WordPress.
 
 [youtube https://www.youtube.com/watch?v=4J12jxYkhaE]
 
-== For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/plugins/ninja-tables/" target="blank">Check Here</a> ==
+== For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Here</a> ==
 
-=The Easiest Responsive Table Plugin on WordPress  =
+== The Easiest Responsive Table Plugin on WordPress ==
 Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
 
 == 100+ Table Styles ==
