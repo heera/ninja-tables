@@ -677,3 +677,16 @@ textarea.form-control {
 .ql-container.ql-snow {
   min-height: 220px;
 }
+
+
+ul.doc_items {
+    margin-left: 45px;
+    li {
+        font-size: 14px;
+        margin-bottom: 10px;
+        list-style: disc;
+        a {
+            text-decoration: none;
+        }
+    }
+}

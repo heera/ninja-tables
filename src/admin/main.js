@@ -85,7 +85,8 @@ Vue.mixin({
                         template: '<div><h1>second</h1></div>'
                     }
                 }
-            }
+            },
+            context_help: '<h1>hello doc</h1>'
         }
     },
     filters: {
@@ -104,6 +105,7 @@ const router = new VueRouter({
     linkActiveClass: 'active'
 });
 
+window.ninjaTableBus = new Vue();
 
 Application.router = router;
 window.ninjaApp = new Vue(Application).$mount('#data-tables-app');

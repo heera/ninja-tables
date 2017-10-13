@@ -2,6 +2,7 @@
     <div>
         <div class="settings_header">
             <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span class="section_title">{{ table.post_title }}</span><input type="text" :value="'[ninja_tables id='+tableId+']'">
+            <span class="pull-right" v-html="context_help"></span>
         </div>
         
         <fieldset :class="[is_form_saving ? 'disabled' : '']" :disabled="is_form_saving">

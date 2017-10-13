@@ -26,8 +26,9 @@ class NinjaFooTable
 		    array('footable'), self::$version, true);
         
 	    
-	    wp_localize_script( 'footable_init', 'ninja_tables', array(
-		    'ajax_url' => admin_url( 'admin-ajax.php' )
+	    wp_localize_script( 'footable_init', 'ninja_footables', array(
+		    'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'tables' => array()
         ) );
 
 
@@ -37,8 +38,6 @@ class NinjaFooTable
         wp_enqueue_style('footable_styles',
 	        NINJA_TABLES_DIR_URL . "assets/css/ninja-tables-public{$min}.css",
             array(), self::$version, 'all');
-        
-        
     }
 
     private static function render($tableArray)
@@ -84,7 +83,14 @@ class NinjaFooTable
 	        $tableHasColor = 'colored_table';
 	        $table_classes .= ' inverted';
         }
-        ?>
+
+	    $table_vars = array(
+		    'table_id' => $table_id,
+		    'columns' => $formatted_columns,
+		    'settings' => $configSettings
+	    );
+	    self::addInlineVars( json_encode($table_vars, true) , $table_id); 
+	    ?>
 
         <div id="footable_parent_<?php echo $table_id; ?>"
              class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
@@ -107,12 +113,10 @@ class NinjaFooTable
             <?php endif; ?>
 
             <?php do_action('ninja_tables_before_table_print', $table); ?>
-
-            <table data-config_settings='<?php echo json_encode($configSettings); ?>'
-                   data-columns='<?php echo json_encode($formatted_columns,
-                       true); ?>' data-footable_id="<?php echo intval($table_id); ?>"
+            <table
+                   data-footable_id="<?php echo intval($table_id); ?>"
                    id="footable_<?php echo intval($table_id); ?>"
-                   class=" foo-table foo_table_<?php echo intval($table_id); ?> <?php echo esc_attr($table_classes); ?>"
+                   class=" foo-table ninja_footable foo_table_<?php echo intval($table_id); ?> <?php echo esc_attr($table_classes); ?>"
             >
             </table>
             <?php do_action('ninja_tables_after_table_print', $table); ?>
@@ -148,5 +152,9 @@ class NinjaFooTable
             default:
                 return '';
         }
+    }
+    
+    private static function addInlineVars($vars, $table_id) {
+	    wp_add_inline_script( 'footable_init', 'window.ninja_footables.tables["table_'.$table_id.'"] = '.$vars.';');
     }
 }
