@@ -94,10 +94,11 @@
                             :data="otherPluginTables"
                             style="width: 100%"
                     >
-                        <el-table-column
-                                prop="post_title"
-                                label="Name"
-                        ></el-table-column>
+                        <el-table-column label="Name">
+                            <template scope="scope">
+                                <span v-if="scope.row.is_already_imported">( Already Imported )</span> {{ scope.row.post_title }}
+                            </template>
+                        </el-table-column>
                         <el-table-column
                                 label="Action"
                                 width="100"

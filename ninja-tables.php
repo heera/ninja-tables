@@ -16,7 +16,7 @@
  * Plugin Name:       Ninja Tables
  * Plugin URI:        https://wpmanageninja.com/plugins/ninja-tables/
  * Description:       The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
- * Version:           1.1.0
+ * Version:           1.1.1
  * Author:            WPManageNinja
  * Author URI:        https://wpmanageninja.com/
  * License:           GPL-2.0+
@@ -46,13 +46,12 @@ function activate_ninja_tables() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/NinjaTablesDeActivator.php
  */
-function deactivate_ninja_tables() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/NinjaTablesDeActivator.php';
-	NinjaTablesDeActivator::deactivate();
-}
+//function deactivate_ninja_tables() {
+//	require_once plugin_dir_path( __FILE__ ) . 'includes/NinjaTablesDeActivator.php';
+//	NinjaTablesDeActivator::deactivate();
+//}
 
 register_activation_hook( __FILE__, 'activate_ninja_tables' );
-register_deactivation_hook( __FILE__, 'deactivate_ninja_tables' );
 
 /**
  * The core plugin class that is used to define internationalization,

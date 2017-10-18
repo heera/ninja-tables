@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
             let initConfig = {
                 "cascade": true,
                 "columns": tableConfig.columns,
-                "rows": $.get(window.ninja_footables.ajax_url+'?action=wp_ajax_ninja_tables_public_action&table_id='+tableConfig.table_id+'&target_action=get-all-data')
+                "rows": $.get(window.ninja_footables.ajax_url+'?action=wp_ajax_ninja_tables_public_action&table_id='+tableConfig.table_id+'&target_action=get-all-data&default_sorting='+tableConfig.settings.default_sorting)
             };
 
             initConfig.sorting = {

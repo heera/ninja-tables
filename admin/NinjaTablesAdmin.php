@@ -113,6 +113,11 @@ class NinjaTablesAdmin {
 				'admin.php?page=ninja_tables#/tools'
 			);
 			$submenu['ninja_tables'][] = array(
+				__( 'Import a Table', 'ninja-tables' ),
+				$capability,
+				'admin.php?page=ninja_tables#/tools'
+			);
+			$submenu['ninja_tables'][] = array(
 				__( 'Help', 'ninja-tables' ),
 				$capability,
 				'admin.php?page=ninja_tables#/help'
@@ -296,7 +301,7 @@ class NinjaTablesAdmin {
             $tableId = intval($_REQUEST['tableId']);
 
             $table = get_post($tableId);
-
+			update_post_meta($tableId, '_imported_to_ninja_table', 'yes');
             $ninjaTableId = $this->createTable(array(
                 'post_author' => intval( $table->post_author ),
                 'post_title' => sanitize_text_field('[Table Press] '.$table->post_title),
@@ -307,6 +312,8 @@ class NinjaTablesAdmin {
 
             $rows = json_decode($table->post_content, true);
 
+            
+            
             $tableSettings = get_post_meta($table->ID, '_tablepress_table_options', true);
 
             $tableSettings = json_decode($tableSettings, true);
@@ -319,7 +326,9 @@ class NinjaTablesAdmin {
                     $header[] = 'header-' . $i;
                 }
             }
-
+            
+            $rows = array_reverse($rows);
+            
             $this->storeTableConfigWhenImporting($ninjaTableId, $header);
 
             $this->insertDataToTable($ninjaTableId, $rows, $header);
@@ -351,9 +360,19 @@ class NinjaTablesAdmin {
         );
 
         $tables = get_posts($arguments);
-
+        
+        $formattedTables = [];
+        foreach ($tables as $table) {
+        	$temp = array(
+        	    'ID' => $table->ID,
+		        'post_title' => $table->post_title,
+		        'is_already_imported' => get_post_meta($table->ID, '_imported_to_ninja_table', true)
+	        );
+	        $formattedTables[] = $temp;
+        }
+        
         wp_send_json(array(
-            'tables' => $tables
+            'tables' => $formattedTables
         ), 200);
 	}
 
@@ -361,8 +380,10 @@ class NinjaTablesAdmin {
 		$data = array();
 
 		foreach ( $header as $item ) {
-			$data[] = strtolower( preg_replace( '/[\W]+/', '',
-				trim( $item ) ) );
+			$header = strip_tags($header);
+			$header = strtolower( preg_replace( '/[\W]+/', '',trim( $header ) ) );
+			
+			$data[] = $header;
 		}
 
 		return ninja_table_renameDuplicateValues( $data );
@@ -378,7 +399,7 @@ class NinjaTablesAdmin {
 		)->fetchAll();
 
 		$header = array_shift( $reader );
-
+		$reader = array_reverse($reader);
 		$this->storeTableConfigWhenImporting( $tableId, $header );
 
 		$this->insertDataToTable( $tableId, $reader, $header );

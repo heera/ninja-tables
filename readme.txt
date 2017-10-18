@@ -2,16 +2,19 @@
 Contributors: techjewel, adreastrian
 Donate link: https://paypal.me/zalam
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
-Requires at least: 4.0
+Requires at least: 4.5
 Requires PHP: 5.3 or greater
 Tested up to: 4.8
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
 
 == Description ==
+
+[Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
+
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
 [youtube https://www.youtube.com/watch?v=4J12jxYkhaE]

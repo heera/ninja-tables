@@ -67,10 +67,14 @@ class NinjaTablePublic {
 	public function getAllData()
 	{
 		$tableId = intval($_REQUEST['table_id']);
+		$defaultSorting = sanitize_text_field($_REQUEST['default_sorting']);
+		$query = ninja_tables_DbTable()->where('table_id', $tableId);
 		
-		$data = ninja_tables_DbTable()->where('table_id', $tableId)
-			->orderBy('id', 'desc')
-			->get();
+		if($defaultSorting == 'new_first') {
+			$query->orderBy('id', 'desc');
+		}
+		
+		$data = $query->get();
 		
 		$formatted_data = [];
 		foreach ($data as $item) {

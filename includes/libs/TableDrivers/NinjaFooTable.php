@@ -43,7 +43,6 @@ class NinjaFooTable
     private static function render($tableArray)
     {
         extract($tableArray);
-        
         if ( ! count($columns)) {
             return;
         }
@@ -73,6 +72,7 @@ class NinjaFooTable
             'paging'    => $pagingSettings,
             'sorting'   => (isset($settings['column_sorting']))
                 ? $settings['column_sorting'] : false,
+            'default_sorting' => (isset($settings['default_sorting'])) ? $settings['default_sorting'] : false
         );
         
         $table_classes = self::getTableCssClass($settings);
@@ -89,6 +89,7 @@ class NinjaFooTable
 		    'columns' => $formatted_columns,
 		    'settings' => $configSettings
 	    );
+        
 	    self::addInlineVars( json_encode($table_vars, true) , $table_id); 
 	    ?>
 
@@ -155,6 +156,16 @@ class NinjaFooTable
     }
     
     private static function addInlineVars($vars, $table_id) {
-	    wp_add_inline_script( 'footable_init', 'window.ninja_footables.tables["table_'.$table_id.'"] = '.$vars.';');
+        if(function_exists('wp_add_inline_script')) {
+	        wp_add_inline_script( 'footable_init', 'window.ninja_footables.tables["table_'.$table_id.'"] = '.$vars.';');
+        } else {
+            add_action('wp_footer', function () use ($vars, $table_id) {
+                ?>
+                    <script type="text/javascript">
+                        window.ninja_footables.tables["table_<?php echo $table_id;?>"] = <?php echo $vars ?>;
+                    </script>
+                <?php
+            }, 100);
+        }
     }
 }
