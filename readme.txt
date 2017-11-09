@@ -2,10 +2,10 @@
 Contributors: techjewel, adreastrian
 Donate link: https://paypal.me/zalam
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
-Requires at least: 4.5
+Requires at least: 4.0
 Requires PHP: 5.3 or greater
-Tested up to: 4.8
-Stable tag: 1.1.2
+Tested up to: 4.9
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -95,6 +95,10 @@ Tables form created by NinjaTables is mobile responsive and looks beautiful on a
 
 NinjaTables is the most beginner friendly and fastest WordPress Tables plugin available and getting started is so easy!
 
+= Can I use shortcodes in table cells? =
+
+Yes, You can use any shortcodes in table cells. This featured is available since version 1.3.0
+
 == Screenshots ==
 
 1. Backend - Table Data View
@@ -108,6 +112,16 @@ NinjaTables is the most beginner friendly and fastest WordPress Tables plugin av
 9. Black Color Table View in Frontend
 
 == Changelog ==
+= 1.3.0 =
+* Added shortcodes support in table cells
+
+= 1.2.0 =
+* Improve speed
+* Support for WP latest version
+
+= 1.1.3 =
+* Improve TablePress Import
+* Add Support for older WP versions
 
 = 1.1.0 =
 * Added contextual Tutorial link.

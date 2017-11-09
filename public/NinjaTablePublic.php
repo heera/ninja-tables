@@ -78,7 +78,9 @@ class NinjaTablePublic {
 		
 		$formatted_data = [];
 		foreach ($data as $item) {
-			$formatted_data[] = json_decode($item->value, true);
+			 $values = json_decode($item->value, true);
+			 $values = array_map('do_shortcode', $values);
+			 $formatted_data[] = $values;
 		}
 		
 		$formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);

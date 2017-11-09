@@ -323,9 +323,10 @@ class NinjaTablesAdmin {
             } else {
                 $header = array();
                 for ( $i = 0; $i < count( $rows ); $i ++ ) {
-                    $header[] = 'header-' . $i;
+                    $header[] = 'header-' . $i+1;
                 }
             }
+            
             
             $rows = array_reverse($rows);
             
@@ -380,12 +381,17 @@ class NinjaTablesAdmin {
 		$data = array();
 
 		foreach ( $header as $item ) {
-			$header = strip_tags($header);
-			$header = strtolower( preg_replace( '/[\W]+/', '',trim( $header ) ) );
-			
-			$data[] = $header;
+			$item = strip_tags($item);
+			$item = strtolower( preg_replace( '/[\W]+/', '',trim( $item ) ) );
+			$key = sanitize_title($item);
+			$counter = 0;
+			while (isset($data[$key])) {
+				$key = $key.'_'.$counter+1;
+				$counter++;
+			}
+			$data[$key] = $item;
 		}
-
+		
 		return ninja_table_renameDuplicateValues( $data );
 	}
 
@@ -486,6 +492,7 @@ class NinjaTablesAdmin {
 	}
 
 	private function storeTableConfigWhenImporting( $tableId, $header ) {
+		
 		$header = array_combine( ninja_table_renameDuplicateValues(
 			$this->formatHeader( $header )
 		), $header );
@@ -658,15 +665,15 @@ class NinjaTablesAdmin {
 			$query->search( $search, [ 'value' ] );
 		}
 
-		$query = $query->take( $perPage )
+		$data = $query->take( $perPage )
 		               ->skip( $skip )
-		               ->orderBy( 'id', 'desc' );
-
-		$total    = $query->count();
-		$data     = $query->get();
+		               ->orderBy( 'id', 'desc' )
+						->get();
+		
+		$total    = ninja_tables_DbTable()->where( 'table_id', $tableId )->count();
+		
 		$response = [];
-
-
+		
 		foreach ( $data as $item ) {
 			$response[] = array(
 				'id'     => $item->id,
@@ -697,12 +704,14 @@ class NinjaTablesAdmin {
 		$attributes = array(
 			'table_id'  => $tableId,
 			'attribute' => 'value',
-			'value'     => json_encode( $formattedRow, true )
+			'value'     => json_encode( $formattedRow, true ),
+			'updated_at' => date('Y-m-d H:i:s')
 		);
 
 		if ( $id = intval( $_REQUEST['id'] ) ) {
 			ninja_tables_DbTable()->where( 'id', $id )->update( $attributes );
 		} else {
+			$attributes['created_at'] = date('Y-m-d H:i:s');
 			$insertId = ninja_tables_DbTable()->insert( $attributes );
 			$id       = $insertId;
 		}

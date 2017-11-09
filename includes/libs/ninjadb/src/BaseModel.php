@@ -83,7 +83,8 @@ class BaseModel
 		 * @return null|integer
 		 */
 		public function count() {
-			$count = $this->db->get_var( $this->getSqlStatement('count'));
+			$countSql =$this->getSqlStatement('count');
+			$count = $this->db->get_var( $countSql );
 			return $count;
 		}
 
