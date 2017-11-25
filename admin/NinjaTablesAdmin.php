@@ -56,15 +56,15 @@ class NinjaTablesAdmin {
 	 */
 	public function register_post_type() {
 		register_post_type( $this->cpt_name, array(
-			'label'           => __( 'Ninja Tables', 'ninja-tables' ),
-			'public'          => false,
-			'show_ui'         => true,
-			'show_in_menu'    => false,
-			'capability_type' => 'post',
-			'hierarchical'    => false,
-			'query_var'       => false,
-			'supports'        => array( 'title' ),
-			'labels'          => array(
+                'label'           => __( 'Ninja Tables', 'ninja-tables' ),
+                'public'          => false,
+                'show_ui'         => true,
+                'show_in_menu'    => false,
+                'capability_type' => 'post',
+                'hierarchical'    => false,
+                'query_var'       => false,
+                'supports'        => array( 'title' ),
+                'labels'          => array(
 				'name'               => __( 'Ninja Tables', 'ninja-tables' ),
 				'singular_name'      => __( 'Table', 'ninja-tables' ),
 				'menu_name'          => __( 'Ninja Tables', 'ninja-tables' ),
@@ -83,6 +83,7 @@ class NinjaTablesAdmin {
 			),
 		) );
 	}
+
 
 	/**
 	 * Adds a settings page link to a menu
@@ -883,4 +884,84 @@ class NinjaTablesAdmin {
 
 		die();
 	}
+
+	public function add_tabales_to_editor() {
+        if ( user_can_richedit() ) {
+            $pages_with_editor_button = array( 'post.php', 'post-new.php' );
+            foreach ( $pages_with_editor_button as $editor_page ) {
+                add_action( "load-{$editor_page}", array( $this, 'init_ninja_mce_buttons' ) );
+            }
+        }
+    }
+
+    public function init_ninja_mce_buttons() {
+        add_filter( "mce_external_plugins", array($this, 'ninja_table_add_button') );
+        add_filter( 'mce_buttons', array($this, 'ninja_table_register_button') );
+        add_action('admin_footer', array($this, 'pushNinjaTablesToEditorFooter'));
+    }
+
+    public function pushNinjaTablesToEditorFooter() {
+        $tables = $this->getAllTablesForMce();
+        ?>
+        <script type="text/javascript">
+            window.ninja_tables_tiny_mce = {
+                label: '<?php _e('Select a Table to insert', 'ninja-tables') ?>',
+                title: '<?php _e('Insert Ninja Tables Shortcode', 'ninja-tables') ?>',
+                select_error: '<?php _e('Please select a table'); ?>',
+                tables: <?php echo json_encode($tables);?>
+            }
+        </script>
+<?php
+    }
+
+    private function getAllTablesForMce() {
+        $args = array(
+            'posts_per_page' => -1,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'post_type'      => $this->cpt_name,
+            'post_status'    => 'any'
+        );
+
+        $tables = get_posts( $args );
+        $formatted = array();
+        $formatted[] = array(
+            'text' => __('Select a Table', 'ninja-tables'),
+            'value' => ''
+        );
+
+        foreach ($tables as $table) {
+            $formatted[] = array(
+                'text' => $table->post_title,
+                'value' => $table->ID
+            );
+        }
+
+        return $formatted;
+    }
+
+
+    /**
+     * add a button to Tiny MCE editor
+     *
+     * @param $plugin_array
+     *
+     * @return mixed
+     */
+    public function ninja_table_add_button( $plugin_array ) {
+        $plugin_array['ninja_table'] = NINJA_TABLES_DIR_URL.'assets/js/ninja-table-tinymce-button.js';
+        return $plugin_array;
+    }
+
+    /**
+     * register a button to Tiny MCE editor
+     *
+     * @param $buttons
+     *
+     * @return mixed
+     */
+    public function ninja_table_register_button( $buttons ) {
+        array_push( $buttons, 'ninja_table' );
+        return $buttons;
+    }
 }
