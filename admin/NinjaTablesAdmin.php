@@ -908,6 +908,7 @@ class NinjaTablesAdmin {
                 label: '<?php _e('Select a Table to insert', 'ninja-tables') ?>',
                 title: '<?php _e('Insert Ninja Tables Shortcode', 'ninja-tables') ?>',
                 select_error: '<?php _e('Please select a table'); ?>',
+                insert_text: '<?php _e('Insert Shortcode', 'ninja-tables'); ?>',
                 tables: <?php echo json_encode($tables);?>
             }
         </script>

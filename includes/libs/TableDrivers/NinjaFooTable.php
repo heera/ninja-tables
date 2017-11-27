@@ -89,18 +89,13 @@ class NinjaFooTable
 		    'columns' => $formatted_columns,
 		    'settings' => $configSettings
 	    );
-        
 	    self::addInlineVars( json_encode($table_vars, true) , $table_id); 
 	    ?>
-
-        <div id="footable_parent_<?php echo $table_id; ?>"
-             class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
-
+        <div id="footable_parent_<?php echo $table_id; ?>" class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
             <?php if (isset($settings['show_title'])
                       && $settings['show_title']
             ) : ?>
-                <?php do_action('ninja_tables_before_table_title', $table); ?>
-                <h3 class="table_title footable_title"><?php echo esc_attr($table->post_title); ?></h3>
+                <?php do_action('ninja_tables_before_table_title', $table); ?><h3 class="table_title footable_title"><?php echo esc_attr($table->post_title); ?></h3>
                 <?php do_action('ninja_tables_after_table_title', $table); ?>
             <?php endif; ?>
             <?php if (isset($settings['show_description'])
@@ -112,7 +107,6 @@ class NinjaFooTable
                 <?php do_action('ninja_tables_after_table_description',
                     $table); ?>
             <?php endif; ?>
-
             <?php do_action('ninja_tables_before_table_print', $table); ?>
             <table
                    data-footable_id="<?php echo intval($table_id); ?>"
@@ -122,7 +116,6 @@ class NinjaFooTable
             </table>
             <?php do_action('ninja_tables_after_table_print', $table); ?>
         </div>
-
         <?php
     }
 

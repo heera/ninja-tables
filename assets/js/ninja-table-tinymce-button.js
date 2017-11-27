@@ -18,7 +18,7 @@
                         }
                     ],
                     width: 768,
-                    height: 200,
+                    height: 100,
                     onsubmit: function( e ) {
                         if( e.data.ninja_table_shortcode ) {
                             editor.insertContent( '[ninja_tables id="' + e.data.ninja_table_shortcode + '"]');
@@ -26,7 +26,14 @@
                             alert(window.ninja_tables_tiny_mce.select_error);
                             return false;
                         }
-                    }
+                    },
+                    buttons: [
+                        {
+                            text: window.ninja_tables_tiny_mce.insert_text,
+                            subtype: 'primary',
+                            onclick: 'submit'
+                        }
+                    ]
                 }, {
                     'tinymce': tinymce
                 });
