@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, table
 Requires at least: 4.0
 Requires PHP: 5.3 or greater
 Tested up to: 4.9
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,9 @@ Yes, You can use any shortcodes in table cells. This featured is available since
 9. Black Color Table View in Frontend
 
 == Changelog ==
+= 1.5.0 =
+* Added tinymce button to insert shortcode
+
 = 1.3.0 =
 * Added shortcodes support in table cells
 
