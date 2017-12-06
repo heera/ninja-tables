@@ -86,6 +86,7 @@ class NinjaTablePublic {
 		$formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
 		
 		wp_send_json($formatted_data, 200);
+		wp_die();
 	}
     
 	public function register_table_render_functions() {

@@ -23,7 +23,8 @@ jQuery(document).ready(function ($) {
             initConfig.filtering = {
                 "enabled":  !!tableConfig.settings.filtering,
                 "delay": 1,
-                "dropdownTitle": "Search in:",
+                "dropdownTitle": ninja_footables.i18n.search_in,
+                "placeholder": ninja_footables.i18n.search,
                 "connectors": false
             };
 

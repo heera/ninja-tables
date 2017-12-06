@@ -28,9 +28,12 @@ class NinjaFooTable
 	    
 	    wp_localize_script( 'footable_init', 'ninja_footables', array(
 		    'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'tables' => array()
+            'tables' => array(),
+            'i18n' => array(
+                'search_in' => __('Search in', 'ninja-tables'),
+                'search' => __('Search', 'ninja-tables')
+            )
         ) );
-
 
 	    wp_enqueue_style('footable', NINJA_TABLES_PUBLIC_DIR_URL
                                      . "libs/footable/css/footable.standalone{$min}.css",
@@ -108,13 +111,7 @@ class NinjaFooTable
                     $table); ?>
             <?php endif; ?>
             <?php do_action('ninja_tables_before_table_print', $table); ?>
-            <table
-                   data-footable_id="<?php echo intval($table_id); ?>"
-                   id="footable_<?php echo intval($table_id); ?>"
-                   class=" foo-table ninja_footable foo_table_<?php echo intval($table_id); ?> <?php echo esc_attr($table_classes); ?>"
-            >
-            </table>
-            <?php do_action('ninja_tables_after_table_print', $table); ?>
+            <table data-footable_id="<?php echo intval($table_id); ?>" id="footable_<?php echo intval($table_id); ?>" class=" foo-table ninja_footable foo_table_<?php echo intval($table_id); ?> <?php echo esc_attr($table_classes); ?>"></table><?php do_action('ninja_tables_after_table_print', $table); ?>
         </div>
         <?php
     }
