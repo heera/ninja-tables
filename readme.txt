@@ -4,8 +4,8 @@ Donate link: https://paypal.me/zalam
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
 Requires at least: 4.0
 Requires PHP: 5.3 or greater
-Tested up to: 4.9
-Stable tag: 1.5.0
+Tested up to: 4.9.1
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

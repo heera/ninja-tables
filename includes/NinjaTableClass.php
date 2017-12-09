@@ -69,7 +69,7 @@ class NinjaTableClass {
 	public function __construct() {
 
 		$this->plugin_name = 'ninja-tables';
-		$this->version = '1.5.0';
+		$this->version = '1.6.0';
 
 		$this->load_dependencies();
 		
