@@ -27,13 +27,14 @@ jQuery(document).ready(function ($) {
                 "placeholder": ninja_footables.i18n.search,
                 "connectors": false
             };
-
+            
             initConfig.paging = {
                 "enabled": !!tableConfig.settings.paging,
                 "position": "right",
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_"+tableConfig.table_id+" .paging-ui-container"
             };
+            initConfig.empty = ninja_footables.i18n.empty_text
             $table.footable(initConfig);
         }
     };

@@ -31,7 +31,8 @@ class NinjaFooTable
             'tables' => array(),
             'i18n' => array(
                 'search_in' => __('Search in', 'ninja-tables'),
-                'search' => __('Search', 'ninja-tables')
+                'search' => __('Search', 'ninja-tables'),
+                'empty_text' => __('No Result Found', 'ninja-tables'),
             )
         ) );
 
