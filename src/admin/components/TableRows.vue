@@ -56,7 +56,7 @@
                         :label="column.name"
                         :width="(columnLength == index + 1 ) ? '' : 150"
                         :key="index">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <div :title="scope.row.values[column.key]" class="cell-content" v-html="scope.row.values[column.key]"></div>
                         </template>
                     </el-table-column>
@@ -64,7 +64,7 @@
                         fixed="right"
                         label="Actions"
                         width="100">
-                        <template scope="scope">
+                        <template slot-scope="scope">
                             <a @click="showUpdateModal(scope)">
                                 <span class="dashicons dashicons-edit"></span>
                             </a>

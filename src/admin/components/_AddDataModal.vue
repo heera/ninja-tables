@@ -16,10 +16,10 @@
                                 <textarea :id="column.key" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>
                             <div v-else-if="column.data_type == 'html'">
-                                <quill-editor :content="newColumn[column.key]"
-                                              :options="editorOption"
-                                              @change="onEditorChange(column.key, $event)">
-                                </quill-editor>
+                                <wp_editor v-model="newColumn[column.key]"></wp_editor>
+                            </div>
+                            <div v-else-if="column.data_type == 'number'">
+                                <input type="number" :id="column.key" class="form-control" v-model="newColumn[column.key]">
                             </div>
                             <div v-else>
                                 <input type="text" :id="column.key" class="form-control" v-model="newColumn[column.key]">
@@ -49,8 +49,9 @@
 
 <script type="text/babel">
     import { each, escape as ninjaEscape } from 'lodash';
+    import wp_editor from '../../common/_wp_editor';
     export default {
-        name: 'AddData',
+        name: 'add_data',
         props: ['modal_visible', 'columns', 'table_id', 'item'],
         data() {
             return {
@@ -162,6 +163,7 @@
             this.initNewColumnObj();
         },
         components: {
+            wp_editor: wp_editor
         }
     }
 </script> 

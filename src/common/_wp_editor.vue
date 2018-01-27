@@ -1,0 +1,101 @@
+<template>
+    <div class="wp_vue_editor_wrapper">
+        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id">{{value}}</textarea>
+        <textarea v-else
+                  class="wp_vue_editor wp_vue_editor_plain"
+                  v-model="plain_content">
+        </textarea>
+    </div>
+</template>
+
+<script type="text/babel">
+    export default {
+        name: 'wp_editor',
+        props: {
+            editor_id: {
+                type: String,
+                default() {
+                    return 'wp_editor_'+Date.now();
+                }
+            },
+            value: {
+                type: String,
+                default() {
+                    return '';
+                }
+            }
+        },
+        data() {
+            return {
+                hasWpEditor: !!window.wp.editor,
+                plain_content: this.value
+            }
+        },
+        watch: {
+            plain_content() {
+                this.$emit('input', this.plain_content);
+            },
+            value() {
+                if(!this.value) {
+                    this.reloadEditor();
+                }
+            }
+        },
+        methods: {
+            initEditor() {
+                if(this.hasWpEditor) {
+                    const that = this;
+                    wp.editor.initialize(this.editor_id, {
+                        mediaButtons: false,
+                        mode : "none",
+                        tinymce: {
+                            toolbar1: 'bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,forecolor,codeformat,undo,redo',
+                            setup(ed) {
+                                ed.on('change', function (ed, l) {
+                                    that.changeContentEvent();
+                                });
+                            }
+                        },
+                        quicktags: true
+                    });
+                }
+            },
+            reloadEditor() {
+                wp.editor.remove(this.editor_id);  
+                jQuery('#'+ this.editor_id).val('');
+                this.initEditor();
+            },
+            changeContentEvent() {
+                let content = wp.editor.getContent(this.editor_id);
+                this.$emit('input', content);
+            }
+        },
+        mounted() {
+            jQuery(document).ready( () => {
+                this.initEditor();
+            });
+        }
+    }
+</script> 
+<style lang="scss">
+    .wp_vue_editor {
+        width: 100%;
+        min-height: 100px;
+    }
+    .wp_vue_editor_wrapper {
+        position: relative;
+
+        .popover-wrapper {
+            z-index: 2;
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            &-plaintext {
+                left: auto;
+                right: 0;
+                top: -32px;
+            }
+        }
+    }
+</style>

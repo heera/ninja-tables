@@ -192,16 +192,44 @@
                                 <input v-model="tableSettings.column_sorting" type="checkbox" value="1" id="column_sorting"/> {{ $t('Enable sorting of the table by the visitor') }}
                             </label>
                         </div>
-                        <div class="form_group">
-                            <label>{{ $t('Default Sorting') }}</label>
-                            <select v-model="tableSettings.default_sorting" class="form_control">
-                                <option value="new_first">{{ $t('Show New Items First') }}</option>
-                                <option value="old_first">{{ $t('Show Old Items First') }}</option>
-                            </select>
+                    </div>
+                </div>
+                
+                <div class="ninja_widget">
+                    <h4 class="title">{{ $t('Data Sorting') }}</h4>
+                    <br />
+                    <div class="form_group">
+                        <label>
+                            <input v-model="tableSettings.sorting_type" type="radio" value="by_created_at" /> Sort By Data Create Date
+                        </label>
+                        <div v-if="tableSettings.sorting_type == 'by_created_at'" class="">
+                            <span>{{ $t('Sort Type') }}
+                                <select v-model="tableSettings.default_sorting">
+                                    <option value="new_first">{{ $t('Show New Items First') }}</option>
+                                    <option value="old_first">{{ $t('Show Old Items First') }}</option>
+                                </select>
+                            </span>
+                        </div>
+                        <br />
+                        <label>
+                            <input v-model="tableSettings.sorting_type" type="radio" value="by_column" /> Sort By Table Column
+                        </label>
+                        <div v-if="tableSettings.sorting_type == 'by_column'">
+                            <label>{{ $t('Select Column') }}
+                                <select v-model="tableSettings.sorting_column">
+                                    <option v-for="column in columns" :value="column.key">{{ column.name }}</option>
+                                </select>
+                            </label>
+                            <label>{{ $t('Sort Type') }}
+                                <select v-model="tableSettings.sorting_column_by">
+                                    <option value="asc">Ascending Way</option>
+                                    <option value="desc">Descending Way</option>
+                                </select>
+                            </label>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="ninja_widget">
                     <h4 class="title">{{ $t('Styling Library') }}</h4>
                     <div class="widget_body">
@@ -289,7 +317,12 @@
                 dataTypesOptions: {
                     'text' : this.$t('Single Line Text Field'),
                     'textarea' : this.$t('Text Area'),
-                    'html' : this.$t('HTML Field')
+                    'html' : this.$t('HTML Field'),
+                    'number': this.$t('Numeric Value') 
+                },
+                dateFormats: {
+                    'Y-m-d' : 'Y-m-d',
+                    
                 },
                 attributeModel: {
                     name: null,
@@ -485,6 +518,9 @@
         .drawer_body {
             padding: 10px;
             display: none;
+            .form_group {
+                padding-right: 20px;
+            }
         }
         .header {
             padding: 15px 10px;

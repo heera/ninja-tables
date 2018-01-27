@@ -1,13 +1,25 @@
 <template>
     <div>
-        {{ $t('Format:') }}
-        <select v-model="selected">
-            <option v-for="(option, key) in exportOptions" :value="key">
-                {{ option }}
-            </option>
-        </select>
 
-        <button class="btn btn-sm btn-primary" @click="doExport()">Export</button>
+        <div class="ninja_header">
+            <h2>Export Table</h2>
+        </div>
+        <div class="ninja_content">
+
+            <div class="ninja_block">
+                <p>You can download the table data as CSV or JSON format, If you download as json then you can import the table to any Ninja Table Installation</p>
+            </div>
+            <hr />
+            <div class="ninja_export_block">
+                {{ $t('Format:') }}
+                <select v-model="selected">
+                    <option v-for="(option, key) in exportOptions" :value="key">
+                        {{ option }}
+                    </option>
+                </select>
+                <button class="btn btn-sm btn-primary" @click="doExport()">Export</button>
+            </div>
+        </div>
     </div>
 </template>
 

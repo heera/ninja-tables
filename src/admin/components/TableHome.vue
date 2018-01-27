@@ -35,6 +35,7 @@
         </fieldset>
         
         <edit_table :table="table" @modal_close="editTableModalShow = !editTableModalShow" :modal_visible="editTableModalShow"></edit_table>
+
     </div>
 </template>
 
@@ -44,7 +45,7 @@
     import { tableHomeTabComponents } from '../data/data';
     
     export default {
-        name: 'TableHome',
+        name: 'table_home',
         components: {
             'edit_table': EditTable
         },

@@ -21,14 +21,14 @@
                 {{ $t('Help') }}
             </router-link>
         </h2>
-
+        
         <router-view></router-view>
     </div>
 </template>
 
 <script type="text/babel">
     export default {
-        name: 'Home',
+        name: 'home',
     }
 </script>
 

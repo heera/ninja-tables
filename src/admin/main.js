@@ -2,23 +2,30 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
-import VueQuillEditor from 'vue-quill-editor';
-Vue.use(VueQuillEditor);
-
-import 'element-ui/lib/theme-default/table.css'
-import 'element-ui/lib/theme-default/popover.css'
-import 'element-ui/lib/theme-default/loading.css'
-import 'element-ui/lib/theme-default/message.css'
-import 'element-ui/lib/theme-default/message-box.css'
-import 'element-ui/lib/theme-default/tooltip.css'
-import 'element-ui/lib/theme-default/pagination.css'
-import 'element-ui/lib/theme-default/collapse.css'
-import 'element-ui/lib/theme-default/collapse-item.css'
-import 'element-ui/lib/theme-default/dialog.css'
+import 'element-ui/lib/theme-chalk/table.css'
+import 'element-ui/lib/theme-chalk/popover.css'
+import 'element-ui/lib/theme-chalk/loading.css'
+import 'element-ui/lib/theme-chalk/message.css'
+import 'element-ui/lib/theme-chalk/message-box.css'
+import 'element-ui/lib/theme-chalk/tooltip.css'
+import 'element-ui/lib/theme-chalk/pagination.css'
+import 'element-ui/lib/theme-chalk/collapse.css'
+import 'element-ui/lib/theme-chalk/collapse-item.css'
+import 'element-ui/lib/theme-chalk/dialog.css'
+import 'element-ui/lib/theme-chalk/aside.css'
+import 'element-ui/lib/theme-chalk/main.css'
+import 'element-ui/lib/theme-chalk/container.css'
+import 'element-ui/lib/theme-chalk/menu.css'
+import 'element-ui/lib/theme-chalk/menu-item.css'
+import 'element-ui/lib/theme-chalk/header.css'
 
 import {
     Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox, Icon,Tooltip,
-    Pagination, Collapse, CollapseItem
+    Pagination, Collapse, CollapseItem, Container, Aside, Main,
+    Menu,
+    MenuItem,
+    Header
+
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en'
@@ -30,9 +37,15 @@ Vue.use(Table);
 Vue.use(Pagination);
 Vue.use(TableColumn);
 Vue.use(Popover);
+Vue.use(Menu);
+Vue.use(Header);
+Vue.use(MenuItem);
 Vue.use(Loading);
 Vue.use(Icon);
 Vue.use(Tooltip);
+Vue.use(Container);
+Vue.use(Aside);
+Vue.use(Main);
 Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Dialog);

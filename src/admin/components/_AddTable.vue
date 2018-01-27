@@ -17,10 +17,7 @@
                     </div>
                     <div class="form-group">
                         <label>{{ $t('Description') }}</label>
-                        <quill-editor :content="table.post_content"
-                                      :options="editorOption"
-                                      @change="onEditorChange($event)">
-                        </quill-editor>
+                        <wp_editor v-model="table.post_content"></wp_editor>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -38,8 +35,12 @@
 </template>
 
 <script type="text/babel">
+    import wp_editor from '../../common/_wp_editor'
     export default {
-        name: 'AddTable',
+        name: 'add_table',
+        components: {
+            wp_editor: wp_editor  
+        },
         props: { 
             modal_visible: Boolean,
             table: {

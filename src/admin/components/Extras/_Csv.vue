@@ -1,37 +1,43 @@
 <template>
     <div>
-        <div v-if="columns.length">
-            <form action="" id="fileUploadForm" class="mb20">
-                <div class="form-group">
-                    <input type="file" id="fileUpload" @click="clear">
-
-                    <button type="submit" class="btn btn-primary btn-flex btn-sm" @click.prevent="upload">
-                        {{ $t('Upload CSV') }}
-                        <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                    </button>
-                </div>
-            </form>
-
-            <h3>
-                {{ $t('CSV Header Structure') }}
-                <button type="button" class="btn btn-primary btn-sm"
-                        style="float: right"
-                        @click="download">
-                    {{ $t('Download Sample CSV') }}
-                </button>
-            </h3>
-            <div class="updated notice notice-success">Please note that, Your CSV data need to be as bellow to import from CSV. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here</a></div>
-
-            <el-table :data="sampleData" style="width: 100%" stripe>
-                <el-table-column v-for="column in columns"
-                                 :prop="column.key"
-                                 :label="column.key"
-                                 :key="column.key"
-                ></el-table-column>
-            </el-table>
+        <div class="ninja_header">
+            <h2>Import Table Data</h2>
         </div>
-        <div v-else="" class="error">
-            <p>{{ $t('Please set table configuration first.') }}</p>
+        <div class="ninja_content">
+            <div v-if="columns.length">
+                <form action="" id="fileUploadForm" class="">
+                    <div class="form-group">
+                        <input type="file" id="fileUpload" @click="clear">
+                        <button type="submit" class="btn btn-primary btn-flex btn-sm" @click.prevent="upload">
+                            {{ $t('Upload CSV') }}
+                            <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+                        </button>
+                    </div>
+                </form>
+                <div class="ninja_suggest">
+                    <p>Please note that, Your CSV data need to be as bellow to import. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here</a></p>
+                </div>
+
+                <h3>
+                    {{ $t('CSV Header Structure') }}
+                    <button type="button" class="btn btn-primary btn-sm"
+                            style="float: right"
+                            @click="download">
+                        {{ $t('Download Sample CSV') }}
+                    </button>
+                </h3>
+                
+                <el-table border :data="sampleData" style="width: 100%" stripe>
+                    <el-table-column v-for="column in columns"
+                                     :prop="column.key"
+                                     :label="column.key"
+                                     :key="column.key"
+                    ></el-table-column>
+                </el-table>
+            </div>
+            <div v-else="" class="error">
+                <p>{{ $t('Please set table configuration first.') }}</p>
+            </div>
         </div>
     </div>
 </template>
@@ -69,7 +75,7 @@
 
                 var file = jQuery('#fileUpload')[0].files[0];
 
-                if (! file) {
+                if (!file) {
                     that.btnLoading = false;
                     return;
                 }
@@ -87,14 +93,14 @@
                     type: 'POST',
                     contentType: false,
                     processData: false,
-                    success: function(response) {
+                    success: function (response) {
                         that.$emit('csvUploaded');
 
                         that.clear();
 
                         that.$message.success(response.message)
                     },
-                    error: function(error) {
+                    error: function (error) {
                         that.$message.error(error.responseJSON.message)
                     }
                 })
@@ -125,9 +131,9 @@
 
                 var csv = "data:text/csv;charset=utf-8,";
 
-                samples.forEach(function(item, index){
+                samples.forEach(function (item, index) {
                     var dataString = item.join(",");
-                    csv += index < samples.length ? dataString+ "\n" : dataString;
+                    csv += index < samples.length ? dataString + "\n" : dataString;
                 });
 
                 var encodedUri = encodeURI(csv);

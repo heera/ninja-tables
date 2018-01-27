@@ -14,18 +14,23 @@
         <hr />
         <list-all-tables></list-all-tables>
         <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" :modal_visible.sync="modalVisible"></add-table-modal>
+        <br/>
+        <fluentpromoad dismisable="1"></fluentpromoad>
     </div>
 </template>
 
 <script type="text/babel">
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
-
+   
+    import FluentPromoAdd from './Extras/FluentPromoAdd.vue';
+    
     export default {
-        name: 'Home',
+        name: 'all_tables',
         components: {
             'list-all-tables' : ListAllTables,
-            'add-table-modal': AddTableModal
+            'add-table-modal': AddTableModal,
+           'fluentpromoad': FluentPromoAdd
         },
         data() {
             return {
