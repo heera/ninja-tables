@@ -123,10 +123,14 @@
                         </draggable>
                     </div>
                 </div>
-                <div class="help_section updated notice notice-success">
-                    <p>Need help to configure the columns and responsive breakdowns, Please check tutorial with video <a href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables" target="_blank">here</a></p>
+                <div class="proms">
+                    <div class="help_section updated notice notice-success">
+                        <p>Need help to configure the columns and responsive breakdowns, Please check tutorial with video <a href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables" target="_blank">here</a></p>
+                    </div>
+                    <div v-if="!is_fluent_installed" class="notice notice-success">
+                        <p>Have you checked out FluentForm yet? We have developed a powerful Drag & Drop WordPress Form Builder plugin with some amazing Premium features <a :href="fluent_url">Download from WordPress.org</a> </p>
+                    </div>
                 </div>
-                
             </div>
             <div class="section-column-3 ninja_sidebar">
                 <div class="ninja_widget">
@@ -330,7 +334,9 @@
                     breakpoints: ''
                 },
                 columns: this.config.columns,
-                tableSettings: this.config.settings
+                tableSettings: this.config.settings,
+                is_fluent_installed: window.ninja_table_admin.isInstalled,
+                fluent_url: window.ninja_table_admin.fluentform_url,
             }
         },
         computed: {

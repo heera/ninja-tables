@@ -69,7 +69,7 @@ class NinjaTableClass {
 	public function __construct() {
 
 		$this->plugin_name = 'ninja-tables';
-		$this->version = '1.6.0';
+		$this->version = '1.8.1';
 
 		$this->load_dependencies();
 		
@@ -120,6 +120,11 @@ class NinjaTableClass {
 		 * Include Libs
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/autoload.php';
+
+		/**
+		 * Extorior Page
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ProcessDemoPage.php';
 		
 		
 		/**
@@ -161,6 +166,7 @@ class NinjaTableClass {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new NinjaTablesAdmin( $this->get_plugin_name(), $this->get_version() );
+		$demoPage = new \ninjaTable\ProcessDemoPage();
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
         $this->loader->add_action('wp_ajax_ninja_tables_ajax_actions',
@@ -168,6 +174,8 @@ class NinjaTableClass {
             'ajax_routes'
         );
         $this->loader->add_action('init', $plugin_admin, 'add_tabales_to_editor');
+        
+        $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
 	}
 
 	/**

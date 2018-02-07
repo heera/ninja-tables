@@ -578,7 +578,8 @@ class NinjaTablesAdmin {
 		wp_send_json( array(
 			'columns'  => $tableColumns,
 			'settings' => $tableSettings,
-			'table'    => $table
+			'table'    => $table,
+            'preview_url' => site_url('?ninjatable_preview='.$tableID)
 		), 200 );
 	}
 

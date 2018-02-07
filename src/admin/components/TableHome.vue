@@ -4,6 +4,7 @@
             <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span class="section_title">{{ table.post_title }}</span><input type="text" :value="'[ninja_tables id='+tableId+']'">
             <span style="margin-right: 20px" class="pull-right">
                 <router-link class="btn" :to="{ name: 'help' }">Documentation</router-link>
+                <a target="_blank" class="button button-secondary pull-right" :href="preview_url">Preview</a>
             </span>
         </div>
         
@@ -58,7 +59,8 @@
                 config: null,
                 table: {},
                 user_tab: this.$route.query.user_tab,
-                editTableModalShow: false
+                editTableModalShow: false,
+                preview_url: '#'
             }
         },
         methods: {
@@ -77,6 +79,7 @@
                     .done(response => {
                         this.config = response;
                         this.table = response.table;
+                        this.preview_url = response.preview_url
                     })
                     .fail((error) => {
                         console.log(error);
