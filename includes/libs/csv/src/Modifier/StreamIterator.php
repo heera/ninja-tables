@@ -141,7 +141,7 @@ class StreamIterator implements Iterator
      */
     public function setFlags($flags)
     {
-        if (false === filter_var($flags, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+        if (false === filter_var($flags, FILTER_VALIDATE_INT, array('options' => array('min_range' => 0)))) {
             throw new InvalidArgumentException('The flags must be a positive integer');
         }
 

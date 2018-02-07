@@ -170,7 +170,7 @@ class BaseModel
 		 * @return array
 		 */
 		public function batch_insert($datas, $format = false) {
-			$insertIds = [];
+			$insertIds = array();
 			foreach ($datas as $data) {
 				$insertIds[] = $this->insert($data, $format);
 			}
@@ -186,7 +186,7 @@ class BaseModel
 			if(isset($this->statements['wheres']) && count($this->statements['wheres'])) {
 
 				$whereArray = array();
-				$bindings = [];
+				$bindings = array();
 				foreach ($this->statements['wheres'] as $where) {
 					$whereArray[$where['key']] = $where['value'];
 					$bindings[] = $this->getValuePlaceholder($where['value']);
@@ -219,7 +219,7 @@ class BaseModel
 			
 			if(isset($this->statements['wheres']) && count($this->statements['wheres'])) {
 				$whereArray = array();
-				$bindings   = [];
+				$bindings   = array();
 				foreach ( $this->statements['wheres'] as $where ) {
 					$whereArray[ $where['key'] ] = $where['value'];
 					$bindings[] = $this->getValuePlaceholder( $where['value'] );

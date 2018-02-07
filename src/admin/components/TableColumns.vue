@@ -222,8 +222,8 @@
                             </label>
                             <label>{{ $t('Sort Type') }}
                                 <select v-model="tableSettings.sorting_column_by">
-                                    <option value="asc">Ascending Way</option>
-                                    <option value="desc">Descending Way</option>
+                                    <option value="ASC">Ascending Way</option>
+                                    <option value="DESC">Descending Way</option>
                                 </select>
                             </label>
                         </div>

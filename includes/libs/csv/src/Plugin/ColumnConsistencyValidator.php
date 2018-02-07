@@ -47,7 +47,7 @@ class ColumnConsistencyValidator
      */
     public function setColumnsCount($value)
     {
-        if (false === filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => -1]])) {
+        if (false === filter_var($value, FILTER_VALIDATE_INT, array('options' => array('min_range' => -1)))) {
             throw new InvalidArgumentException('the column count must an integer greater or equals to -1');
         }
         $this->detect_columns_count = false;

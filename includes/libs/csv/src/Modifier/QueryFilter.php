@@ -31,14 +31,14 @@ trait QueryFilter
      *
      * @var callable[]
      */
-    protected $iterator_filters = [];
+    protected $iterator_filters = array();
 
     /**
      * Callables to sort the iterator
      *
      * @var callable[]
      */
-    protected $iterator_sort_by = [];
+    protected $iterator_sort_by = array();
 
     /**
      * iterator Offset
@@ -154,7 +154,7 @@ trait QueryFilter
     protected function getQueryIterator()
     {
         $normalizedCsv = function ($row) {
-            return is_array($row) && $row != [null];
+            return is_array($row) && $row != array(null);
         };
         array_unshift($this->iterator_filters, $normalizedCsv);
         $iterator = $this->getIterator();
@@ -245,7 +245,7 @@ trait QueryFilter
             return new CallbackFilterIterator($iterator, $callable);
         };
         $iterator = array_reduce($this->iterator_filters, $reducer, $iterator);
-        $this->iterator_filters = [];
+        $this->iterator_filters = array();
 
         return $iterator;
     }
@@ -274,7 +274,7 @@ trait QueryFilter
 
             return $res;
         });
-        $this->iterator_sort_by = [];
+        $this->iterator_sort_by =array();
 
         return $obj;
     }

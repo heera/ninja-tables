@@ -49,7 +49,7 @@ if( ! function_exists('getDefaultNinjaTableSettings')) {
             "library"         => 'footable',
             "css_lib"         => 'bootstrap3',
             "enable_ajax"     => false,
-            "css_classes"     => [],
+            "css_classes"     => array(),
             "enable_search"   => true,
             "column_sorting"  => true,
             "default_sorting" => 'new_first',
@@ -84,7 +84,7 @@ if( ! function_exists('ninja_tables_DbTable')) {
 if( ! function_exists('ninja_table_renameDuplicateValues') ) {
     function ninja_table_renameDuplicateValues($values)
     {
-        $result = [];
+        $result = array();
 
         $scale = array_count_values(array_unique($values));
 

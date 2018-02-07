@@ -42,7 +42,7 @@ class InvalidRowException extends InvalidArgumentException
      * @param array  $data    invalid  data
      * @param string $message exception message
      */
-    public function __construct($name, array $data = [], $message = '')
+    public function __construct($name, array $data = array(), $message = '')
     {
         parent::__construct($message);
         $this->name = $name;

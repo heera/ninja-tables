@@ -31,7 +31,7 @@ trait StreamFilter
      *
      * @var array
      */
-    protected $stream_filters = [];
+    protected $stream_filters =array();
 
     /**
      * Stream filtering mode to apply on all filters
@@ -71,7 +71,7 @@ trait StreamFilter
      */
     protected function initStreamFilter($path)
     {
-        $this->stream_filters = [];
+        $this->stream_filters =array();
         if (!is_string($path)) {
             $this->stream_uri = null;
 
@@ -147,12 +147,12 @@ trait StreamFilter
     public function setStreamFilterMode($mode)
     {
         $this->assertStreamable();
-        if (!in_array($mode, [STREAM_FILTER_ALL, STREAM_FILTER_READ, STREAM_FILTER_WRITE])) {
+        if (!in_array($mode, array(STREAM_FILTER_ALL, STREAM_FILTER_READ, STREAM_FILTER_WRITE))) {
             throw new OutOfBoundsException('the $mode should be a valid `STREAM_FILTER_*` constant');
         }
 
         $this->stream_filter_mode = $mode;
-        $this->stream_filters = [];
+        $this->stream_filters =array();
 
         return $this;
     }
@@ -256,7 +256,7 @@ trait StreamFilter
     public function clearStreamFilter()
     {
         $this->assertStreamable();
-        $this->stream_filters = [];
+        $this->stream_filters =array();
 
         return $this;
     }

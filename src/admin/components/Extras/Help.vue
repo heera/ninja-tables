@@ -44,7 +44,7 @@
                 <div class="ff_block block_1_3">
                     <div class="ff_block_box help_container">
                         <h3>Need More Help?</h3>
-                        <p>{{ $t('For custom development work, please email us at') }} <a href="mailto:plugins@wpmanageninja.com" target="_blank">plugins@wpmanageninja.com</a></p>
+                        <p>{{ $t('For custom development work, please email us at') }} <a href="mailto:support@wpmanageninja.com" target="_blank">support@wpmanageninja.com</a></p>
                     </div>
                 </div>
                 

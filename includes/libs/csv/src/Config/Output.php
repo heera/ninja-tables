@@ -57,7 +57,7 @@ trait Output
     public function setInputEncoding($str)
     {
         $str = str_replace('_', '-', $str);
-        $str = filter_var($str, FILTER_SANITIZE_STRING, ['flags' => FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH]);
+        $str = filter_var($str, FILTER_SANITIZE_STRING, array('flags' => FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH));
         if (empty($str)) {
             throw new InvalidArgumentException('you should use a valid charset');
         }
@@ -144,10 +144,10 @@ trait Output
     public function getInputBOM()
     {
         if (null === $this->input_bom) {
-            $bom = [
+            $bom = array(
                 AbstractCsv::BOM_UTF32_BE, AbstractCsv::BOM_UTF32_LE,
                 AbstractCsv::BOM_UTF16_BE, AbstractCsv::BOM_UTF16_LE, AbstractCsv::BOM_UTF8,
-            ];
+            );
             $csv = $this->getIterator();
             $csv->setFlags(SplFileObject::READ_CSV);
             $csv->rewind();

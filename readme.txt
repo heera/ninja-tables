@@ -3,9 +3,9 @@ Contributors: techjewel, adreastrian
 Donate link: https://paypal.me/zalam
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
 Requires at least: 4.0
-Requires PHP: 5.3 or greater
+Requires PHP: 5.4 or greater
 Tested up to: 4.9.1
-Stable tag: 1.6.0
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -112,6 +112,13 @@ Yes, You can use any shortcodes in table cells. This featured is available since
 9. Black Color Table View in Frontend
 
 == Changelog ==
+= 1.8.0 =
+* Added WordPress Native HTML editor to the table.
+* Added Number Type Table Column.
+* Sorting table data by column.
+* Number type Sorting added.
+* Added Live Preview
+
 = 1.5.0 =
 * Added tinymce button to insert shortcode
 

@@ -203,7 +203,7 @@ trait ModelTrait {
 		if( isset($this->statements['wheres']) ) {
 			$wheres = $this->handleWheres($this->statements['wheres']);
 		}
-		$typeArray = [];
+		$typeArray = array();
 		if($type == 'select') {
 			$typeArray = array(
 				'SELECT'.(isset($this->statements['distinct']) ? ' DISTINCT' : ''),
@@ -320,20 +320,20 @@ trait ModelTrait {
 	public function handleWheres($wheres, $joinWhere = true) {
 		$criteria = '';
 		$bindings = array();
-		$searchWheres = [];
+		$searchWheres = array();
 		foreach ($wheres as $statement) {
 			// find wheres in search
 			
 			if($statement['is_search']) {
-				$searchWheres[] = [
+				$searchWheres[] = array(
 					'joiner' => $statement['joiner'],
 					'key' => $statement['key'],
 					'value' => $statement['value'],
 					'operator' => $statement['operator'],
 					'is_search' => false
-				];
+				);
 			} elseif ($statement['operator'] == 'IN') {
-                $values = is_array($statement['value']) ? $statement['value'] : [$statement['value']];
+                $values = is_array($statement['value']) ? $statement['value'] : array($statement['value']);
 
                 $criteria .= $statement['joiner'].' '.$statement['key'].' '.$statement['operator'].' ('
                              .implode(', ', array_fill(0, count($values), '%s')).')';
@@ -417,8 +417,8 @@ trait ModelTrait {
 	 */
 	public function reset() {
 		$this->outputType = 'OBJECT';
-		$this->statements = [];
-		$this->bindings = [];
+		$this->statements = array();
+		$this->bindings = array();
 	}
 
 	/**

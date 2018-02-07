@@ -28,14 +28,14 @@ trait RowFilter
      *
      * @var callable[]
      */
-    protected $validators = [];
+    protected $validators = array();
 
     /**
      * Callables to format the row before insertion
      *
      * @var callable[]
      */
-    protected $formatters = [];
+    protected $formatters = array();
 
     /**
      * add a formatter to the collection
@@ -85,7 +85,7 @@ trait RowFilter
      */
     public function clearFormatters()
     {
-        $this->formatters = [];
+        $this->formatters = array();
 
         return $this;
     }
@@ -148,7 +148,7 @@ trait RowFilter
      */
     public function clearValidators()
     {
-        $this->validators = [];
+        $this->validators = array();
 
         return $this;
     }

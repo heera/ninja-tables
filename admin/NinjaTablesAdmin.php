@@ -380,7 +380,7 @@ class NinjaTablesAdmin {
 
 		$tables = get_posts( $arguments );
 
-		$formattedTables = [];
+		$formattedTables = array();
 		foreach ( $tables as $table ) {
 			$temp              = array(
 				'ID'                  => $table->ID,
@@ -537,7 +537,7 @@ class NinjaTablesAdmin {
 	private function insertDataToTable( $tableId, $values, $header ) {
 		$header = $this->formatHeader( $header );
 
-		$data = [];
+		$data = array();
 		$time = current_time( 'mysql' );
 
 		$headerCount = count( $header );
@@ -597,7 +597,7 @@ class NinjaTablesAdmin {
 
 
 		$tablePreference          = $_REQUEST['table_settings'];
-		$formattedTablePreference = [];
+		$formattedTablePreference = array();
 		if ( $tablePreference && is_array( $tablePreference ) ) {
 			foreach ( $tablePreference as $key => $tab_pref ) {
 
@@ -680,7 +680,7 @@ class NinjaTablesAdmin {
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId );
 
 		if ( $search ) {
-			$query->search( $search, [ 'value' ] );
+			$query->search( $search, array( 'value' ) );
 		}
 
 		$data = $query->take( $perPage )
@@ -690,7 +690,7 @@ class NinjaTablesAdmin {
 
 		$total = ninja_tables_DbTable()->where( 'table_id', $tableId )->count();
 
-		$response = [];
+		$response = array();
 
 		foreach ( $data as $item ) {
 			$response[] = array(
@@ -753,7 +753,7 @@ class NinjaTablesAdmin {
 
 		$id = $_REQUEST['id'];
 
-		$ids = is_array( $id ) ? $id : [ $id ];
+		$ids = is_array( $id ) ? $id : array( $id );
 
 		$ids = array_map( function ( $item ) {
 			return intval( $item );
@@ -786,7 +786,7 @@ class NinjaTablesAdmin {
 			), 423 );
 		}
 
-		$header = [];
+		$header = array();
 
 		foreach ( $csvHeader as $item ) {
 			foreach ( $config as $column ) {
@@ -804,7 +804,7 @@ class NinjaTablesAdmin {
 			), 423 );
 		}
 
-		$data = [];
+		$data = array();
 		$time = current_time( 'mysql' );
 
 		foreach ( $reader as $item ) {

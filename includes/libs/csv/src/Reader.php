@@ -202,10 +202,10 @@ class Reader extends AbstractCsv
             return isset($row[$offset_index]);
         };
         $select_pairs = function ($row) use ($offset_index, $value_index) {
-            return [
+            return array(
                 $row[$offset_index],
                 isset($row[$value_index]) ? $row[$value_index] : null,
-            ];
+            );
         };
 
         $this->addFilter($filter_pairs);
@@ -286,7 +286,7 @@ class Reader extends AbstractCsv
      */
     protected function validateKeys(array $keys)
     {
-        if (empty($keys) || $keys !== array_unique(array_filter($keys, [$this, 'isValidKey']))) {
+        if (empty($keys) || $keys !== array_unique(array_filter($keys, array($this, 'isValidKey')))) {
             throw new InvalidArgumentException('Use a flat array with unique string values');
         }
 
