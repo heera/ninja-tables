@@ -44,6 +44,7 @@
         methods: {
             initEditor() {
                 if(this.hasWpEditor) {
+                    wp.editor.remove(this.editor_id);
                     const that = this;
                     wp.editor.initialize(this.editor_id, {
                         mediaButtons: false,
@@ -74,6 +75,9 @@
             jQuery(document).ready( () => {
                 this.initEditor();
             });
+        },
+        beforeDestroy() {
+           
         }
     }
 </script> 

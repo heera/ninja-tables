@@ -177,7 +177,6 @@ class NinjaFooTable {
 		$acceptedTypes = array(
 			'text',
 			'number',
-			'html',
 			'date'
 		);
 

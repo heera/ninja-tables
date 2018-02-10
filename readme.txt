@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, table
 Requires at least: 4.0
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,9 @@ The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, 
 == Description ==
 
 [Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
+
+== Try my another awesome contact form plugin for free ==
+[FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
@@ -112,6 +115,11 @@ Yes, You can use any shortcodes in table cells. This featured is available since
 9. Black Color Table View in Frontend
 
 == Changelog ==
+
+= 1.8.2 =
+* Fix html elements loading
+* Improve html element vuejs component
+
 = 1.8.0 =
 * Added WordPress Native HTML editor to the table.
 * Added Number Type Table Column.

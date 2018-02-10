@@ -12,7 +12,7 @@
                         <img class="block_icon" :src="imageUrl('support.png')" />
                         <h3>Need And Expert Support?</h3>
                         <p>Our EXPERTS would like to assist you for your query and any customization.</p>
-                        <p><a target="_blank" class="button button-primary" href="https://wpfluentform.com/contact">Contact Support</a></p>
+                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/support/plugin/ninja-tables">Contact Support</a></p>
                     </div>
                 </div>
                 <div class="ff_block block_1_3">

@@ -67,18 +67,12 @@ class NinjaTableClass {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-
 		$this->plugin_name = 'ninja-tables';
-		$this->version = '1.8.1';
-
+		$this->version = '1.8.2';
 		$this->load_dependencies();
-		
 		$this->set_locale();
-		
 		$this->define_admin_hooks();
-		
 		$this->define_public_hooks();
-		
 	}
 
 	/**

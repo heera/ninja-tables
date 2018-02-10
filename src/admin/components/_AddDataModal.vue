@@ -16,7 +16,7 @@
                                 <textarea :id="column.key" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>
                             <div v-else-if="column.data_type == 'html'">
-                                <wp_editor v-model="newColumn[column.key]"></wp_editor>
+                                <wp_editor :editor_id="column.key" v-model="newColumn[column.key]"></wp_editor>
                             </div>
                             <div v-else-if="column.data_type == 'number'">
                                 <input type="number" :id="column.key" class="form-control" v-model="newColumn[column.key]">
