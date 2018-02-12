@@ -116,6 +116,9 @@ Yes, You can use any shortcodes in table cells. This featured is available since
 
 == Changelog ==
 
+= 1.8.3 =
+* Fix table sorting by column values
+
 = 1.8.2 =
 * Fix html elements loading
 * Improve html element vuejs component
