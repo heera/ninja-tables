@@ -41,12 +41,10 @@ class NinjaFooTable {
 			return;
 		}
 		$formatted_columns = array();
-
 		$sortingType = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
 
 		$globalSorting = ( isset( $settings['column_sorting'] ) )
 			? (bool) $settings['column_sorting'] : false;
-
 		foreach ( $columns as $column ) {
 			$columnType       = self::getColumnType( $column );
 			$formatted_column = array(
@@ -57,8 +55,8 @@ class NinjaFooTable {
 				'sortable'    => $globalSorting,
 				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true
 			);
-
-			if ( $sortingType == 'by_column' && $columnType == $settings['sorting_column'] ) {
+			
+			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
 				$formatted_column['sorted']    = true;
 				$formatted_column['direction'] = $settings['sorting_column_by'];
 			}
