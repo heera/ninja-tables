@@ -72,12 +72,10 @@
             }
         },
         mounted() {
-            jQuery(document).ready( () => {
-                this.initEditor();
-            });
+            this.initEditor();
         },
         beforeDestroy() {
-           
+          
         }
     }
 </script> 

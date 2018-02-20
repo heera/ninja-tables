@@ -1,3 +1,8 @@
+import { includes } from 'lodash';
+if( typeof window._.contains === 'undefined' ) {
+    window._.contains = includes;
+} // This is a hack to prevent the jetpack notification error.
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
