@@ -64,7 +64,7 @@ class NinjaFooTable {
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
 		}
-
+		
 		if ( $settings['show_all'] ) {
 			$pagingSettings = false;
 		} else {
@@ -83,7 +83,7 @@ class NinjaFooTable {
 		$table_classes = self::getTableCssClass( $settings );
 
 		$tableHasColor = '';
-
+		
 		if ( isset( $settings['table_color'] ) && $settings['table_color']
 		     && $settings['table_color'] != 'ninja_no_color_table'
 		) {
@@ -91,6 +91,19 @@ class NinjaFooTable {
 			$table_classes .= ' inverted';
 		}
 
+		if(isset($settings['table_color']) && $settings['table_color'] == 'ninja_table_custom_color') {
+		    $table_color_primary = isset($settings['table_color_primary']) ? $settings['table_color_primary'] : '';
+		    $table_color_secondary = isset($settings['table_color_secondary']) ? $settings['table_color_secondary'] : '';
+		    if($table_color_primary && $table_color_secondary) {
+			    $css = '#footable_parent_'.$table_id.'.colored_table table.foo-table.inverted.table {
+                        background: '.$table_color_primary.';
+                        color: '.$table_color_secondary.';
+                        border: none;
+                    }';
+			    wp_add_inline_style('footable', $css);
+            }
+        }
+		
 		$table_vars = array(
 			'table_id' => $table_id,
 			'columns'  => $formatted_columns,

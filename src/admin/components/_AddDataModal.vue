@@ -48,7 +48,8 @@
 </template>
 
 <script type="text/babel">
-    import { each, escape as ninjaEscape } from 'lodash';
+   import each from 'lodash/each';
+   
     import wp_editor from '../../common/_wp_editor';
     export default {
         name: 'add_data',

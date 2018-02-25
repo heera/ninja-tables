@@ -47,7 +47,7 @@
                     wp.editor.remove(this.editor_id);
                     const that = this;
                     wp.editor.initialize(this.editor_id, {
-                        mediaButtons: false,
+                        mediaButtons: true,
                         mode : "none",
                         tinymce: {
                             toolbar1: 'bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,forecolor,codeformat,undo,redo',

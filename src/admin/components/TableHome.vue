@@ -42,7 +42,9 @@
 
 <script type="text/babel">
     import EditTable from './_AddTable.vue';
-    import { each, size } from 'lodash'
+    import each from 'lodash/each';
+    import size from 'lodash/size';
+    
     import { tableHomeTabComponents } from '../data/data';
     
     export default {

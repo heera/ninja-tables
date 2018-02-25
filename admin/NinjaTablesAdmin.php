@@ -155,10 +155,12 @@ class NinjaTablesAdmin {
 			wp_enqueue_media();
 		}
 
+		wp_enqueue_style( 'wp-color-picker' );
+		
 		wp_enqueue_script(
 			$this->plugin_name,
 			plugin_dir_url( __DIR__ ) . "assets/js/ninja-tables-admin.js",
-			array( 'jquery' ),
+			array( 'jquery', 'wp-color-picker' ),
 			$this->version,
 			false
 		);

@@ -1,8 +1,3 @@
-import { includes } from 'lodash';
-if( typeof window._.contains === 'undefined' ) {
-    window._.contains = includes;
-} // This is a hack to prevent the jetpack notification error.
-
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
@@ -23,13 +18,15 @@ import 'element-ui/lib/theme-chalk/container.css'
 import 'element-ui/lib/theme-chalk/menu.css'
 import 'element-ui/lib/theme-chalk/menu-item.css'
 import 'element-ui/lib/theme-chalk/header.css'
+import 'element-ui/lib/theme-chalk/color-picker.css'
 
 import {
     Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox, Icon,Tooltip,
     Pagination, Collapse, CollapseItem, Container, Aside, Main,
     Menu,
     MenuItem,
-    Header
+    Header,
+    ColorPicker
 
 } from 'element-ui';
 
@@ -37,8 +34,8 @@ import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
-
 Vue.use(Table);
+Vue.use(ColorPicker);
 Vue.use(Pagination);
 Vue.use(TableColumn);
 Vue.use(Popover);
@@ -61,32 +58,6 @@ Vue.prototype.$alert = MessageBox.alert;
 Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 
-let NinjaTableSettings = (function () {
-    const HomeComponents = [];
-    const tableLibs = {  };
-    
-    class NinjaTableSettingsClass {
-        constructor() {
-            
-        }
-        addHomeComponents(component) {
-            HomeComponents.push(component);
-        }
-        
-        getHomeComponent() {
-            return HomeComponents;
-        }
-        
-        addTableLib(lib) {
-            tableLibs[lib.key] =  lib.settings;
-        }
-        getTableLibs() {
-            return tableLibs;
-        }
-    }
-    window.ninjaFormSettings = new NinjaTableSettingsClass();
-})();
-
 Vue.mixin({
     methods: {
         $t(str) {
@@ -95,18 +66,6 @@ Vue.mixin({
     },
     data(){
         return {
-            public_components: {
-                home: {
-                    temp1: {
-                        name: 'temp_1',
-                        template: '<div><h1>First</h1></div>'
-                    },
-                    temp2: {
-                        name: 'temp2',
-                        template: '<div><h1>second</h1></div>'
-                    }
-                }
-            }
         }
     },
     filters: {

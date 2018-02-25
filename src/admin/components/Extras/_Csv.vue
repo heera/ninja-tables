@@ -43,6 +43,7 @@
 </template>
 
 <script>
+    import each from 'lodash/each'
     export default {
         name: 'CsvUpload',
         props: ['config', 'tableId'],
@@ -57,10 +58,9 @@
             },
             sampleData() {
                 let row = {};
-                _.each(this.columns, item => {
+                each(this.columns, item => {
                     row[item.key] = 'column value';
-                })
-
+                });
                 return Array(3).fill(row);
             }
         },

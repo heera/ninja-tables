@@ -1,4 +1,4 @@
-import { assign } from 'lodash';
+import  assign  from 'lodash/assign';
 const tableLibs = function() {
     let tableLibs = {
         footable: {
@@ -113,16 +113,15 @@ const tableLibs = function() {
                 purple: 'Purple',
                 pink: 'Pink',
                 grey: 'Grey',
-                black: 'Black'
+                black: 'Black',
+                ninja_table_custom_color: 'Custom'
             }
         }
     };
-    let userTableLibs = window.ninjaFormSettings.getTableLibs();
-    return assign(userTableLibs, tableLibs);
+    return tableLibs;
 };
 
-const tableHomeTabComponents = {};
 
 
 
-export { tableLibs, tableHomeTabComponents };
+export { tableLibs };
