@@ -357,8 +357,9 @@
     import size from 'lodash/size'
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
-
-    import {tableLibs} from '../data/data'
+    import snakeCase from 'lodash/snakeCase'
+    
+    import { tableLibs } from '../data/data'
 
     export default {
         name: 'TableConfiguration',

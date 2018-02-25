@@ -15,7 +15,13 @@
                     </div>
                 </form>
                 <div class="ninja_suggest">
-                    <p>Please note that, Your CSV data need to be as bellow to import. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here</a></p>
+                    <p>
+                        Please note that, Your CSV data need to be as bellow to import. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here.</a>
+                    </p>
+                    <br>
+                    <p>
+                        And also make sure the content is in UTF-8 format for the best result.
+                    </p>
                 </div>
 
                 <h3>
