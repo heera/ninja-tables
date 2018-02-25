@@ -21,6 +21,7 @@ import 'element-ui/lib/theme-chalk/header.css'
 import 'element-ui/lib/theme-chalk/color-picker.css'
 
 import {
+    Button,
     Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox, Icon,Tooltip,
     Pagination, Collapse, CollapseItem, Container, Aside, Main,
     Menu,
@@ -34,6 +35,7 @@ import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
+Vue.use(Button);
 Vue.use(Table);
 Vue.use(ColorPicker);
 Vue.use(Pagination);

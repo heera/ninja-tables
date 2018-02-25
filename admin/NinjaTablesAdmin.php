@@ -216,7 +216,7 @@ class NinjaTablesAdmin {
 			'upload-data'              => 'uploadData',
 			'duplicate_table'          => 'duplicateTable',
 			'export-data'              => 'exportData',
-			'dismiss_fluent_suggest'   => 'dismissPluginSuggest'
+			'dismiss_fluent_suggest'   => 'dismissPluginSuggest' 
 		);
 
 		$requested_route = $_REQUEST['target_action'];
@@ -241,9 +241,14 @@ class NinjaTablesAdmin {
 			'orderby'        => 'date',
 			'order'          => 'DESC',
 			'post_type'      => $this->cpt_name,
-			'post_status'    => 'any'
+			'post_status'    => 'any',
+            
 		);
 
+		if(isset($_REQUEST['search']) && $_REQUEST['search']) {
+			$args['s'] = sanitize_text_field($_REQUEST['search']);
+        }
+        
 		$tables = get_posts( $args );
 
 		$total    = wp_count_posts( 'ninja-table' );
@@ -994,5 +999,5 @@ class NinjaTablesAdmin {
 	public function dismissPluginSuggest()
     {
         update_option('_ninja_tables_plugin_suggest_dismiss', time());
-    }
+	}
 }
