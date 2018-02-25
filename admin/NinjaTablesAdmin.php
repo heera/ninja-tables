@@ -775,9 +775,8 @@ class NinjaTablesAdmin {
 		$tableId = intval( $_REQUEST['table_id'] );
 		$tmpName = $_FILES['file']['tmp_name'];
 
-		$reader
-			       = \League\Csv\Reader::createFromFileObject( new SplFileObject( $tmpName ) )
-			                           ->fetchAll();
+		$reader = \League\Csv\Reader::createFromFileObject(new SplFileObject($tmpName))->fetchAll();
+
 		$csvHeader = array_shift( $reader );
 		$csvHeader = array_map( 'esc_attr', $csvHeader );
 
@@ -813,10 +812,21 @@ class NinjaTablesAdmin {
 
 		foreach ( $reader as $item ) {
 			$itemTemp = array_combine( $header, $item );
+
+			$itemTempJson = json_encode($itemTemp);
+
+			if ($itemTempJson === false) {
+				foreach ($itemTemp as &$value) {
+					$value = mb_convert_encoding($value, "UTF-8");
+				}
+
+				$itemTempJson = json_encode($itemTemp);
+			}
+
 			array_push( $data, array(
 				'table_id'   => $tableId,
 				'attribute'  => 'value',
-				'value'      => json_encode( $itemTemp ),
+				'value'      => $itemTempJson,
 				'created_at' => $time,
 				'updated_at' => $time
 			) );

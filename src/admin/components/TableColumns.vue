@@ -354,6 +354,7 @@
     import size from 'lodash/size'
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
+    import snakeCase from 'lodash/snakeCase'
     
     import { tableLibs } from '../data/data'
 
