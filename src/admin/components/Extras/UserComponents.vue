@@ -7,7 +7,6 @@
 </template>
 
 <script type="text/babel">
-    import { tableHomeTabComponents } from '../../data/data';
     import each from 'lodash/each'
     export default {
         name: 'userComponents',
@@ -32,10 +31,6 @@
            
         },
         mounted() {
-            each(tableHomeTabComponents, (component, key) => {
-                this.$options.components[key] = component;
-                this.validComponents[key] = true;
-            });
             this.isReady = true;
         }
     }

@@ -301,7 +301,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div v-if="size(colors)" class="ninja_widget">
                     <h4 class="title">{{ $t('Table Color Schema') }}</h4>
                     <div class="widget_body">
@@ -325,7 +325,6 @@
                                 <p>* Use opposite colors for best result</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
 

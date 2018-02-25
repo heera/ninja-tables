@@ -1,4 +1,3 @@
-import  assign  from 'lodash/assign';
 const tableLibs = function() {
     let tableLibs = {
         footable: {
@@ -120,8 +119,5 @@ const tableLibs = function() {
     };
     return tableLibs;
 };
-
-
-
 
 export { tableLibs };

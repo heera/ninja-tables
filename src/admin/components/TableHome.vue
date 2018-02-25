@@ -45,8 +45,6 @@
     import each from 'lodash/each';
     import size from 'lodash/size';
     
-    import { tableHomeTabComponents } from '../data/data';
-    
     export default {
         name: 'table_home',
         components: {
@@ -103,9 +101,6 @@
         },
         mounted() {
             this.getSettings();
-            each(tableHomeTabComponents, (component, key) => {
-                this.customTabs[key] = component.title;
-            });
         }
     }
 </script> 
