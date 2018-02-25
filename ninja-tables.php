@@ -26,20 +26,21 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('WPINC')) {
+    die;
 }
 
-define( 'NINJA_TABLES_DIR_URL', plugin_dir_url( __FILE__ ) );
-define( 'NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL . 'public/' );
+define('NINJA_TABLES_DIR_URL', plugin_dir_url(__FILE__));
+define('NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL.'public/');
 
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/NinjaTablesActivator.php
  */
-function activate_ninja_tables() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/NinjaTablesActivator.php';
-	NinjaTablesActivator::activate();
+function activate_ninja_tables()
+{
+    require_once plugin_dir_path(__FILE__).'includes/NinjaTablesActivator.php';
+    NinjaTablesActivator::activate();
 }
 
 /**
@@ -51,13 +52,13 @@ function activate_ninja_tables() {
 //	NinjaTablesDeActivator::deactivate();
 //}
 
-register_activation_hook( __FILE__, 'activate_ninja_tables' );
+register_activation_hook(__FILE__, 'activate_ninja_tables');
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/NinjaTableClass.php';
+require plugin_dir_path(__FILE__).'includes/NinjaTableClass.php';
 
 /**
  * Begins execution of the plugin.
@@ -68,9 +69,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/NinjaTableClass.php';
  *
  * @since    1.0.0
  */
-function run_ninja_tables() {
-	$plugin = new NinjaTableClass();
-	$plugin->run();
+function run_ninja_tables()
+{
+    $plugin = new NinjaTableClass();
+    $plugin->run();
 }
 
 // kick off
