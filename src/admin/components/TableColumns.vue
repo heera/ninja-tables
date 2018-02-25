@@ -196,7 +196,8 @@
                         <div class="form_group">
 
                             <label for="show_title">
-                                <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/>                                   {{ $t('Show Table Title') }}
+                                <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/> {{
+                                $t('Show Table Title') }}
                                 <el-tooltip placement="top-end"
                                             content="Enable this if you want to show table title in frontend">
                                     <<i class="el-icon-information"></i>
@@ -301,10 +302,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div v-if="size(colors)" class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Color Schema') }}</h4>
+                    <h4 class="title">{{ $t('Table Color Schema') }} <span v-if="!has_pro">( Pro Feature )</span></h4>
                     <div class="widget_body">
+
                         <div class="form_group">
                             <label v-for="(colorName, colorKey) in colors" :for="colorKey">
                                 <input v-model="tableSettings.table_color" type="radio" :value="colorKey"
@@ -312,13 +314,14 @@
                             </label>
                         </div>
 
-                        <div v-show="tableSettings.table_color == 'ninja_table_custom_color'" class="form_group">
+                        <div v-show="tableSettings.table_color == 'ninja_table_custom_color' && has_pro"
+                             class="form_group">
                             <br/>
                             <h4 class="title">Select Table Colors</h4>
                             <div class="form_group">
                                 <label>Primary color (Background Color)</label>
                                 <el-color-picker v-model="tableSettings.table_color_primary"></el-color-picker>
-                            </div> 
+                            </div>
                             <div class="form_group">
                                 <label>Secondary color (Text Color)</label>
                                 <el-color-picker v-model="tableSettings.table_color_secondary"></el-color-picker>
@@ -354,8 +357,8 @@
     import size from 'lodash/size'
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
-    
-    import { tableLibs } from '../data/data'
+
+    import {tableLibs} from '../data/data'
 
     export default {
         name: 'TableConfiguration',
@@ -403,6 +406,7 @@
                 tableSettings: this.config.settings,
                 is_fluent_installed: window.ninja_table_admin.isInstalled,
                 fluent_url: window.ninja_table_admin.fluentform_url,
+                has_pro: window.ninja_table_admin.hasPro
             }
         },
         computed: {
@@ -422,6 +426,15 @@
         watch: {
             'new_column.name': function () {
                 this.new_column.key = snakeCase(this.new_column.name)
+            },
+            'tableSettings.table_color': function () {
+                if (this.has_pro) {
+                    return;
+                }
+                if (this.tableSettings.table_color != 'ninja_no_color_table') {
+                    this.showProAd('Use Unlimited Color in Your Tables');
+                    this.tableSettings.table_color = 'ninja_no_color_table';
+                }
             }
         },
         methods: {
@@ -513,11 +526,14 @@
                     this.storeSettings();
                 }
             },
+            showProAd(title) {
+                alert(title);
+            },
             size,
             get
         },
         mounted() {
-            jQuery('.ninjatable-color-field').wpColorPicker();
+            
         }
     }
 </script>

@@ -185,7 +185,8 @@ class NinjaTablesAdmin {
 			'fluentform_url' => $fluentUrl,
 			'fluent_wp_url'  => 'https://wordpress.org/plugins/fluentform/',
             'dismissed' => $dismissed,
-            'isInstalled' => $isInstalled
+            'isInstalled' => $isInstalled,
+            'hasPro' => defined('NINJATABLESPRO')
 		) );
 	}
 
