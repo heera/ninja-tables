@@ -55,8 +55,15 @@
     const pagination = require('../../common/pagination.vue')
     export default {
         name: 'Home',
+        props: ['searchAction', 'searchString'],
         components: {
             ninja_pagination: pagination  
+        },
+        watch: {
+            searchAction() {
+                this.paginate.current_page = 1;
+                this.fetchTables();
+            }
         },
         data() {
             return {
