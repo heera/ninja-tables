@@ -185,7 +185,8 @@ class NinjaTablesAdmin {
 			'fluentform_url' => $fluentUrl,
 			'fluent_wp_url'  => 'https://wordpress.org/plugins/fluentform/',
             'dismissed' => $dismissed,
-            'isInstalled' => $isInstalled
+			'isInstalled' => $isInstalled,
+			'hasPro' => defined('NINJATABLESPRO')
 		) );
 	}
 
@@ -215,7 +216,7 @@ class NinjaTablesAdmin {
 			'upload-data'              => 'uploadData',
 			'duplicate_table'          => 'duplicateTable',
 			'export-data'              => 'exportData',
-			'dismiss_fluent_suggest'   => 'dismissPluginSuggest'
+			'dismiss_fluent_suggest'   => 'dismissPluginSuggest' 
 		);
 
 		$requested_route = $_REQUEST['target_action'];
@@ -993,5 +994,5 @@ class NinjaTablesAdmin {
 	public function dismissPluginSuggest()
     {
         update_option('_ninja_tables_plugin_suggest_dismiss', time());
-    }
+	}
 }
