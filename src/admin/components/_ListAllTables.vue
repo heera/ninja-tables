@@ -1,55 +1,57 @@
 <template>
     <div>
+        <el-table 
+            v-loading.body="pageLoading"
+            :data="items"
+            border
+            style="100%">
+
+            <el-table-column :label="$t('Title')">
+                <template slot-scope="scope">
+                    <strong>{{ scope.row.post_title }}<span v-show="scope.row.post_status != 'publish'">({{ scope.row.post_status }})</span></strong>
+                </template>
+            </el-table-column>
+
+            <el-table-column :label="$t('ShortCode')">
+                <template slot-scope="scope">
+                    <el-tooltip effect="dark"
+                                content="Click to copy shortcode"
+                                title="Click to copy shortcode"
+                                placement="top">
+                        <code class="copy"
+                                :data-clipboard-text='`[ninja_tables id="${scope.row.ID}"]`'>
+                            <i class="el-icon-document"></i> [ninja_tables id="{{ scope.row.ID }}"]
+                        </code>
+                    </el-tooltip>
+                </template>
+            </el-table-column>
+
+            <el-table-column :label="$t('Actions')" width="170">
+                <template slot-scope="scope">
+                    <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                        <el-button size="mini" type="primary">{{ $t( 'Edit' ) }}</el-button>
+                    </router-link>
+                    <el-button @click.prevent="confirmDeleteTable(scope.row.ID)" size="mini" type="danger">{{ $t('Delete') }}</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
         
-        <table class="wp-list-table widefat fixed striped wpuf-contact-form">
-            <thead>
-                <tr>
-                    <td id="cb" class="manage-column column-cb check-column">
-                        <input type="checkbox" v-model="selectAll">
-                    </td>
-                    <th class="col-table-name">{{ $t('Title') }}</th>
-                    <th class="col-table-name">{{ $t('Short Code') }}</th>
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <td id="cb" class="manage-column column-cb check-column">
-                        <input type="checkbox" v-model="selectAll">
-                    </td>
-                    <th class="col-table-name">{{ $t('Title') }}</th>
-                    <th class="col-table-name">{{ $t('ShortCode') }}</th>
-                </tr>
-            </tfoot>
-            <tbody>
-                <tr v-if="loading">
-                    <td v-bind:colspan="3">{{ $t('Loading...') }}</td>
-                </tr>
-                <tr v-if="!items.length && !loading">
-                    <td v-bind:colspan="3">{{ $t('No entries found!') }}</td>
-                </tr>
-                <tr v-for="(item, index) in items">
-                    <th scope="row" class="check-column">
-                        <input type="checkbox" name="post[]" v-model="checkedItems" :value="item.ID">
-                    </th>
-                    <th class="title column-title has-row-actions column-primary page-title">
-                        <strong>{{ item.post_title }}<span v-show="item.post_status != 'publish'">({{ item.post_status }})</span></strong>
-                        <div class="row-actions">
-                            <span class="edit"><router-link :to="{ name: 'data_items', params: { table_id: item.ID } }">{{ $t( 'Edit' ) }}</router-link> | </span>
-                            <span class="trash"><a href="#" @click.prevent="confirmDeleteTable(item.ID)">{{ $t('Delete') }}</a></span>
-                        </div>
-                    </th>
-                    <td><code>[ninja_tables id="{{ item.ID }}"]</code></td>
-                </tr>
-            </tbody>
-        </table>
-        
-        <div class="tablenav bottom">
-            <ninja_pagination @change_page="goToPage" :paginate="paginate"></ninja_pagination>
+        <div class="pull-right">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="goToPage"
+                    :current-page.sync="paginate.current_page"
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-size="paginate.per_page"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="paginate.total">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script type="text/babel">
+    import Clipboard from 'clipboard';
     const pagination = require('../../common/pagination.vue')
     export default {
         name: 'Home',
@@ -99,6 +101,11 @@
                 this.paginate.current_page = value;
                 this.fetchTables();
             },
+
+            handleSizeChange(val) {
+                this.paginate.per_page = val;
+                this.fetchTables();
+            },
             
             confirmDeleteTable(tableId) {
 
@@ -142,6 +149,14 @@
         },
         mounted() {
             this.fetchTables();
+
+            var clipboard = new Clipboard('.copy');
+            clipboard.on('success', (e) => {
+                this.$message({
+                    message: 'Copied to Clipboard!',
+                    type: 'success'
+                });
+            });
         }
     }
 </script>

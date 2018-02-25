@@ -10,6 +10,7 @@
 	"dependencies": {
 		"babel-plugin-transform-object-rest-spread": "^6.26.0",
 		"babel-preset-env": "^1.6.0",
+		"clipboard": "^1.7.1",
 		"copy-to-clipboard": "^3.0.6",
 		"element-ui": "^2.2.0",
 		"lodash": "^4.17.4",
