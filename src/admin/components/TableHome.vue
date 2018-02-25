@@ -1,10 +1,27 @@
 <template>
     <div> 
         <div class="settings_header">
-            <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span class="section_title">{{ table.post_title }}</span><input type="text" :value="'[ninja_tables id='+tableId+']'">
+            <div style="display: inline-block; margin-top: 8px;">
+                <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span class="section_title">{{ table.post_title }}</span>
+                <el-tooltip effect="dark"
+                            content="Click to copy shortcode"
+                            title="Click to copy shortcode"
+                            placement="top">
+                    <code class="copy"
+                            :data-clipboard-text='`[ninja_tables id="${tableId}"]`'>
+                        <i class="el-icon-document"></i> [ninja_tables id="{{ tableId }}"]
+                    </code>
+                </el-tooltip>
+            </div>
+
             <span style="margin-right: 20px" class="pull-right">
                 <router-link class="btn" :to="{ name: 'help' }">Documentation</router-link>
-                <a target="_blank" class="button button-secondary pull-right" :href="preview_url">Preview</a>
+                <a :href="preview_url" target="_blank">
+                    <el-button size="mini">{{ $t('Preview') }}</el-button>
+                </a>
+                <a href="#" target="_blank">
+                    <el-button type="danger" size="mini">{{ $t('Buy Pro') }}</el-button>
+                </a>
             </span>
         </div>
         
@@ -41,6 +58,7 @@
 </template>
 
 <script type="text/babel">
+    import Clipboard from 'clipboard';
     import EditTable from './_AddTable.vue';
     import each from 'lodash/each';
     import size from 'lodash/size';
@@ -101,6 +119,14 @@
         },
         mounted() {
             this.getSettings();
+
+            var clipboard = new Clipboard('.copy');
+            clipboard.on('success', (e) => {
+                this.$message({
+                    message: 'Copied to Clipboard!',
+                    type: 'success'
+                });
+            });
         }
     }
 </script> 
