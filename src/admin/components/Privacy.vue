@@ -22,16 +22,17 @@
                     </el-tooltip>
                 </label>
 
-                <select name="capability" id="capability" v-model="capability" @change="store">
+                <select name="capability" id="capability" v-model="capability">
                     <option v-for="(role, capabilityOption) in roles" :key="capabilityOption" :value="capabilityOption">
                         {{ role }}
                     </option>
                 </select>
+                <button @click="store" class="btn btn-primary btn-sm">Update</button>
             </template>
             
             <template v-else>
                 Activate Ninja Tables Pro Add-on plugin to unlock this feature
-                <p><a target="_blank" href="#">Buy Ninja Tables Pro Add-On</a></p>
+                <p><a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade">Buy Ninja Tables Pro Add-On</a></p>
             </template>
         </div>
     </div>
@@ -70,7 +71,6 @@
                     action: "ninja_tables_set_permission",
                     capability: this.capability
                 };
-
                 jQuery
                     .post(ajaxurl, data)
                     .then(response => {
@@ -85,7 +85,6 @@
         },
         mounted() {
             this.hasPro = window.ninja_table_admin.hasPro === "1";
-
             this.get();
         }
     };

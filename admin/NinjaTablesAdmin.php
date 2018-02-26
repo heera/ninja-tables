@@ -96,8 +96,13 @@ class NinjaTablesAdmin {
 		global $submenu;
 		$capability = ninja_table_admin_role();
 		// Top-level page
-		add_menu_page( __( 'Ninja Tables', 'ninja-tables' ),
-			__( 'Ninja Tables', 'ninja-tables' ), $capability, 'ninja_tables',
+        $menuName = __( 'NinjaTables', 'ninja-tables' );
+		if(defined('NINJATABLESPRO')) {
+			$menuName .= ' Pro';
+        }
+        
+		add_menu_page( $menuName,
+			$menuName, $capability, 'ninja_tables',
 			array( $this, 'main_page' ),
 			'data:image/svg+xml;base64,'
 			. base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.98 249.25"><defs><style>.cls-1{fill:#fff;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:7px;}.cls-2{stroke:#9fa3a8;}.cls-3{stroke:#38444f;}</style></defs><title>Asset 7</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M312.48,249.25H9.5a9.51,9.51,0,0,1-9.5-9.5V9.5A9.51,9.51,0,0,1,9.5,0h303A9.51,9.51,0,0,1,322,9.5V239.75A9.51,9.51,0,0,1,312.48,249.25ZM9.5,7A2.53,2.53,0,0,0,7,9.5V239.75a2.53,2.53,0,0,0,2.5,2.5h303a2.53,2.53,0,0,0,2.5-2.5V9.5a2.53,2.53,0,0,0-2.5-2.5Z"/><rect class="cls-1" x="74.99" y="44.37" width="8.75" height="202.71"/><path class="cls-2" d="M129.37,234.08"/><path class="cls-2" d="M129.37,44.37"/><path class="cls-3" d="M189.37,234.08"/><path class="cls-3" d="M189.37,44.37"/><path class="cls-3" d="M249.37,234.08"/><path class="cls-3" d="M249.37,44.37"/><path class="cls-1" d="M6.16.51H315.82a6,6,0,0,1,6,6V50.32a.63.63,0,0,1-.63.63H.79a.63.63,0,0,1-.63-.63V6.51A6,6,0,0,1,6.16.51Z"/><rect class="cls-1" x="4.88" y="142.84" width="312.61" height="15.1"/><rect class="cls-1" x="22.47" y="89.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="89.99" width="165.67" height="16.97"/><rect class="cls-1" x="22.47" y="189.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="189.99" width="165.67" height="16.97"/></g></g></svg>' ),
@@ -167,7 +172,7 @@ class NinjaTablesAdmin {
 
 		$fluentUrl = admin_url( 'plugin-install.php?s=FluentForm&tab=search&type=term' );
 		
-		$isInstalled = defined( 'FLUENTFORM' );
+		$isInstalled = defined( 'FLUENTFORM' ) ||  defined('NINJATABLESPRO');
 		$dismissed = false;
         $dismissedTime = get_option('_ninja_tables_plugin_suggest_dismiss');
         

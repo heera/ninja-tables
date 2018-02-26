@@ -1,26 +1,21 @@
 <template>
     <div>
         <h2 class="nav-tab-wrapper">
-            <span class="plugin-name">{{ $t('Ninja Tables') }}</span>
-
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']"
-                         :to="{ name: 'home' }"
-            >
+            <span class="plugin-name">{{ $t('Ninja Tables') }}<span v-if="has_pro"> Pro</span></span>
+            
+            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'home' }">
                 {{ $t('Home') }}
             </router-link>
 
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']"
-                         :to="{ name: 'tools' }"
-            >
+            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'tools' }">
                 {{ $t('Tools') }}
             </router-link>
             
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']"
-                         :to="{ name: 'help' }"
-            >
+            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'help' }">
                 {{ $t('Help') }}
             </router-link>
-            <a v-if="!has_pro" href="#" target="_blank" class="nav-tab buy_pro_tab">Buy Pro</a>
+            
+            <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="nav-tab buy_pro_tab">Buy Pro</a>
         </h2>
         
         <router-view></router-view>

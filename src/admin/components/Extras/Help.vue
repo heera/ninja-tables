@@ -2,9 +2,7 @@
     <div>
         <h2>{{ $t('Plugin Documentation and Help') }}</h2>
         <hr />
-        
-        <fluentpromoad></fluentpromoad>
-        
+        <ninja_premium></ninja_premium>
         <div class="ninja_documentaion_wrapper">
             <div class="ninja_doc_top_blocks">
                 <div class="ff_block block_1_3">
@@ -50,16 +48,20 @@
                 
             </div>
         </div>
+
+        <fluentpromoad></fluentpromoad>
     </div>
 </template>
 
 <script type="text/babel">
    // import FluentPromo from './FluentPromoAdd';
    import FluentPromoAdd from './FluentPromoAdd2.vue';
+   import nijaPremium from './NinjaPremiumPromo';
     export default {
         name: 'help',
         components: {
-            'fluentpromoad': FluentPromoAdd
+            'fluentpromoad': FluentPromoAdd,
+            'ninja_premium': nijaPremium
         },
         data() {
             return {

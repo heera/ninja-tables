@@ -16,7 +16,7 @@
                     </ul>
                 </div>
                 <span slot="footer" class="dialog-footer">
-                    <a href="#" class="buy_now_button el-button el-button--danger el-button--mini">Buy Pro Now</a>
+                    <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" class="buy_now_button el-button el-button--danger el-button--mini">Buy Pro Now</a>
                 </span>
             </el-dialog>
         </div>
