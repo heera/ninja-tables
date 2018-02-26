@@ -119,7 +119,7 @@
         },
         mounted() {
             this.getSettings();
-
+            
             var clipboard = new Clipboard('.copy');
             clipboard.on('success', (e) => {
                 this.$message({

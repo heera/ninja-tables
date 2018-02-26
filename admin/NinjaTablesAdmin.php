@@ -244,7 +244,7 @@ class NinjaTablesAdmin {
 			'post_status'    => 'any',
             
 		);
-
+		
 		if(isset($_REQUEST['search']) && $_REQUEST['search']) {
 			$args['s'] = sanitize_text_field($_REQUEST['search']);
         }

@@ -1,6 +1,10 @@
 <template>
-    <div class="wp_vue_editor_wrapper">
-        <textarea v-if="hasWpEditor" class="wp_vue_editor" :id="editor_id">{{value}}</textarea>
+    <div class="wp_vue_editor_wrapper" :class="'editor_wrapper'+editor_id">
+        <template v-if="hasWpEditor">
+            <button v-if="!has_pro" type="button" class="button ninja_demo_media_button"><span class="dashicons dashicons-admin-media"></span> Add Media (pro)</button>
+            <textarea class="wp_vue_editor" :id="editor_id">{{value}}</textarea>
+        </template>
+        
         <textarea v-else
                   class="wp_vue_editor wp_vue_editor_plain"
                   v-model="plain_content">
@@ -28,7 +32,8 @@
         data() {
             return {
                 hasWpEditor: !!window.wp.editor,
-                plain_content: this.value
+                plain_content: this.value,
+                has_pro: !!window.ninja_table_admin.hasPro,
             }
         },
         watch: {
@@ -47,7 +52,7 @@
                     wp.editor.remove(this.editor_id);
                     const that = this;
                     wp.editor.initialize(this.editor_id, {
-                        mediaButtons: true,
+                        mediaButtons: this.has_pro,
                         mode : "none",
                         tinymce: {
                             toolbar1: 'bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,forecolor,codeformat,undo,redo',
@@ -73,6 +78,10 @@
         },
         mounted() {
             this.initEditor();
+            jQuery('.editor_wrapper'+this.editor_id+' .ninja_demo_media_button').on('click', function (e) {
+                e.preventDefault();
+                window.ninjaTableBus.$emit('show_pro_popup', 1);
+            });
         },
         beforeDestroy() {
           
@@ -80,6 +89,11 @@
     }
 </script> 
 <style lang="scss">
+    button.button.ninja_demo_media_button {
+        position: absolute;
+        z-index: 9999999999;
+        cursor: pointer;
+    }
     .wp_vue_editor {
         width: 100%;
         min-height: 100px;

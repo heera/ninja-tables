@@ -1,14 +1,14 @@
 <template>
     <div class="privacy">
         <div class="ninja_header">
-            <h2>Permission</h2>
+            <h2>Permission <span v-show="!hasPro">(Pro Feature)</span></h2>
+            <p>Provide other user roles to manage tables</p>
         </div>
 
         <div class="ninja_content">
             <template v-if="hasPro">
                 <label for="capability">
                     Select Role
-
                     <el-tooltip class="item" effect="light" placement="top-start">
                         <div slot="content">
                             <h3>Select Role</h3>
@@ -28,9 +28,10 @@
                     </option>
                 </select>
             </template>
-
+            
             <template v-else>
-                Activate Ninja Tables Pro plugin.
+                Activate Ninja Tables Pro Add-on plugin to unlock this feature
+                <p><a target="_blank" href="#">Buy Ninja Tables Pro Add-On</a></p>
             </template>
         </div>
     </div>

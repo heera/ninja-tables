@@ -348,6 +348,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 <script type="text/babel">
@@ -406,7 +407,8 @@
                 tableSettings: this.config.settings,
                 is_fluent_installed: window.ninja_table_admin.isInstalled,
                 fluent_url: window.ninja_table_admin.fluentform_url,
-                has_pro: window.ninja_table_admin.hasPro
+                has_pro: window.ninja_table_admin.hasPro,
+                addVisible: false
             }
         },
         computed: {
@@ -432,7 +434,7 @@
                     return;
                 }
                 if (this.tableSettings.table_color != 'ninja_no_color_table') {
-                    this.showProAd('Use Unlimited Color in Your Tables');
+                    window.ninjaTableBus.$emit('show_pro_popup', 1);
                     this.tableSettings.table_color = 'ninja_no_color_table';
                 }
             }
@@ -527,18 +529,19 @@
                 }
             },
             showProAd(title) {
-                alert(title);
+                this.addVisible = true;
             },
             size,
             get
         },
         mounted() {
-            
+
         }
     }
 </script>
 
 <style lang="scss">
+    
     .loading-wrapper {
         padding: 10px;
         background: white;

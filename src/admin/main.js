@@ -78,7 +78,6 @@ Vue.mixin({
 });
 
 import {routes} from './routes'
-
 import Application from './App.vue'
 
 const router = new VueRouter({

@@ -403,7 +403,7 @@ button.close {
   &.in {
     opacity: 1;
     .modal-dialog {
-      margin-top: 50px;
+      margin-top: 40px;
     }
   }
 }
@@ -411,7 +411,8 @@ button.close {
 .modal-dialog {
   position: relative;
   transition: all 0.35s linear;
-  width: 600px;
+  max-width: 840px;
+  width: 100%;
   margin-top: 0px;
   margin-left: auto;
   margin-right: auto;
@@ -422,7 +423,6 @@ button.close {
   background-color: #fff;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 6px;
   outline: 0;
@@ -831,5 +831,24 @@ ul.doc_items {
         }
       }
     }
+  }
+}
+
+.pro_feature_dialog {
+  .el-dialog {
+    background: #fdf5f5;
+  }
+  .el-dialog__body {
+    padding-top: 0px;
+  }
+  .buy_now_button {
+    text-decoration: none;
+    font-size: 20px;
+    padding: 10px 25px;
+  }
+  .list_features {
+    margin-left: 45px;
+    list-style: disc;
+    font-size: 18px;
   }
 }
