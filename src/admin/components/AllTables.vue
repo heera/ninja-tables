@@ -2,7 +2,7 @@
     <div>
         <div class="row">
             <h1 class="wp-heading-inline">{{ $t('All Tables') }}</h1>
-            <div style="margin-top:10px" class="pull-right">
+            <div style="margin-top:7px" class="pull-right">
                 <label class="form_group search_action" for="search">
                     <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
                     <i @click="getData" class="el-icon-search"></i>
@@ -10,9 +10,11 @@
                 <a href="#" class="btn btn-primary btn-sm" @click="modalVisible = !modalVisible">
                     <span class="">{{ $t('Add Table') }}</span>
                 </a>
-                <a href="#tools" class="btn btn-danger btn-sm">
+                
+                <router-link :to="{name: 'tools'}" class="btn btn-danger btn-sm">
                     <span class="">{{ $t('Import from CSV') }}</span>
-                </a>
+                </router-link>
+                
             </div>
         </div>
         <hr />

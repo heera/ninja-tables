@@ -20,7 +20,7 @@
                                     <label>{{ $t('Column Name') }}
                                         <el-tooltip placement="right"
                                                     content="Enter a title for the table column, It will show as column header of the table">
-                                            <<i class="el-icon-information"></i>
+                                            <i class="el-icon-information"></i>
                                         </el-tooltip>
                                     </label>
                                     <input class="form_control" type="text" v-model="new_column.name"/>
@@ -30,7 +30,7 @@
                                         {{ $t('Column Key') }}
                                         <el-tooltip placement="right"
                                                     content="This is the column key, It will be used for internal use to mapping data and also for export and import data">
-                                            <<i class="el-icon-information"></i>
+                                            <i class="el-icon-information"></i>
                                         </el-tooltip>
                                     </label>
                                     <input class="form_control" type="text" v-model="new_column.key"/>
@@ -39,7 +39,7 @@
                                     <label>
                                         {{ $t('Column Data Type') }}
                                         <el-tooltip placement="right" content="Data Type of the column">
-                                            <<i class="el-icon-information"></i>
+                                            <i class="el-icon-information"></i>
                                         </el-tooltip>
                                     </label>
                                     <select v-model="new_column.data_type" class="form_control">
@@ -53,7 +53,7 @@
                                         {{ $t('Responsive Breakpoint') }}
                                         <el-tooltip placement="right"
                                                     content="For responsiveness settings of your table columns. For more details check documentation">
-                                            <<i class="el-icon-information"></i>
+                                            <i class="el-icon-information"></i>
                                         </el-tooltip>
                                     </label>
                                     <select v-model="new_column.breakpoints" class="form_control">
@@ -83,7 +83,7 @@
                                         <label> {{ $t('Column Name') }}
                                             <el-tooltip placement="right"
                                                         content="Enter a title for the table column, It will show as column header of the table">
-                                                <<i class="el-icon-information"></i>
+                                                <i class="el-icon-information"></i>
                                             </el-tooltip>
 
                                         </label>
@@ -94,7 +94,7 @@
                                             {{ $t('Column Key') }}
                                             <el-tooltip placement="right"
                                                         content="This is the column key, It will be used for internal use to mapping data and also for export and import data">
-                                                <<i class="el-icon-information"></i>
+                                                <i class="el-icon-information"></i>
                                             </el-tooltip>
                                         </label>
                                         <input class="form_control" type="text" v-model="column.key" disabled/>
@@ -103,7 +103,7 @@
                                         <label>
                                             {{ $t('Column Data Type') }}
                                             <el-tooltip placement="right" content="Data Type of the column">
-                                                <<i class="el-icon-information"></i>
+                                                <i class="el-icon-information"></i>
                                             </el-tooltip>
                                         </label>
                                         <select v-model="column.data_type" class="form_control">
@@ -117,7 +117,7 @@
                                             {{ $t('Responsive Breakpoint') }}
                                             <el-tooltip placement="right"
                                                         content="For responsiveness settings of your table columns. For more details check documentation">
-                                                <<i class="el-icon-information"></i>
+                                                <i class="el-icon-information"></i>
                                             </el-tooltip>
                                         </label>
                                         <select v-model="column.breakpoints" class="form_control">
@@ -183,7 +183,7 @@
                                 <input v-model="tableSettings.library" type="radio" :value="tableKey"
                                        name="table_library" :id="tableKey"/> {{ tableLib.title }}
                                 <el-tooltip placement="top-end" :content="tableLib.description">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
                         </div>
@@ -200,7 +200,7 @@
                                 $t('Show Table Title') }}
                                 <el-tooltip placement="top-end"
                                             content="Enable this if you want to show table title in frontend">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
                             <label for="show_description">
@@ -208,7 +208,7 @@
                                        id="show_description"/> {{ $t('Show Table Description') }}
                                 <el-tooltip placement="top-end"
                                             content="Enable this if you want to show table description in frontend">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
 
@@ -217,7 +217,7 @@
                                 {{ $t('Enable Ajax Loading') }}
                                 <el-tooltip placement="top-end"
                                             content="Enable this if you have more than 10,000 records in your table">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
                             <label for="enable_search">
@@ -280,7 +280,7 @@
                                        :value="libKey"/>
                                 {{ tableLib.title }}
                                 <el-tooltip placement="top-end" :content="tableLib.description">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
                         </div>
@@ -296,7 +296,7 @@
                                        :value="tableStyle.key" :id="'table_style_'+tableStyle.key"/>
                                 {{ tableStyle.title }}
                                 <el-tooltip placement="top-end" :content="tableStyle.description">
-                                    <<i class="el-icon-information"></i>
+                                    <i class="el-icon-information"></i>
                                 </el-tooltip>
                             </label>
                         </div>
@@ -740,4 +740,9 @@
         margin-top: 45px !important;
     }
 
+    .ninja_widget {
+        label {
+            font-weight: 400;
+        }
+    }
 </style>

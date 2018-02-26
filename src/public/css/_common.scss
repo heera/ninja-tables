@@ -18,8 +18,13 @@
     font-weight: 500;
   }
   button.btn.btn-default.dropdown-toggle {
+    top: 0;
     right: 0px;
     left: 0px;
+
+    &:after {
+      content: " ";
+    }
   }
   
   li.dropdown-header {
