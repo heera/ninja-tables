@@ -2,10 +2,10 @@
 Contributors: techjewel, adreastrian
 Donate link: https://paypal.me/zalam
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
-Requires at least: 4.0
+Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.8.4
+Stable tag: 1.9.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,10 +13,8 @@ The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, 
 
 == Description ==
 
-[Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
+[Details Features](https://wpmanageninja.com/ninja-tables/) | [Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
 
-== Try my another awesome contact form plugin for free ==
-[FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
@@ -24,7 +22,8 @@ Ninja Tables is the most advanced, and modern Table builder plugin on WordPress.
 
 == For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Online Demo Here</a> ==
 
-
+== Try my another awesome contact form plugin for free ==
+[FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 == The Easiest Responsive Table Plugin on WordPress ==
 Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
@@ -57,6 +56,8 @@ You can export your table in CSV or JSON format and save them in a safe place or
 == Import Tables from other table Plugins ==
 Already using other plugins for tables and have any data with it. We have covered it. In this plugin, You can easily import table with data from other Table Plugins like "TablePress".
 
+== <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/" target="blank">Try Pro Add-On</a> ==
+
 == Usage ==
 To show one of your tables in a post, on a page, or in a text widget, just embed the Shortcode [ninja_tables id="TABLE_ID"] into the post/page/text widget, where <TABLE_ID> is the ID of your table (can be found on the “All Tables” screen.)
 
@@ -64,7 +65,8 @@ To show one of your tables in a post, on a page, or in a text widget, just embed
 Get dedicated support from our awesome happiness managers and developers and Yes! It's completely free.
 
 == Documentation with Video ==
-<ul><li><a href="https://wpmanageninja.com/r/docs/ninja-tables/getting-started/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Introduction</a></li>
+<ul><li><a href="https://wpmanageninja.com/ninja-tables/?utm_source=ninja-tables-wp-repo" target="_blank">Home Page</a></li>
+<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/getting-started/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Introduction</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Demo</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/?utm_source=ninja-tables-wp-repo" target="_blank">Setting up a Table</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables-wp-repo" target="_blank">Configure Responsive Breakdowns for Table</a></li>
@@ -98,9 +100,9 @@ Tables form created by NinjaTables is mobile responsive and looks beautiful on a
 
 NinjaTables is the most beginner friendly and fastest WordPress Tables plugin available and getting started is so easy!
 
-= Can I use shortcodes in table cells? =
+= Can I upload images / medias to table cells? =
 
-Yes, You can use any shortcodes in table cells. This featured is available since version 1.3.0
+Yes, For that please check pro add one <a href="">here</a>
 
 == Screenshots ==
 
@@ -115,6 +117,12 @@ Yes, You can use any shortcodes in table cells. This featured is available since
 9. Black Color Table View in Frontend
 
 == Changelog ==
+
+= 1.9.0 =
+* Upgraded the admin panel slick.
+* More add-on compatible.
+* Added unlimited color schema generator with add on.
+* Added media upload with add on in table cells.
 
 = 1.8.4 =
 * Fix conflicts with jetpack notification components

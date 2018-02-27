@@ -1,7 +1,7 @@
 <?php namespace NinjaTable\TableDrivers;
 
 class NinjaFooTable {
-	public static $version = '1.0';
+	public static $version = '1.9';
 
 	public static function run( $tableArray ) {
 		self::enqueue_assets();
@@ -60,7 +60,7 @@ class NinjaFooTable {
 				$formatted_column['sorted']    = true;
 				$formatted_column['direction'] = $settings['sorting_column_by'];
 			}
-
+			
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
 		}
@@ -110,8 +110,7 @@ class NinjaFooTable {
 			'settings' => $configSettings
 		);
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
-
-
+		
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		?>
         <div id="footable_parent_<?php echo $table_id; ?>"
