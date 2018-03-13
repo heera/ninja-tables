@@ -19,7 +19,7 @@
                 <a :href="preview_url" target="_blank">
                     <el-button size="mini">{{ $t('Preview') }}</el-button>
                 </a>
-                <a href="#" target="_blank">
+                <a v-if="!has_pro" href="#" target="_blank">
                     <el-button type="danger" size="mini">{{ $t('Buy Pro') }}</el-button>
                 </a>
             </span>
@@ -78,7 +78,8 @@
                 table: {},
                 user_tab: this.$route.query.user_tab,
                 editTableModalShow: false,
-                preview_url: '#'
+                preview_url: '#',
+                has_pro: window.ninja_table_admin.hasPro
             }
         },
         methods: {
