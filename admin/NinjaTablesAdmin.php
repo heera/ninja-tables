@@ -497,8 +497,8 @@ class NinjaTablesAdmin {
 		if ( $rows = $content['rows'] ) {
 			$header = array_map( function ( $column ) {
 				return $column['key'];
-			}, $content['columns'] );
-
+            }, $content['columns'] );
+            
 			$this->insertDataToTable( $tableId, $rows, $header );
 		}
 
@@ -556,16 +556,19 @@ class NinjaTablesAdmin {
 			if ( $headerCount == count( $item ) ) {
 				$itemTemp = array_combine( $header, $item );
 			} else {
+                // The item can have less/more entry than the header has.
+                // We have to ensure that the header and values match.
 				$itemTemp = array_combine(
-					$header,
-					array_merge( $item,
-						array_fill_keys(
-							array_diff( array_values( $header ), array_keys( $item ) ),
-							null
-						)
+                    $header,
+                    // We'll get the appropriate values by merging Array1 & Array2
+					array_merge(
+                        // Array1 = Only the entries that the header has.
+                        array_intersect_key($item, array_fill_keys(array_values($header), null)),
+                        // Array2 = The remaining header entries will be blank. 
+						array_fill_keys(array_diff(array_values($header), array_keys($item)), null)
 					)
-				);
-			}
+                );
+            }
 
 			array_push( $data, array(
 				'table_id'   => $tableId,
@@ -573,7 +576,7 @@ class NinjaTablesAdmin {
 				'value'      => json_encode( $itemTemp ),
 				'created_at' => $time,
 				'updated_at' => $time
-			) );
+            ) );
 		}
 
 		ninja_tables_DbTable()->batch_insert( $data );
