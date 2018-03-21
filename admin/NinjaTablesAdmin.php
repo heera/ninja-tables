@@ -191,6 +191,12 @@ class NinjaTablesAdmin {
             'isInstalled' => $isInstalled,
             'hasPro' => defined('NINJATABLESPRO')
 		) );
+        
+        // Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
+        // other plugin's page's uri. They should fix it.
+        // For now I am de-registering their script in ninja-table admin pages.
+        
+        wp_deregister_script('elementor-admin-app');
 	}
 
 	public function enqueue_data_tables_scripts() {

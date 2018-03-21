@@ -85,9 +85,14 @@ const router = new VueRouter({
     linkActiveClass: 'active'
 });
 
+
+function ignoreerror()
+{
+    return true
+}
+window.onerror=ignoreerror();
+
 window.ninjaTableBus = new Vue();
 
 Application.router = router;
 window.ninjaApp = new Vue(Application).$mount('#data-tables-app');
-
-

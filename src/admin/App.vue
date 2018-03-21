@@ -10,6 +10,7 @@
                     <ul class="list_features">
                         <li>Use Unlimited Colors in Your Tables</li>
                         <li>Add Media to Your Table Cells</li>
+                        <li>Use Advanced Customization Features</li>
                         <li>Get VIP Support for any Issue</li>
                         <li>Lifetime Updates</li>
                         <li>Incremental New Premium Features</li>
@@ -20,7 +21,6 @@
                 </span>
             </el-dialog>
         </div>
-        
     </div>
 </template>
 

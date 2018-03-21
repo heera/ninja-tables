@@ -330,7 +330,22 @@
                         </div>
                     </div>
                 </div>
-
+                
+                <div class="ninja_widget">
+                    <h4 class="title">{{ $t('Other Settings') }} <span v-if="!has_pro">( Pro Feature )</span></h4>
+                    <div class="widget_body">
+                        <div class="form_group">
+                            <label><input v-model="tableSettings.hide_header_row" type="checkbox">
+                                Hide Header Row
+                            </label>
+                            <label><input v-model="tableSettings.hide_all_borders" type="checkbox">
+                                Hide All Borders
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                
                 <div class="ninja_widget">
                     <h4 class="title">{{ $t('CSS Class') }}</h4>
                     <div class="widget_body">
@@ -438,6 +453,20 @@
                     window.ninjaTableBus.$emit('show_pro_popup', 1);
                     this.tableSettings.table_color = 'ninja_no_color_table';
                 }
+            },
+            'tableSettings.hide_header_row': function () {
+                if (this.has_pro) {
+                    return;
+                }
+                window.ninjaTableBus.$emit('show_pro_popup', 1);
+                this.tableSettings.hide_header_row = false;
+            },
+            'tableSettings.hide_all_borders': function () {
+                if (this.has_pro) {
+                    return;
+                }
+                window.ninjaTableBus.$emit('show_pro_popup', 1);
+                this.tableSettings.hide_all_borders = false;
             }
         },
         methods: {

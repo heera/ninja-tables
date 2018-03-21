@@ -43,7 +43,16 @@
   span.footable-toggle {
     cursor: pointer;
   }
-  
+  &.ninjatable_hide_header_row > thead tr.footable-header {
+    display: none !important;
+    visibility: hidden;
+  }
+  &.hide_all_borders {
+    border-color: transparent !important;
+    thead,tr, td, th, tfoot {
+      border-color: transparent !important;
+    }
+  }
 }
 
 .footable_parent {

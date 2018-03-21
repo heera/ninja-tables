@@ -49,8 +49,7 @@ class NinjaTablesActivator {
 				attribute varchar(255) NOT NULL,
 				value longtext,
 				created_at timestamp NULL,
-				updated_at timestamp NULL,
-				KEY attribute (attribute)
+				updated_at timestamp NULL
 			) $charset_collate;";
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

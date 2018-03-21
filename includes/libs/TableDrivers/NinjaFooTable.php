@@ -90,7 +90,15 @@ class NinjaFooTable {
 			$tableHasColor = 'colored_table';
 			$table_classes .= ' inverted';
 		}
-
+		
+		if(isset($settings['hide_all_borders']) && $settings['hide_all_borders']) {
+			$table_classes .= ' hide_all_borders';
+        }
+		
+        if(isset($settings['hide_header_row']) && $settings['hide_header_row']) {
+	        $table_classes .= ' ninjatable_hide_header_row';
+        }
+        
 		if(isset($settings['table_color']) && $settings['table_color'] == 'ninja_table_custom_color') {
 		    $table_color_primary = isset($settings['table_color_primary']) ? $settings['table_color_primary'] : '';
 		    $table_color_secondary = isset($settings['table_color_secondary']) ? $settings['table_color_secondary'] : '';
@@ -110,6 +118,8 @@ class NinjaFooTable {
 			'settings' => $configSettings
 		);
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
+		
+		
 		
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		?>
