@@ -1,11 +1,11 @@
 === Ninja Tables - Best Responsive Table Plugin for WordPress ===
 Contributors: techjewel, adreastrian
-Donate link: https://paypal.me/zalam
+Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
 Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.9.2
+Stable tag: 1.9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ Ninja Tables is the most advanced, and modern Table builder plugin on WordPress.
 == For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Online Demo Here</a> ==
 
 == Try my another awesome contact form plugin for free ==
-[FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
+[WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 == The Easiest Responsive Table Plugin on WordPress ==
 Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
@@ -117,6 +117,13 @@ Yes, For that please check pro add one <a href="">here</a>
 9. Black Color Table View in Frontend
 
 == Changelog ==
+
+= 1.9.5 ( Date: 03-21-2018 ) =
+* Added Caching Mechanism to load the table data faster
+* Make the custom table mariadb compitable
+* Added Table Data Filter by shortcode
+* Fix csv and json data import bug
+* Remove Conflicts with elementor
 
 = 1.9.0 =
 * Upgraded the admin panel slick.

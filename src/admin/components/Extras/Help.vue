@@ -10,7 +10,7 @@
                         <img class="block_icon" :src="imageUrl('support.png')" />
                         <h3>Need And Expert Support?</h3>
                         <p>Our EXPERTS would like to assist you for your query and any customization.</p>
-                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/support/plugin/ninja-tables">Contact Support</a></p>
+                        <p><a target="_blank" class="button button-primary" href="https://wpmanageninja.com/support-tickets/">Contact Support</a></p>
                     </div>
                 </div>
                 <div class="ff_block block_1_3">
@@ -18,7 +18,7 @@
                         <img class="block_icon" :src="imageUrl('bug.png')" />
                         <h3>Found a Bug?</h3>
                         <p>Please report us and we promise we will fix that as soon as humanly possible</p>
-                        <p><a target="_blank" class="button button-primary" href="https://github.com/WpManageNinja/ninja-tables/issues">Report Bug on Github</a></p>
+                        <p><a target="_blank" class="button button-primary" href="https://wpmanageninja.com/support-tickets/submit-ticket/">Submit a Support Ticket</a></p>
                     </div>
                 </div>
                 <div class="ff_block block_1_3">
@@ -39,10 +39,20 @@
                         </ul>
                     </div>
                 </div>
+
+                <div class="ff_block block_1_3">
+                    <div class="ff_block_box help_container text-center">
+                        <img class="block_icon" :src="imageUrl('fluent-icon.png')" />
+                        <h3>Try WP FluentFrom</h3>
+                        <p>Need to build a contact form by drag and drop form builder. Try the modern contact form plugin with all the necessary input fields, notifications and connect your form with powerful integrations</p>
+                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/fluentform/">Download from wp.org (Free)</a></p>
+                    </div>
+                </div>
+                
                 <div class="ff_block block_1_3">
                     <div class="ff_block_box help_container">
                         <h3>Need More Help?</h3>
-                        <p>{{ $t('For custom development work, please email us at') }} <a href="mailto:support@wpmanageninja.com" target="_blank">support@wpmanageninja.com</a></p>
+                        <p>{{ $t('For any type of query which was not covered in our documentation, Please submit a support ticket') }} <a href="https://wpmanageninja.com/support-tickets/submit-ticket/" target="_blank">Submit a support ticket</a></p>
                     </div>
                 </div>
                 

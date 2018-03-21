@@ -109,6 +109,7 @@ class NinjaTablesAdmin {
 			25 );
 
 		if ( current_user_can( $capability ) ) {
+		    
 			$submenu['ninja_tables'][] = array(
 				__( 'All Tables', 'ninja-tables' ),
 				$capability,
@@ -124,6 +125,14 @@ class NinjaTablesAdmin {
 				$capability,
 				'admin.php?page=ninja_tables#/tools'
 			);
+			if(!defined('NINJATABLESPRO')) {
+				$submenu['ninja_tables'][] = array(
+					__( 'Get Pro', 'ninja-tables' ),
+					$capability,
+					'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu'
+				);
+			}
+			
 			$submenu['ninja_tables'][] = array(
 				__( 'Help', 'ninja-tables' ),
 				$capability,
