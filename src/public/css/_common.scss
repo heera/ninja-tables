@@ -53,6 +53,12 @@
       border-color: transparent !important;
     }
   }
+  
+  &.ninja_table_search_disabled > thead tr.footable-filtering {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  
 }
 
 .footable_parent {

@@ -195,7 +195,6 @@ class NinjaTablesAdmin {
         // Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
         // other plugin's page's uri. They should fix it.
         // For now I am de-registering their script in ninja-table admin pages.
-        
         wp_deregister_script('elementor-admin-app');
 	}
 
@@ -308,7 +307,7 @@ class NinjaTablesAdmin {
 
 	public function importTable() {
 		$format = $_REQUEST['format'];
-
+		
 		if ( $format == 'csv' ) {
 			$this->uploadTableCsv();
 		} elseif ( $format == 'json' ) {
@@ -549,6 +548,7 @@ class NinjaTablesAdmin {
 			'admin' );
 		update_post_meta( $tableId, '_ninja_table_settings',
 			$ninjaTableSettings );
+		ninjaTablesClearTableDataCache($tableId);
 	}
 
 	private function insertDataToTable( $tableId, $values, $header ) {
@@ -584,8 +584,8 @@ class NinjaTablesAdmin {
 				'updated_at' => $time
             ) );
 		}
-
 		ninja_tables_DbTable()->batch_insert( $data );
+		
 	}
 
 	public function getTableSettings() {
@@ -642,6 +642,7 @@ class NinjaTablesAdmin {
 				$formattedTablePreference );
 		}
 
+		ninjaTablesClearTableDataCache($tableId);
 		wp_send_json( array(
 			'message'  => __( 'Successfully updated configuration.',
 				'ninja-tables' ),
@@ -661,18 +662,19 @@ class NinjaTablesAdmin {
 
 	public function deleteTable() {
 		$tableId = intval( $_REQUEST['table_id'] );
-
+        
 		if ( get_post_type( $tableId ) != $this->cpt_name ) {
 			wp_send_json( array(
 				'message' => __( 'Invalid Table to Delete', 'ninja-tables' )
 			), 300 );
 		}
 
-
+        
 		wp_delete_post( $tableId, true );
 		// Delete the post metas
 		delete_post_meta( $tableId, '_ninja_table_columns' );
 		delete_post_meta( $tableId, '_ninja_table_settings' );
+		delete_post_meta( $tableId, '_ninja_table_cache_object' );
 
 		// now delete the data
 		try {
@@ -759,6 +761,7 @@ class NinjaTablesAdmin {
 
 		$item = ninja_tables_DbTable()->find( $id );
 
+		ninjaTablesClearTableDataCache($tableId);
 		wp_send_json( array(
 			'message' => __( 'Successfully saved the data.', 'ninja-tables' ),
 			'item'    => array(
@@ -782,7 +785,8 @@ class NinjaTablesAdmin {
 
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId )
 		                               ->whereIn( 'id', $ids )->delete();
-
+		
+		ninjaTablesClearTableDataCache($tableId);
 		wp_send_json( array(
 			'message' => __( 'Successfully deleted data.', 'ninja-tables' )
 		), 200 );
@@ -800,7 +804,6 @@ class NinjaTablesAdmin {
 		$csvHeader = array_map( 'esc_attr', $csvHeader );
 
 		$config = get_post_meta( $tableId, '_ninja_table_columns', true );
-
 		if ( ! $config ) {
 			wp_send_json( array(
 				'message' => __( 'Please set table configuration.',
@@ -842,7 +845,7 @@ class NinjaTablesAdmin {
 		}
 
 		ninja_tables_DbTable()->batch_insert( $data );
-
+		ninjaTablesClearTableDataCache($tableId);
 		wp_send_json( array(
 			'message' => __( 'Successfully uploaded data.', 'ninja-tables' )
 		) );
@@ -1006,7 +1009,6 @@ class NinjaTablesAdmin {
 	 */
 	public function ninja_table_register_button( $buttons ) {
 		array_push( $buttons, 'ninja_table' );
-
 		return $buttons;
 	}
 	

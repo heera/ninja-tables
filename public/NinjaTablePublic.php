@@ -68,19 +68,16 @@ class NinjaTablePublic {
 	{
 		$tableId = intval($_REQUEST['table_id']);
 		$defaultSorting = sanitize_text_field($_REQUEST['default_sorting']);
-		$query = ninja_tables_DbTable()->where('table_id', $tableId);
 		
-		if($defaultSorting == 'new_first') {
-			$query->orderBy('id', 'desc');
+		// cache the data
+		$disableCache = apply_filters('ninja_tables_disable_caching', false, $tableId);
+		$formatted_data = false;
+		if(!$disableCache) {
+			$formatted_data = get_post_meta($tableId, '_ninja_table_cache_object', true);
 		}
 		
-		$data = $query->get();
-		
-		$formatted_data = array();
-		foreach ($data as $item) {
-			 $values = json_decode($item->value, true);
-			 $values = array_map('do_shortcode', $values);
-			 $formatted_data[] = $values;
+		if(!$formatted_data) {
+			$formatted_data =ninjaTablesGetTablesDataByID($tableId, $defaultSorting);
 		}
 		
 		$formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
@@ -99,12 +96,7 @@ class NinjaTablePublic {
 		
 		extract(shortcode_atts(array(
 			'id' => false,
-			'per_page' => 20,
-			'hidden_fields' => false,
-			'table_type' => 'footable',
-			'extra_class' => 'table',
-            'enable_search' => true,
-            'enable_sorting' => true
+			'filter' => false
 		), $atts));
 		
 		$table_id = $id;
@@ -114,6 +106,10 @@ class NinjaTablePublic {
         }
 
 		$table = get_post($table_id);
+		
+		if(!$table) {
+			return;
+		}
 		$tableColumns = ninja_table_get_table_columns($table_id, 'public');
 		$tableSettings = ninja_table_get_table_settings($table_id, 'public');
 		if(!$tableColumns || !$tableSettings || !$table) {
@@ -126,6 +122,9 @@ class NinjaTablePublic {
 			'settings' => $tableSettings,
 			'table' => $table
 		);
+
+		$tableArray = apply_filters('ninja_table_js_config', $tableArray, $filter);
+		
 		ob_start();
 		do_action('ninja_tables-render-table-'.$tableSettings['library'], $tableArray);
 		return ob_get_clean();

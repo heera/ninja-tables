@@ -1,6 +1,6 @@
 table.foo-table.inverted {
-  
-  &.table{
+
+  &.table {
     a {
       color: rgba(255, 255, 255, 0.7);
     }
@@ -8,7 +8,7 @@ table.foo-table.inverted {
       color: black;
     }
   }
-  
+
   /*-------------------
          Colors
   --------------------*/
@@ -90,11 +90,9 @@ table.foo-table.inverted {
     color: #FFFFFF !important;
   }
 
-
   /*--------------
       Inverted
   ---------------*/
-
 
   /* Text Color */
   &.table {
@@ -110,6 +108,21 @@ table.foo-table.inverted {
   &.table tr td {
     border-color: rgba(255, 255, 255, 0.1) !important;
   }
+
+  &.hide_all_borders.table {
+    thead {
+      border-color: transparent !important;
+      tr, th, td {
+        border-color: transparent !important;
+      }
+    }
+    tbody {
+      th, td, th {
+        border-color: transparent !important;
+      }
+    }
+  }
+
   &.table tr.disabled td,
   &.table tr td.disabled,
   &.table tr.disabled:hover td,
@@ -128,14 +141,13 @@ table.foo-table.inverted {
     color: #ffffff;
   }
 
+  &.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
 
-&.table-striped  tbody  tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-&.table-hover > tbody > tr:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
+  &.table-hover > tbody > tr:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
 
   /*******************************
            Site Overrides
@@ -151,7 +163,7 @@ table.foo-table.inverted {
     .pagination a.footable-page-link {
       color: rgba(0, 0, 0, 0.5);
     }
-    .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle) {
+    .input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle) {
       background-color: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.1) !important;
       color: rgba(255, 255, 255, 0.9) !important;

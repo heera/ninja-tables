@@ -72,12 +72,16 @@ class NinjaFooTable {
 				: 20;
 		}
 
+
+		$enableSearch = ( isset( $settings['enable_search'] ) )
+			? $settings['enable_search'] : false;
+		
 		$configSettings = array(
-			'filtering'       => ( isset( $settings['enable_search'] ) )
-				? $settings['enable_search'] : false,
+			'filtering'       => $enableSearch,
 			'paging'          => $pagingSettings,
 			'sorting'         => true,
-			'default_sorting' => ( isset( $settings['default_sorting'] ) ) ? $settings['default_sorting'] : false
+			'default_sorting' => ( isset( $settings['default_sorting'] ) ) ? $settings['default_sorting'] : false,
+            'defualt_filter' => isset($default_filter) ? $default_filter : false
 		);
 
 		$table_classes = self::getTableCssClass( $settings );
@@ -99,6 +103,10 @@ class NinjaFooTable {
 	        $table_classes .= ' ninjatable_hide_header_row';
         }
         
+        if(!$enableSearch) {
+	        $table_classes .= ' ninja_table_search_disabled';
+        }
+        
 		if(isset($settings['table_color']) && $settings['table_color'] == 'ninja_table_custom_color') {
 		    $table_color_primary = isset($settings['table_color_primary']) ? $settings['table_color_primary'] : '';
 		    $table_color_secondary = isset($settings['table_color_secondary']) ? $settings['table_color_secondary'] : '';
@@ -118,8 +126,6 @@ class NinjaFooTable {
 			'settings' => $configSettings
 		);
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
-		
-		
 		
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		?>

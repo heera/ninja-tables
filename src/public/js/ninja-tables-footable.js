@@ -11,22 +11,45 @@ jQuery(document).ready(function ($) {
             });
         },
         initResponsiveTable:  function initFooTable($table, tableConfig) {
+            
+            let tableColumnNames = [];
+            jQuery.each(tableConfig.columns, (index, column) => {
+                tableColumnNames.push(column.name);
+            });
+            
+            console.log(tableColumnNames);
+            
             let initConfig = {
                 "cascade": true,
                 "columns": tableConfig.columns,
                 "rows": $.get(window.ninja_footables.ajax_url+'?action=wp_ajax_ninja_tables_public_action&table_id='+tableConfig.table_id+'&target_action=get-all-data&default_sorting='+tableConfig.settings.default_sorting)
             };
-
+            
             initConfig.sorting = {
                 "enabled": !!tableConfig.settings.sorting
             };
+            
+            let enabledSearch = !!tableConfig.settings.filtering;
+            if(tableConfig.settings.defualt_filter) {
+                enabledSearch = true;
+            }
             initConfig.filtering = {
-                "enabled":  !!tableConfig.settings.filtering,
+                "enabled":  enabledSearch,
                 "delay": 1,
                 "dropdownTitle": ninja_footables.i18n.search_in,
                 "placeholder": ninja_footables.i18n.search,
-                "connectors": false
+                "connectors": false,
+                "ignoreCase": true
             };
+            
+            if(tableConfig.settings.defualt_filter) {
+                initConfig.filtering.filters = [{
+                    "name": "ninja_table_custom_filter",
+                    "query": tableConfig.settings.defualt_filter,
+                    "columns": []
+                }];
+            }
+            
             
             initConfig.paging = {
                 "enabled": !!tableConfig.settings.paging,
@@ -34,7 +57,10 @@ jQuery(document).ready(function ($) {
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_"+tableConfig.table_id+" .paging-ui-container"
             };
-            initConfig.empty = ninja_footables.i18n.empty_text
+            initConfig.empty = ninja_footables.i18n.empty_text;
+            
+            
+            
             $table.footable(initConfig);
         }
     };
