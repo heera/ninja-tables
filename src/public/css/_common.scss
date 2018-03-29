@@ -58,7 +58,13 @@
     display: none !important;
     visibility: hidden !important;
   }
-  
+
+  .form-group.footable-filtering-search .input-group-btn > button {
+    margin: 0px !important;
+  }
+  .form-group.footable-filtering-search input.form-control {
+    margin-bottom: 0px !important;
+  }
 }
 
 .footable_parent {
