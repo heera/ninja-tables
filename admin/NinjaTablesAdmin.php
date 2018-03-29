@@ -760,7 +760,6 @@ class NinjaTablesAdmin {
 
 	public function storeData() {
 		$tableId = intval( $_REQUEST['table_id'] );
-
 		$row          = $_REQUEST['row'];
 		$formattedRow = array();
 		foreach ( $row as $key => $item ) {
@@ -768,9 +767,9 @@ class NinjaTablesAdmin {
 			$item                 = str_replace( "\'", "'", $item );
 			$item                 = str_replace( '\"', '"', $item );
 			$item                 = str_replace( '\"', '"', $item );
-			$formattedRow[ $key ] = wp_kses( $item, wp_kses_allowed_html( 'post' ) );
+			$formattedRow[ $key ] = wp_kses_post( $item );
 		}
-
+		
 		$attributes = array(
 			'table_id'   => $tableId,
 			'attribute'  => 'value',
