@@ -26,10 +26,7 @@ class NinjaFooTable {
 				'empty_text' => __( 'No Result Found', 'ninja-tables' ),
 			)
 		) );
-
-		wp_enqueue_style( 'footable', NINJA_TABLES_PUBLIC_DIR_URL
-		                              . "libs/footable/css/footable.standalone.css",
-			array(), '3.1.5', 'all' );
+		
 		wp_enqueue_style( 'footable_styles',
 			NINJA_TABLES_DIR_URL . "assets/css/ninja-tables-public.css",
 			array(), self::$version, 'all' );
