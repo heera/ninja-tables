@@ -153,9 +153,27 @@ class NinjaTablesAdmin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name,
-			plugin_dir_url( __DIR__ ) . "assets/css/ninja-tables-admin.css",
-			array(), $this->version, 'all' );
+        $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor-ltr.css";
+
+        if (is_rtl()) {
+            $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor-rtl.css";
+        }
+
+        wp_enqueue_style(
+            $this->plugin_name.'-vendor',
+            $vendorSrc,
+            [],
+            $this->version,
+            'all'
+        );
+
+        wp_enqueue_style(
+            $this->plugin_name,
+            plugin_dir_url(__DIR__)."assets/css/ninja-tables-admin.css",
+            array(),
+            $this->version,
+            'all'
+        );
 	}
 
 	/**
