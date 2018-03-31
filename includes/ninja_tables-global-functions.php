@@ -112,6 +112,8 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 	$query = ninja_tables_DbTable()->where('table_id', $tableId);
 	if($defaultSorting == 'new_first') {
 		$query->orderBy('id', 'desc');
+	} else {
+		$query->orderBy('id', 'asc');
 	}
 	$data = $query->get();
 	$formatted_data = array();

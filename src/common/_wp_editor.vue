@@ -4,11 +4,14 @@
             <button v-if="!has_pro" type="button" class="button ninja_demo_media_button"><span class="dashicons dashicons-admin-media"></span> Add Media (pro)</button>
             <textarea class="wp_vue_editor" :id="editor_id">{{value}}</textarea>
         </template>
-        
-        <textarea v-else
-                  class="wp_vue_editor wp_vue_editor_plain"
-                  v-model="plain_content">
+        <template v-else>
+            <p style="font-style: italic"><small>WP Editor is only available on WordPress version 4.8 or later. Please Upgrade Your WordPress Core</small></p>
+            <textarea
+                      class="wp_vue_editor wp_vue_editor_plain"
+                      v-model="plain_content">
         </textarea>
+        </template>
+        
     </div>
 </template>
 

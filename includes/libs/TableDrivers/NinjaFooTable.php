@@ -1,7 +1,7 @@
 <?php namespace NinjaTable\TableDrivers;
 
 class NinjaFooTable {
-	public static $version = '1.9.5';
+	public static $version = '1.9.7';
 
 	public static function run( $tableArray ) {
 		self::enqueue_assets();
@@ -9,10 +9,11 @@ class NinjaFooTable {
 	}
 
 	private static function enqueue_assets() {
+
 		wp_enqueue_script( 'footable',
 			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.js",
 			array( 'jquery' ), '3.1.5', true );
-
+		
 		wp_enqueue_script( 'footable_init',
 			NINJA_TABLES_DIR_URL . "assets/js/ninja-tables-footable.js",
 			array( 'footable' ), self::$version, true );
@@ -27,10 +28,10 @@ class NinjaFooTable {
 			)
 		) );
         
-        $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninja-tables-public.css";
+        $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninjatables-public.css";
 
         if (is_rtl()) {
-            $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninja-tables-public-rtl.css";
+            $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninjatables-public-rtl.css";
         }
 
 		wp_enqueue_style(

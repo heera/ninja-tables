@@ -153,7 +153,7 @@ class NinjaTablesAdmin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-        $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor-ltr.css";
+        $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor.css";
 
         if (is_rtl()) {
             $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor-rtl.css";

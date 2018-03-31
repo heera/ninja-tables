@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, table
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.9.5
+Stable tag: 1.9.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,9 +37,11 @@ Here are few styling options you can choose or mix different styles for a table:
 <li>Bordered table </li>
 <li>Table Inverse </li>
 <li>Striped rows </li>
-<li>Compact Table </li></ul>
+<li>Compact Table </li>
+<li>RTL Support</li>
+</ul>
 
-**with 10+ built-in color schema**
+**with Unlimited color schema**
 
 == It’s Blazing Fast! ==
 NinjaTables works on everything from a single page. The backend is built on VueJS and VueRouter as SPA so the experience will be smooth. From creating a table to configuring settings or add entries, importing from CSV, re-arranging columns everything feels real time. No delay - because your time is precious! The frontend table rendering is even faster with minimal js and css load, The frontend data load using ajax so it can handle thousands of table rows without affecting your page load time.
@@ -117,6 +119,12 @@ Yes, For that please check pro add one <a href="">here</a>
 9. Black Color Table View in Frontend
 
 == Changelog ==
+
+= 1.9.7 ( Date: 03-31-2018 ) =
+* Added RTL Support
+* CSS Fix for Safari
+* Table sorting bug fix
+* Improved table data caching
 
 = 1.9.5 ( Date: 03-21-2018 ) =
 * Added Caching Mechanism to load the table data faster
