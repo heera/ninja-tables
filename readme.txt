@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, table
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.9.7
+Stable tag: 1.9.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -119,6 +119,9 @@ Yes, For that please check pro add one <a href="">here</a>
 9. Black Color Table View in Frontend
 
 == Changelog ==
+
+= 1.9.8 ( Date: 03-31-2018 ) =
+* Edit Support for restricted column ID
 
 = 1.9.7 ( Date: 03-31-2018 ) =
 * Added RTL Support

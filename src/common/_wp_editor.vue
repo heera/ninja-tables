@@ -1,15 +1,15 @@
 <template>
-    <div class="wp_vue_editor_wrapper" :class="'editor_wrapper'+editor_id">
+    <div class="wp_vue_editor_wrapper" :class="'editor_wrapper_'+ninja_editor_id">
         <template v-if="hasWpEditor">
             <button v-if="!has_pro" type="button" class="button ninja_demo_media_button"><span class="dashicons dashicons-admin-media"></span> Add Media (pro)</button>
-            <textarea class="wp_vue_editor" :id="editor_id">{{value}}</textarea>
+            <textarea class="wp_vue_editor" :id="ninja_editor_id">{{value}}</textarea>
         </template>
         <template v-else>
             <p style="font-style: italic"><small>WP Editor is only available on WordPress version 4.8 or later. Please Upgrade Your WordPress Core</small></p>
             <textarea
                       class="wp_vue_editor wp_vue_editor_plain"
                       v-model="plain_content">
-        </textarea>
+            </textarea>
         </template>
         
     </div>
@@ -39,6 +39,11 @@
                 has_pro: !!window.ninja_table_admin.hasPro,
             }
         },
+        computed: {
+          ninja_editor_id() {
+              return 'ninja_editor_'+this.editor_id;
+            }  
+        },
         watch: {
             plain_content() {
                 this.$emit('input', this.plain_content);
@@ -52,9 +57,9 @@
         methods: {
             initEditor() {
                 if(this.hasWpEditor) {
-                    wp.editor.remove(this.editor_id);
+                    wp.editor.remove(this.ninja_editor_id);
                     const that = this;
-                    wp.editor.initialize(this.editor_id, {
+                    wp.editor.initialize(this.ninja_editor_id, {
                         mediaButtons: this.has_pro,
                         mode : "none",
                         tinymce: {
@@ -67,24 +72,24 @@
                         },
                         quicktags: true
                     });
-                    jQuery('#'+this.editor_id).on('change', function(e) {
+                    jQuery('#'+this.ninja_editor_id).on('change', function(e) {
                         that.changeContentEvent();
                     });
                 }
             },
             reloadEditor() {
-                wp.editor.remove(this.editor_id);  
-                jQuery('#'+ this.editor_id).val('');
+                wp.editor.remove(this.ninja_editor_id);  
+                jQuery('#'+ this.ninja_editor_id).val('');
                 this.initEditor();
             },
             changeContentEvent() {
-                let content = wp.editor.getContent(this.editor_id);
+                let content = wp.editor.getContent(this.ninja_editor_id);
                 this.$emit('input', content);
             }
         },
         mounted() {
             this.initEditor();
-            jQuery('.editor_wrapper'+this.editor_id+' .ninja_demo_media_button').on('click', function (e) {
+            jQuery('.editor_wrapper'+this.ninja_editor_id+' .ninja_demo_media_button').on('click', function (e) {
                 e.preventDefault();
                 window.ninjaTableBus.$emit('show_pro_popup', 1);
             });
