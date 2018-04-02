@@ -35,7 +35,6 @@
                 </div>
             </div>
             <hr />
-
             
             <template v-if="columns.length">
                 <el-table 

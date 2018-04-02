@@ -11,18 +11,18 @@
                     </div>
                     <div v-if="modal_visible" class="modal-body">
                         <div v-for="column in columns" class="form-group">
-                            <label :for="column.key">{{ column.name }}</label>
+                            <label :for="slugify(column.key)">{{ column.name }}</label>
                             <div v-if="column.data_type == 'textarea'">
-                                <textarea :id="column.key" class="form-control" v-model="newColumn[column.key]"></textarea>
+                                <textarea :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>
                             <div v-else-if="column.data_type == 'html'">
-                                <wp_editor :editor_id="column.key" v-model="newColumn[column.key]"></wp_editor>
+                                <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
                             </div>
                             <div v-else-if="column.data_type == 'number'">
-                                <input type="number" :id="column.key" class="form-control" v-model="newColumn[column.key]">
+                                <input type="number" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
                             <div v-else>
-                                <input type="text" :id="column.key" class="form-control" v-model="newColumn[column.key]">
+                                <input type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
                         </div>
                     </div>
@@ -158,6 +158,15 @@
             },
             onEditorChange(key, {editor, html, text }) {
                 this.newColumn[key] = html;
+            },
+            slugify(text)
+            {
+                return text.toString().toLowerCase()
+                    .replace(/\s+/g, '-')           // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                    .replace(/^-+/, '')             // Trim - from start of text
+                    .replace(/-+$/, '');            // Trim - from end of text
             }
         },
         mounted() {

@@ -2,7 +2,7 @@
     <!-- MODAL -->
     <div class="modal fade" :style="{ display: modal_visible ? 'block' : 'none'}" :class="modal_visible && 'in'">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div v-if="modal_visible" class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal">
                         <span aria-hidden="true">×</span>
