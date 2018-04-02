@@ -418,7 +418,8 @@ class NinjaTablesAdmin {
 
 		$arguments = array(
 			'post_type'   => $postTypes[ $plugin ],
-			'post_status' => 'any'
+            'post_status' => 'any',
+            'numberposts' => -1
 		);
 
 		$tables = get_posts( $arguments );
