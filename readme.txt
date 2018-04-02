@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, table
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.4
-Stable tag: 1.9.8
+Stable tag: 1.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,9 @@ Rendering tables in all devices are critical. Ninja Tables will solve this probl
 
 == Export and Import Data ==
 You can export your table in CSV or JSON format and save them in a safe place or you can take your table data and use them in any other program. So, your data will always be portable and safe. In the same way, You can import any table from CSV, JSON data source.
+
+== Import From TablePress Plugin ==
+If You already have tables build with TablePress Plugin then You can easily transfer the tables with one single click per table. We made the process very easy so You can enjoy the modern table experience and build your tables in no time.
 
 == Import Tables from other table Plugins ==
 Already using other plugins for tables and have any data with it. We have covered it. In this plugin, You can easily import table with data from other Table Plugins like "TablePress".
@@ -117,8 +120,14 @@ Yes, For that please check pro add one <a href="">here</a>
 7. Default Table View in Frontend
 8. Teal Color Table View in Frontend
 9. Black Color Table View in Frontend
+9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 1.9.9 ( Date: 04-01-2018 ) =
+* Non-Unicode Language Support for import
+* Table Description update fix
+* Fix for TablePress Plugin
 
 = 1.9.8 ( Date: 03-31-2018 ) =
 * Edit Support for restricted column ID
