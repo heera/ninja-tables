@@ -444,6 +444,7 @@ class NinjaTablesAdmin {
 		
 		$column_counter = 1;
 		foreach ( $header as $item ) {
+            $item = trim(strip_tags($item));
 			$key = $this->url_slug($item);
 			$key     = sanitize_title( $key, 'ninja_column_'.$column_counter, 'display' );
 			$counter = 1;
