@@ -1,7 +1,7 @@
 <?php namespace NinjaTable\TableDrivers;
 
 class NinjaFooTable {
-	public static $version = '2.0.0';
+	public static $version = '2.0.2';
 
 	public static function run( $tableArray ) {
 		self::enqueue_assets();
@@ -124,7 +124,7 @@ class NinjaFooTable {
                         color: '.$table_color_secondary.';
                         border: none;
                     }';
-			    wp_add_inline_style('footable', $css);
+			    wp_add_inline_style('footable_styles', $css);
             }
         }
 		
