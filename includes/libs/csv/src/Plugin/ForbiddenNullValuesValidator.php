@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
@@ -31,7 +31,7 @@ class ForbiddenNullValuesValidator
     public function __invoke(array $row)
     {
         $res = array_filter($row, function ($value) {
-            return null === $value;
+            return is_null($value);
         });
 
         return !$res;

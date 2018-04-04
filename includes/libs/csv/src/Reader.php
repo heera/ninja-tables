@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
@@ -12,11 +12,12 @@
 */
 namespace League\Csv;
 
-use Generator;
+use CallbackFilterIterator;
 use InvalidArgumentException;
 use Iterator;
 use League\Csv\Modifier\MapIterator;
 use LimitIterator;
+use SplFileObject;
 
 /**
  *  A class to manage extracting and filtering a CSV
@@ -33,42 +34,37 @@ class Reader extends AbstractCsv
     protected $stream_filter_mode = STREAM_FILTER_READ;
 
     /**
-     * Returns a sequential array of all CSV lines
+     * Returns a Filtered Iterator
      *
-     * The callable function will be applied to each Iterator item
+     * DEPRECATION WARNING! This method will be removed in the next major point release
      *
-     * @param callable|null $callable a callable function
+     * @deprecated deprecated since version 7.2
      *
-     * @return array
+     * @return Iterator
      */
-    public function fetchAll(callable $callable = null)
+    public function query(callable $callable = null)
     {
-        return iterator_to_array($this->applyCallable($this->getQueryIterator(), $callable), false);
+        return $this->fetch($callable);
     }
 
     /**
-     * Fetch the next row from a result set
+     * Return a Filtered Iterator
      *
-     * @param callable|null $callable a callable function to be applied to each Iterator item
+     * @param callable $callable a callable function to be applied to each Iterator item
      *
      * @return Iterator
      */
     public function fetch(callable $callable = null)
     {
-        return $this->applyCallable($this->getQueryIterator(), $callable);
-    }
-
-    /**
-     * Apply The callable function
-     *
-     * @param Iterator      $iterator
-     * @param callable|null $callable
-     *
-     * @return Iterator
-     */
-    protected function applyCallable(Iterator $iterator, callable $callable = null)
-    {
-        if (null !== $callable) {
+        $this->addFilter(function ($row) {
+            return is_array($row);
+        });
+        $iterator = $this->getIterator();
+        $iterator = $this->applyBomStripping($iterator);
+        $iterator = $this->applyIteratorFilter($iterator);
+        $iterator = $this->applyIteratorSortBy($iterator);
+        $iterator = $this->applyIteratorInterval($iterator);
+        if (!is_null($callable)) {
             return new MapIterator($iterator, $callable);
         }
 
@@ -81,14 +77,14 @@ class Reader extends AbstractCsv
      * The callback function must return TRUE in order to continue
      * iterating over the iterator.
      *
-     * @param callable $callable a callable function to apply to each selected CSV rows
+     * @param callable $callable The callback function
      *
      * @return int the iteration count
      */
     public function each(callable $callable)
     {
         $index = 0;
-        $iterator = $this->getQueryIterator();
+        $iterator = $this->fetch();
         $iterator->rewind();
         while ($iterator->valid() && true === call_user_func(
             $callable,
@@ -106,9 +102,9 @@ class Reader extends AbstractCsv
     /**
      * Returns a single row from the CSV
      *
-     * By default if no offset is provided the first row of the CSV is selected
+     * @param int $offset
      *
-     * @param int $offset the CSV row offset
+     * @throws InvalidArgumentException If the $offset is not a valid Integer
      *
      * @return array
      */
@@ -116,115 +112,68 @@ class Reader extends AbstractCsv
     {
         $this->setOffset($offset);
         $this->setLimit(1);
-        $iterator = $this->getQueryIterator();
+        $iterator = $this->fetch();
         $iterator->rewind();
 
         return (array) $iterator->current();
     }
 
     /**
-     * Returns the next value from a single CSV column
+     * Returns a sequential array of all CSV lines
      *
-     * The callable function will be applied to each value to be return
+     * The callable function will be applied to each Iterator item
      *
-     * By default if no column index is provided the first column of the CSV is selected
-     *
-     * @param int           $column_index CSV column index
-     * @param callable|null $callable     A callable to be applied to each of the value to be returned.
-     *
-     * @return Iterator
-     */
-    public function fetchColumn($column_index = 0, callable $callable = null)
-    {
-        $column_index = $this->validateInteger($column_index, 0, 'the column index must be a positive integer or 0');
-
-        $filter_column = function ($row) use ($column_index) {
-            return isset($row[$column_index]);
-        };
-
-        $select_column = function ($row) use ($column_index) {
-            return $row[$column_index];
-        };
-
-        $this->addFilter($filter_column);
-
-        return $this->applyCallable(new MapIterator($this->getQueryIterator(), $select_column), $callable);
-    }
-
-    /**
-     * Retrieve CSV data as pairs
-     *
-     * DEPRECATION WARNING! This method will be removed in the next major point release
-     *
-     * @deprecated deprecated since version 8.2
-     * @see Reader::fetchPairs
-     *
-     * Fetches an associative array of all rows as key-value pairs (first
-     * column is the key, second column is the value).
-     *
-     * By default if no column index is provided:
-     * - the first CSV column is used to provide the keys
-     * - the second CSV column is used to provide the value
-     *
-     * If the value from the column key index is duplicated its corresponding value will
-     * be overwritten
-     *
-     * @param int           $offset_index The column index to serve as offset
-     * @param int           $value_index  The column index to serve as value
-     * @param callable|null $callable     A callable to be applied to each of the rows to be returned.
+     * @param callable $callable a callable function
      *
      * @return array
      */
-    public function fetchPairsWithoutDuplicates($offset_index = 0, $value_index = 1, callable $callable = null)
+    public function fetchAll(callable $callable = null)
     {
-        return iterator_to_array($this->fetchPairs($offset_index, $value_index, $callable), true);
+        return iterator_to_array($this->fetch($callable), false);
     }
 
     /**
-     * Fetches the next key-value pairs from a result set (first
-     * column is the key, second column is the value).
+     * Returns a single column from the CSV data
      *
-     * By default if no column index is provided:
-     * - the first CSV column is used to provide the keys
-     * - the second CSV column is used to provide the value
+     * The callable function will be applied to each value to be return
      *
-     * @param int           $offset_index The column index to serve as offset
-     * @param int           $value_index  The column index to serve as value
-     * @param callable|null $callable     A callable to be applied to each of the rows to be returned.
+     * @param int      $column_index field Index
+     * @param callable $callable     a callable function
      *
-     * @return Generator
+     * @throws InvalidArgumentException If the column index is not a positive integer or 0
+     *
+     * @return array
      */
-    public function fetchPairs($offset_index = 0, $value_index = 1, callable $callable = null)
+    public function fetchColumn($column_index = 0, callable $callable = null)
     {
-        $offset_index = $this->validateInteger($offset_index, 0, 'the offset column index must be a positive integer or 0');
-        $value_index = $this->validateInteger($value_index, 0, 'the value column index must be a positive integer or 0');
-        $filter_pairs = function ($row) use ($offset_index) {
-            return isset($row[$offset_index]);
-        };
-        $select_pairs = function ($row) use ($offset_index, $value_index) {
-            return array(
-                $row[$offset_index],
-                isset($row[$value_index]) ? $row[$value_index] : null,
+        if (false === filter_var($column_index, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+            throw new InvalidArgumentException(
+                'the column index must be a positive integer or 0'
             );
+        }
+        $filterColumn = function ($row) use ($column_index) {
+            return array_key_exists($column_index, $row);
+        };
+        $selectColumn = function ($row) use ($column_index) {
+            return $row[$column_index];
         };
 
-        $this->addFilter($filter_pairs);
-        $iterator = $this->applyCallable(new MapIterator($this->getQueryIterator(), $select_pairs), $callable);
-        foreach ($iterator as $row) {
-            yield $row[0] => $row[1];
-        }
+        $iterator = $this->fetch($callable);
+        $iterator = new CallbackFilterIterator($iterator, $filterColumn);
+
+        return iterator_to_array(new MapIterator($iterator, $selectColumn), false);
     }
 
     /**
-     * Fetch the next row from a result set
+     * Returns a sequential array of all CSV lines;
      *
      * The rows are presented as associated arrays
-     * The callable function will be applied to each row
+     * The callable function will be applied to each Iterator item
      *
      * @param int|array $offset_or_keys the name for each key member OR the row Index to be
      *                                  used as the associated named keys
      *
-     * @param callable $callable A callable to be applied to each of the rows to be returned.
+     * @param callable $callable a callable function
      *
      * @throws InvalidArgumentException If the submitted keys are invalid
      *
@@ -234,7 +183,7 @@ class Reader extends AbstractCsv
     {
         $keys = $this->getAssocKeys($offset_or_keys);
         $keys_count = count($keys);
-        $combine_array = function (array $row) use ($keys, $keys_count) {
+        $combineArray = function (array $row) use ($keys, $keys_count) {
             if ($keys_count != count($row)) {
                 $row = array_slice(array_pad($row, $keys_count, null), 0, $keys_count);
             }
@@ -242,7 +191,7 @@ class Reader extends AbstractCsv
             return array_combine($keys, $row);
         };
 
-        return $this->applyCallable(new MapIterator($this->getQueryIterator(), $combine_array), $callable);
+        return iterator_to_array(new MapIterator($this->fetch($callable), $combineArray), false);
     }
 
     /**
@@ -258,17 +207,17 @@ class Reader extends AbstractCsv
     protected function getAssocKeys($offset_or_keys)
     {
         if (is_array($offset_or_keys)) {
-            return $this->validateKeys($offset_or_keys);
+            return $this->validateAssocKeys($offset_or_keys);
         }
 
-        $offset_or_keys = $this->validateInteger(
-            $offset_or_keys,
-            0,
-            'the row index must be a positive integer, 0 or a non empty array'
-        );
-        $keys = $this->validateKeys($this->getRow($offset_or_keys));
+        if (false === filter_var($offset_or_keys, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]])) {
+            throw new InvalidArgumentException('the row index must be a positive integer, 0 or a non empty array');
+        }
+
+        $keys = $this->getRow($offset_or_keys);
+        $keys = $this->validateAssocKeys($keys);
         $filterOutRow = function ($row, $rowIndex) use ($offset_or_keys) {
-            return $rowIndex != $offset_or_keys;
+            return is_array($row) && $rowIndex != $offset_or_keys;
         };
         $this->addFilter($filterOutRow);
 
@@ -281,28 +230,23 @@ class Reader extends AbstractCsv
      * @param array $keys
      *
      * @throws InvalidArgumentException If the submitted array fails the assertion
-     *
-     * @return array
      */
-    protected function validateKeys(array $keys)
+    protected function validateAssocKeys(array $keys)
     {
-        if (empty($keys) || $keys !== array_unique(array_filter($keys, array($this, 'isValidKey')))) {
-            throw new InvalidArgumentException('Use a flat array with unique string values');
+        if (empty($keys)) {
+            throw new InvalidArgumentException('The array can not be empty');
         }
 
-        return $keys;
-    }
+        foreach ($keys as &$str) {
+            $str = $this->validateString($str);
+        }
+        unset($str);
 
-    /**
-     * Returns whether the submitted value can be used as string
-     *
-     * @param mixed $value
-     *
-     * @return bool
-     */
-    protected function isValidKey($value)
-    {
-        return is_scalar($value) || (is_object($value) && method_exists($value, '__toString'));
+        if ($keys == array_unique($keys)) {
+            return $keys;
+        }
+
+        throw new InvalidArgumentException('The array must contain unique values');
     }
 
     /**
@@ -316,24 +260,20 @@ class Reader extends AbstractCsv
      */
     protected function getRow($offset)
     {
-        $fileObj = $this->getIterator();
-        $iterator = new LimitIterator($fileObj, $offset, 1);
+        $csv = $this->getIterator();
+        $csv->setFlags($this->getFlags() & ~SplFileObject::READ_CSV);
+        $iterator = new LimitIterator($csv, $offset, 1);
         $iterator->rewind();
-        $row = $iterator->current();
-        if (empty($row)) {
+        $res = $iterator->current();
+
+        if (empty($res)) {
             throw new InvalidArgumentException('the specified row does not exist or is empty');
         }
 
-        if (0 !== $offset || !$this->isBomStrippable()) {
-            return $row;
+        if (0 == $offset && $this->isBomStrippable()) {
+            $res = mb_substr($res, mb_strlen($this->getInputBom()));
         }
 
-        $bom_length = mb_strlen($this->getInputBOM());
-        $row[0] = mb_substr($row[0], $bom_length);
-        if ($this->enclosure == mb_substr($row[0], 0, 1) && $this->enclosure == mb_substr($row[0], -1, 1)) {
-            $row[0] = mb_substr($row[0], 1, -1);
-        }
-
-        return $row;
+        return str_getcsv($res, $this->delimiter, $this->enclosure, $this->escape);
     }
 }

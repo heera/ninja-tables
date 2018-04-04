@@ -446,7 +446,12 @@ class NinjaTablesAdmin {
 		foreach ( $header as $item ) {
             $item = trim(strip_tags($item));
 			$key = $this->url_slug($item);
-			$key     = sanitize_title( $key, 'ninja_column_'.$column_counter, 'display' );
+            $key     = sanitize_title( $key, 'ninja_column_'.$column_counter, 'display' );
+            
+            if (strlen($key) > 15) {
+                $key = 'table_column_'.$column_counter;
+            }
+
 			$counter = 1;
 			while ( isset( $data[ $key ] ) ) {
 				$key .= '_'.$counter;
@@ -460,16 +465,21 @@ class NinjaTablesAdmin {
 	}
 
 	private function uploadTableCsv() {
-		$tableId = $this->createTable();
-
 		$tmpName = $_FILES['file']['tmp_name'];
-
-		$reader = \League\Csv\Reader::createFromFileObject(
-			new SplFileObject( $tmpName )
-		)->fetchAll();
+        
+        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
 
 		$header = array_shift( $reader );
-		$reader = array_reverse( $reader );
+        $reader = array_reverse( $reader );
+
+        foreach ($reader as &$item) {
+            // We have to convert everything to utf-8
+            foreach ($item as &$entry) {
+                $entry = mb_convert_encoding($entry, 'UTF-8');
+            }
+        }
+        
+        $tableId = $this->createTable();
 		
 		$this->storeTableConfigWhenImporting( $tableId, $header );
 
@@ -822,11 +832,9 @@ class NinjaTablesAdmin {
 
 	public function uploadData() {
 		$tableId = intval( $_REQUEST['table_id'] );
-		$tmpName = $_FILES['file']['tmp_name'];
+        $tmpName = $_FILES['file']['tmp_name'];
 
-		$reader = \League\Csv\Reader::createFromPath($tmpName)
-									->appendStreamFilter('convert.iconv.ISO-8859-1/UTF-8//TRANSLIT')
-									->fetchAll();
+		$reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
 
 		$csvHeader = array_shift( $reader );
 		$csvHeader = array_map( 'esc_attr', $csvHeader );
@@ -861,6 +869,11 @@ class NinjaTablesAdmin {
 		$time = current_time( 'mysql' );
 
 		foreach ( $reader as $item ) {
+            // If item has any ascii entry we'll convert it to utf-8
+            foreach ($item as &$entry) {
+                $entry = mb_convert_encoding($entry, 'UTF-8');
+            }
+
 			$itemTemp = array_combine( $header, $item );
 
 			array_push( $data, array(
@@ -1014,7 +1027,6 @@ class NinjaTablesAdmin {
 		return $formatted;
 	}
 
-
 	/**
 	 * add a button to Tiny MCE editor
 	 *
@@ -1044,7 +1056,6 @@ class NinjaTablesAdmin {
     {
         update_option('_ninja_tables_plugin_suggest_dismiss', time());
 	}
-	
 	
 	private function url_slug($str, $options = array()) {
 		// Make sure string is in UTF-8 and strip invalid UTF-8 characters
@@ -1117,7 +1128,7 @@ class NinjaTablesAdmin {
 			'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
 			'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
 			'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
-			'š' => 's', 'ū' => 'u', 'ž' => 'z'
+            'š' => 's', 'ū' => 'u', 'ž' => 'z',
 		);
 
 		// Make custom replacements

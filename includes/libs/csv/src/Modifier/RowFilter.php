@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
@@ -28,14 +28,14 @@ trait RowFilter
      *
      * @var callable[]
      */
-    protected $validators = array();
+    protected $validators = [];
 
     /**
      * Callables to format the row before insertion
      *
      * @var callable[]
      */
-    protected $formatters = array();
+    protected $formatters = [];
 
     /**
      * add a formatter to the collection
@@ -85,7 +85,7 @@ trait RowFilter
      */
     public function clearFormatters()
     {
-        $this->formatters = array();
+        $this->formatters = [];
 
         return $this;
     }
@@ -100,17 +100,10 @@ trait RowFilter
      */
     public function addValidator(callable $callable, $name)
     {
-        $name = $this->validateString($name);
-
         $this->validators[$name] = $callable;
 
         return $this;
     }
-
-    /**
-     * @inheritdoc
-     */
-    abstract protected function validateString($str);
 
     /**
      * Remove a validator from the collection
@@ -121,8 +114,9 @@ trait RowFilter
      */
     public function removeValidator($name)
     {
-        $name = $this->validateString($name);
-        unset($this->validators[$name]);
+        if (array_key_exists($name, $this->validators)) {
+            unset($this->validators[$name]);
+        }
 
         return $this;
     }
@@ -136,9 +130,7 @@ trait RowFilter
      */
     public function hasValidator($name)
     {
-        $name = $this->validateString($name);
-
-        return isset($this->validators[$name]);
+        return array_key_exists($name, $this->validators);
     }
 
     /**
@@ -148,7 +140,7 @@ trait RowFilter
      */
     public function clearValidators()
     {
-        $this->validators = array();
+        $this->validators = [];
 
         return $this;
     }
@@ -156,7 +148,7 @@ trait RowFilter
     /**
      * Format the given row
      *
-     * @param array $row
+     * @param array|string $row
      *
      * @return array
      */
@@ -170,7 +162,7 @@ trait RowFilter
     }
 
     /**
-    * Validate a row
+    * validate a row
     *
     * @param array $row
     *

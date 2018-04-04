@@ -4,15 +4,13 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
 namespace League\Csv\Exception;
-
-use InvalidArgumentException;
 
 /**
  *  Thrown when a data is not validated prior to insertion
@@ -21,7 +19,7 @@ use InvalidArgumentException;
  * @since  7.0.0
  *
  */
-class InvalidRowException extends InvalidArgumentException
+class InvalidRowException extends \InvalidArgumentException
 {
     /**
      * Validator which did not validated the data
@@ -42,7 +40,7 @@ class InvalidRowException extends InvalidArgumentException
      * @param array  $data    invalid  data
      * @param string $message exception message
      */
-    public function __construct($name, array $data = array(), $message = '')
+    public function __construct($name, array $data = [], $message = '')
     {
         parent::__construct($message);
         $this->name = $name;

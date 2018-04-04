@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
@@ -47,7 +47,7 @@ class ColumnConsistencyValidator
      */
     public function setColumnsCount($value)
     {
-        if (false === filter_var($value, FILTER_VALIDATE_INT, array('options' => array('min_range' => -1)))) {
+        if (false === filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => -1]])) {
             throw new InvalidArgumentException('the column count must an integer greater or equals to -1');
         }
         $this->detect_columns_count = false;
@@ -89,12 +89,10 @@ class ColumnConsistencyValidator
             $this->detect_columns_count = false;
 
             return true;
-        }
-
-        if (-1 == $this->columns_count) {
+        } elseif (-1 == $this->columns_count) {
             return true;
         }
 
-        return count($row) === $this->columns_count;
+        return count($row) == $this->columns_count;
     }
 }

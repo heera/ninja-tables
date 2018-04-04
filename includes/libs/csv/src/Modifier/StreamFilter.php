@@ -4,7 +4,7 @@
 *
 * @license http://opensource.org/licenses/MIT
 * @link https://github.com/thephpleague/csv/
-* @version 8.2.2
+* @version 7.2.0
 * @package League.csv
 *
 * For the full copyright and license information, please view the LICENSE
@@ -14,7 +14,6 @@ namespace League\Csv\Modifier;
 
 use LogicException;
 use OutOfBoundsException;
-use SplFileObject;
 
 /**
  *  A Trait to ease PHP Stream Filters manipulation
@@ -31,7 +30,7 @@ trait StreamFilter
      *
      * @var array
      */
-    protected $stream_filters =array();
+    protected $stream_filters = [];
 
     /**
      * Stream filtering mode to apply on all filters
@@ -67,24 +66,24 @@ trait StreamFilter
      * an object that implements the `__toString` method
      * a path to a file
      *
-     * @param StreamIterator|SplFileObject|string $path The file path
+     * @param \SplFileObject|string $path The file path
      */
     protected function initStreamFilter($path)
     {
-        $this->stream_filters =array();
-        if (!is_string($path)) {
+        $this->stream_filters = [];
+        if (! is_string($path)) {
             $this->stream_uri = null;
 
             return;
         }
 
-        if (!preg_match($this->stream_regex, $path, $matches)) {
+        if (! preg_match($this->stream_regex, $path, $matches)) {
             $this->stream_uri = $path;
 
             return;
         }
         $this->stream_uri = $matches['resource'];
-        $this->stream_filters = array_map('urldecode', explode('|', $matches['filters']));
+        $this->stream_filters = explode('|', $matches['filters']);
         $this->stream_filter_mode = $this->fetchStreamModeAsInt($matches['mode']);
     }
 
@@ -147,12 +146,12 @@ trait StreamFilter
     public function setStreamFilterMode($mode)
     {
         $this->assertStreamable();
-        if (!in_array($mode, array(STREAM_FILTER_ALL, STREAM_FILTER_READ, STREAM_FILTER_WRITE))) {
+        if (!in_array($mode, [STREAM_FILTER_ALL, STREAM_FILTER_READ, STREAM_FILTER_WRITE])) {
             throw new OutOfBoundsException('the $mode should be a valid `STREAM_FILTER_*` constant');
         }
 
         $this->stream_filter_mode = $mode;
-        $this->stream_filters =array();
+        $this->stream_filters = [];
 
         return $this;
     }
@@ -208,13 +207,9 @@ trait StreamFilter
      */
     protected function sanitizeStreamFilter($filter_name)
     {
-        return urldecode($this->validateString($filter_name));
+        $this->assertStreamable();
+        return (string) $filter_name;
     }
-
-    /**
-     * @inheritdoc
-     */
-    abstract public function validateString($str);
 
     /**
      * Detect if the stream filter is already present
@@ -227,7 +222,7 @@ trait StreamFilter
     {
         $this->assertStreamable();
 
-        return false !== array_search(urldecode($filter_name), $this->stream_filters, true);
+        return false !== array_search($filter_name, $this->stream_filters, true);
     }
 
     /**
@@ -240,7 +235,7 @@ trait StreamFilter
     public function removeStreamFilter($filter_name)
     {
         $this->assertStreamable();
-        $res = array_search(urldecode($filter_name), $this->stream_filters, true);
+        $res = array_search($filter_name, $this->stream_filters, true);
         if (false !== $res) {
             unset($this->stream_filters[$res]);
         }
@@ -256,7 +251,7 @@ trait StreamFilter
     public function clearStreamFilter()
     {
         $this->assertStreamable();
-        $this->stream_filters =array();
+        $this->stream_filters = [];
 
         return $this;
     }
@@ -269,13 +264,13 @@ trait StreamFilter
     protected function getStreamFilterPath()
     {
         $this->assertStreamable();
-        if (!$this->stream_filters) {
+        if (! $this->stream_filters) {
             return $this->stream_uri;
         }
 
         return 'php://filter/'
             .$this->getStreamFilterPrefix()
-            .implode('|', array_map('urlencode', $this->stream_filters))
+            .implode('|', $this->stream_filters)
             .'/resource='.$this->stream_uri;
     }
 
