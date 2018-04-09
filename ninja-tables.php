@@ -78,3 +78,48 @@ function run_ninja_tables()
 
 // kick off
 run_ninja_tables();
+
+add_action('init', function () {
+    return;
+    dd('not now.');
+    global $wpdb;
+
+    $id = 185;
+    $tableId = 220;
+    $newPosition = 6;
+    
+    $oldPosition = (int) ninjaDB('ninja_table_items')->select('position')->where('id', $id)->first()->position;
+
+    ninjaDB('ninja_table_items')->where('id', $id)->update(['position' => 0]);
+
+    if ($newPosition < $oldPosition) {
+        $query = "UPDATE wp_ninja_table_items 
+                  SET position = position + 1
+                  WHERE table_id = %d
+                    and position between %d and %d
+                  order by position desc";
+        $bindings = [
+            $tableId,
+            $newPosition,
+            $oldPosition,
+        ];
+    } elseif ($newPosition > $oldPosition) {
+        $query = "UPDATE wp_ninja_table_items 
+                  SET position = position - 1
+                  WHERE table_id = %d
+                    and position between %d and %d
+                  order by position asc";
+
+        $bindings = [
+            $tableId,
+            $oldPosition,
+            $newPosition,
+        ];
+    }
+
+    $wpdb->query($wpdb->prepare($query, $bindings));
+
+    ninjaDB('ninja_table_items')->where('id', $id)->update(['position' => $newPosition]);
+
+    dd('done');
+});
