@@ -124,6 +124,10 @@ Yes, For that please check pro add one <a href="">here</a>
 
 == Changelog ==
 
+= 2.0.3 ( Date: 04-09-2018 ) =
+* Enhanced Support Non-Unicode Language for CSV import
+* Overall improvement for admin panel UI
+
 = 1.9.9 ( Date: 04-01-2018 ) =
 * Non-Unicode Language Support for import
 * Table Description update fix
