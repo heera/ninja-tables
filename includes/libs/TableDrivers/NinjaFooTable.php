@@ -1,7 +1,7 @@
 <?php namespace NinjaTable\TableDrivers;
 
 class NinjaFooTable {
-	public static $version = '2.0.2';
+	public static $version = NINJA_TABLES_VERSION;
 
 	public static function run( $tableArray ) {
 		self::enqueue_assets();
