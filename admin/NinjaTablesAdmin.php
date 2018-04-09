@@ -507,20 +507,6 @@ class NinjaTablesAdmin
 
         $tableId = $this->createTable();
 
-        $this->storeTableConfigWhenImporting($tableId, $header);
-
-        $this->insertDataToTable($tableId, $reader, $header);
-
-        wp_send_json([
-            'message' => __('Successfully added a table.', 'ninja-tables'),
-            'tableId' => $tableId
-        ]);
-    }
-
-    private function uploadTableJson()
-    {
-        $tableId = $this->createTable();
-
         $header = $this->formatHeader($header);
 
         $this->storeTableConfigWhenImporting($tableId, $header);
@@ -923,29 +909,9 @@ class NinjaTablesAdmin
 
         foreach ($csvHeader as $item) {
             foreach ($config as $column) {
-                $item = esc_attr($item);
                 if ($item == $column['key'] || $item == $column['name']) {
                     $header[] = $column['key'];
                 }
-            }
-        }
-
-        if (count($header) != count($config)) {
-            wp_send_json([
-                'message' => __(
-                    'Please use the provided CSV header structure.',
-                    'ninja-tables'
-                )
-            ], 423);
-        }
-
-        $data = [];
-        $time = current_time('mysql');
-
-        foreach ($reader as $item) {
-            // If item has any ascii entry we'll convert it to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
             }
         }
 
