@@ -445,12 +445,14 @@ class NinjaTablesAdmin {
 		$column_counter = 1;
 		foreach ( $header as $item ) {
             $item = trim(strip_tags($item));
-			$key = $this->url_slug($item);
-            $key     = sanitize_title( $key, 'ninja_column_'.$column_counter, 'display' );
             
-            if (strlen($key) > 15) {
-                $key = 'table_column_'.$column_counter;
-            }
+            // We'll slugify only if item is printable characters.
+            // Otherwise we'll generate custom key for the item.
+            // Printable chars as in ASCII printable chars.
+            // Ref: http://www.catonmat.net/blog/my-favorite-regex/
+            $key = !preg_match('/[^ -~]/', $item) ? $this->url_slug($item) : null;
+            
+            $key = sanitize_title($key, 'ninja_column_'.$column_counter);
 
 			$counter = 1;
 			while ( isset( $data[ $key ] ) ) {
@@ -480,6 +482,8 @@ class NinjaTablesAdmin {
         }
         
         $tableId = $this->createTable();
+		
+        $header = $this->formatHeader($header);
 		
 		$this->storeTableConfigWhenImporting( $tableId, $header );
 
@@ -567,14 +571,12 @@ class NinjaTablesAdmin {
 	}
 
 	private function storeTableConfigWhenImporting( $tableId, $header ) {
-
-		$header = $this->formatHeader( $header );
 		// ninja_table_columns
 		$ninjaTableColumns = array();
 		foreach ( $header as $key => $name ) {
 			$ninjaTableColumns[] = array(
-				'key'         => esc_attr( $key ),
-				'name'        => esc_attr( $name ),
+				'key'         => $key,
+				'name'        => $name,
 				'breakpoints' => ''
 			);
 		}
@@ -590,7 +592,6 @@ class NinjaTablesAdmin {
 	}
 
 	private function insertDataToTable( $tableId, $values, $header ) {
-		$header = $this->formatHeader( $header );
 		$header = array_keys($header);
 		
 		$data = array();
@@ -851,7 +852,7 @@ class NinjaTablesAdmin {
 
 		foreach ( $csvHeader as $item ) {
 			foreach ( $config as $column ) {
-				$column = array_map( 'esc_attr', $column );
+                $item = esc_attr($item);
 				if ( $item == $column['key'] || $item == $column['name'] ) {
 					$header[] = $column['key'];
 				}
