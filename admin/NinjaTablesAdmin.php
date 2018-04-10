@@ -646,42 +646,48 @@ class NinjaTablesAdmin {
 	public function updateTableSettings() {
 		$tableId = intval( $_REQUEST['table_id'] );
 
-		$rawColumns   = $_REQUEST['columns'];
-		$tableColumns = array();
 		
-		if ( $rawColumns && is_array( $rawColumns ) ) {
-			foreach ( $rawColumns as $column ) {
-				$tableColumns[] = array_map( 'sanitize_text_field', $column );
+
+		$tableColumns = array();
+		if(isset($_REQUEST['columns'])) {
+			$rawColumns   = $_REQUEST['columns'];
+			if ( $rawColumns && is_array( $rawColumns ) ) {
+				foreach ( $rawColumns as $column ) {
+					$tableColumns[] = array_map( 'sanitize_text_field', $column );
+				}
+				update_post_meta( $tableId, '_ninja_table_columns', $tableColumns );
 			}
-			update_post_meta( $tableId, '_ninja_table_columns', $tableColumns );
-		}
+        }
+        
 
-
-		$tablePreference          = $_REQUEST['table_settings'];
+		
 		$formattedTablePreference = array();
-		if ( $tablePreference && is_array( $tablePreference ) ) {
-			foreach ( $tablePreference as $key => $tab_pref ) {
+		if(isset($_REQUEST['table_settings'])) {
+			$tablePreference          = $_REQUEST['table_settings'];
+			if ( $tablePreference && is_array( $tablePreference ) ) {
+				foreach ( $tablePreference as $key => $tab_pref ) {
 
-				if ( $tab_pref == 'false' ) {
-					$tab_pref = false;
+					if ( $tab_pref == 'false' ) {
+						$tab_pref = false;
+					}
+
+					if ( $tab_pref == 'true' ) {
+						$tab_pref = true;
+					}
+
+					if ( is_array( $tab_pref ) ) {
+						$tab_pref = array_map( 'sanitize_text_field', $tab_pref );
+					} else {
+						$tab_pref = sanitize_text_field( $tab_pref );
+					}
+
+					$formattedTablePreference[ $key ] = $tab_pref;
 				}
-
-				if ( $tab_pref == 'true' ) {
-					$tab_pref = true;
-				}
-
-				if ( is_array( $tab_pref ) ) {
-					$tab_pref = array_map( 'sanitize_text_field', $tab_pref );
-				} else {
-					$tab_pref = sanitize_text_field( $tab_pref );
-				}
-
-				$formattedTablePreference[ $key ] = $tab_pref;
+				update_post_meta( $tableId, '_ninja_table_settings',
+					$formattedTablePreference );
 			}
-			update_post_meta( $tableId, '_ninja_table_settings',
-				$formattedTablePreference );
-		}
-
+        }
+        
 		ninjaTablesClearTableDataCache($tableId);
 		wp_send_json( array(
 			'message'  => __( 'Successfully updated configuration.',

@@ -13,7 +13,7 @@ class NinjaFooTable {
 		wp_enqueue_script( 'footable',
 			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.js",
 			array( 'jquery' ), '3.1.5', true );
-		
+
 		wp_enqueue_script( 'footable_init',
 			NINJA_TABLES_DIR_URL . "assets/js/ninja-tables-footable.js",
 			array( 'footable' ), self::$version, true );
@@ -27,32 +27,41 @@ class NinjaFooTable {
 				'empty_text' => __( 'No Result Found', 'ninja-tables' ),
 			)
 		) );
-        
-        $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninjatables-public.css";
 
-        if (is_rtl()) {
-            $styleSrc = NINJA_TABLES_DIR_URL."assets/css/ninjatables-public-rtl.css";
-        }
+		$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
+
+		if ( is_rtl() ) {
+			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public-rtl.css";
+		}
 
 		wp_enqueue_style(
-            'footable_styles',
+			'footable_styles',
 			$styleSrc,
-            array(),
-            self::$version,
-            'all'
-        );
+			array(),
+			self::$version,
+			'all'
+		);
 	}
 
 	private static function render( $tableArray ) {
+
 		extract( $tableArray );
 		if ( ! count( $columns ) ) {
 			return;
 		}
+
+		$renderType = 'ajax_table';
+		if ( isset( $settings['render_type'] ) && $settings['render_type'] ) {
+			$renderType = $settings['render_type'];
+		}
+
+
 		$formatted_columns = array();
-		$sortingType = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
+		$sortingType       = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
 
 		$globalSorting = ( isset( $settings['column_sorting'] ) )
 			? (bool) $settings['column_sorting'] : false;
+
 		foreach ( $columns as $column ) {
 			$columnType       = self::getColumnType( $column );
 			$formatted_column = array(
@@ -63,16 +72,16 @@ class NinjaFooTable {
 				'sortable'    => $globalSorting,
 				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true
 			);
-			
+
 			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
 				$formatted_column['sorted']    = true;
 				$formatted_column['direction'] = $settings['sorting_column_by'];
 			}
-			
+
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
 		}
-		
+
 		if ( $settings['show_all'] ) {
 			$pagingSettings = false;
 		} else {
@@ -80,65 +89,67 @@ class NinjaFooTable {
 				: 20;
 		}
 
-
 		$enableSearch = ( isset( $settings['enable_search'] ) )
 			? $settings['enable_search'] : false;
-		
+
 		$configSettings = array(
 			'filtering'       => $enableSearch,
 			'paging'          => $pagingSettings,
 			'sorting'         => true,
 			'default_sorting' => ( isset( $settings['default_sorting'] ) ) ? $settings['default_sorting'] : false,
-            'defualt_filter' => isset($default_filter) ? $default_filter : false
+			'defualt_filter'  => isset( $default_filter ) ? $default_filter : false
 		);
 
 		$table_classes = self::getTableCssClass( $settings );
 
 		$tableHasColor = '';
-		
+
 		if ( isset( $settings['table_color'] ) && $settings['table_color']
 		     && $settings['table_color'] != 'ninja_no_color_table'
 		) {
 			$tableHasColor = 'colored_table';
 			$table_classes .= ' inverted';
 		}
-		
-		if(isset($settings['hide_all_borders']) && $settings['hide_all_borders']) {
+
+		if ( isset( $settings['hide_all_borders'] ) && $settings['hide_all_borders'] ) {
 			$table_classes .= ' hide_all_borders';
-        }
-		
-        if(isset($settings['hide_header_row']) && $settings['hide_header_row']) {
-	        $table_classes .= ' ninjatable_hide_header_row';
-        }
-        
-        if(!$enableSearch) {
-	        $table_classes .= ' ninja_table_search_disabled';
-        }
-        
-		if(isset($settings['table_color']) && $settings['table_color'] == 'ninja_table_custom_color') {
-		    $table_color_primary = isset($settings['table_color_primary']) ? $settings['table_color_primary'] : '';
-		    $table_color_secondary = isset($settings['table_color_secondary']) ? $settings['table_color_secondary'] : '';
-		    if($table_color_primary && $table_color_secondary) {
-			    $css = '#footable_parent_'.$table_id.'.colored_table table.foo-table.inverted.table {
-                        background: '.$table_color_primary.';
-                        color: '.$table_color_secondary.';
+		}
+
+		if ( isset( $settings['hide_header_row'] ) && $settings['hide_header_row'] ) {
+			$table_classes .= ' ninjatable_hide_header_row';
+		}
+
+		if ( ! $enableSearch ) {
+			$table_classes .= ' ninja_table_search_disabled';
+		}
+
+		if ( isset( $settings['table_color'] ) && $settings['table_color'] == 'ninja_table_custom_color' ) {
+			$table_color_primary   = isset( $settings['table_color_primary'] ) ? $settings['table_color_primary'] : '';
+			$table_color_secondary = isset( $settings['table_color_secondary'] ) ? $settings['table_color_secondary']
+				: '';
+			if ( $table_color_primary && $table_color_secondary ) {
+				$css = '#footable_parent_' . $table_id . '.colored_table table.foo-table.inverted.table {
+                        background: ' . $table_color_primary . ';
+                        color: ' . $table_color_secondary . ';
                         border: none;
                     }';
-			    wp_add_inline_style('footable_styles', $css);
-            }
-        }
-		
+				wp_add_inline_style( 'footable_styles', $css );
+			}
+		}
+
 		$table_vars = array(
-			'table_id' => $table_id,
-			'columns'  => $formatted_columns,
-			'settings' => $configSettings
+			'table_id'    => $table_id,
+			'columns'     => $formatted_columns,
+			'settings'    => $configSettings,
+			'render_type' => $renderType
 		);
+
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
-		
+
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		?>
         <div id="footable_parent_<?php echo $table_id; ?>"
-             class="footable_parent wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
+             class="footable_parent loading_ninja_table wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
 			<?php if ( isset( $settings['show_title'] )
 			           && $settings['show_title']
 			) : ?>
@@ -156,12 +167,44 @@ class NinjaFooTable {
 					$table ); ?>
 			<?php endif; ?>
 			<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
-            <table <?php echo $foo_table_attributes; ?>
-                                                        id="footable_<?php echo intval( $table_id ); ?>"
-                                                        class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"></table><?php do_action( 'ninja_tables_after_table_print',
-				$table ); ?>
+            <table <?php echo $foo_table_attributes; ?> id="footable_<?php echo intval( $table_id ); ?>"
+                                                        class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
+					$table, $table_vars ); ?></table>
+			<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
         </div>
 		<?php
+	}
+
+	public static function getTableHTML( $table, $table_vars ) {
+
+		if ( $table_vars['render_type'] == 'ajax_table' ) {
+			return;
+		}
+		if ( $table_vars['render_type'] == 'legacy_table' ) {
+			self::generateLegacyTableHTML( $table, $table_vars );
+
+			return;
+		}
+	}
+
+	private static function generateLegacyTableHTML( $table, $table_vars ) {
+		$tableColumns     = $table_vars['columns'];
+		$formattedColumns = array();
+		//print_r($tableColumns);
+		$formatted_data = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
+		echo self::loadView( 'public/views/table_inner_html', array(
+			'table_columns' => $tableColumns,
+            'table_rows' =>    $formatted_data
+		) );
+	}
+
+	private static function loadView( $file, $data ) {
+		$file = NINJA_TABLES_DIR_PATH . $file . '.php';
+		ob_start();
+		extract( $data );
+		include $file;
+
+		return ob_get_clean();
 	}
 
 	private static function getTableCssClass( $settings ) {
@@ -225,11 +268,12 @@ class NinjaFooTable {
 		$atts = array(
 			'data-footable_id' => $tableID,
 		);
-		
+
 		$atts_string = '';
-		foreach ($atts as $att_name => $att) {
-			$atts_string .= $att_name.'="'.$att.'"';
-        }
-        return (string) $atts_string;
+		foreach ( $atts as $att_name => $att ) {
+			$atts_string .= $att_name . '="' . $att . '"';
+		}
+
+		return (string) $atts_string;
 	}
 }

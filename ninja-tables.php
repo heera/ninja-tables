@@ -31,6 +31,7 @@ if (!defined('WPINC')) {
 }
 
 define('NINJA_TABLES_DIR_URL', plugin_dir_url(__FILE__));
+define('NINJA_TABLES_DIR_PATH', plugin_dir_path(__FILE__));
 define('NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL.'public/');
 define('NINJA_TABLES_VERSION', '2.0.3');
 

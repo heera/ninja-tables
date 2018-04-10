@@ -189,7 +189,7 @@ class NinjaTableClass {
 			$plugin_public,
 			'register_ajax_routes'
 		);
-
+		
 		$this->loader->add_action('wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
@@ -197,7 +197,7 @@ class NinjaTableClass {
 		
 		// run foo table
 		$this->loader->add_action('ninja_tables-render-table-footable', 'NinjaTable\TableDrivers\NinjaFooTable', 'run');
-		
+		$this->loader->add_action('ninja_tables_inside_table_render', 'NinjaTable\TableDrivers\NinjaFooTable', 'getTableHTML', 10, 2);
 		
 	}
 

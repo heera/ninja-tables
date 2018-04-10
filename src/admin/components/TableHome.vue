@@ -35,6 +35,10 @@
                     {{ $t('Table Configuration') }}
                 </router-link>
 
+                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]" :to="{ name: 'advanced_settings', params: { table_id: tableId } }">
+                    {{ $t('Advanced Settings') }}
+                </router-link>
+
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
                              :to="{ name: 'import-export', params: { table_id: tableId } }">
                     {{ $t('Import - Export') }}

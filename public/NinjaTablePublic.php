@@ -77,7 +77,7 @@ class NinjaTablePublic {
 		}
 		
 		if(!$formatted_data) {
-			$formatted_data =ninjaTablesGetTablesDataByID($tableId, $defaultSorting);
+			$formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting);
 		}
 		
 		$formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
@@ -90,6 +90,7 @@ class NinjaTablePublic {
 		// register the shortcode 
 		$shortCodeBase = apply_filters('ninja_tables_shortcode_base', 'ninja_tables');
 		add_shortcode( $shortCodeBase, array($this, 'render_ninja_table_shortcode'));
+		
 	}
 	
 	public function render_ninja_table_shortcode($atts) {

@@ -70,3 +70,12 @@
 .footable_parent {
   overflow-x: auto;
 }
+
+.loading_ninja_table1 {
+  width: 100%;
+  height: 200px;
+  background: gray !important;
+  table {
+    display: none;
+  }
+}

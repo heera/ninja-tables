@@ -6,7 +6,8 @@ const TableDataItems = require('./components/TableRows.vue');
 const TableColumns = require('./components/TableColumns.vue');
 const ExportImport = require('./components/extras/ExportImport.vue')
 const UserComponents = require('./components/extras/UserComponents.vue')
-const Help = require('./components/extras/Help.vue')
+const Help = require('./components/extras/Help.vue');
+const TableAdvancedSettings = require('./components/TableAdvancedSettings');
 
 export const routes = [
     {
@@ -45,6 +46,11 @@ export const routes = [
                 path: 'columns',
                 name: 'data_columns',
                 component: TableColumns
+            },
+            {
+                path: 'advanced_settings',
+                name: 'advanced_settings',
+                component: TableAdvancedSettings
             },
             {
                 path: 'import-export',
