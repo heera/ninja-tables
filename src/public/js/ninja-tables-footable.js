@@ -104,20 +104,8 @@ jQuery(document).ready(function ($) {
                 "init.ft.table": function(e, ft){
                     jQuery('#footable_parent_'+tableConfig.table_id).removeClass('loading_ninja_table');
                 }
-            })
-                .on('footable_breakpoint', function(data) {
-                    // rowspan: hide other headers
-                    $table.find('td[colspan]').each(function() {
-                        var $td = $(this),
-                            index = $th.index(),
-                            colspan = $th.attr('colspan');
-
-                        // get all cells in the next rows (dependend on the rowspan-value) and hide them
-                        $td.parent('tr').find('td:lt(' + rowspan + ')')
-                            .find('th:eq(' + index + ')').hide();
-                    });
-                })
-                .footable(initConfig);
+            }).footable(initConfig);
+                $table.find('.ninja_temp_cell').remove();
         }
     };
     ninja_table_app.initTables(); 
