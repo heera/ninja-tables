@@ -378,17 +378,20 @@ class NinjaTablesAdmin {
 
 			$tableSettings = get_post_meta( $table->ID, '_tablepress_table_options', true );
 
-			$tableSettings = json_decode( $tableSettings, true );
-
+            $tableSettings = json_decode( $tableSettings, true );
+            
 			if ( $tableSettings['table_head'] ) {
 				$header = array_shift( $rows );
 			} else {
-				$header = array();
-				for ( $i = 0; $i < count( $rows ); $i ++ ) {
-					$header[] = 'header-' . $i + 1;
-				}
-			}
+                $header = array();
+                $columnCount = count(array_pop(array_reverse($rows)));
 
+				for ($i = 0; $i < $columnCount; $i++) {
+                    $headerName = 'Ninja Column '.($i+1);
+                    $headerKey = 'ninja_column_'.($i+1);
+					$header[$headerKey] = $headerName;
+				}
+            }
 
 			$rows = array_reverse( $rows );
 
