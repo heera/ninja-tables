@@ -43,11 +43,14 @@
                                         </el-tooltip>
                                     </label>
                                     <select v-model="new_column.data_type" class="form_control">
-                                        <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey">{{
-                                            typeName }}
+                                        <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey" :key="typeKey">
+                                            {{ typeName }}
                                         </option>
                                     </select>
                                 </div>
+
+                                <date-field :model="new_column" :hasPro="has_pro" />
+
                                 <div class="form_group">
                                     <label>
                                         {{ $t('Responsive Breakpoint') }}
@@ -112,6 +115,9 @@
                                             </option>
                                         </select>
                                     </div>
+
+                                    <date-field :model="column" :hasPro="has_pro" />
+
                                     <div class="form_group">
                                         <label>
                                             {{ $t('Responsive Breakpoint') }}
@@ -374,13 +380,15 @@
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
+    import DateField from './includes/DateField';
     
     import { tableLibs } from '../data/data'
 
     export default {
         name: 'TableConfiguration',
         components: {
-            draggable
+            draggable,
+            DateField
         },
         props: ['config'],
         data() {
@@ -395,7 +403,8 @@
                     name: '',
                     key: '',
                     breakpoints: '',
-                    data_type: 'text'
+                    data_type: 'text',
+                    dateFormat: ''
                 },
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
@@ -408,11 +417,8 @@
                     'text': this.$t('Single Line Text Field'),
                     'textarea': this.$t('Text Area'),
                     'html': this.$t('HTML Field'),
-                    'number': this.$t('Numeric Value')
-                },
-                dateFormats: {
-                    'Y-m-d': 'Y-m-d',
-
+                    'number': this.$t('Numeric Value'),
+                    'date': this.$t('Date Field')
                 },
                 attributeModel: {
                     name: null,
@@ -423,7 +429,7 @@
                 tableSettings: this.config.settings,
                 is_fluent_installed: window.ninja_table_admin.isInstalled,
                 fluent_url: window.ninja_table_admin.fluentform_url,
-                has_pro: window.ninja_table_admin.hasPro,
+                has_pro: !!window.ninja_table_admin.hasPro,
                 addVisible: false
             }
         },
@@ -681,6 +687,13 @@
         .form_control {
             display: block;
             width: 100%;
+        }
+        .normalLabel {
+            display: initial;
+            font-weight: normal;
+        }
+        .mt5 {
+            margin-top: 5px;
         }
     }
 

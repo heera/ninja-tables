@@ -155,5 +155,5 @@ function ninjaTablesAllowedHtmlTags($tags)
         'name'            => true
     ];
 
-    return apply_filter('ninja_tables_allowed_html_tags', $tags);
+    return $tags;
 }

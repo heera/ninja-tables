@@ -784,7 +784,7 @@ class NinjaTablesAdmin {
 		$tableId = intval( $_REQUEST['table_id'] );
 		$row          = $_REQUEST['row'];
         $formattedRow = array();
-        
+
         add_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
 
 		foreach ( $row as $key => $item ) {
@@ -793,9 +793,8 @@ class NinjaTablesAdmin {
 			$item                 = str_replace( '\"', '"', $item );
 			$item                 = str_replace( '\"', '"', $item );
 		    $formattedRow[ $key ] = wp_kses_post( $item );
-			$formattedRow[ $key ] = $item;
         }
-        
+
         remove_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
 
 		$attributes = array(
@@ -803,8 +802,8 @@ class NinjaTablesAdmin {
 			'attribute'  => 'value',
 			'value'      => json_encode( $formattedRow, true ),
 			'updated_at' => date( 'Y-m-d H:i:s' )
-		);
-
+        );
+        
 		if ( $id = intval( $_REQUEST['id'] ) ) {
 			ninja_tables_DbTable()->where( 'id', $id )->update( $attributes );
 		} else {

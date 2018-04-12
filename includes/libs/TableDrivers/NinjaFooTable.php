@@ -9,7 +9,7 @@ class NinjaFooTable {
 	}
 
 	private static function enqueue_assets() {
-
+            
 		wp_enqueue_script( 'footable',
 			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.js",
 			array( 'jquery' ), '3.1.5', true );
@@ -71,7 +71,19 @@ class NinjaFooTable {
 				'type'        => $columnType,
 				'sortable'    => $globalSorting,
 				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true
-			);
+            );
+            
+            if ($columnType == 'date') {
+                wp_enqueue_script(
+                    'moment',
+                    NINJA_TABLES_DIR_URL."public/libs/moment/moment.min.js",
+                    [],
+                    '2.22.0',
+                    true
+                );
+
+                $formatted_column['format-string'] = $column['dateFormat'] ?: 'M/D/Y';
+            }
 
 			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
 				$formatted_column['sorted']    = true;
@@ -235,10 +247,7 @@ class NinjaFooTable {
 	}
 
 	private static function addInlineVars( $vars, $table_id ) {
-		if ( function_exists( 'wp_add_inline_script' ) ) {
-			wp_add_inline_script( 'footable_init',
-				'window.ninja_footables.tables["table_' . $table_id . '"] = ' . $vars . ';' );
-		} else {
+		
 			add_action( 'wp_footer', function () use ( $vars, $table_id ) {
 				?>
                 <script type="text/javascript">
@@ -246,7 +255,7 @@ class NinjaFooTable {
                 </script>
 				<?php
 			}, 100 );
-		}
+		
 	}
 
 	public static function getColumnType( $column ) {
@@ -254,7 +263,8 @@ class NinjaFooTable {
 		$acceptedTypes = array(
 			'text',
 			'number',
-			'date'
+            'date',
+            'html'
 		);
 
 		if ( in_array( $type, $acceptedTypes ) ) {
