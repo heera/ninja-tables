@@ -139,3 +139,20 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 function ninjaTablesClearTableDataCache($tableId) {
 	return update_post_meta($tableId, '_ninja_table_cache_object', false);
 }
+
+function ninjaTablesAllowedHtmlTags($tags)
+{
+    $tags['iframe'] = [
+        'src'             => true,
+        'srcdoc'          => true,
+        'width'           => true,
+        'height'          => true,
+        'scrolling'       => true,
+        'frameborder'     => true,
+        'allow'           => true,
+        'style'           => true,
+        'allowfullscreen' => true
+    ];
+
+    return $tags;
+}

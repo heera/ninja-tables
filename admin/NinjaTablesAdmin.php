@@ -783,15 +783,21 @@ class NinjaTablesAdmin {
 	public function storeData() {
 		$tableId = intval( $_REQUEST['table_id'] );
 		$row          = $_REQUEST['row'];
-		$formattedRow = array();
+        $formattedRow = array();
+        
+        add_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
+
 		foreach ( $row as $key => $item ) {
 			$item                 = str_replace( "\'", "'", $item );
 			$item                 = str_replace( "\'", "'", $item );
 			$item                 = str_replace( '\"', '"', $item );
 			$item                 = str_replace( '\"', '"', $item );
-			$formattedRow[ $key ] = wp_kses_post( $item );
-		}
-		
+		    $formattedRow[ $key ] = wp_kses_post( $item );
+			$formattedRow[ $key ] = $item;
+        }
+        
+        remove_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
+
 		$attributes = array(
 			'table_id'   => $tableId,
 			'attribute'  => 'value',
