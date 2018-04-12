@@ -151,8 +151,9 @@ function ninjaTablesAllowedHtmlTags($tags)
         'frameborder'     => true,
         'allow'           => true,
         'style'           => true,
-        'allowfullscreen' => true
+        'allowfullscreen' => true,
+        'name'            => true
     ];
 
-    return $tags;
+    return apply_filter('ninja_tables_allowed_html_tags', $tags);
 }
