@@ -133,9 +133,12 @@ jQuery(document).ready(function ($) {
             };
             initConfig.empty = ninja_footables.i18n.empty_text;
             jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
-            let $tableInstance = $table.footable(initConfig);
+            let $tableInstance = $table.on('postinit.ft.table', () => {
+                this.commonTasks($table, tableConfig);
+            }).footable(initConfig);
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
+            $table.find('.ninja_temp_cell').remove();
         },
         commonTasks($table, tableConfig) {
             let cssStyles = tableConfig.custom_css;

@@ -13,16 +13,19 @@
                         <div v-for="column in columns" class="form-group">
                             <label :for="slugify(column.key)">{{ column.name }}</label>
                             <div v-if="column.data_type == 'textarea'">
-                                <textarea :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]"></textarea>
+                                <textarea :placeholder="column.name" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>
                             <div v-else-if="column.data_type == 'html'">
                                 <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
                             </div>
                             <div v-else-if="column.data_type == 'number'">
-                                <input type="number" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
+                                <input :placeholder="column.name" type="number" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
+                            </div>
+                            <div v-else-if="column.data_type == 'date'">
+                                <input :placeholder="column.dateFormat" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
                             <div v-else>
-                                <input type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
+                                <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
                         </div>
                     </div>

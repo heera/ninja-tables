@@ -27,11 +27,11 @@ class NinjaFooTable {
 	private static function enqueue_assets() {
 
 		wp_enqueue_script( 'footable',
-			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.js",
+			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.min.js",
 			array( 'jquery' ), '3.1.5', true );
 
 		wp_enqueue_script( 'footable_init',
-			NINJA_TABLES_DIR_URL . "assets/js/ninja-tables-footable.js",
+			NINJA_TABLES_DIR_URL . "assets/js/ninja-tables-footable.".NINJA_TABLES_ASSET_VERSION.".js",
 			array( 'footable' ), self::$version, true );
 
 		wp_localize_script( 'footable_init', 'ninja_footables', array(
@@ -62,8 +62,6 @@ class NinjaFooTable {
 		$globalSorting = ( isset( $settings['column_sorting'] ) )
 			? (bool) $settings['column_sorting'] : false;
 
-		print_r( $columns );
-		
 		$customCss = array();
 		
 		foreach ( $columns as $index => $column ) {
