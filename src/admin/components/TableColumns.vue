@@ -274,7 +274,6 @@
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
-    import DateField from './includes/DateField';
     import ColumnsEditor from './includes/ColumnsEditor';
     
     import { tableLibs } from '../data/data'
@@ -283,7 +282,6 @@
         name: 'TableConfiguration',
         components: {
             draggable,
-            DateField,
             ColumnsEditor
         },
         props: ['config'],
