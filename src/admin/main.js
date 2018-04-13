@@ -9,8 +9,12 @@ import {
     Menu,
     MenuItem,
     Header,
-    ColorPicker
-
+    ColorPicker,
+    Form,
+    FormItem,
+    Input,
+    RadioGroup,
+    Radio,
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en'
@@ -35,6 +39,11 @@ Vue.use(Main);
 Vue.use(Collapse);
 Vue.use(CollapseItem);
 Vue.use(Dialog);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Input);
+Vue.use(RadioGroup);
+Vue.use(Radio);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

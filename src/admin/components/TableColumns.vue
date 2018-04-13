@@ -16,130 +16,24 @@
                     <div class="widget_body">
                         <div v-show="addColumnStatus || !columns.length" class="column drawer">
                             <div class="add_column_wrapper">
-                                <div class="form_group">
-                                    <label>{{ $t('Column Name') }}
-                                        <el-tooltip placement="right"
-                                                    content="Enter a title for the table column, It will show as column header of the table">
-                                            <i class="el-icon-information"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <input class="form_control" type="text" v-model="new_column.name"/>
-                                </div>
-                                <div class="form_group">
-                                    <label>
-                                        {{ $t('Column Key') }}
-                                        <el-tooltip placement="right"
-                                                    content="This is the column key, It will be used for internal use to mapping data and also for export and import data">
-                                            <i class="el-icon-information"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <input class="form_control" type="text" v-model="new_column.key"/>
-                                </div>
-                                <div class="form_group">
-                                    <label>
-                                        {{ $t('Column Data Type') }}
-                                        <el-tooltip placement="right" content="Data Type of the column">
-                                            <i class="el-icon-information"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <select v-model="new_column.data_type" class="form_control">
-                                        <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey" :key="typeKey">
-                                            {{ typeName }}
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <date-field :model="new_column" :hasPro="has_pro" />
-
-                                <div class="form_group">
-                                    <label>
-                                        {{ $t('Responsive Breakpoint') }}
-                                        <el-tooltip placement="right"
-                                                    content="For responsiveness settings of your table columns. For more details check documentation">
-                                            <i class="el-icon-information"></i>
-                                        </el-tooltip>
-                                    </label>
-                                    <select v-model="new_column.breakpoints" class="form_control">
-                                        <option v-for="(option, optionKey) in breakPointsOptions" :value="optionKey">{{
-                                            option }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form_group">
-                                    <div class="pull-right">
-                                        <button @click="addColumnStatus = !addColumnStatus" class="button">Cancel
-                                        </button>
-                                        <button @click="addNewColumn" class="button button-primary">Add Column</button>
-                                    </div>
-                                </div>
+                                <columns-editor :model="new_column" :has-pro="has_pro" 
+                                                @add="addNewColumn()"
+                                                @cancel="addColumnStatus = !addColumnStatus"
+                                />
                             </div>
                         </div>
                         <draggable v-model="columns" :options="{handle:'.handle', animation: 150}">
                             <div class="column drawer" v-for="(column, index) in columns">
                                 <div class="header">
-                                    <span class="dashicons dashicons-editor-justify handle"></span>
+                                    <span class="dashicons dashicons-editor-justify handle" />
                                     <span>{{ column.name }}</span>
-                                    <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)"></span>
+                                    <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                 </div>
                                 <div class="drawer_body" :class="'drawer_body_'+index">
-                                    <div class="form_group">
-                                        <label> {{ $t('Column Name') }}
-                                            <el-tooltip placement="right"
-                                                        content="Enter a title for the table column, It will show as column header of the table">
-                                                <i class="el-icon-information"></i>
-                                            </el-tooltip>
-
-                                        </label>
-                                        <input class="form_control" type="text" v-model="column.name"/>
-                                    </div>
-                                    <div class="form_group">
-                                        <label>
-                                            {{ $t('Column Key') }}
-                                            <el-tooltip placement="right"
-                                                        content="This is the column key, It will be used for internal use to mapping data and also for export and import data">
-                                                <i class="el-icon-information"></i>
-                                            </el-tooltip>
-                                        </label>
-                                        <input class="form_control" type="text" v-model="column.key" disabled/>
-                                    </div>
-                                    <div class="form_group">
-                                        <label>
-                                            {{ $t('Column Data Type') }}
-                                            <el-tooltip placement="right" content="Data Type of the column">
-                                                <i class="el-icon-information"></i>
-                                            </el-tooltip>
-                                        </label>
-                                        <select v-model="column.data_type" class="form_control">
-                                            <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey">{{
-                                                typeName }}
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <date-field :model="column" :hasPro="has_pro" />
-
-                                    <div class="form_group">
-                                        <label>
-                                            {{ $t('Responsive Breakpoint') }}
-                                            <el-tooltip placement="right"
-                                                        content="For responsiveness settings of your table columns. For more details check documentation">
-                                                <i class="el-icon-information"></i>
-                                            </el-tooltip>
-                                        </label>
-                                        <select v-model="column.breakpoints" class="form_control">
-                                            <option v-for="(option, optionKey) in breakPointsOptions"
-                                                    :value="optionKey">{{ option }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="form_group">
-                                        <button @click="deleteColumn(index)">Delete</button>
-                                        <div class="pull-right">
-                                            <button @click="storeSettings()" class="button button-primary">
-                                                {{ $t('Update') }}
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <columns-editor :model="column" :has-pro="has_pro" :updating="true" 
+                                                    @delete="deleteColumn(index)" 
+                                                    @store="storeSettings()"
+                                    />
                                 </div>
                             </div>
                         </draggable>
@@ -381,6 +275,7 @@
     import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
     import DateField from './includes/DateField';
+    import ColumnsEditor from './includes/ColumnsEditor';
     
     import { tableLibs } from '../data/data'
 
@@ -388,7 +283,8 @@
         name: 'TableConfiguration',
         components: {
             draggable,
-            DateField
+            DateField,
+            ColumnsEditor
         },
         props: ['config'],
         data() {
@@ -592,9 +488,7 @@
     }
 
     .add_column_wrapper {
-        background: white;
-        overflow: hidden;
-        padding: 10px;
+        padding: 0 10px;
     }
 
     .ninja_widget {
@@ -655,7 +549,7 @@
             padding: 10px;
             display: none;
             .form_group {
-                padding-right: 20px;
+                // padding-right: 20px;
             }
         }
         .header {
