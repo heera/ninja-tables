@@ -85,7 +85,7 @@
 
             <el-radio-group v-model="formatType">
                 <el-radio label="standard">Standard</el-radio>
-                <el-radio label="custom">Custom</el-radio>
+                <el-radio label="custom" @click.native="showProPopUp" :disabled="!hasPro">Custom</el-radio>
             </el-radio-group>
 
             <!-- Format dropdown -->
@@ -150,8 +150,9 @@
                     </el-tooltip>
                 </template>
 
-                <el-input v-model="model.classes" />
+                <el-input v-model="model.classes" :disabled="!hasPro" />
             </el-form-item>
+
             <!-- Max width -->
             <el-form-item>
                 <template slot="label">
@@ -169,7 +170,7 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
-
+                
                 <el-input type="number" v-model="model.width" />
             </el-form-item>
             <!-- Text alignment -->
@@ -190,7 +191,7 @@
                     </el-tooltip>
                 </template>
 
-                <select v-model="model.textAlignment">
+                <select v-model="model.textAlign" :disabled="!hasPro">
                     <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions" 
                             :value="alignmentVal" :key="alignmentVal"
                     >{{ alignmentLabel }}</option>
@@ -199,7 +200,7 @@
         </div>
 
         <div class="form_group">
-            <button class="button" @click.prevent="moreSettings = !moreSettings">
+            <button class="button" @click.prevent="toggleAdvancedSettings">
                 Advanced Settings
 
                 <i class="el-icon-setting el-text-info" />
@@ -284,11 +285,6 @@
         watch: {
             formatType() {
                 if (this.formatType === "custom") {
-                    if (!this.hasPro) {
-                        window.ninjaTableBus.$emit('show_pro_popup', 1);
-                        this.formatType = 'standard';
-                        return;
-                    }
                     this.model.dateFormat = "";
                 }
             }
@@ -308,6 +304,18 @@
             },
             store() {
                 this.$emit('store');
+            },
+            toggleAdvancedSettings() {
+                if (!this.moreSettings) {
+                    this.showProPopUp();
+                }
+                
+                this.moreSettings = !this.moreSettings;
+            },
+            showProPopUp() {
+                if (!this.hasPro) {
+                    window.ninjaTableBus.$emit('show_pro_popup', 1);
+                }
             }
         }
     };
