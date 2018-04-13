@@ -1,11 +1,11 @@
 === Ninja Tables - Best Responsive Table Plugin for WordPress ===
 Contributors: techjewel, adreastrian
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
+Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, alternate tablepress , tables plugin, tables from csv, footables, responsive tables,bootstrap table,symmetric ui table, ninja tables, bootstrap4 table, colorful table, footables for WordPress
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.5
-Stable tag: 2.0.3
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,6 @@ The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, 
 == Description ==
 
 [Details Features](https://wpmanageninja.com/ninja-tables/) | [Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
-
 
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
@@ -99,15 +98,29 @@ e.g.
 
 = Is Ninja Tables Responsive? =
 
-Tables form created by NinjaTables is mobile responsive and looks beautiful on any device.
+Tables created by Ninja Tables are mobile responsive and looks beautiful on any device.
 
-= I am not technical, can I use Ninja Tables? =
+= I am not a developer, can I use Ninja Tables? =
 
-NinjaTables is the most beginner friendly and fastest WordPress Tables plugin available and getting started is so easy!
+Ninja Tables is the most beginner friendly and fastest WordPress Tables plugin available and getting started is so easy! For users’ better understanding, we have designed our documentation and user manuals in a way so that even non-technical people and novices to web development can use this plugin to the fullest!
 
 = Can I upload images / medias to table cells? =
 
-Yes, For that please check pro add one <a href="">here</a>
+Yes, For that please check pro add one <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">here</a>
+
+= Can I import tables from my TablePress plugin to Ninja tables? =
+
+Yes, absolutely you can. We have introduced a feature that helps you import tables from your existing TablePress plugin. With this feature, you don’t have to build from scratch all those tables you created with your TablePress plugin, but can integrate them in Ninja tables with just a few clicks!
+
+= How can I import my tables from other plugins? =
+
+If you are using a table builder plugin other than TablePress, you will have to export the table files in CSV/JSON format. Ninja Tables allow you to upload those CSV/JSON files directly into Ninja Tables.
+
+= How can I manage long tables with huge amount of data? =
+
+Tables are usually introduced to present a huge amount of data in an organized way. Still, sometimes large amount of entries can botch that purpose. To maintain this hassle you can utilize different options Ninja Tables offers. You can use Pagination to break down your tables in segments. Not only that, Search/Filter option allows you to quickly find out the exact information you might be looking for from a haystack of table data.
+
+
 
 == Screenshots ==
 
@@ -123,6 +136,13 @@ Yes, For that please check pro add one <a href="">here</a>
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.0.4 (Date: 04-12-2018 ) =
+* Date Field Support 
+* Iframe support on table cell
+* HTML sorting support
+* Improved CSV upload
+* Import From Table Press Bug Fix
 
 = 2.0.3 ( Date: 04-09-2018 ) =
 * Enhanced Support Non-Unicode Language for CSV import

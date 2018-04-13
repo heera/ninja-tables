@@ -724,7 +724,6 @@ class NinjaTablesAdmin {
 		delete_post_meta( $tableId, '_ninja_table_columns' );
 		delete_post_meta( $tableId, '_ninja_table_settings' );
 		delete_post_meta( $tableId, '_ninja_table_cache_object' );
-
 		// now delete the data
 		try {
 			ninja_tables_DbTable()->where( 'table_id', $tableId )->delete();
@@ -815,6 +814,7 @@ class NinjaTablesAdmin {
 		$item = ninja_tables_DbTable()->find( $id );
 
 		ninjaTablesClearTableDataCache($tableId);
+		
 		wp_send_json( array(
 			'message' => __( 'Successfully saved the data.', 'ninja-tables' ),
 			'item'    => array(

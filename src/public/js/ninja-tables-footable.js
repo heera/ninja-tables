@@ -6,11 +6,12 @@ jQuery(document).ready(function ($) {
             $.each(footables, function (footable, table) {
                 let $table = $(table);
                 let tableId = $table.data('footable_id');
-                let tableConfig = window.ninja_footables.tables['table_'+tableId];
+                let tableSelector = 'ninja_footables_tables_'+tableId;
+                let tableConfig = window[tableSelector];
                 if(tableConfig.render_type === 'legacy_table') {
                     that.initLegacyTable($table, tableConfig);
                     return;
-                } 
+                }
                 that.initResponsiveTable($table, tableConfig);
             });
         },

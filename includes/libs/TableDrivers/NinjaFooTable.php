@@ -44,7 +44,6 @@ class NinjaFooTable {
 	}
 
 	private static function render( $tableArray ) {
-
 		extract( $tableArray );
 		if ( ! count( $columns ) ) {
 			return;
@@ -54,8 +53,7 @@ class NinjaFooTable {
 		if ( isset( $settings['render_type'] ) && $settings['render_type'] ) {
 			$renderType = $settings['render_type'];
 		}
-
-
+		
 		$formatted_columns = array();
 		$sortingType       = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
 
@@ -247,15 +245,14 @@ class NinjaFooTable {
 	}
 
 	private static function addInlineVars( $vars, $table_id ) {
-		
+	    
 			add_action( 'wp_footer', function () use ( $vars, $table_id ) {
 				?>
                 <script type="text/javascript">
-                    window.ninja_footables.tables["table_<?php echo $table_id;?>"] = <?php echo $vars ?>;
+                    window.ninja_footables_tables_<?php echo $table_id;?> = <?php echo $vars ?>;
                 </script>
 				<?php
-			}, 100 );
-		
+			}, 10000 );
 	}
 
 	public static function getColumnType( $column ) {
