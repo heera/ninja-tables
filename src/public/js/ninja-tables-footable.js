@@ -84,8 +84,11 @@ jQuery(document).ready(function ($) {
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
             initConfig.empty = ninja_footables.i18n.empty_text;
-            let $tableInstance = $table.footable(initConfig);
-            
+            let $tableInstance = $table
+                .on('postinit.ft.table', () => {
+                    this.commonTasks($table, tableConfig);
+                }).footable(initConfig);
+           
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
             jQuery("td:contains('#colspan#')").remove();
@@ -133,6 +136,13 @@ jQuery(document).ready(function ($) {
             let $tableInstance = $table.footable(initConfig);
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
+        },
+        commonTasks($table, tableConfig) {
+            let cssStyles = tableConfig.custom_css;
+            jQuery.each(cssStyles, (className, values) => {
+                console.log($table.find('.'+className));
+                $table.find('.'+className).css(values);
+            });
         }
     };
     ninja_table_app.initTables();

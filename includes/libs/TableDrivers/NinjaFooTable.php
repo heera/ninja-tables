@@ -4,6 +4,22 @@ class NinjaFooTable {
 	public static $version = NINJA_TABLES_VERSION;
 
 	public static function run( $tableArray ) {
+
+		$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
+
+		if ( is_rtl() ) {
+			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public-rtl.css";
+		}
+
+		wp_enqueue_style(
+			'footable_styles',
+			$styleSrc,
+			array(),
+			self::$version,
+			'all'
+		);
+		
+		
 		self::render( $tableArray );
 		self::enqueue_assets();
 	}
@@ -27,20 +43,6 @@ class NinjaFooTable {
 				'empty_text' => __( 'No Result Found', 'ninja-tables' ),
 			)
 		) );
-
-		$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
-
-		if ( is_rtl() ) {
-			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public-rtl.css";
-		}
-
-		wp_enqueue_style(
-			'footable_styles',
-			$styleSrc,
-			array(),
-			self::$version,
-			'all'
-		);
 	}
 
 	private static function render( $tableArray ) {
@@ -48,7 +50,7 @@ class NinjaFooTable {
 		if ( ! count( $columns ) ) {
 			return;
 		}
-
+		
 		$renderType = 'ajax_table';
 		if ( isset( $settings['render_type'] ) && $settings['render_type'] ) {
 			$renderType = $settings['render_type'];
@@ -60,17 +62,40 @@ class NinjaFooTable {
 		$globalSorting = ( isset( $settings['column_sorting'] ) )
 			? (bool) $settings['column_sorting'] : false;
 
-		foreach ( $columns as $column ) {
+		print_r( $columns );
+		
+		$customCss = array();
+		
+		foreach ( $columns as $index => $column ) {
 			$columnType       = self::getColumnType( $column );
+			
+			$cssColumnName = 'ninja_column_'.$index;
+			
+			$columnClasses = array($cssColumnName);
+			if(isset($column['classes'])) {
+				$userClasses = explode( ' ', $column['classes'] );
+				$columnClasses = array_unique(array_merge($columnClasses, $userClasses));
+            }
+
+			$customCss[$cssColumnName] = array();
+			if(isset($column['width']) && $column['width']) {
+				$customCss[$cssColumnName]['width'] = $column['width'].'px';
+            }
+            
+            if((isset($column['textAlign']) && $column['textAlign'])) {
+	            $customCss[$cssColumnName]['textAlign'] = $column['textAlign'];
+            }
+            
 			$formatted_column = array(
 				'name'        => $column['key'],
 				'title'       => $column['name'],
 				'breakpoints' => $column['breakpoints'],
 				'type'        => $columnType,
 				'sortable'    => $globalSorting,
-				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true
+				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true,
+				'classes'     => $columnClasses
 			);
-
+            
 			if ( $columnType == 'date' ) {
 				wp_enqueue_script(
 					'moment',
@@ -91,7 +116,7 @@ class NinjaFooTable {
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
 		}
-
+		
 		if ( $settings['show_all'] ) {
 			$pagingSettings = false;
 		} else {
@@ -151,7 +176,8 @@ class NinjaFooTable {
 			'table_id'    => $table_id,
 			'columns'     => $formatted_columns,
 			'settings'    => $configSettings,
-			'render_type' => $renderType
+			'render_type' => $renderType,
+            'custom_css' => $customCss
 		);
 
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
@@ -202,28 +228,30 @@ class NinjaFooTable {
 	}
 
 	private static function generateLegacyTableHTML( $table, $table_vars ) {
-		$disableCache = apply_filters('ninja_tables_disable_caching', false, $table->ID);
+		$disableCache = apply_filters( 'ninja_tables_disable_caching', false, $table->ID );
 
 		$tableHtml = get_post_meta( $table->ID, '_ninja_table_cache_html', true );
-		
-		if ( $tableHtml && !$disableCache 
-        ) {
+
+		if ( $tableHtml && ! $disableCache
+		) {
 			echo $tableHtml;
+
 			return;
 		}
-		
+
 		$tableColumns     = $table_vars['columns'];
 		$formattedColumns = array();
-		$formatted_data = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
-		$tableHtml      = self::loadView( 'public/views/table_inner_html', array(
+		$formatted_data   = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
+		$tableHtml        = self::loadView( 'public/views/table_inner_html', array(
 			'table_columns' => $tableColumns,
 			'table_rows'    => $formatted_data
 		) );
-		
-		if(!$disableCache) {
+
+		if ( ! $disableCache ) {
 			update_post_meta( $table->ID, '_ninja_table_cache_html', $tableHtml );
 		}
 		echo $tableHtml;
+
 		return;
 	}
 
@@ -271,7 +299,7 @@ class NinjaFooTable {
                 window.ninja_footables_tables_<?php echo $table_id;?> = <?php echo $vars ?>;
             </script>
 			<?php
-		});
+		} );
 	}
 
 	public static function getColumnType( $column ) {

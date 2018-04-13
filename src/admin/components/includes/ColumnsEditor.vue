@@ -152,28 +152,6 @@
 
                 <el-input v-model="model.classes" />
             </el-form-item>
-
-            <!-- Min width -->
-            <el-form-item>
-                <template slot="label">
-                    {{ $t("Min Width") }}
-
-                    <el-tooltip class="item" placement="bottom-start" effect="light">
-                        <div slot="content">
-                            <h3>Minimum Width</h3>
-
-                            <p>
-                                Enter the minimum width of the colummn.
-                            </p>
-                        </div>
-
-                        <i class="el-icon-info el-text-info" />
-                    </el-tooltip>
-                </template>
-
-                <el-input type="number" v-model="model.minWidth" />
-            </el-form-item>
-
             <!-- Max width -->
             <el-form-item>
                 <template slot="label">
@@ -184,7 +162,7 @@
                             <h3>Maximum Width</h3>
 
                             <p>
-                                Enter the maximum width of the colummn.
+                                Enter the maximum width of the column. This will be applied for the entire column
                             </p>
                         </div>
 
@@ -192,9 +170,8 @@
                     </el-tooltip>
                 </template>
 
-                <el-input type="number" v-model="model.maxWidth" />
+                <el-input type="number" v-model="model.width" />
             </el-form-item>
-
             <!-- Text alignment -->
             <el-form-item>
                 <template slot="label">
@@ -205,7 +182,7 @@
                             <h3>Text Alignment</h3>
 
                             <p>
-                                Choose the text alignment.
+                                Choose the text alignment. This will be applied only for header
                             </p>
                         </div>
 
