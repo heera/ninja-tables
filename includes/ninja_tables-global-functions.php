@@ -53,7 +53,8 @@ if( ! function_exists('getDefaultNinjaTableSettings')) {
             "enable_search"   => true,
             "column_sorting"  => true,
             "default_sorting" => 'new_first',
-            "table_color"     => ''
+            "table_color"     => '',
+	        "render_type"     => 'ajax_table'
         );
 
         return apply_filters('get_default_ninja_table_settings', $defaults);
@@ -110,16 +111,17 @@ if( ! function_exists('ninja_table_is_in_production_mood') ) {
 
 function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 	$query = ninja_tables_DbTable()->where('table_id', $tableId);
+	
 	if($defaultSorting == 'new_first') {
 		$query->orderBy('id', 'desc');
 	} else {
 		$query->orderBy('id', 'asc');
 	}
+	
 	$data = $query->get();
 	$formatted_data = array();
 	foreach ($data as $item) {
 		$values = json_decode($item->value, true);
-		$values = array_map('do_shortcode', $values);
 		$formatted_data[] = $values;
 	}
 	
@@ -137,7 +139,8 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 }
 
 function ninjaTablesClearTableDataCache($tableId) {
-	return update_post_meta($tableId, '_ninja_table_cache_object', false);
+	update_post_meta($tableId, '_ninja_table_cache_object', false);
+	update_post_meta($tableId, '_ninja_table_cache_html', false);
 }
 
 function ninjaTablesAllowedHtmlTags($tags)

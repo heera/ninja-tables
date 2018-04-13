@@ -96,11 +96,11 @@ class NinjaTablesAdmin {
 		global $submenu;
 		$capability = ninja_table_admin_role();
 		// Top-level page
-        $menuName = __( 'NinjaTables', 'ninja-tables' );
-		if(defined('NINJATABLESPRO')) {
+		$menuName = __( 'NinjaTables', 'ninja-tables' );
+		if ( defined( 'NINJATABLESPRO' ) ) {
 			$menuName .= ' Pro';
-        }
-        
+		}
+
 		add_menu_page( $menuName,
 			$menuName, $capability, 'ninja_tables',
 			array( $this, 'main_page' ),
@@ -109,7 +109,7 @@ class NinjaTablesAdmin {
 			25 );
 
 		if ( current_user_can( $capability ) ) {
-		    
+
 			$submenu['ninja_tables'][] = array(
 				__( 'All Tables', 'ninja-tables' ),
 				$capability,
@@ -125,14 +125,14 @@ class NinjaTablesAdmin {
 				$capability,
 				'admin.php?page=ninja_tables#/tools'
 			);
-			if(!defined('NINJATABLESPRO')) {
+			if ( ! defined( 'NINJATABLESPRO' ) ) {
 				$submenu['ninja_tables'][] = array(
 					__( 'Get Pro', 'ninja-tables' ),
 					$capability,
 					'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu'
 				);
 			}
-			
+
 			$submenu['ninja_tables'][] = array(
 				__( 'Help', 'ninja-tables' ),
 				$capability,
@@ -153,27 +153,27 @@ class NinjaTablesAdmin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
-        $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor.css";
+		$vendorSrc = plugin_dir_url( __DIR__ ) . "assets/css/ninja-tables-vendor.css";
 
-        if (is_rtl()) {
-            $vendorSrc = plugin_dir_url(__DIR__)."assets/css/ninja-tables-vendor-rtl.css";
-        }
+		if ( is_rtl() ) {
+			$vendorSrc = plugin_dir_url( __DIR__ ) . "assets/css/ninja-tables-vendor-rtl.css";
+		}
 
-        wp_enqueue_style(
-            $this->plugin_name.'-vendor',
-            $vendorSrc,
-            [],
-            $this->version,
-            'all'
-        );
+		wp_enqueue_style(
+			$this->plugin_name . '-vendor',
+			$vendorSrc,
+			[],
+			$this->version,
+			'all'
+		);
 
-        wp_enqueue_style(
-            $this->plugin_name,
-            plugin_dir_url(__DIR__)."assets/css/ninja-tables-admin.css",
-            array(),
-            $this->version,
-            'all'
-        );
+		wp_enqueue_style(
+			$this->plugin_name,
+			plugin_dir_url( __DIR__ ) . "assets/css/ninja-tables-admin.css",
+			array(),
+			$this->version,
+			'all'
+		);
 	}
 
 	/**
@@ -186,7 +186,7 @@ class NinjaTablesAdmin {
 			wp_enqueue_editor();
 			wp_enqueue_media();
 		}
-		
+
 		wp_enqueue_script(
 			$this->plugin_name,
 			plugin_dir_url( __DIR__ ) . "assets/js/ninja-tables-admin.js",
@@ -196,33 +196,33 @@ class NinjaTablesAdmin {
 		);
 
 		$fluentUrl = admin_url( 'plugin-install.php?s=FluentForm&tab=search&type=term' );
-		
-		$isInstalled = defined( 'FLUENTFORM' ) ||  defined('NINJATABLESPRO');
-		$dismissed = false;
-        $dismissedTime = get_option('_ninja_tables_plugin_suggest_dismiss');
-        
-        if($dismissedTime) {
-            if( ( time() - intval($dismissedTime) ) < 518400 )  {
-	            $dismissed = true;
-            }
-        } else {
-	        $dismissed = true;
-            update_option('_ninja_tables_plugin_suggest_dismiss', time() - 345600);
-        }
-        
+
+		$isInstalled   = defined( 'FLUENTFORM' ) || defined( 'NINJATABLESPRO' );
+		$dismissed     = false;
+		$dismissedTime = get_option( '_ninja_tables_plugin_suggest_dismiss' );
+
+		if ( $dismissedTime ) {
+			if ( ( time() - intval( $dismissedTime ) ) < 518400 ) {
+				$dismissed = true;
+			}
+		} else {
+			$dismissed = true;
+			update_option( '_ninja_tables_plugin_suggest_dismiss', time() - 345600 );
+		}
+
 		wp_localize_script( $this->plugin_name, 'ninja_table_admin', array(
 			'img_url'        => plugin_dir_url( __DIR__ ) . "assets/img/",
 			'fluentform_url' => $fluentUrl,
 			'fluent_wp_url'  => 'https://wordpress.org/plugins/fluentform/',
-            'dismissed' => $dismissed,
-            'isInstalled' => $isInstalled,
-            'hasPro' => defined('NINJATABLESPRO')
+			'dismissed'      => $dismissed,
+			'isInstalled'    => $isInstalled,
+			'hasPro'         => defined( 'NINJATABLESPRO' )
 		) );
-        
-        // Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
-        // other plugin's page's uri. They should fix it.
-        // For now I am de-registering their script in ninja-table admin pages.
-        wp_deregister_script('elementor-admin-app');
+
+		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
+		// other plugin's page's uri. They should fix it.
+		// For now I am de-registering their script in ninja-table admin pages.
+		wp_deregister_script( 'elementor-admin-app' );
 	}
 
 	public function enqueue_data_tables_scripts() {
@@ -251,7 +251,7 @@ class NinjaTablesAdmin {
 			'upload-data'              => 'uploadData',
 			'duplicate_table'          => 'duplicateTable',
 			'export-data'              => 'exportData',
-			'dismiss_fluent_suggest'   => 'dismissPluginSuggest' 
+			'dismiss_fluent_suggest'   => 'dismissPluginSuggest'
 		);
 
 		$requested_route = $_REQUEST['target_action'];
@@ -277,13 +277,13 @@ class NinjaTablesAdmin {
 			'order'          => 'DESC',
 			'post_type'      => $this->cpt_name,
 			'post_status'    => 'any',
-            
+
 		);
-		
-		if(isset($_REQUEST['search']) && $_REQUEST['search']) {
-			$args['s'] = sanitize_text_field($_REQUEST['search']);
-        }
-        
+
+		if ( isset( $_REQUEST['search'] ) && $_REQUEST['search'] ) {
+			$args['s'] = sanitize_text_field( $_REQUEST['search'] );
+		}
+
 		$tables = get_posts( $args );
 
 		$total    = wp_count_posts( 'ninja-table' );
@@ -334,7 +334,7 @@ class NinjaTablesAdmin {
 
 	public function importTable() {
 		$format = $_REQUEST['format'];
-		
+
 		if ( $format == 'csv' ) {
 			$this->uploadTableCsv();
 		} elseif ( $format == 'json' ) {
@@ -378,20 +378,20 @@ class NinjaTablesAdmin {
 
 			$tableSettings = get_post_meta( $table->ID, '_tablepress_table_options', true );
 
-            $tableSettings = json_decode( $tableSettings, true );
-            
+			$tableSettings = json_decode( $tableSettings, true );
+
 			if ( $tableSettings['table_head'] ) {
 				$header = array_shift( $rows );
 			} else {
-                $header = array();
-                $columnCount = count(array_pop(array_reverse($rows)));
+				$header      = array();
+				$columnCount = count( array_pop( array_reverse( $rows ) ) );
 
-				for ($i = 0; $i < $columnCount; $i++) {
-                    $headerName = 'Ninja Column '.($i+1);
-                    $headerKey = 'ninja_column_'.($i+1);
-					$header[$headerKey] = $headerName;
+				for ( $i = 0; $i < $columnCount; $i ++ ) {
+					$headerName           = 'Ninja Column ' . ( $i + 1 );
+					$headerKey            = 'ninja_column_' . ( $i + 1 );
+					$header[ $headerKey ] = $headerName;
 				}
-            }
+			}
 
 			$rows = array_reverse( $rows );
 
@@ -421,8 +421,8 @@ class NinjaTablesAdmin {
 
 		$arguments = array(
 			'post_type'   => $postTypes[ $plugin ],
-            'post_status' => 'any',
-            'numberposts' => -1
+			'post_status' => 'any',
+			'numberposts' => - 1
 		);
 
 		$tables = get_posts( $arguments );
@@ -444,50 +444,51 @@ class NinjaTablesAdmin {
 
 	private function formatHeader( $header ) {
 		$data = array();
-		
+
 		$column_counter = 1;
 		foreach ( $header as $item ) {
-            $item = trim(strip_tags($item));
-            
-            // We'll slugify only if item is printable characters.
-            // Otherwise we'll generate custom key for the item.
-            // Printable chars as in ASCII printable chars.
-            // Ref: http://www.catonmat.net/blog/my-favorite-regex/
-            $key = !preg_match('/[^ -~]/', $item) ? $this->url_slug($item) : null;
-            
-            $key = sanitize_title($key, 'ninja_column_'.$column_counter);
+			$item = trim( strip_tags( $item ) );
+
+			// We'll slugify only if item is printable characters.
+			// Otherwise we'll generate custom key for the item.
+			// Printable chars as in ASCII printable chars.
+			// Ref: http://www.catonmat.net/blog/my-favorite-regex/
+			$key = ! preg_match( '/[^ -~]/', $item ) ? $this->url_slug( $item ) : null;
+
+			$key = sanitize_title( $key, 'ninja_column_' . $column_counter );
 
 			$counter = 1;
 			while ( isset( $data[ $key ] ) ) {
-				$key .= '_'.$counter;
+				$key .= '_' . $counter;
 				$counter ++;
 			}
 			$data[ $key ] = $item;
-			
-			$column_counter++;
+
+			$column_counter ++;
 		}
+
 		return $data;
 	}
 
 	private function uploadTableCsv() {
 		$tmpName = $_FILES['file']['tmp_name'];
-        
-        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
+
+		$reader = \League\Csv\Reader::createFromPath( $tmpName )->fetchAll();
 
 		$header = array_shift( $reader );
-        $reader = array_reverse( $reader );
+		$reader = array_reverse( $reader );
 
-        foreach ($reader as &$item) {
-            // We have to convert everything to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
-        }
-        
-        $tableId = $this->createTable();
-		
-        $header = $this->formatHeader($header);
-		
+		foreach ( $reader as &$item ) {
+			// We have to convert everything to utf-8
+			foreach ( $item as &$entry ) {
+				$entry = mb_convert_encoding( $entry, 'UTF-8' );
+			}
+		}
+
+		$tableId = $this->createTable();
+
+		$header = $this->formatHeader( $header );
+
 		$this->storeTableConfigWhenImporting( $tableId, $header );
 
 		$this->insertDataToTable( $tableId, $reader, $header );
@@ -550,8 +551,8 @@ class NinjaTablesAdmin {
 		if ( $rows = $content['rows'] ) {
 			$header = array_map( function ( $column ) {
 				return $column['key'];
-            }, $content['columns'] );
-            
+			}, $content['columns'] );
+
 			$this->insertDataToTable( $tableId, $rows, $header );
 		}
 
@@ -591,33 +592,33 @@ class NinjaTablesAdmin {
 			'admin' );
 		update_post_meta( $tableId, '_ninja_table_settings',
 			$ninjaTableSettings );
-		ninjaTablesClearTableDataCache($tableId);
+		ninjaTablesClearTableDataCache( $tableId );
 	}
 
 	private function insertDataToTable( $tableId, $values, $header ) {
-		$header = array_keys($header);
-		
+		$header = array_keys( $header );
+
 		$data = array();
 		$time = current_time( 'mysql' );
-		
+
 		$headerCount = count( $header );
 		foreach ( $values as $item ) {
 			if ( $headerCount == count( $item ) ) {
 				$itemTemp = array_combine( $header, $item );
 			} else {
-                // The item can have less/more entry than the header has.
-                // We have to ensure that the header and values match.
+				// The item can have less/more entry than the header has.
+				// We have to ensure that the header and values match.
 				$itemTemp = array_combine(
-                    $header,
-                    // We'll get the appropriate values by merging Array1 & Array2
+					$header,
+					// We'll get the appropriate values by merging Array1 & Array2
 					array_merge(
-                        // Array1 = Only the entries that the header has.
-                        array_intersect_key($item, array_fill_keys(array_values($header), null)),
-                        // Array2 = The remaining header entries will be blank. 
-						array_fill_keys(array_diff(array_values($header), array_keys($item)), null)
+					// Array1 = Only the entries that the header has.
+						array_intersect_key( $item, array_fill_keys( array_values( $header ), null ) ),
+						// Array2 = The remaining header entries will be blank. 
+						array_fill_keys( array_diff( array_values( $header ), array_keys( $item ) ), null )
 					)
-                );
-            }
+				);
+			}
 
 			array_push( $data, array(
 				'table_id'   => $tableId,
@@ -625,10 +626,10 @@ class NinjaTablesAdmin {
 				'value'      => json_encode( $itemTemp ),
 				'created_at' => $time,
 				'updated_at' => $time
-            ) );
+			) );
 		}
 		ninja_tables_DbTable()->batch_insert( $data );
-		
+
 	}
 
 	public function getTableSettings() {
@@ -639,34 +640,32 @@ class NinjaTablesAdmin {
 		$tableSettings = ninja_table_get_table_settings( $tableID, 'admin' );
 
 		wp_send_json( array(
-			'columns'  => $tableColumns,
-			'settings' => $tableSettings,
-			'table'    => $table,
-            'preview_url' => site_url('?ninjatable_preview='.$tableID)
+			'columns'     => $tableColumns,
+			'settings'    => $tableSettings,
+			'table'       => $table,
+			'preview_url' => site_url( '?ninjatable_preview=' . $tableID )
 		), 200 );
 	}
 
 	public function updateTableSettings() {
 		$tableId = intval( $_REQUEST['table_id'] );
 
-		
 
 		$tableColumns = array();
-		if(isset($_REQUEST['columns'])) {
-			$rawColumns   = $_REQUEST['columns'];
+		if ( isset( $_REQUEST['columns'] ) ) {
+			$rawColumns = $_REQUEST['columns'];
 			if ( $rawColumns && is_array( $rawColumns ) ) {
 				foreach ( $rawColumns as $column ) {
 					$tableColumns[] = array_map( 'sanitize_text_field', $column );
 				}
 				update_post_meta( $tableId, '_ninja_table_columns', $tableColumns );
 			}
-        }
-        
+		}
 
-		
+
 		$formattedTablePreference = array();
-		if(isset($_REQUEST['table_settings'])) {
-			$tablePreference          = $_REQUEST['table_settings'];
+		if ( isset( $_REQUEST['table_settings'] ) ) {
+			$tablePreference = $_REQUEST['table_settings'];
 			if ( $tablePreference && is_array( $tablePreference ) ) {
 				foreach ( $tablePreference as $key => $tab_pref ) {
 
@@ -689,9 +688,9 @@ class NinjaTablesAdmin {
 				update_post_meta( $tableId, '_ninja_table_settings',
 					$formattedTablePreference );
 			}
-        }
-        
-		ninjaTablesClearTableDataCache($tableId);
+		}
+
+		ninjaTablesClearTableDataCache( $tableId );
 		wp_send_json( array(
 			'message'  => __( 'Successfully updated configuration.',
 				'ninja-tables' ),
@@ -711,14 +710,14 @@ class NinjaTablesAdmin {
 
 	public function deleteTable() {
 		$tableId = intval( $_REQUEST['table_id'] );
-        
+
 		if ( get_post_type( $tableId ) != $this->cpt_name ) {
 			wp_send_json( array(
 				'message' => __( 'Invalid Table to Delete', 'ninja-tables' )
 			), 300 );
 		}
 
-        
+
 		wp_delete_post( $tableId, true );
 		// Delete the post metas
 		delete_post_meta( $tableId, '_ninja_table_columns' );
@@ -780,29 +779,29 @@ class NinjaTablesAdmin {
 	}
 
 	public function storeData() {
-		$tableId = intval( $_REQUEST['table_id'] );
+		$tableId      = intval( $_REQUEST['table_id'] );
 		$row          = $_REQUEST['row'];
-        $formattedRow = array();
+		$formattedRow = array();
 
-        add_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
+		add_filter( 'wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags' );
 
 		foreach ( $row as $key => $item ) {
 			$item                 = str_replace( "\'", "'", $item );
 			$item                 = str_replace( "\'", "'", $item );
 			$item                 = str_replace( '\"', '"', $item );
 			$item                 = str_replace( '\"', '"', $item );
-		    $formattedRow[ $key ] = wp_kses_post( $item );
-        }
+			$formattedRow[ $key ] = wp_kses_post( $item );
+		}
 
-        remove_filter('wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags');
+		remove_filter( 'wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags' );
 
 		$attributes = array(
 			'table_id'   => $tableId,
 			'attribute'  => 'value',
 			'value'      => json_encode( $formattedRow, true ),
 			'updated_at' => date( 'Y-m-d H:i:s' )
-        );
-        
+		);
+
 		if ( $id = intval( $_REQUEST['id'] ) ) {
 			ninja_tables_DbTable()->where( 'id', $id )->update( $attributes );
 		} else {
@@ -813,8 +812,8 @@ class NinjaTablesAdmin {
 
 		$item = ninja_tables_DbTable()->find( $id );
 
-		ninjaTablesClearTableDataCache($tableId);
-		
+		ninjaTablesClearTableDataCache( $tableId );
+
 		wp_send_json( array(
 			'message' => __( 'Successfully saved the data.', 'ninja-tables' ),
 			'item'    => array(
@@ -838,8 +837,8 @@ class NinjaTablesAdmin {
 
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId )
 		                               ->whereIn( 'id', $ids )->delete();
-		
-		ninjaTablesClearTableDataCache($tableId);
+
+		ninjaTablesClearTableDataCache( $tableId );
 		wp_send_json( array(
 			'message' => __( 'Successfully deleted data.', 'ninja-tables' )
 		), 200 );
@@ -847,9 +846,9 @@ class NinjaTablesAdmin {
 
 	public function uploadData() {
 		$tableId = intval( $_REQUEST['table_id'] );
-        $tmpName = $_FILES['file']['tmp_name'];
+		$tmpName = $_FILES['file']['tmp_name'];
 
-		$reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
+		$reader = \League\Csv\Reader::createFromPath( $tmpName )->fetchAll();
 
 		$csvHeader = array_shift( $reader );
 		$csvHeader = array_map( 'esc_attr', $csvHeader );
@@ -866,7 +865,7 @@ class NinjaTablesAdmin {
 
 		foreach ( $csvHeader as $item ) {
 			foreach ( $config as $column ) {
-                $item = esc_attr($item);
+				$item = esc_attr( $item );
 				if ( $item == $column['key'] || $item == $column['name'] ) {
 					$header[] = $column['key'];
 				}
@@ -884,24 +883,24 @@ class NinjaTablesAdmin {
 		$time = current_time( 'mysql' );
 
 		foreach ( $reader as $item ) {
-            // If item has any ascii entry we'll convert it to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
+			// If item has any ascii entry we'll convert it to utf-8
+			foreach ( $item as &$entry ) {
+				$entry = mb_convert_encoding( $entry, 'UTF-8' );
+			}
 
 			$itemTemp = array_combine( $header, $item );
 
 			array_push( $data, array(
 				'table_id'   => $tableId,
 				'attribute'  => 'value',
-				'value'      => json_encode($itemTemp),
+				'value'      => json_encode( $itemTemp ),
 				'created_at' => $time,
 				'updated_at' => $time
 			) );
 		}
 
 		ninja_tables_DbTable()->batch_insert( $data );
-		ninjaTablesClearTableDataCache($tableId);
+		ninjaTablesClearTableDataCache( $tableId );
 		wp_send_json( array(
 			'message' => __( 'Successfully uploaded data.', 'ninja-tables' )
 		) );
@@ -1064,108 +1063,362 @@ class NinjaTablesAdmin {
 	 */
 	public function ninja_table_register_button( $buttons ) {
 		array_push( $buttons, 'ninja_table' );
+
 		return $buttons;
 	}
-	
-	public function dismissPluginSuggest()
-    {
-        update_option('_ninja_tables_plugin_suggest_dismiss', time());
+
+	public function dismissPluginSuggest() {
+		update_option( '_ninja_tables_plugin_suggest_dismiss', time() );
 	}
-	
-	private function url_slug($str, $options = array()) {
+
+	private function url_slug( $str, $options = array() ) {
 		// Make sure string is in UTF-8 and strip invalid UTF-8 characters
-		$str = mb_convert_encoding((string)$str, 'UTF-8', mb_list_encodings());
+		$str = mb_convert_encoding( (string) $str, 'UTF-8', mb_list_encodings() );
 
 		$defaults = array(
-			'delimiter' => '_',
-			'limit' => null,
-			'lowercase' => true,
-			'replacements' => array(),
+			'delimiter'     => '_',
+			'limit'         => null,
+			'lowercase'     => true,
+			'replacements'  => array(),
 			'transliterate' => true,
 		);
 
 		// Merge options
-		$options = array_merge($defaults, $options);
+		$options = array_merge( $defaults, $options );
 
 		$char_map = array(
 			// Latin
-			'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
-			'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-			'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
-			'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
+			'À' => 'A',
+			'Á' => 'A',
+			'Â' => 'A',
+			'Ã' => 'A',
+			'Ä' => 'A',
+			'Å' => 'A',
+			'Æ' => 'AE',
+			'Ç' => 'C',
+			'È' => 'E',
+			'É' => 'E',
+			'Ê' => 'E',
+			'Ë' => 'E',
+			'Ì' => 'I',
+			'Í' => 'I',
+			'Î' => 'I',
+			'Ï' => 'I',
+			'Ð' => 'D',
+			'Ñ' => 'N',
+			'Ò' => 'O',
+			'Ó' => 'O',
+			'Ô' => 'O',
+			'Õ' => 'O',
+			'Ö' => 'O',
+			'Ő' => 'O',
+			'Ø' => 'O',
+			'Ù' => 'U',
+			'Ú' => 'U',
+			'Û' => 'U',
+			'Ü' => 'U',
+			'Ű' => 'U',
+			'Ý' => 'Y',
+			'Þ' => 'TH',
 			'ß' => 'ss',
-			'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
-			'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-			'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
-			'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
+			'à' => 'a',
+			'á' => 'a',
+			'â' => 'a',
+			'ã' => 'a',
+			'ä' => 'a',
+			'å' => 'a',
+			'æ' => 'ae',
+			'ç' => 'c',
+			'è' => 'e',
+			'é' => 'e',
+			'ê' => 'e',
+			'ë' => 'e',
+			'ì' => 'i',
+			'í' => 'i',
+			'î' => 'i',
+			'ï' => 'i',
+			'ð' => 'd',
+			'ñ' => 'n',
+			'ò' => 'o',
+			'ó' => 'o',
+			'ô' => 'o',
+			'õ' => 'o',
+			'ö' => 'o',
+			'ő' => 'o',
+			'ø' => 'o',
+			'ù' => 'u',
+			'ú' => 'u',
+			'û' => 'u',
+			'ü' => 'u',
+			'ű' => 'u',
+			'ý' => 'y',
+			'þ' => 'th',
 			'ÿ' => 'y',
 			// Latin symbols
 			'©' => '(c)',
 			// Greek
-			'Α' => 'A', 'Β' => 'B', 'Γ' => 'G', 'Δ' => 'D', 'Ε' => 'E', 'Ζ' => 'Z', 'Η' => 'H', 'Θ' => '8',
-			'Ι' => 'I', 'Κ' => 'K', 'Λ' => 'L', 'Μ' => 'M', 'Ν' => 'N', 'Ξ' => '3', 'Ο' => 'O', 'Π' => 'P',
-			'Ρ' => 'R', 'Σ' => 'S', 'Τ' => 'T', 'Υ' => 'Y', 'Φ' => 'F', 'Χ' => 'X', 'Ψ' => 'PS', 'Ω' => 'W',
-			'Ά' => 'A', 'Έ' => 'E', 'Ί' => 'I', 'Ό' => 'O', 'Ύ' => 'Y', 'Ή' => 'H', 'Ώ' => 'W', 'Ϊ' => 'I',
+			'Α' => 'A',
+			'Β' => 'B',
+			'Γ' => 'G',
+			'Δ' => 'D',
+			'Ε' => 'E',
+			'Ζ' => 'Z',
+			'Η' => 'H',
+			'Θ' => '8',
+			'Ι' => 'I',
+			'Κ' => 'K',
+			'Λ' => 'L',
+			'Μ' => 'M',
+			'Ν' => 'N',
+			'Ξ' => '3',
+			'Ο' => 'O',
+			'Π' => 'P',
+			'Ρ' => 'R',
+			'Σ' => 'S',
+			'Τ' => 'T',
+			'Υ' => 'Y',
+			'Φ' => 'F',
+			'Χ' => 'X',
+			'Ψ' => 'PS',
+			'Ω' => 'W',
+			'Ά' => 'A',
+			'Έ' => 'E',
+			'Ί' => 'I',
+			'Ό' => 'O',
+			'Ύ' => 'Y',
+			'Ή' => 'H',
+			'Ώ' => 'W',
+			'Ϊ' => 'I',
 			'Ϋ' => 'Y',
-			'α' => 'a', 'β' => 'b', 'γ' => 'g', 'δ' => 'd', 'ε' => 'e', 'ζ' => 'z', 'η' => 'h', 'θ' => '8',
-			'ι' => 'i', 'κ' => 'k', 'λ' => 'l', 'μ' => 'm', 'ν' => 'n', 'ξ' => '3', 'ο' => 'o', 'π' => 'p',
-			'ρ' => 'r', 'σ' => 's', 'τ' => 't', 'υ' => 'y', 'φ' => 'f', 'χ' => 'x', 'ψ' => 'ps', 'ω' => 'w',
-			'ά' => 'a', 'έ' => 'e', 'ί' => 'i', 'ό' => 'o', 'ύ' => 'y', 'ή' => 'h', 'ώ' => 'w', 'ς' => 's',
-			'ϊ' => 'i', 'ΰ' => 'y', 'ϋ' => 'y', 'ΐ' => 'i',
+			'α' => 'a',
+			'β' => 'b',
+			'γ' => 'g',
+			'δ' => 'd',
+			'ε' => 'e',
+			'ζ' => 'z',
+			'η' => 'h',
+			'θ' => '8',
+			'ι' => 'i',
+			'κ' => 'k',
+			'λ' => 'l',
+			'μ' => 'm',
+			'ν' => 'n',
+			'ξ' => '3',
+			'ο' => 'o',
+			'π' => 'p',
+			'ρ' => 'r',
+			'σ' => 's',
+			'τ' => 't',
+			'υ' => 'y',
+			'φ' => 'f',
+			'χ' => 'x',
+			'ψ' => 'ps',
+			'ω' => 'w',
+			'ά' => 'a',
+			'έ' => 'e',
+			'ί' => 'i',
+			'ό' => 'o',
+			'ύ' => 'y',
+			'ή' => 'h',
+			'ώ' => 'w',
+			'ς' => 's',
+			'ϊ' => 'i',
+			'ΰ' => 'y',
+			'ϋ' => 'y',
+			'ΐ' => 'i',
 			// Turkish
-			'Ş' => 'S', 'İ' => 'I', 'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O', 'Ğ' => 'G',
-			'ş' => 's', 'ı' => 'i', 'ç' => 'c', 'ü' => 'u', 'ö' => 'o', 'ğ' => 'g',
+			'Ş' => 'S',
+			'İ' => 'I',
+			'Ç' => 'C',
+			'Ü' => 'U',
+			'Ö' => 'O',
+			'Ğ' => 'G',
+			'ş' => 's',
+			'ı' => 'i',
+			'ç' => 'c',
+			'ü' => 'u',
+			'ö' => 'o',
+			'ğ' => 'g',
 			// Russian
-			'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'Yo', 'Ж' => 'Zh',
-			'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O',
-			'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
-			'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sh', 'Ъ' => '', 'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'Yu',
+			'А' => 'A',
+			'Б' => 'B',
+			'В' => 'V',
+			'Г' => 'G',
+			'Д' => 'D',
+			'Е' => 'E',
+			'Ё' => 'Yo',
+			'Ж' => 'Zh',
+			'З' => 'Z',
+			'И' => 'I',
+			'Й' => 'J',
+			'К' => 'K',
+			'Л' => 'L',
+			'М' => 'M',
+			'Н' => 'N',
+			'О' => 'O',
+			'П' => 'P',
+			'Р' => 'R',
+			'С' => 'S',
+			'Т' => 'T',
+			'У' => 'U',
+			'Ф' => 'F',
+			'Х' => 'H',
+			'Ц' => 'C',
+			'Ч' => 'Ch',
+			'Ш' => 'Sh',
+			'Щ' => 'Sh',
+			'Ъ' => '',
+			'Ы' => 'Y',
+			'Ь' => '',
+			'Э' => 'E',
+			'Ю' => 'Yu',
 			'Я' => 'Ya',
-			'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'zh',
-			'з' => 'z', 'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o',
-			'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c',
-			'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sh', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu',
+			'а' => 'a',
+			'б' => 'b',
+			'в' => 'v',
+			'г' => 'g',
+			'д' => 'd',
+			'е' => 'e',
+			'ё' => 'yo',
+			'ж' => 'zh',
+			'з' => 'z',
+			'и' => 'i',
+			'й' => 'j',
+			'к' => 'k',
+			'л' => 'l',
+			'м' => 'm',
+			'н' => 'n',
+			'о' => 'o',
+			'п' => 'p',
+			'р' => 'r',
+			'с' => 's',
+			'т' => 't',
+			'у' => 'u',
+			'ф' => 'f',
+			'х' => 'h',
+			'ц' => 'c',
+			'ч' => 'ch',
+			'ш' => 'sh',
+			'щ' => 'sh',
+			'ъ' => '',
+			'ы' => 'y',
+			'ь' => '',
+			'э' => 'e',
+			'ю' => 'yu',
 			'я' => 'ya',
 			// Ukrainian
-			'Є' => 'Ye', 'І' => 'I', 'Ї' => 'Yi', 'Ґ' => 'G',
-			'є' => 'ye', 'і' => 'i', 'ї' => 'yi', 'ґ' => 'g',
+			'Є' => 'Ye',
+			'І' => 'I',
+			'Ї' => 'Yi',
+			'Ґ' => 'G',
+			'є' => 'ye',
+			'і' => 'i',
+			'ї' => 'yi',
+			'ґ' => 'g',
 			// Czech
-			'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
+			'Č' => 'C',
+			'Ď' => 'D',
+			'Ě' => 'E',
+			'Ň' => 'N',
+			'Ř' => 'R',
+			'Š' => 'S',
+			'Ť' => 'T',
+			'Ů' => 'U',
 			'Ž' => 'Z',
-			'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
+			'č' => 'c',
+			'ď' => 'd',
+			'ě' => 'e',
+			'ň' => 'n',
+			'ř' => 'r',
+			'š' => 's',
+			'ť' => 't',
+			'ů' => 'u',
 			'ž' => 'z',
 			// Polish
-			'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
+			'Ą' => 'A',
+			'Ć' => 'C',
+			'Ę' => 'e',
+			'Ł' => 'L',
+			'Ń' => 'N',
+			'Ó' => 'o',
+			'Ś' => 'S',
+			'Ź' => 'Z',
 			'Ż' => 'Z',
-			'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's', 'ź' => 'z',
+			'ą' => 'a',
+			'ć' => 'c',
+			'ę' => 'e',
+			'ł' => 'l',
+			'ń' => 'n',
+			'ó' => 'o',
+			'ś' => 's',
+			'ź' => 'z',
 			'ż' => 'z',
 			// Latvian
-			'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
-			'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
-			'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
-            'š' => 's', 'ū' => 'u', 'ž' => 'z',
+			'Ā' => 'A',
+			'Č' => 'C',
+			'Ē' => 'E',
+			'Ģ' => 'G',
+			'Ī' => 'i',
+			'Ķ' => 'k',
+			'Ļ' => 'L',
+			'Ņ' => 'N',
+			'Š' => 'S',
+			'Ū' => 'u',
+			'Ž' => 'Z',
+			'ā' => 'a',
+			'č' => 'c',
+			'ē' => 'e',
+			'ģ' => 'g',
+			'ī' => 'i',
+			'ķ' => 'k',
+			'ļ' => 'l',
+			'ņ' => 'n',
+			'š' => 's',
+			'ū' => 'u',
+			'ž' => 'z',
 		);
 
 		// Make custom replacements
-		$str = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
+		$str = preg_replace( array_keys( $options['replacements'] ), $options['replacements'], $str );
 
 		// Transliterate characters to ASCII
-		if ($options['transliterate']) {
-			$str = str_replace(array_keys($char_map), $char_map, $str);
+		if ( $options['transliterate'] ) {
+			$str = str_replace( array_keys( $char_map ), $char_map, $str );
 		}
 
 		// Replace non-alphanumeric characters with our delimiter
-		$str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
+		$str = preg_replace( '/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str );
 
 		// Remove duplicate delimiters
-		$str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
+		$str = preg_replace( '/(' . preg_quote( $options['delimiter'], '/' ) . '){2,}/', '$1', $str );
 
 		// Truncate slug to max. characters
-		$str = mb_substr($str, 0, ($options['limit'] ? $options['limit'] : mb_strlen($str, 'UTF-8')), 'UTF-8');
+		$str = mb_substr( $str, 0, ( $options['limit'] ? $options['limit'] : mb_strlen( $str, 'UTF-8' ) ), 'UTF-8' );
 
 		// Remove delimiter from ends
-		$str = trim($str, $options['delimiter']);
+		$str = trim( $str, $options['delimiter'] );
 
-		return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
+		return $options['lowercase'] ? mb_strtolower( $str, 'UTF-8' ) : $str;
+	}
+
+	/**
+	 * Save a flag if the a post/page/cpt have [ninja_tables] shortcode
+	 *
+	 * @param int $post_id
+	 *
+	 * @return void
+	 */
+	public function saveNinjaTableFlagOnShortCode( $post_id ) {
+		if ( isset( $_POST['post_content'] ) ) {
+			$post_content = $_POST['post_content'];
+		} else {
+			$post         = get_post( $post_id );
+			$post_content = $post->post_content;
+		}
+		if ( has_shortcode( $post_content, 'ninja_tables' ) ) {
+			update_post_meta( $post_id, '_has_ninja_tables', 1 );
+		} else if ( get_post_meta( $post_id, '_has_ninja_tables', true ) ) {
+			update_post_meta( $post_id, '_has_ninja_tables', 0 );
+		}
 	}
 }

@@ -9,7 +9,7 @@ class NinjaFooTable {
 	}
 
 	private static function enqueue_assets() {
-            
+
 		wp_enqueue_script( 'footable',
 			NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.js",
 			array( 'jquery' ), '3.1.5', true );
@@ -53,7 +53,7 @@ class NinjaFooTable {
 		if ( isset( $settings['render_type'] ) && $settings['render_type'] ) {
 			$renderType = $settings['render_type'];
 		}
-		
+
 		$formatted_columns = array();
 		$sortingType       = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
 
@@ -69,19 +69,19 @@ class NinjaFooTable {
 				'type'        => $columnType,
 				'sortable'    => $globalSorting,
 				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true
-            );
-            
-            if ($columnType == 'date') {
-                wp_enqueue_script(
-                    'moment',
-                    NINJA_TABLES_DIR_URL."public/libs/moment/moment.min.js",
-                    [],
-                    '2.22.0',
-                    true
-                );
+			);
 
-                $formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
-            }
+			if ( $columnType == 'date' ) {
+				wp_enqueue_script(
+					'moment',
+					NINJA_TABLES_DIR_URL . "public/libs/moment/moment.min.js",
+					[],
+					'2.22.0',
+					true
+				);
+
+				$formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
+			}
 
 			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
 				$formatted_column['sorted']    = true;
@@ -177,9 +177,13 @@ class NinjaFooTable {
 					$table ); ?>
 			<?php endif; ?>
 			<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
-            <table <?php echo $foo_table_attributes; ?> id="footable_<?php echo intval( $table_id ); ?>"
-                                                        class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
+            <table style="display: none" <?php echo $foo_table_attributes; ?>
+                   id="footable_<?php echo intval( $table_id ); ?>"
+                   class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
 					$table, $table_vars ); ?></table>
+			<?php if ( $renderType == 'legacy_table' ): ?>
+                <div class="footable-loader"><span class="fooicon fooicon-loader"></span></div>
+			<?php endif; ?>
 			<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
         </div>
 		<?php
@@ -198,14 +202,29 @@ class NinjaFooTable {
 	}
 
 	private static function generateLegacyTableHTML( $table, $table_vars ) {
+		$disableCache = apply_filters('ninja_tables_disable_caching', false, $table->ID);
+
+		$tableHtml = get_post_meta( $table->ID, '_ninja_table_cache_html', true );
+		
+		if ( $tableHtml && !$disableCache 
+        ) {
+			echo $tableHtml;
+			return;
+		}
+		
 		$tableColumns     = $table_vars['columns'];
 		$formattedColumns = array();
-		//print_r($tableColumns);
 		$formatted_data = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
-		echo self::loadView( 'public/views/table_inner_html', array(
+		$tableHtml      = self::loadView( 'public/views/table_inner_html', array(
 			'table_columns' => $tableColumns,
-            'table_rows' =>    $formatted_data
+			'table_rows'    => $formatted_data
 		) );
+		
+		if(!$disableCache) {
+			update_post_meta( $table->ID, '_ninja_table_cache_html', $tableHtml );
+		}
+		echo $tableHtml;
+		return;
 	}
 
 	private static function loadView( $file, $data ) {
@@ -245,14 +264,14 @@ class NinjaFooTable {
 	}
 
 	private static function addInlineVars( $vars, $table_id ) {
-	    
-			add_action( 'wp_footer', function () use ( $vars, $table_id ) {
-				?>
-                <script type="text/javascript">
-                    window.ninja_footables_tables_<?php echo $table_id;?> = <?php echo $vars ?>;
-                </script>
-				<?php
-			}, 10000 );
+
+		add_action( 'wp_footer', function () use ( $vars, $table_id ) {
+			?>
+            <script type="text/javascript">
+                window.ninja_footables_tables_<?php echo $table_id;?> = <?php echo $vars ?>;
+            </script>
+			<?php
+		});
 	}
 
 	public static function getColumnType( $column ) {
@@ -260,8 +279,8 @@ class NinjaFooTable {
 		$acceptedTypes = array(
 			'text',
 			'number',
-            'date',
-            'html'
+			'date',
+			'html'
 		);
 
 		if ( in_array( $type, $acceptedTypes ) ) {

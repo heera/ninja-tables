@@ -852,3 +852,34 @@ ul.doc_items {
     font-size: 18px;
   }
 }
+.section_block {
+  margin-bottom: 20px;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+.section_card {
+  width: 48%;
+  float: left;
+  padding: 5px 30px;
+  box-sizing: border-box;
+  background: #fafafa;
+  margin-right: 2%;
+  min-height: 230px;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid white;;
+  .selected_ribbon {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 5px 15px;
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+  }
+  &.selected_type {
+    border: 2px solid #4CAF50;;
+    background: white;
+  }
+}

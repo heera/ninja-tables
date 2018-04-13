@@ -16,7 +16,7 @@ foreach ($table_rows as $table_row) :
         $counter = 1;
         foreach ($table_columns as $table_column) {
             $column_value = @$table_row[$table_column['name']];
-            if ($column_value == '#colspan#') {
+            if (strip_tags($column_value) == '#colspan#') {
                 $row = '<td class="ninja_temp_cell"></td>'.$row;
                 $counter++;
                 continue;

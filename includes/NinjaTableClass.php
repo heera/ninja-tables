@@ -163,6 +163,9 @@ class NinjaTableClass {
 		$demoPage = new \ninjaTable\ProcessDemoPage();
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
+		
+		$this->loader->add_action('save_post', $plugin_admin, 'saveNinjaTableFlagOnShortCode');
+		
         $this->loader->add_action('wp_ajax_ninja_tables_ajax_actions',
             $plugin_admin,
             'ajax_routes'
@@ -180,10 +183,9 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-
 		$plugin_public = new NinjaTablePublic( $this->get_plugin_name(), $this->get_version() );
-		
 		$this->loader->add_action('init', $plugin_public, 'register_table_render_functions');
+		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueueNinjaTableScript', 100);
 		
 		$this->loader->add_action('wp_ajax_wp_ajax_ninja_tables_public_action',
 			$plugin_public,

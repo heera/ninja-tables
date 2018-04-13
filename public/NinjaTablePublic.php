@@ -130,4 +130,21 @@ class NinjaTablePublic {
 		do_action('ninja_tables-render-table-'.$tableSettings['library'], $tableArray);
 		return ob_get_clean();
 	}
+	
+	public function enqueueNinjaTableScript() {
+		global $post;
+		if(is_a( $post, 'WP_Post' ) && get_post_meta($post->ID, '_has_ninja_tables', true)) {
+			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
+			if ( is_rtl() ) {
+				$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public-rtl.css";
+			}
+			wp_enqueue_style(
+				'footable_styles',
+				$styleSrc,
+				array(),
+				$this->version,
+				'all'
+			);
+		}
+	}
 }
