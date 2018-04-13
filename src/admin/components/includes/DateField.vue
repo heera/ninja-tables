@@ -1,29 +1,6 @@
 <template>
-    <div class="form_group" v-if="model.data_type == 'date'">
-        <label>
-            {{ $t('Date Format') }}
-
-            <el-tooltip placement="right" content="Pattern of the date value">
-                <i class="el-icon-information" />
-            </el-tooltip>
-        </label>
-
-        <input type="radio" id="date-format-standard" value="standard" v-model="formatType">
-        <label for="date-format-standard" class="normalLabel">Standard</label>
-
-        <input type="radio" id="date-format-custom" value="custom" v-model="formatType">
-        <label for="date-format-custom" class="normalLabel">Custom</label>
-
-        <select v-if="formatType == 'standard'" v-model="model.dateFormat" class="form_control mt5">
-            <option value="">Select a Format</option>
-            <option v-for="(format, i) in dateFormats" :value="i" :key="i">
-                {{ i }} - (Ex: {{ format }})
-            </option>
-        </select>
-
-        <input v-else type="text" v-model="model.dateFormat" 
-               placeholder="Enter moment.js supported format" class="form_control mt5"
-        >
+    <div>
+        date field
     </div>
 </template>
 
@@ -58,7 +35,7 @@
         watch: {
             formatType() {
                 if (this.formatType === "custom") {
-                    if (!this.has_pro) {
+                    if (!this.hasPro) {
                         window.ninjaTableBus.$emit('show_pro_popup', 1);
                         this.formatType = 'standard';
                         return;
