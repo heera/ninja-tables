@@ -16,6 +16,25 @@ jQuery(document).ready(function ($) {
             });
         },
         initResponsiveTable:  function initFooTable($table, tableConfig) {
+            jQuery.each(tableConfig.columns, (index, column) => {
+                if (column.type == 'date') 
+                {
+                    column.sortValue = function (valueOrElement) {
+                        if(valueOrElement) {
+                            return moment(valueOrElement, column.formatString);
+                        }
+                        return null;
+                    };
+                    column.formatter = function (value, options, rowData) {
+                        console.log(value);
+                        if(value._i) {
+                            return value._i;
+                        }
+                        return null;
+                    }
+                }
+            });
+            
             let initConfig = {
                 "cascade": true,
                 "columns": tableConfig.columns,

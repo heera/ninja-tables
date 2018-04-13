@@ -4,8 +4,8 @@ class NinjaFooTable {
 	public static $version = NINJA_TABLES_VERSION;
 
 	public static function run( $tableArray ) {
-		self::enqueue_assets();
 		self::render( $tableArray );
+		self::enqueue_assets();
 	}
 
 	private static function enqueue_assets() {
@@ -80,7 +80,7 @@ class NinjaFooTable {
                     true
                 );
 
-                $formatted_column['format-string'] = $column['dateFormat'] ?: 'M/D/Y';
+                $formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
             }
 
 			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {

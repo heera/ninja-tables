@@ -1,6 +1,28 @@
 <template>
     <div>
-        <h1>Hello There</h1>
+        <div class="section_block">
+            <h3>Table Type</h3>
+            <div class="card_block">
+                <div class="section_card">
+                    <h4>Ajax Table ( Recommended )</h4>
+                    <p>
+                        Use this settings if you have lots of data and don't need cell merge features. It will load your data over ajax
+                    </p>
+                </div>
+                <div class="section_card">
+                    <h4>Legacy Table</h4>
+                    <div>
+                        Use this table if you have small amount of data and need the following features
+                        <ul>
+                            <li>Colspan ( Cell-Merge )</li>
+                            <li>Rendering table using PHP</li>
+                            <li>Rendering table using PHP</li>
+                            <li>Render shortcode into table cells</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
         <button @click="storeSettings()">Update Settings</button>
         <label>
             <input type="radio" value="legacy_table" v-model="tableSettings.render_type" />
