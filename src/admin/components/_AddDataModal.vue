@@ -11,7 +11,7 @@
                     </div>
                     <div v-if="modal_visible" class="modal-body">
                         <div v-for="column in columns" class="form-group">
-                            <label :for="slugify(column.key)">{{ column.name }}</label>
+                            <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
                             <div v-if="column.data_type == 'textarea'">
                                 <textarea :placeholder="column.name" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]"></textarea>
                             </div>

@@ -58,7 +58,6 @@
     display: none !important;
     visibility: hidden !important;
   }
-
   .form-group.footable-filtering-search .input-group-btn > button {
     margin: 0px !important;
   }
@@ -70,6 +69,16 @@
 .footable_parent {
   overflow-x: auto;
   width: 100%;
+  table.foo-table {
+    &.vertical_centered {
+      thead > tr > th,
+      tbody > tr > td
+      {
+        vertical-align: middle;
+      }
+    }
+  }
+
 }
 
 .loading_ninja_table1 {

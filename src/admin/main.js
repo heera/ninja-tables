@@ -13,6 +13,7 @@ import {
     Form,
     FormItem,
     Input,
+    Checkbox,
     RadioGroup,
     Radio,
 } from 'element-ui';
@@ -42,6 +43,7 @@ Vue.use(Dialog);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
+Vue.use(Checkbox);
 Vue.use(RadioGroup);
 Vue.use(Radio);
 

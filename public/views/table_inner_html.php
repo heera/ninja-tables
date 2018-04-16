@@ -1,14 +1,31 @@
+<?php
+    $table_columns = array_reverse($table_columns);
+    $header_row = '';
+    $counter = 1;
+?>
 <thead>
 <tr>
-    <?php foreach ($table_columns as $table_column) : ?>
-        <th class="<?php echo implode(' ', $table_column['classes']); ?>"><?php echo $table_column['title']; ?></th>
-    <?php endforeach; ?>
+    <?php foreach ($table_columns as $index => $table_column) : ?>
+        <?php
+            if (strip_tags($table_column['title']) == '#colspan#') {
+	            $header_row = '<td class="ninja_temp_cell"></td>'.$header_row;
+	            $counter++;
+	            continue;
+            }
+
+	    $colspan = '';
+	    if ($counter > 1) {
+		    $colspan = 'colspan="'.$counter.'"';
+	    }
+
+	    $header_row = '<th '. $colspan .' class="'.implode(' ', $table_column['classes']).'">'.$table_column['title'].'</th>'.$header_row;
+        ?>
+    <?php $counter = 1; endforeach; ?>
+    <?php echo $header_row; ?>
 </tr>
 </thead>
 <tbody>
 <?php
-$table_columns = array_reverse($table_columns);
-
 $columnLength = count($table_columns) - 1;
 
 foreach ($table_rows as $table_row) :

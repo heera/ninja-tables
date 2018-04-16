@@ -35,12 +35,10 @@ jQuery(document).ready(function ($) {
                         };
                     }
                 });
-                
                 if (tableConfig.render_type === 'legacy_table') {
                     that.initLegacyTable($table, tableConfig);
                     return;
                 }
-
                 that.initResponsiveTable($table, tableConfig);
             });
         },
@@ -95,6 +93,7 @@ jQuery(document).ready(function ($) {
         },
         initLegacyTable: function initFooTable($table, tableConfig) {
             $table.css('display', 'table');
+            //return;
             let initConfig = {
                 "columns": tableConfig.columns,
                 "cascade": true
@@ -143,7 +142,6 @@ jQuery(document).ready(function ($) {
         commonTasks($table, tableConfig) {
             let cssStyles = tableConfig.custom_css;
             jQuery.each(cssStyles, (className, values) => {
-                console.log($table.find('.'+className));
                 $table.find('.'+className).css(values);
             });
         }

@@ -52,7 +52,7 @@
                     </el-table-column>
                     <el-table-column
                         v-for="(column, index) in columns"
-                        :label="column.name"
+                        :label="column.name || column.key"
                         :width="(columnLength == index + 1 ) ? '' : 150"
                         :key="index">
                         <template slot-scope="scope">

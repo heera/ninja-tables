@@ -5,7 +5,7 @@ Tags:  WordPress tables Plugin, wp tables, data tables, datatables plugin, alter
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.5
-Stable tag: 2.0.8
+Stable tag: 2.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,12 @@ Tables are usually introduced to present a huge amount of data in an organized w
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.0.9 (Date: 04-16-2018 ) =
+* Added Shortcode support to table cells
+* Add Support for colspan feature to table header
+* Added Custom Color Alpha
+* Add feature to make table cells as vertical center
 
 = 2.0.8 (Date: 04-13-2018 ) =
 * Added Table Styling for header element

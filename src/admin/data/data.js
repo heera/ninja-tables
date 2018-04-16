@@ -32,6 +32,11 @@ const tableLibs = function() {
                             key: 'table-condensed',
                             title: 'Condensed table',
                             description: 'make tables more compact by cutting cell padding in half'
+                        },
+                        {
+                            key: 'vertical_centered',
+                            title: 'Vertically Center Table Cell Contents',
+                            description: 'Make Cell Contents Vertically Center'
                         }
                     ]
                 },
@@ -58,6 +63,11 @@ const tableLibs = function() {
                             key: 'table-sm',
                             title: 'Small table',
                             description: 'make tables more compact by cutting cell padding in half'
+                        },
+                        {
+                            key: 'vertical_centered',
+                            title: 'Vertically Center Table Cell Contents',
+                            description: 'Make Cell Contents Vertically Center'
                         }
                     ]
                 },
@@ -94,8 +104,12 @@ const tableLibs = function() {
                             key: 'compact',
                             title: 'Compact Table',
                             description: 'make tables more compact by cutting cell padding in half'
+                        },
+                        {
+                            key: 'vertical_centered',
+                            title: 'Vertically Center Table Cell Contents',
+                            description: 'Make Cell Contents Vertically Center'
                         }
-
                     ]
                 },
             },

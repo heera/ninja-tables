@@ -21,6 +21,7 @@ class NinjaFooTable {
 		
 		
 		self::render( $tableArray );
+		
 		self::enqueue_assets();
 	}
 
@@ -55,7 +56,7 @@ class NinjaFooTable {
 		if ( isset( $settings['render_type'] ) && $settings['render_type'] ) {
 			$renderType = $settings['render_type'];
 		}
-
+		
 		$formatted_columns = array();
 		$sortingType       = ( isset( $settings['sorting_type'] ) ) ? $settings['sorting_type'] : 'by_created_at';
 
@@ -83,10 +84,16 @@ class NinjaFooTable {
             if((isset($column['textAlign']) && $column['textAlign'])) {
 	            $customCss[$cssColumnName]['textAlign'] = $column['textAlign'];
             }
+            $columnTitle = $column['name'];
+			if(isset($column['enable_html_content']) && $column['enable_html_content'] == 'true') {
+			    if(isset($column['header_html_content'])) {
+				    $columnTitle = $column['header_html_content'];
+                }
+            }
             
 			$formatted_column = array(
 				'name'        => $column['key'],
-				'title'       => $column['name'],
+				'title'       => $columnTitle,
 				'breakpoints' => $column['breakpoints'],
 				'type'        => $columnType,
 				'sortable'    => $globalSorting,
@@ -156,17 +163,18 @@ class NinjaFooTable {
 			$table_classes .= ' ninja_table_search_disabled';
 		}
 
+		if ( defined( 'NINJATABLESPRO' ) ) {
+			$table_classes .= ' ninja_table_pro';
+        }
+		
+        $table_inline_css = '';
+        
 		if ( isset( $settings['table_color'] ) && $settings['table_color'] == 'ninja_table_custom_color' ) {
 			$table_color_primary   = isset( $settings['table_color_primary'] ) ? $settings['table_color_primary'] : '';
 			$table_color_secondary = isset( $settings['table_color_secondary'] ) ? $settings['table_color_secondary']
 				: '';
 			if ( $table_color_primary && $table_color_secondary ) {
-				$css = '#footable_parent_' . $table_id . '.colored_table table.foo-table.inverted.table {
-                        background: ' . $table_color_primary . ';
-                        color: ' . $table_color_secondary . ';
-                        border: none;
-                    }';
-				wp_add_inline_style( 'footable_styles', $css );
+				$table_inline_css = 'background-color: ' . $table_color_primary . ';color: ' . $table_color_secondary . ';border: none;';
 			}
 		}
 
@@ -183,7 +191,7 @@ class NinjaFooTable {
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		?>
         <div id="footable_parent_<?php echo $table_id; ?>"
-             class="footable_parent loading_ninja_table wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
+             class="footable_parent ninja_table_wrapper loading_ninja_table wp_table_data_press_parent <?php echo $settings['css_lib']; ?> <?php echo $tableHasColor; ?>">
 			<?php if ( isset( $settings['show_title'] )
 			           && $settings['show_title']
 			) : ?>
@@ -201,7 +209,7 @@ class NinjaFooTable {
 					$table ); ?>
 			<?php endif; ?>
 			<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
-            <table style="display: none" <?php echo $foo_table_attributes; ?>
+            <table style="display: none; <?php echo $table_inline_css; ?>" <?php echo $foo_table_attributes; ?>
                    id="footable_<?php echo intval( $table_id ); ?>"
                    class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
 					$table, $table_vars ); ?></table>
@@ -214,7 +222,7 @@ class NinjaFooTable {
 	}
 
 	public static function getTableHTML( $table, $table_vars ) {
-
+	    
 		if ( $table_vars['render_type'] == 'ajax_table' ) {
 			return;
 		}
@@ -248,8 +256,7 @@ class NinjaFooTable {
 		if ( ! $disableCache ) {
 			update_post_meta( $table->ID, '_ninja_table_cache_html', $tableHtml );
 		}
-		echo $tableHtml;
-
+		echo do_shortcode($tableHtml);
 		return;
 	}
 
@@ -258,7 +265,6 @@ class NinjaFooTable {
 		ob_start();
 		extract( $data );
 		include $file;
-
 		return ob_get_clean();
 	}
 

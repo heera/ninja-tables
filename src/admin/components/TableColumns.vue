@@ -26,7 +26,7 @@
                             <div class="column drawer" v-for="(column, index) in columns">
                                 <div class="header">
                                     <span class="dashicons dashicons-editor-justify handle" />
-                                    <span>{{ column.name }}</span>
+                                    <span>{{ column.name || column.key }}</span>
                                     <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                 </div>
                                 <div class="drawer_body" :class="'drawer_body_'+index">
@@ -220,11 +220,11 @@
                             <h4 class="title">Select Table Colors</h4>
                             <div class="form_group">
                                 <label>Primary color (Background Color)</label>
-                                <el-color-picker v-model="tableSettings.table_color_primary"></el-color-picker>
+                                <el-color-picker show-alpha v-model="tableSettings.table_color_primary"></el-color-picker>
                             </div>
                             <div class="form_group">
                                 <label>Secondary color (Text Color)</label>
-                                <el-color-picker v-model="tableSettings.table_color_secondary"></el-color-picker>
+                                <el-color-picker show-alpha v-model="tableSettings.table_color_secondary"></el-color-picker>
                                 <p>* Use opposite colors for best result</p>
                             </div>
                         </div>
@@ -244,7 +244,6 @@
                         </div>
                     </div>
                 </div>
-                
                 
                 <div class="ninja_widget">
                     <h4 class="title">{{ $t('CSS Class') }}</h4>
@@ -298,7 +297,9 @@
                     key: '',
                     breakpoints: '',
                     data_type: 'text',
-                    dateFormat: ''
+                    dateFormat: '',
+                    header_html_content: "",
+                    enable_html_content: false
                 },
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
@@ -446,7 +447,11 @@
                     this.new_column = {
                         name: '',
                         key: '',
-                        breakpoints: ''
+                        breakpoints: '',
+                        data_type: 'text',
+                        dateFormat: '',
+                        header_html_content: "",
+                        enable_html_content: false
                     };
                     this.addColumnStatus = false;
                     this.storeSettings();

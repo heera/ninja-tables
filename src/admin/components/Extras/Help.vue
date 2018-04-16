@@ -44,7 +44,7 @@
                     <div class="ff_block_box help_container text-center">
                         <img class="block_icon" :src="imageUrl('fluent-icon.png')" />
                         <h3>Try WP FluentFrom</h3>
-                        <p>Need to build a contact form by drag and drop form builder. Try the modern contact form plugin with all the necessary input fields, notifications and connect your form with powerful integrations</p>
+                        <p><b>Need to build a contact form by drag and drop form builder?</b> Try the modern contact form plugin with all the necessary input fields, notifications and connect your form with powerful integrations</p>
                         <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/fluentform/">Download from wp.org (Free)</a></p>
                     </div>
                 </div>

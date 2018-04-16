@@ -656,7 +656,14 @@ class NinjaTablesAdmin {
 			$rawColumns = $_REQUEST['columns'];
 			if ( $rawColumns && is_array( $rawColumns ) ) {
 				foreach ( $rawColumns as $column ) {
-					$tableColumns[] = array_map( 'sanitize_text_field', $column );
+				    foreach ($column as $column_index => $column_value) {
+				        if($column_index == 'header_html_content') {
+					        $column[$column_index] = wp_kses_post($column_value);
+                        } else {
+					        $column[$column_index] = sanitize_text_field($column_value);
+                        }
+                    }
+					$tableColumns[] = $column;
 				}
 				update_post_meta( $tableId, '_ninja_table_columns', $tableColumns );
 			}

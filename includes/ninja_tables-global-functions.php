@@ -122,6 +122,7 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 	$formatted_data = array();
 	foreach ($data as $item) {
 		$values = json_decode($item->value, true);
+		$values = array_map('do_shortcode', $values);
 		$formatted_data[] = $values;
 	}
 	

@@ -4,16 +4,14 @@
         <el-form-item>
             <template slot="label">
                 {{ $t('Column Name') }}
-
+                
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
                         <h3>Column Name</h3>
-
                         <p>
                             Enter a column name to set the header title.
                         </p>
                     </div>
-
                     <i class="el-icon-info el-text-info" />
                 </el-tooltip>
             </template>
@@ -129,7 +127,7 @@
                 </option>
             </select>
         </el-form-item>
-
+        
         <div v-if="moreSettings" class="advanced-settings">
             <!-- Extra classes -->
             <el-form-item>
@@ -197,6 +195,31 @@
                     >{{ alignmentLabel }}</option>
                 </select>
             </el-form-item>
+
+            <!-- Enable / Disable Table HTML -->
+            <el-form-item>
+                <el-checkbox v-model="model.enable_html_content" :value="true" label="Enable HTML Table Header Content"></el-checkbox>
+            </el-form-item>
+
+            <!-- model.header_html_content -->
+            <el-form-item v-if="model.enable_html_content">
+                <template slot="label">
+                    {{ $t("Header HTML Content") }}
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Header HTML Content</h3>
+                            <p>
+                                Provide content for table column header if you want to show html content.
+                            </p>
+                        </div>
+                        <i class="el-icon-info el-text-info" />
+                    </el-tooltip>
+                </template>
+
+                <wp_editor v-model="model.header_html_content"></wp_editor>
+            </el-form-item>
+            
+            
         </div>
 
         <div class="form_group">
@@ -228,8 +251,12 @@
 </template>
 
 <script>
+    import wpEditor from '../../../common/_wp_editor';
     export default {
         name: "ColumnsEditor",
+        components: {
+          'wp_editor':  wpEditor
+        },
         props: {
             "model": {
                 type: Object,
@@ -291,6 +318,8 @@
         },
         mounted() {
             this.model.dateFormat = this.model.dateFormat || "";
+            this.model.enable_html_content = ( this.model.enable_html_content == 'true') ? true : false;
+            this.model.header_html_content =  this.model.header_html_content || '';
         },
         methods: {
             addColumn() {
