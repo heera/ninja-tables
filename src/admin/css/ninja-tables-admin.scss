@@ -883,3 +883,9 @@ ul.doc_items {
     background: white;
   }
 }
+
+.clearfix:after {
+    display: block;
+    content: "";
+    clear: both;
+}

@@ -284,7 +284,11 @@ class NinjaTablesAdmin {
 			$args['s'] = sanitize_text_field( $_REQUEST['search'] );
 		}
 
-		$tables = get_posts( $args );
+        $tables = get_posts( $args );
+        
+        foreach ($tables as $table) {
+            $table->preview_url = site_url('?ninjatable_preview='.$table->ID);
+        }
 
 		$total    = wp_count_posts( 'ninja-table' );
 		$total    = intval( $total->publish );
@@ -381,7 +385,11 @@ class NinjaTablesAdmin {
 			$tableSettings = json_decode( $tableSettings, true );
 
 			if ( $tableSettings['table_head'] ) {
-				$header = array_shift( $rows );
+                $header = [];
+                $headerRow = array_values(array_shift($rows));
+                foreach($headerRow as $index => $item) {
+                    $header['ninja_column_'.($index + 1)] = $item;
+                }
 			} else {
 				$header      = array();
 				$columnCount = count( array_pop( array_reverse( $rows ) ) );
@@ -391,7 +399,7 @@ class NinjaTablesAdmin {
 					$headerKey            = 'ninja_column_' . ( $i + 1 );
 					$header[ $headerKey ] = $headerName;
 				}
-			}
+            }
 
 			$rows = array_reverse( $rows );
 
@@ -549,9 +557,11 @@ class NinjaTablesAdmin {
 			$content['settings'] );
 
 		if ( $rows = $content['rows'] ) {
-			$header = array_map( function ( $column ) {
-				return $column['key'];
-			}, $content['columns'] );
+			$header = [];
+            
+            foreach ($content['columns'] as $column) {
+                $header[$column['key']] = $column['name'];
+            }
 
 			$this->insertDataToTable( $tableId, $rows, $header );
 		}

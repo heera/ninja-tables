@@ -1,24 +1,29 @@
 <template>
     <div>
-        <div class="row">
+        <div class="row clearfix">
             <h1 class="wp-heading-inline">{{ $t('All Tables') }}</h1>
+            
+            <!-- <bulk-actions style="margin-top: 10px;" @handle="handleBulkActions" /> -->
+
             <div style="margin-top:7px" class="pull-right">
                 <label class="form_group search_action" for="search">
                     <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
                     <i @click="getData" class="el-icon-search"></i>
                 </label>
-                <a href="#" class="btn btn-primary btn-sm" @click="modalVisible = !modalVisible">
-                    <span class="">{{ $t('Add Table') }}</span>
-                </a>
-                
-                <router-link :to="{name: 'tools'}" class="btn btn-danger btn-sm">
-                    <span class="">{{ $t('Import from CSV') }}</span>
+
+                <el-button size="small" type="primary" @click="modalVisible = !modalVisible">
+                    {{ $t( 'Add Table' ) }}
+                </el-button>
+
+                <router-link :to="{ name: 'tools' }">
+                    <el-button size="small" type="success">{{ $t( 'Import Table' ) }}</el-button>
                 </router-link>
-                
             </div>
         </div>
         <hr />
-        <list-all-tables :searchString="searchString" :searchAction="searchAction"></list-all-tables>
+        
+        <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection" />
+
         <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" :modal_visible.sync="modalVisible"></add-table-modal>
         <br/>
         <fluentpromoad dismisable="1"></fluentpromoad>
@@ -28,6 +33,7 @@
 <script type="text/babel">
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
+    // import BulkActions from "./includes/BulkActions.vue";
    
     import FluentPromoAdd from './Extras/FluentPromoAdd.vue';
     
@@ -36,14 +42,16 @@
         components: {
             'list-all-tables' : ListAllTables,
             'add-table-modal': AddTableModal,
-           'fluentpromoad': FluentPromoAdd
+           'fluentpromoad': FluentPromoAdd,
+        //    BulkActions
         },
         data() {
             return {
                 modalVisible: false,
                 name: 'Jewel',
                 searchAction: 0,
-                searchString: ''
+                searchString: '',
+                selected: []
             }
         },
         methods: {
@@ -54,6 +62,34 @@
 
             getData() {
                 this.searchAction++;
+            },
+
+            makeSelection(ids) {
+                this.selected = ids;
+            },
+            
+            handleBulkActions(event) {
+                if (event === 'delete') {
+                    this.deleteTables();
+                }
+            },
+
+            deleteTables() {
+                if (this.selected.length) {
+                    this.$confirm(
+                        this.$t('This will permanently delete the selected tables. Continue?'),
+                        'Warning',
+                        {
+                            confirmButtonText: this.$t('Yes, Delete'),
+                            cancelButtonText: this.$t('Cancel'),
+                            type: 'warning'
+                        }
+                    ).then(() => {
+                        console.log('delete confirmations');
+                    }).catch(() => {
+                        console.log('dont delete');
+                    });
+                }
             }
         },
         mounted: function () {
@@ -77,5 +113,6 @@
 <style lang="scss">
     label.form_group.search_action {
         padding-top: 0;
+        margin-bottom: 0;
     }
 </style>

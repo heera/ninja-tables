@@ -1,14 +1,42 @@
 <template>
     <div>
-        <el-table 
+        <el-table
+            class="ninja-tables" 
+            @selection-change="handleSelectionChange"
             v-loading.body="pageLoading"
             :data="items"
             border
             style="100%">
 
+            <!-- <el-table-column type="selection" fixed width="55" /> -->
+
             <el-table-column :label="$t('Title')">
                 <template slot-scope="scope">
-                    <strong>{{ scope.row.post_title }}<span v-show="scope.row.post_status != 'publish'">({{ scope.row.post_status }})</span></strong>
+                    <strong>
+                        <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                            {{ scope.row.post_title }}
+                        </router-link>
+                    
+                        <span v-show="scope.row.post_status != 'publish'">
+                            ({{ scope.row.post_status }})
+                        </span>
+                    </strong>
+
+                    <div class="row-actions">
+                        <span class="row-edit">
+                            <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                                {{ $t('Edit') }}
+                            </router-link> |
+                        </span>
+
+                        <span class="row-preview">
+                            <a :href="scope.row.preview_url" target="_blank">{{ $t('Preview') }}</a> |
+                        </span>
+
+                        <span class="row-delete">
+                            <a @click.prevent="confirmDeleteTable(scope.row.ID)" href="#">{{ $t('Delete') }}</a>
+                        </span>
+                    </div>
                 </template>
             </el-table-column>
 
@@ -23,15 +51,6 @@
                             <i class="el-icon-document"></i> [ninja_tables id="{{ scope.row.ID }}"]
                         </code>
                     </el-tooltip>
-                </template>
-            </el-table-column>
-
-            <el-table-column :label="$t('Actions')" width="170">
-                <template slot-scope="scope">
-                    <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
-                        <el-button size="mini" type="primary">{{ $t( 'Edit' ) }}</el-button>
-                    </router-link>
-                    <el-button @click.prevent="confirmDeleteTable(scope.row.ID)" size="mini" type="danger">{{ $t('Delete') }}</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -52,13 +71,14 @@
 
 <script type="text/babel">
     import Clipboard from 'clipboard';
-    const pagination = require('../../common/pagination.vue')
+    const pagination = require('../../common/pagination.vue');
+
     export default {
         name: 'Home',
-        props: ['searchAction', 'searchString'],
         components: {
-            ninja_pagination: pagination  
+            ninja_pagination: pagination,
         },
+        props: ['searchAction', 'searchString'],
         watch: {
             searchAction() {
                 this.paginate.current_page = 1;
@@ -153,6 +173,10 @@
             
             handleBulkAction() {
                 
+            },
+
+            handleSelectionChange(tables) {
+                this.$emit('selection', tables.map(table => table.ID));
             }
         },
         mounted() {
@@ -168,3 +192,18 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .ninja-tables.el-table {
+        td, th {
+            padding: 5px 0;
+        }
+        span.row-delete a {
+            color: #a00;
+        }
+        a {
+            text-decoration: none;
+        }
+    }
+</style>
+
