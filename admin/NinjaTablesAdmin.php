@@ -606,12 +606,10 @@ class NinjaTablesAdmin {
 	}
 
 	private function insertDataToTable( $tableId, $values, $header ) {
-		$header = array_keys( $header );
-
-		$data = array();
+        $header = array_keys( $header );
 		$time = current_time( 'mysql' );
-
-		$headerCount = count( $header );
+        $headerCount = count( $header );
+        
 		foreach ( $values as $item ) {
 			if ( $headerCount == count( $item ) ) {
 				$itemTemp = array_combine( $header, $item );
@@ -630,16 +628,16 @@ class NinjaTablesAdmin {
 				);
 			}
 
-			array_push( $data, array(
+            $data = array(
 				'table_id'   => $tableId,
 				'attribute'  => 'value',
-				'value'      => json_encode( $itemTemp ),
+				'value'      => json_encode($itemTemp),
 				'created_at' => $time,
 				'updated_at' => $time
-			) );
+            );
+            
+            ninja_tables_DbTable()->insert($data);
 		}
-		ninja_tables_DbTable()->batch_insert( $data );
-
 	}
 
 	public function getTableSettings() {

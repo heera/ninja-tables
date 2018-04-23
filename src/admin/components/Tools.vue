@@ -75,10 +75,9 @@
                                     </div>
 
                                     <div class="form-item">
-                                        <button class="btn btn-primary btn-sm" @click="importTable">
+                                        <el-button type="primary" size="small" :loading="btnLoading" @click="importTable">
                                             {{ $t('Import') }}
-                                            <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                                        </button>
+                                        </el-button>
                                     </div>
                                 </div>
                             </div>
