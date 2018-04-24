@@ -185,7 +185,7 @@ class NinjaFooTable {
 			'render_type' => $renderType,
             'custom_css' => $customCss
 		);
-
+		
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
 
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
@@ -209,7 +209,7 @@ class NinjaFooTable {
 					$table ); ?>
 			<?php endif; ?>
 			<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
-            <table style="display: none; <?php echo $table_inline_css; ?>" <?php echo $foo_table_attributes; ?>
+            <table style="<?php echo $table_inline_css; ?>" <?php echo $foo_table_attributes; ?>
                    id="footable_<?php echo intval( $table_id ); ?>"
                    class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
 					$table, $table_vars ); ?></table>
@@ -236,9 +236,8 @@ class NinjaFooTable {
 		$disableCache = apply_filters( 'ninja_tables_disable_caching', false, $table->ID );
 
 		$tableHtml = get_post_meta( $table->ID, '_ninja_table_cache_html', true );
-		$disableCache = true;
-		if ( $tableHtml && ! $disableCache
-		) {
+		
+		if ( $tableHtml && ! $disableCache ) {
 			echo $tableHtml;
 			return;
 		}

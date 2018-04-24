@@ -6,10 +6,10 @@ jQuery(document).ready(function ($) {
             let that = this;
             $.each(footables, function (footable, table) {
                 let $table = $(table);
+                $table.hide();
                 let tableId = $table.data('footable_id');
                 let tableSelector = 'ninja_footables_tables_' + tableId;
                 let tableConfig = window[tableSelector];
-                
                 jQuery.each(tableConfig.columns, (index, column) => {
                     if (column.type == 'date') {
                         if (tableConfig.render_type != 'legacy_table') {
@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
                             }
                             return null;
                         }
-                    } else if (column.type = 'html' && tableConfig.render_type == 'ajax_table') {
+                    } else if (column.type == 'html' && tableConfig.render_type == 'ajax_table') {
                         column.formatter = function (value, options, rowData) {
                             return value;
                         };
@@ -39,6 +39,7 @@ jQuery(document).ready(function ($) {
                     that.initLegacyTable($table, tableConfig);
                     return;
                 }
+                
                 that.initResponsiveTable($table, tableConfig);
             });
         },
@@ -73,8 +74,7 @@ jQuery(document).ready(function ($) {
                     "columns": []
                 }];
             }
-
-
+            
             initConfig.paging = {
                 "enabled": !!tableConfig.settings.paging,
                 "position": "right",

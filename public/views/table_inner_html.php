@@ -33,22 +33,24 @@ foreach ($table_rows as $table_row) :
     ?>
     <tr>
         <?php
-        $counter = 1;
+        $colSpanCounter = 1;
+        
         foreach ($table_columns as $index => $table_column) {
 	        $column_value = @$table_row[$table_column['name']];
 	        $colspan = '';
             if($index != $columnLength) {
 	            if (strip_tags($column_value) == '#colspan#') {
 		            $row = '<td class="ninja_temp_cell"></td>'.$row;
-		            $counter++;
+		            $colSpanCounter = $colSpanCounter + 1;
 		            continue;
 	            }
-	            $colspan = '';
-	            if ($counter > 1) {
-		            $colspan = 'colspan="'.$counter.'"';
-	            }
             }
-            $row = '<td '.$colspan.'>'.$column_value.'</td>'.$row;
+            
+	        if ($colSpanCounter > 1) {
+		        $colspan = ' colspan="'.$colSpanCounter.'"';
+	        }
+	        
+            $row = '<td'.$colspan.'>'.$column_value.'</td>'.$row;
             $counter = 1;
         }
         echo $row;
