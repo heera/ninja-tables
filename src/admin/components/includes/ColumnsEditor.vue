@@ -318,7 +318,7 @@
         },
         mounted() {
             this.model.dateFormat = this.model.dateFormat || "";
-            this.model.enable_html_content = ( this.model.enable_html_content == 'true') ? true : false;
+            this.model.enable_html_content = ['true', true].indexOf(this.model.enable_html_content) !== -1;
             this.model.header_html_content =  this.model.header_html_content || '';
         },
         methods: {
