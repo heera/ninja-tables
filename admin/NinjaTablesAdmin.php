@@ -109,7 +109,6 @@ class NinjaTablesAdmin {
 			25 );
 
 		if ( current_user_can( $capability ) ) {
-
 			$submenu['ninja_tables'][] = array(
 				__( 'All Tables', 'ninja-tables' ),
 				$capability,
@@ -139,6 +138,7 @@ class NinjaTablesAdmin {
 				'admin.php?page=ninja_tables#/help'
 			);
 		}
+		
 	}
 
 	public function main_page() {

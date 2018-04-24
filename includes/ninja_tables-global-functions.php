@@ -102,6 +102,7 @@ if( ! function_exists('ninja_table_renameDuplicateValues') ) {
         return $result;
     }
 }
+
 if( ! function_exists('ninja_table_is_in_production_mood') ) {
 	function ninja_table_is_in_production_mood() {
 		return apply_filters('ninja_table_is_in_production_mood', false);
@@ -146,7 +147,7 @@ function ninjaTablesClearTableDataCache($tableId) {
 
 function ninjaTablesAllowedHtmlTags($tags)
 {
-    $tags['iframe'] = [
+    $tags['iframe'] = array(
         'src'             => true,
         'srcdoc'          => true,
         'width'           => true,
@@ -157,7 +158,7 @@ function ninjaTablesAllowedHtmlTags($tags)
         'style'           => true,
         'allowfullscreen' => true,
         'name'            => true
-    ];
+    );
 
     return $tags;
 }

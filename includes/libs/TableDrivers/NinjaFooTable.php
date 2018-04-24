@@ -228,7 +228,6 @@ class NinjaFooTable {
 		}
 		if ( $table_vars['render_type'] == 'legacy_table' ) {
 			self::generateLegacyTableHTML( $table, $table_vars );
-
 			return;
 		}
 	}
@@ -237,14 +236,12 @@ class NinjaFooTable {
 		$disableCache = apply_filters( 'ninja_tables_disable_caching', false, $table->ID );
 
 		$tableHtml = get_post_meta( $table->ID, '_ninja_table_cache_html', true );
-
+		$disableCache = true;
 		if ( $tableHtml && ! $disableCache
 		) {
 			echo $tableHtml;
-
 			return;
 		}
-
 		$tableColumns     = $table_vars['columns'];
 		$formattedColumns = array();
 		$formatted_data   = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );

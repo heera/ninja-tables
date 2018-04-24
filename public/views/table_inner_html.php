@@ -18,7 +18,7 @@
 		    $colspan = 'colspan="'.$counter.'"';
 	    }
 
-	    $header_row = '<th '. $colspan .' class="'.implode(' ', $table_column['classes']).'">'.$table_column['title'].'</th>'.$header_row;
+	    $header_row = '<th '. $colspan .' class="'.implode(' ', $table_column['classes']).'">'.do_shortcode($table_column['title']).'</th>'.$header_row;
         ?>
     <?php $counter = 1; endforeach; ?>
     <?php echo $header_row; ?>
