@@ -38,8 +38,10 @@
             
             <template v-if="columns.length">
                 <el-table 
+                    class="js-sortable-table"
                     v-loading.body="loading"
                     :data="items"
+                    row-key="id"
                     border
                     :class="{compact: isCompact}"
                     :style="'width: '+tableWidth"
@@ -106,6 +108,8 @@
     </div>
 </template>
 <script type="text/babel">
+    import Sortable from 'sortablejs';
+
     import addDataModal from './_AddDataModal';
     import pagination from '../../common/pagination.vue';
     import Alert from './includes/Alert.vue';
@@ -294,11 +298,26 @@
                 this.updateItem = item.row;
                 this.editIndex = item.$index;
                 this.addDataModal = true;
+            },
+
+            /**
+             * Sortable JS initiate for table
+             */
+            initSortable() {
+                const table = document.querySelector('.js-sortable-table tbody');
+                const self = this;
+                Sortable.create(table, {
+                    onEnd({ newIndex, oldIndex }) {
+                        const targetRow = self.items.splice(oldIndex, 1)[0];
+                        self.items.splice(newIndex, 0, targetRow);
+                    }
+                });
             }
         },
         mounted() {
             this.getData();
             this.tableWidth = jQuery('.wrap').width() +'px';
+            this.initSortable();
         }
     }
 </script> 
