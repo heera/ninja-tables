@@ -762,6 +762,8 @@ class NinjaTablesAdmin {
 
 		$search = esc_attr( $_REQUEST['search'] );
 
+        list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
+
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId );
 
 		if ( $search ) {
@@ -770,7 +772,7 @@ class NinjaTablesAdmin {
 
 		$data = $query->take( $perPage )
 		              ->skip( $skip )
-		              ->orderBy( 'id', 'desc' )
+		              ->orderBy($orderByField, $orderByType)
 		              ->get();
 
 		$total = ninja_tables_DbTable()->where( 'table_id', $tableId )->count();
@@ -779,8 +781,9 @@ class NinjaTablesAdmin {
 
 		foreach ( $data as $item ) {
 			$response[] = array(
-				'id'     => $item->id,
-				'values' => json_decode( $item->value, true )
+				'id'       => $item->id,
+				'position' => property_exists($item, 'position') ? $item->position : null,
+				'values'   => json_decode( $item->value, true )
 			);
 		}
 
@@ -791,6 +794,38 @@ class NinjaTablesAdmin {
 			'last_page'    => ceil( $total / $perPage ),
 			'data'         => $response
 		), 200 );
+	}
+
+    /**
+     * Get the order by field and order by type values.
+     *
+     * @param  $tableId
+     * @return array
+     */
+    protected function getTableSortingParams($tableId)
+    {
+        $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
+
+        $orderByField = 'id';
+        $orderByType = 'DESC';
+
+        if ($tableSettings['sorting_type'] === 'manual_sort') {
+            $orderByField = 'position';
+            $orderByType = 'ASC';
+        } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
+            $orderByField = 'id';
+
+            if ($tableSettings['default_sorting'] === 'new_first') {
+                $orderByType = 'DESC';
+            } else {
+                $orderByType = 'ASC';
+            }
+        } elseif ($tableSettings['sorting_type'] === 'by_column') {
+            $orderByField = isset($tableSettings['sorting_column']) ? $tableSettings['sorting_column'] : 'id';
+            $orderByType = isset($tableSettings['sorting_column_by']) ? $tableSettings['sorting_column_by'] : 'DESC';
+        }
+
+        return [$orderByField, $orderByType];
 	}
 
 	public function storeData() {

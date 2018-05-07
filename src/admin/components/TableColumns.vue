@@ -168,6 +168,12 @@
                                 </select>
                             </label>
                         </div>
+                        <br>
+                        <label>
+                            <input v-model="tableSettings.sorting_type" type="radio" value="manual_sort" />
+
+                            Sort Manually <template v-if="!has_pro">(<strong>Pro Feature</strong>)</template>
+                        </label>
                     </div>
                 </div>
 
@@ -346,6 +352,16 @@
             'new_column.name': function () {
                 this.new_column.key = snakeCase(this.new_column.name)
             },
+            'tableSettings.sorting_type': function (newVal, oldVal) {
+                if (newVal === 'manual_sort') {
+                    if (!this.has_pro) {
+                        this.tableSettings.sorting_type = oldVal;
+                        window.ninjaTableBus.$emit('show_pro_popup', 1);
+                    } else {
+                        this.initManualSorting();
+                    }
+                }
+            },
             'tableSettings.table_color': function () {
                 if (this.has_pro) {
                     return;
@@ -465,9 +481,15 @@
             },
             showProAd(title) {
                 this.addVisible = true;
+                window.ninjaTableBus.$emit('show_pro_popup', 1);
             },
             size,
-            get
+            get,
+            initManualSorting() {
+                let promise = new Promise((resolve, reject) => {
+                    window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                })
+            }
         },
         mounted() {
 

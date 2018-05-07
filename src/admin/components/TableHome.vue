@@ -132,6 +132,18 @@
                     type: 'success'
                 });
             });
+
+            // Initialize the table's manual data sorting.
+            window.ninjaTableBus.$on('initManualSorting', function (tableId, resolve, reject) {
+                let data = {
+                    action: "ninja_tables_init_sortable",
+                    tableId
+                };
+
+                jQuery.post(ajaxurl, data)
+                    .success(response => resolve(response))
+                    .fail(e => reject(e));
+            })
         }
     }
 </script> 

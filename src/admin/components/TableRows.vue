@@ -27,6 +27,11 @@
                         <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
                             <i @click="getData" class="el-icon-search"></i>
                     </label>
+
+                    <label>
+                        <input type="checkbox" name="checkbox" v-model="sorting" @click="toggleSorting()">
+                        Sort Manually
+                    </label>
                 </div>
                 <div class="pull-right">
                     <button class="button button-primary button-large pull-right" @click="addDataModal = true">
@@ -39,11 +44,11 @@
             <template v-if="columns.length">
                 <el-table 
                     class="js-sortable-table"
-                    v-loading.body="loading"
+                    v-loading="loading"
                     :data="items"
                     row-key="id"
                     border
-                    :class="{compact: isCompact}"
+                    :class="{compact: isCompact, sorting: sorting}"
                     :style="'width: '+tableWidth"
                     @selection-change="handleSelectionChange"
                 >
@@ -147,7 +152,10 @@
                 },
                 multipleSelection: [],
                 updateItem: null,
-                editIndex: null
+                editIndex: null,
+                // is table row soring enabled flag.
+                sorting: false,
+                sortableInstance: null
             }
         },
         watch: {
@@ -173,21 +181,22 @@
                     table_id: this.tableId,
                     page: this.paginate.current_page,
                     per_page: this.paginate.per_page,
-                    search: this.searchString
+                    search: this.searchString,
+                    default_sorting: this.config.settings.default_sorting
                 };
                 this.loading = true;
-                jQuery.get(ajaxurl, data)
-                    .success((res) => {
-                        this.items = res.data;
-                        this.paginate.total = parseInt(res.total);
-                        this.paginate.last_page = parseInt(res.last_page)
-                    })
-                    .fail((error) => {
-                        
-                    })
-                    .always(() => {
-                        this.loading = false;
-                    });
+                return jQuery.get(ajaxurl, data)
+                             .success((res) => {
+                                this.items = res.data;
+                                this.paginate.total = parseInt(res.total);
+                                this.paginate.last_page = parseInt(res.last_page)
+                             })
+                             .fail((error) => {
+
+                             })
+                             .always(() => {
+                                 this.loading = false;
+                             });
             },
             addTableData() {
                 
@@ -306,18 +315,70 @@
             initSortable() {
                 const table = document.querySelector('.js-sortable-table tbody');
                 const self = this;
-                Sortable.create(table, {
+                this.sortableInstance = Sortable.create(table, {
                     onEnd({ newIndex, oldIndex }) {
+                        let oldItem = self.items[oldIndex];
+                        self.sortTable(oldItem.id, self.items[newIndex].position, oldItem.position);
+
                         const targetRow = self.items.splice(oldIndex, 1)[0];
+
                         self.items.splice(newIndex, 0, targetRow);
                     }
                 });
+            },
+            toggleSorting() {
+                if (!this.sorting) {
+                    this.loading = true;
+
+                    let promise = new Promise((resolve, reject) => {
+                        window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                    })
+
+                    promise
+                        .then(() => {
+                            this.getData().success(() => {
+                                this.initSortable();
+                            })
+                        })
+                        .catch(e => {
+                            console.log(e);
+                        })
+                        .then(() => {
+                            this.loading = false;
+                        });
+                } else {
+                    if (this.sortableInstance) {
+                        this.sortableInstance.destroy();
+                    }
+                }
+            },
+            sortTable(id, newPosition, oldPosition) {
+                this.loading = true;
+
+                let data = {
+                    action: "ninja_tables_sort_table",
+                    tableId: this.tableId,
+                    id,
+                    newPosition,
+                    oldPosition
+                };
+
+                jQuery
+                    .post(ajaxurl, data)
+                    .then(() => {
+
+                    })
+                    .fail(e => {
+                        console.log(e);
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    });
             }
         },
         mounted() {
             this.getData();
             this.tableWidth = jQuery('.wrap').width() +'px';
-            this.initSortable();
         }
     }
 </script> 
@@ -336,5 +397,8 @@
         margin-bottom: 20px;
         border: 1px solid transparent;
         border-radius: 4px;
+    }
+    .sorting tr {
+        cursor: move;
     }
 </style>
