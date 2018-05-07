@@ -30,7 +30,7 @@
 
                     <label>
                         <input type="checkbox" name="checkbox" v-model="sorting" @click="toggleSorting()">
-                        Sort Manually
+                        Sort Manually <template v-if="!has_pro">(Pro Feature)</template>
                     </label>
                 </div>
                 <div class="pull-right">
@@ -131,6 +131,7 @@
         props: ['config'],
         data() {
             return {
+                has_pro: !!window.ninja_table_admin.hasPro,
                 isCompact: true,
                 tableWidth: '100%',
                 tableData: [],
@@ -163,7 +164,13 @@
                 if(this.searchString == '') {
                     this.getData();
                 }
-            }  
+            },
+            sorting(newVal) {
+                if (newVal && !this.has_pro) {
+                    this.sorting = false;
+                    window.ninjaTableBus.$emit('show_pro_popup');
+                }
+            }
         },
         computed: {
             columns() {
@@ -327,28 +334,30 @@
                 });
             },
             toggleSorting() {
-                if (!this.sorting) {
-                    this.loading = true;
+                if (this.has_pro) {
+                    if (!this.sorting) {
+                        this.loading = true;
 
-                    let promise = new Promise((resolve, reject) => {
-                        window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
-                    })
+                        let promise = new Promise((resolve, reject) => {
+                            window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                        })
 
-                    promise
-                        .then(() => {
-                            this.getData().success(() => {
-                                this.initSortable();
+                        promise
+                            .then(() => {
+                                this.getData().success(() => {
+                                    this.initSortable();
+                                })
                             })
-                        })
-                        .catch(e => {
-                            console.log(e);
-                        })
-                        .then(() => {
-                            this.loading = false;
-                        });
-                } else {
-                    if (this.sortableInstance) {
-                        this.sortableInstance.destroy();
+                            .catch(e => {
+                                console.log(e);
+                            })
+                            .then(() => {
+                                this.loading = false;
+                            });
+                    } else {
+                        if (this.sortableInstance) {
+                            this.sortableInstance.destroy();
+                        }
                     }
                 }
             },
