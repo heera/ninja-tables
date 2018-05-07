@@ -66,17 +66,22 @@
                     :total="paginate.total">
             </el-pagination>
         </div>
+        
+        <div v-if="!loading && !is_installed && items.length > 1">
+            <a style="display: block;width: 800px;margin: 40px auto 0px;max-width: 100%;" target="_blank" href="https://wordpress.org/plugins/fluentform">
+                <img style="max-width: 100%" :src="img_url_path+'fluent_banner.png'"/>
+            </a>
+        </div>
     </div>
 </template>
 
 <script type="text/babel">
     import Clipboard from 'clipboard';
     const pagination = require('../../common/pagination.vue');
-
     export default {
         name: 'Home',
         components: {
-            ninja_pagination: pagination,
+            'ninja_pagination': pagination
         },
         props: ['searchAction', 'searchString'],
         watch: {
@@ -98,7 +103,9 @@
                     current_page: 1,
                     last_page: 1,
                     per_page: 10
-                }
+                },
+                is_installed: window.ninja_table_admin.isInstalled,
+                img_url_path: window.ninja_table_admin.img_url
             }
         },
         methods: {

@@ -851,6 +851,8 @@ ul.doc_items li a {
   -webkit-box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.05);
           box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  width: 96%;
+  margin-top: 40px;
 }
 
 .ninja_suggest_plugin .ninja_dismiss {
@@ -964,7 +966,7 @@ ul.doc_items li a {
 .section_card {
   width: 48%;
   float: left;
-  padding: 5px 30px;
+  padding: 5px 10px;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   background: #fafafa;
@@ -973,6 +975,12 @@ ul.doc_items li a {
   cursor: pointer;
   position: relative;
   border: 2px solid white;
+}
+
+.section_card.expand_card {
+  width: 30%;
+  min-height: 120px;
+  padding: 5px 10px;
 }
 
 .section_card .selected_ribbon {
@@ -994,5 +1002,23 @@ ul.doc_items li a {
   display: block;
   content: "";
   clear: both;
+}
+
+.language_block .form_group {
+  margin-bottom: 20px;
+}
+
+.language_block .form_group:last-child {
+  margin-bottom: 0px;
+}
+
+.language_block .form_group label {
+  display: block;
+}
+
+.language_block .form_group input {
+  height: 32px;
+  padding: 5px 10px;
+  min-width: 400px;
 }
 

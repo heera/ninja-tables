@@ -319,7 +319,8 @@
                     'textarea': this.$t('Text Area'),
                     'html': this.$t('HTML Field'),
                     'number': this.$t('Numeric Value'),
-                    'date': this.$t('Date Field')
+                    'date': this.$t('Date Field'),
+                    'selection': this.$t('Select Field')
                 },
                 attributeModel: {
                     name: null,

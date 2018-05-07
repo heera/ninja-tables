@@ -19,27 +19,25 @@ jQuery(document).ready(function ($) {
                                 }
                                 return null;
                             };
-                        } column.formatter = function (value, options, rowData) {
+                        } 
+                        column.formatter = function (value, options, rowData) {
                             if (value._i) {
                                 return  value._i;
                             }
                             return null;
                         }
                     } else if (column.type == 'html' && tableConfig.render_type == 'ajax_table') {
-                        column.formatter = function (value, options, rowData) {
-                            return value;
-                        };
                         column.sortValue = function (valueOrElement) {
-                            valueOrElement = '<p>'+valueOrElement+'</p>';
+                            valueOrElement = '<div>'+valueOrElement+'</div>';
                             return jQuery(valueOrElement).text();
                         };
+                        column.type = 'text';
                     }
                 });
                 if (tableConfig.render_type === 'legacy_table') {
                     that.initLegacyTable($table, tableConfig);
                     return;
                 }
-                
                 that.initResponsiveTable($table, tableConfig);
             });
         },
@@ -47,7 +45,10 @@ jQuery(document).ready(function ($) {
             let initConfig = {
                 "cascade": true,
                 "columns": tableConfig.columns,
-                "rows": $.get(window.ninja_footables.ajax_url + '?action=wp_ajax_ninja_tables_public_action&table_id=' + tableConfig.table_id + '&target_action=get-all-data&default_sorting=' + tableConfig.settings.default_sorting)
+                "rows": $.get(window.ninja_footables.ajax_url + '?action=wp_ajax_ninja_tables_public_action&table_id=' + tableConfig.table_id + '&target_action=get-all-data&default_sorting=' + tableConfig.settings.default_sorting),
+                "expandFirst": tableConfig.settings.expandFirst,
+                "expandAll": tableConfig.settings.expandAll,
+                "empty" : tableConfig.settings.i18n.no_result_text
             };
 
             initConfig.sorting = {
@@ -61,8 +62,8 @@ jQuery(document).ready(function ($) {
             initConfig.filtering = {
                 "enabled": enabledSearch,
                 "delay": 1,
-                "dropdownTitle": ninja_footables.i18n.search_in,
-                "placeholder": ninja_footables.i18n.search,
+                "dropdownTitle": tableConfig.settings.i18n.search_in,
+                "placeholder": tableConfig.settings.i18n.search,
                 "connectors": false,
                 "ignoreCase": true
             };
@@ -81,7 +82,6 @@ jQuery(document).ready(function ($) {
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
-            initConfig.empty = ninja_footables.i18n.empty_text;
             let $tableInstance = $table
                 .on('postinit.ft.table', () => {
                     this.commonTasks($table, tableConfig);
@@ -96,7 +96,10 @@ jQuery(document).ready(function ($) {
             //return;
             let initConfig = {
                 "columns": tableConfig.columns,
-                "cascade": true
+                "cascade": true,
+                "expandFirst": tableConfig.settings.expandFirst,
+                "expandAll": tableConfig.settings.expandAll,
+                "empty" : tableConfig.settings.i18n.no_result_text
             };
 
             initConfig.sorting = {
@@ -110,8 +113,8 @@ jQuery(document).ready(function ($) {
             initConfig.filtering = {
                 "enabled": enabledSearch,
                 "delay": 1,
-                "dropdownTitle": ninja_footables.i18n.search_in,
-                "placeholder": ninja_footables.i18n.search,
+                "dropdownTitle": tableConfig.settings.i18n.search_in,
+                "placeholder": tableConfig.settings.i18n.search,
                 "connectors": false,
                 "ignoreCase": true
             };
@@ -130,7 +133,6 @@ jQuery(document).ready(function ($) {
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
-            initConfig.empty = ninja_footables.i18n.empty_text;
             jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
             let $tableInstance = $table.on('postinit.ft.table', () => {
                 this.commonTasks($table, tableConfig);

@@ -665,7 +665,7 @@ class NinjaTablesAdmin {
 			if ( $rawColumns && is_array( $rawColumns ) ) {
 				foreach ( $rawColumns as $column ) {
 				    foreach ($column as $column_index => $column_value) {
-				        if($column_index == 'header_html_content') {
+				        if($column_index == 'header_html_content' || $column_index == 'selections') {
 					        $column[$column_index] = wp_kses_post($column_value);
                         } else {
 					        $column[$column_index] = sanitize_text_field($column_value);

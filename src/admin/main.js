@@ -16,6 +16,8 @@ import {
     Checkbox,
     RadioGroup,
     Radio,
+    Select,
+    Option
 } from 'element-ui';
 
 import lang from 'element-ui/lib/locale/lang/en'
@@ -43,6 +45,8 @@ Vue.use(Dialog);
 Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Input);
+Vue.use(Select);
+Vue.use(Option);
 Vue.use(Checkbox);
 Vue.use(RadioGroup);
 Vue.use(Radio);

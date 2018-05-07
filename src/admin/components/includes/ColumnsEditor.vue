@@ -102,11 +102,40 @@
             </el-form-item>
         </el-form-item>
 
+        <!--Selection Field -->
+        <el-form-item v-if="model.data_type == 'selection'">
+            <template slot="label">
+                {{ $t('Select Items') }}
+
+                <el-tooltip class="item" placement="bottom-start" effect="light">
+                    <div slot="content">
+                        <h3>Select Field</h3>
+                        <p>
+                            Use Select Field to add data in your table from predefined list
+                        </p>
+                    </div>
+
+                    <i class="el-icon-info el-text-info" />
+                </el-tooltip>
+            </template>
+            <!-- Format input -->
+            <el-form-item>
+                <p v-if="!has_pro"><b>Selection feature is only available on Pro version Please upgrade to pro to unlock this feature</b></p>
+                <el-input type="textarea" 
+                          :disabled="!has_pro"
+                          v-model="model.selections" 
+                          placeholder="Enter Select items one per line"
+                          :autosize="{ minRows: 4, maxRows: 8}"
+                />
+                <small>Enter Select items one per line</small>
+            </el-form-item>
+        </el-form-item>
+
+
         <!-- Responsive Breakpoint -->
         <el-form-item>
             <template slot="label">
                 {{ $t("Responsive Breakpoint") }}
-
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
                         <h3>Responsive Breakpoint</h3>
@@ -218,8 +247,6 @@
 
                 <wp_editor v-model="model.header_html_content"></wp_editor>
             </el-form-item>
-            
-            
         </div>
 
         <div class="form_group">
@@ -278,7 +305,8 @@
                     textarea: this.$t("Text Area"),
                     html: this.$t("HTML Field"),
                     number: this.$t("Numeric Value"),
-                    date: this.$t("Date Field")
+                    date: this.$t("Date Field"),
+                    selection: this.$t("Select Field")
                 },
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
@@ -298,6 +326,7 @@
                     'DD-MMM-YY' : "28-Apr-18"
                 },
                 formatType: 'standard',
+                has_pro: !!window.ninja_table_admin.hasPro,
                 moreSettings: false,
                 alignmentOptions: {
                     'center': 'Center',
