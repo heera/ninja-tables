@@ -15,7 +15,7 @@
  * Plugin Name:       Ninja Tables
  * Plugin URI:        https://wpmanageninja.com/plugins/ninja-tables/
  * Description:       The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
- * Version:           2.1.0
+ * Version:           2.1.2
  * Author:            WPManageNinja
  * Author URI:        https://wpmanageninja.com/
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if (!defined('WPINC')) {
 define('NINJA_TABLES_DIR_URL', plugin_dir_url(__FILE__));
 define('NINJA_TABLES_DIR_PATH', plugin_dir_path(__FILE__));
 define('NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL.'public/');
-define('NINJA_TABLES_VERSION', '2.1.0');
+define('NINJA_TABLES_VERSION', '2.1.2');
 define('NINJA_TABLES_ASSET_VERSION', '2.1');
 
 /**
@@ -71,3 +71,36 @@ function run_ninja_tables()
 
 // kick off
 run_ninja_tables();
+
+//add_filter('ninja_tables_disable_caching', function ($status) {
+//	return true;
+//});
+
+
+
+// paste the code in functions.php file
+add_shortcode( 'francesco_username_table_filter', function($atts) {
+
+	extract(shortcode_atts( array(
+		'table_id' => false,
+		'logged_in_only' => 1
+	), $atts ));
+
+
+	if($logged_in_only) {
+		$userId = get_current_user_id();
+		if(!$userId) {
+			return '';
+		}
+		$currentUser = get_user_by('ID', $userId);
+		
+		ob_start();
+		echo do_shortcode('[ninja_tables id="'.$table_id.'" filter="'.$currentUser->user_login.'"]');
+		return ob_get_clean();
+	}
+});
+
+
+// usage:
+// shortcode: [francesco_username_table_filter table_id="1"]
+// then it will filter only the loggedin user's username by default

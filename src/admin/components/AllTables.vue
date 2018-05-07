@@ -2,9 +2,7 @@
     <div>
         <div class="row clearfix">
             <h1 class="wp-heading-inline">{{ $t('All Tables') }}</h1>
-            
             <!-- <bulk-actions style="margin-top: 10px;" @handle="handleBulkActions" /> -->
-
             <div style="margin-top:7px" class="pull-right">
                 <label class="form_group search_action" for="search">
                     <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
@@ -25,8 +23,6 @@
         <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection" />
 
         <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" :modal_visible.sync="modalVisible"></add-table-modal>
-        <br/>
-        <fluentpromoad dismisable="1"></fluentpromoad>
     </div>
 </template>
 
@@ -34,15 +30,13 @@
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
     // import BulkActions from "./includes/BulkActions.vue";
-   
-    import FluentPromoAdd from './Extras/FluentPromoAdd.vue';
+    
     
     export default {
         name: 'all_tables',
         components: {
             'list-all-tables' : ListAllTables,
-            'add-table-modal': AddTableModal,
-           'fluentpromoad': FluentPromoAdd,
+            'add-table-modal': AddTableModal
         //    BulkActions
         },
         data() {
@@ -59,21 +53,17 @@
                 this.$router.push({ name: 'data_columns', params: { table_id: tableId } });
                 this.modalVisible = false;
             },
-
             getData() {
                 this.searchAction++;
             },
-
             makeSelection(ids) {
                 this.selected = ids;
             },
-            
             handleBulkActions(event) {
                 if (event === 'delete') {
                     this.deleteTables();
                 }
             },
-
             deleteTables() {
                 if (this.selected.length) {
                     this.$confirm(

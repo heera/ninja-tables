@@ -24,6 +24,22 @@
                             <div v-else-if="column.data_type == 'date'">
                                 <input :placeholder="column.dateFormat" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
+                            <div v-else-if="column.data_type == 'selection'">
+                                <el-select
+                                        style="width: 100%"
+                                        v-model="newColumn[column.key]"
+                                        filterable
+                                        allow-create
+                                        default-first-option
+                                        placeholder="Choose One from List">
+                                    <el-option
+                                            v-for="item in getFromSelectionStr(column.selections)"
+                                            :key="item"
+                                            :label="item"
+                                            :value="item">
+                                    </el-option>
+                                </el-select>
+                            </div>
                             <div v-else>
                                 <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
@@ -78,7 +94,8 @@
                 continueAdding: true,
                 newColumn: {
                     
-                }
+                },
+                has_pro: !!window.ninja_table_admin.hasPro,
             }
         },
         watch: {
@@ -170,6 +187,9 @@
                     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
                     .replace(/^-+/, '')             // Trim - from start of text
                     .replace(/-+$/, '');            // Trim - from end of text
+            },
+            getFromSelectionStr(str) {
+                return str.split("\n");
             }
         },
         mounted() {

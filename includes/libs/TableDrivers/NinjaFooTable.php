@@ -87,7 +87,7 @@ class NinjaFooTable {
             $columnTitle = $column['name'];
 			if(isset($column['enable_html_content']) && $column['enable_html_content'] == 'true') {
 			    if(isset($column['header_html_content'])) {
-				    $columnTitle = $column['header_html_content'];
+				    $columnTitle = do_shortcode($column['header_html_content']);
                 }
             }
             
@@ -137,7 +137,14 @@ class NinjaFooTable {
 			'paging'          => $pagingSettings,
 			'sorting'         => true,
 			'default_sorting' => ( isset( $settings['default_sorting'] ) ) ? $settings['default_sorting'] : false,
-			'defualt_filter'  => isset( $default_filter ) ? $default_filter : false
+			'defualt_filter'  => isset( $default_filter ) ? $default_filter : false,
+            'expandFirst' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandFirst') ? true : false,
+            'expandAll' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandAll') ? true : false,
+			'i18n'     => array(
+				'search_in'  => (isset($settings['search_in_text'])) ? sanitize_text_field($settings['search_in_text']) : __( 'Search in', 'ninja-tables' ),
+				'search'  => (isset($settings['search_placeholder'])) ? sanitize_text_field($settings['search_placeholder']) : __( 'Search', 'ninja-tables' ),
+				'no_result_text'  => (isset($settings['no_result_text'])) ? sanitize_text_field($settings['no_result_text']) : __( 'No Result Found', 'ninja-tables' ),
+			)
 		);
 
 		$table_classes = self::getTableCssClass( $settings );
@@ -213,9 +220,6 @@ class NinjaFooTable {
                    id="footable_<?php echo intval( $table_id ); ?>"
                    class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
 					$table, $table_vars ); ?></table>
-			<?php if ( $renderType == 'legacy_table' ): ?>
-                <div class="footable-loader"><span class="fooicon fooicon-loader"></span></div>
-			<?php endif; ?>
 			<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
         </div>
 		<?php

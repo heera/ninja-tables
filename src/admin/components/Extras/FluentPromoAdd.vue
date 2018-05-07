@@ -5,7 +5,8 @@
             <img :src="image_url('fluentform_banner.jpg')"/>
         </div>
         <div class="ninja_fluent_copy">
-            <p>Have you checked out FluentForm yet? We have developed a powerful Drag & Drop WordPress Form Builder plugin with some amazing Premium features</p>
+            <h3>Have you checked out FluentForm yet?</h3>
+            <p>The Last Form Plugin You will Ever Need</p>
             <a class="button button-primary" :href="fluent_url">Download from WordPress.org</a>
             <a target="_blank" class="button" :href="fluent_wp_url">View Details</a>
         </div>
