@@ -218,8 +218,15 @@ class NinjaFooTable {
 			<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
             <table style="<?php echo $table_inline_css; ?>" <?php echo $foo_table_attributes; ?>
                    id="footable_<?php echo intval( $table_id ); ?>"
-                   class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>"><?php do_action( 'ninja_tables_inside_table_render',
-					$table, $table_vars ); ?></table>
+                   class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>">
+				   <colgroup>
+						<?php foreach ($formatted_columns as $index => $column) { ?>
+							<col class="ninja_column_<?php echo $index.' '.$column['breakpoints']; ?> "></col>
+						<?php } ?>
+					</colgroup>
+				   <?php do_action( 'ninja_tables_inside_table_render',
+					$table, $table_vars ); ?>
+					</table>
 			<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
         </div>
 		<?php

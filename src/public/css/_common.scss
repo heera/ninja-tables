@@ -89,3 +89,34 @@
     display: none;
   }
 }
+
+/* Ninja table columns visibility */
+table.ninja_footable col {
+  &.hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 767px) {
+    &.xs {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    &.sm {
+      display: none;
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1199px) {
+    &.md {
+      display: none;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    &.lg {
+      display: none;
+    }
+  }
+}

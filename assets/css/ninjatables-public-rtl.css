@@ -995,6 +995,36 @@ table.footable-editing.footable-editing-always-show button.footable-add {
   display: none;
 }
 
+/* Ninja table columns visibility */
+
+table.ninja_footable col.hidden {
+  display: none !important;
+}
+
+@media (max-width: 767px) {
+  table.ninja_footable col.xs {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  table.ninja_footable col.sm {
+    display: none;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  table.ninja_footable col.md {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  table.ninja_footable col.lg {
+    display: none;
+  }
+}
+
 @font-face {
   font-family: "ninja-tables-fontawesome";
   src: url(../fonts/ninja-tables-fontawesome.eot?0fb29fbec7db9ea5c763221346490d6f);
