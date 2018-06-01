@@ -33,6 +33,10 @@
                             <a :href="scope.row.preview_url" target="_blank">{{ $t('Preview') }}</a> |
                         </span>
 
+                        <span class="row-duplicate">
+                            <a href="#" @click.prevent="duplicate(scope.row.ID)">{{ $t('Duplicate') }}</a> |
+                        </span>
+
                         <span class="row-delete">
                             <a @click.prevent="confirmDeleteTable(scope.row.ID)" href="#">{{ $t('Delete') }}</a>
                         </span>
@@ -184,6 +188,27 @@
 
             handleSelectionChange(tables) {
                 this.$emit('selection', tables.map(table => table.ID));
+            },
+
+            duplicate(tableId) {
+                let data = {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'duplicate-table',
+                    tableId: tableId
+                };
+
+                jQuery.post(ajaxurl, data)
+                    .then((response) => {
+                        this.$message({
+                            type: 'success',
+                            message: response.message
+                        });
+
+                        this.fetchTables();
+                    })
+                    .fail((error) => {
+                        alert(error.responseJSON.data.message);
+                    });
             }
         },
         mounted() {

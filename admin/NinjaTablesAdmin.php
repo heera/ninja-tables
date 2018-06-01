@@ -249,7 +249,7 @@ class NinjaTablesAdmin {
 			'edit-data'                => 'editData',
 			'delete-data'              => 'deleteData',
 			'upload-data'              => 'uploadData',
-			'duplicate_table'          => 'duplicateTable',
+			'duplicate-table'          => 'duplicateTable',
 			'export-data'              => 'exportData',
 			'dismiss_fluent_suggest'   => 'dismissPluginSuggest'
 		);
@@ -1470,5 +1470,46 @@ class NinjaTablesAdmin {
 		} else if ( get_post_meta( $post_id, '_has_ninja_tables', true ) ) {
 			update_post_meta( $post_id, '_has_ninja_tables', 0 );
 		}
+	}
+
+    public function duplicateTable()
+    {
+        $oldPostId = intval($_REQUEST['tableId']);
+
+        $post = get_post($oldPostId);
+
+        // Duplicate table itself.
+        $attributes = array(
+            'post_title'   => $post->post_title,
+            'post_content' => $post->post_content,
+            'post_type'    => $post->post_type,
+            'post_status'  => 'publish'
+        );
+
+        $newPostId = wp_insert_post($attributes);
+
+        global $wpdb;
+
+        // Duplicate table settings.
+        $postMetaTable = $wpdb->prefix.'postmeta';
+
+        $sql = "INSERT INTO $postMetaTable (`post_id`, `meta_key`, `meta_value`)";
+        $sql .= " SELECT $newPostId, `meta_key`, `meta_value` FROM $postMetaTable WHERE `post_id` = $oldPostId";
+
+        $wpdb->query($sql);
+
+        // Duplicate table rows.
+        $itemsTable = $wpdb->prefix.ninja_tables_db_table_name();
+
+        $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `attribute`, `value`, `created_at`, `updated_at`)";
+        $sql .= " SELECT `position`, $newPostId, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
+        $sql .= " WHERE `table_id` = $oldPostId";
+
+        $wpdb->query($sql);
+
+        wp_send_json(array(
+            'message'  => __( 'Successfully duplicated table.', 'ninja-tables' ),
+            'table_id' => $newPostId
+        ), 200);
 	}
 }
