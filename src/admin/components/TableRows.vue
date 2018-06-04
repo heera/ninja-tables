@@ -111,6 +111,8 @@
         <div v-else-if="!loading" type="warning" style="margin-top: 15px" class="error">
             <p>{{ $t('Please set table configuration first.') }}</p>
         </div>
+
+        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false" />
     </div>
 </template>
 <script type="text/babel">
@@ -120,6 +122,7 @@
     import pagination from '../../common/pagination.vue';
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
+    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
 
     export default {
         name: 'TableDataItems',
@@ -127,12 +130,14 @@
             add_data_modal: addDataModal,
             ninja_pagination: pagination,
             Alert,
-            DeletePopOver
+            DeletePopOver,
+            SortableUpgradeNotice
         },
         props: ['config'],
         data() {
             return {
                 has_pro: !!window.ninja_table_admin.hasPro,
+                hasSortable: !!window.ninja_table_admin.hasSortable,
                 isCompact: true,
                 tableWidth: '100%',
                 tableData: [],
@@ -157,7 +162,8 @@
                 editIndex: null,
                 // is table row soring enabled flag.
                 sorting: false,
-                sortableInstance: null
+                sortableInstance: null,
+                sortableUpgradeNotice: false
             }
         },
         watch: {
@@ -167,9 +173,16 @@
                 }
             },
             sorting(newVal) {
-                if (newVal && !this.has_pro) {
-                    this.sorting = false;
-                    window.ninjaTableBus.$emit('show_pro_popup');
+                if (newVal) {
+                    if (!this.has_pro) {
+                        this.sorting = false;
+                        window.ninjaTableBus.$emit('show_pro_popup');
+                    }
+
+                    if (!this.hasSortable) {
+                        this.sorting = false;
+                        this.sortableUpgradeNotice = true
+                    }
                 }
             }
         },
@@ -402,6 +415,9 @@
                     .always(() => {
                         this.loading = false;
                     });
+            },
+            upgradeNoticeForSortable() {
+
             }
         },
         mounted() {

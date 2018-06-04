@@ -1022,3 +1022,7 @@ ul.doc_items li a {
   min-width: 400px;
 }
 
+.text-warning {
+  color: #e6a23c;
+}
+

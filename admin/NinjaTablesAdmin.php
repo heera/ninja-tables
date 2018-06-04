@@ -216,7 +216,8 @@ class NinjaTablesAdmin {
 			'fluent_wp_url'  => 'https://wordpress.org/plugins/fluentform/',
 			'dismissed'      => $dismissed,
 			'isInstalled'    => $isInstalled,
-			'hasPro'         => defined( 'NINJATABLESPRO' )
+			'hasPro'         => defined( 'NINJATABLESPRO' ),
+            'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
