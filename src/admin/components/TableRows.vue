@@ -8,6 +8,7 @@
                             :table_id="tableId" :columns="columns"
                             :item="updateItem"
                             :modal_visible="addDataModal"
+                            :manual-sort="config.settings.sorting_type === 'manual_sort'"
             ></add_data_modal>
 
             <div class="tablenav top">
@@ -306,8 +307,13 @@
             updateItemOnTable(item) {
                 this.items[this.editIndex].values = item.values;
             },
-            addItemOnTable(item) {
-                this.items.unshift(item);
+            addItemOnTable(item, position) {
+                if (position === 'last') {
+                    this.items.push(item);
+                } else {
+                    this.items.unshift(item);
+                }
+
                 this.paginate.total++;
             },
             showUpdateModal(item) {
@@ -325,7 +331,7 @@
                 this.sortableInstance = Sortable.create(table, {
                     onEnd({ newIndex, oldIndex }) {
                         let oldItem = self.items[oldIndex];
-                        self.sortTable(oldItem.id, self.items[newIndex].position, oldItem.position);
+                        self.sortTable(oldItem.id, self.items[newIndex].position);
 
                         const targetRow = self.items.splice(oldIndex, 1)[0];
 
@@ -339,14 +345,22 @@
                         this.loading = true;
 
                         let promise = new Promise((resolve, reject) => {
-                            window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                            window.ninjaTableBus.$emit('initManualSorting', {
+                                table_id: this.tableId,
+                                page: this.paginate.current_page,
+                                per_page: this.paginate.per_page,
+                                search: this.searchString,
+                                default_sorting: this.config.settings.default_sorting
+                            }, resolve, reject);
                         })
 
                         promise
-                            .then(() => {
-                                this.getData().success(() => {
-                                    this.initSortable();
-                                })
+                            .then(res => {
+                                this.items = res.data;
+                                this.paginate.total = parseInt(res.total);
+                                this.paginate.last_page = parseInt(res.last_page)
+
+                                this.initSortable();
                             })
                             .catch(e => {
                                 console.log(e);
@@ -361,21 +375,26 @@
                     }
                 }
             },
-            sortTable(id, newPosition, oldPosition) {
+            sortTable(id, newPosition) {
                 this.loading = true;
 
                 let data = {
                     action: "ninja_tables_sort_table",
-                    tableId: this.tableId,
+                    table_id: this.tableId,
                     id,
                     newPosition,
-                    oldPosition
+                    page: this.paginate.current_page,
+                    per_page: this.paginate.per_page,
+                    search: this.searchString,
+                    default_sorting: this.config.settings.default_sorting
                 };
 
                 jQuery
                     .post(ajaxurl, data)
-                    .then(() => {
-
+                    .then(res => {
+                        this.items = res.data;
+                        this.paginate.total = parseInt(res.total);
+                        this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail(e => {
                         console.log(e);

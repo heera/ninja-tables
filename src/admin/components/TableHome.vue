@@ -134,10 +134,10 @@
             });
 
             // Initialize the table's manual data sorting.
-            window.ninjaTableBus.$on('initManualSorting', function (tableId, resolve, reject) {
+            window.ninjaTableBus.$on('initManualSorting', function (options, resolve, reject) {
                 let data = {
                     action: "ninja_tables_init_sortable",
-                    tableId
+                    ...options
                 };
 
                 jQuery.post(ajaxurl, data)

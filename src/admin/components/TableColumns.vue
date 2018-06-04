@@ -488,7 +488,10 @@
             get,
             initManualSorting() {
                 let promise = new Promise((resolve, reject) => {
-                    window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                    window.ninjaTableBus.$emit('initManualSorting', {
+                        table_id: this.tableId,
+                        noData: true
+                    }, resolve, reject);
                 })
             }
         },
