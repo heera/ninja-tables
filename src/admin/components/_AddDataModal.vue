@@ -45,7 +45,7 @@
                             </div>
                         </div>
 
-                        <div v-if="!this.editId && manualSort">
+                        <div v-if="!editId && manualSort && !insertAfterPosition">
                             Add at
                             <input type="radio" v-model="position" value="last" style="margin-left: 5px;">Last
                             <input type="radio" v-model="position" value="first" style="margin-left: 10px;">First
@@ -78,7 +78,7 @@
     import wp_editor from '../../common/_wp_editor';
     export default {
         name: 'add_data',
-        props: ['modal_visible', 'columns', 'table_id', 'item', 'manualSort'],
+        props: ['modal_visible', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
         data() {
             return {
                 editorOption: {
@@ -140,11 +140,14 @@
                     table_id: this.table_id,
                     row: this.newColumn,
                     id: this.editId,
-
                 };
 
                 if (this.manualSort) {
-                    data['position'] = this.position;
+                    if (this.insertAfterPosition) {
+                        data['position'] = this.insertAfterPosition + 1;
+                    } else {
+                        data['position'] = this.position;
+                    }
                 }
 
                 jQuery.post(ajaxurl, data)
@@ -159,7 +162,7 @@
                         if(this.editId) {
                             this.$emit('updateItem', response.item);
                         } else {
-                            this.$emit('createItem', response.item, response.position);
+                            this.$emit('createItem', response.item);
                         }
                         if(this.editId || !this.continueAdding)  {
                             this.$emit('modal_close');

@@ -1026,3 +1026,7 @@ ul.doc_items li a {
   color: #e6a23c;
 }
 
+.actions a {
+  cursor: pointer;
+}
+

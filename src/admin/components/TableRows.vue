@@ -9,6 +9,7 @@
                             :item="updateItem"
                             :modal_visible="addDataModal"
                             :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                            :insert-after-position="insertAfterPosition"
             ></add_data_modal>
 
             <div class="tablenav top">
@@ -35,7 +36,7 @@
                     </label>
                 </div>
                 <div class="pull-right">
-                    <button class="button button-primary button-large pull-right" @click="addDataModal = true">
+                    <button class="button button-primary button-large pull-right" @click="add()">
                         {{ $t('Add Data') }}
                     </button>
                 </div>
@@ -70,8 +71,13 @@
                     <el-table-column
                         fixed="right"
                         label="Actions"
+                        class-name="actions"
                         width="100">
                         <template slot-scope="scope">
+                            <a v-if="has_pro" @click="addAfter(scope)">
+                                <span class="dashicons dashicons-plus"></span>
+                            </a>
+
                             <a @click="showUpdateModal(scope)">
                                 <span class="dashicons dashicons-edit"></span>
                             </a>
@@ -163,7 +169,9 @@
                 // is table row soring enabled flag.
                 sorting: false,
                 sortableInstance: null,
-                sortableUpgradeNotice: false
+                sortableUpgradeNotice: false,
+                // insert after
+                insertAfterPosition: null
             }
         },
         watch: {
@@ -320,11 +328,25 @@
             updateItemOnTable(item) {
                 this.items[this.editIndex].values = item.values;
             },
-            addItemOnTable(item, position) {
-                if (position === 'last') {
-                    this.items.push(item);
+            addItemOnTable(item) {
+                let position = item.position;
+
+                if (position) {
+                    if (position === 'last') {
+                        this.items.push(item);
+                    } else if (position === 'first') {
+                        this.items.unshift(item);
+                    } else {
+                        this.items.splice(position - 1, 0, item);
+                    }
                 } else {
                     this.items.unshift(item);
+                }
+
+                console.log('insertAfterPosition', this.insertAfterPosition);
+
+                if (this.insertAfterPosition) {
+                    this.insertAfterPosition += 1;
                 }
 
                 this.paginate.total++;
@@ -416,8 +438,19 @@
                         this.loading = false;
                     });
             },
-            upgradeNoticeForSortable() {
+            add() {
+                this.insertAfterPosition = null;
+                this.addDataModal = true
+            },
+            addAfter(scope) {
+                if (!this.hasSortable) {
+                    this.sortableUpgradeNotice = true;
 
+                    return
+                }
+
+                this.insertAfterPosition = scope.$index + 1;
+                this.addDataModal = true;
             }
         },
         mounted() {

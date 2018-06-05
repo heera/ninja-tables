@@ -218,6 +218,7 @@ class NinjaTablesAdmin {
 			'isInstalled'    => $isInstalled,
 			'hasPro'         => defined( 'NINJATABLESPRO' ),
             'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
+            'upgradeGuide'   => '#'
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -855,20 +856,12 @@ class NinjaTablesAdmin {
 			'updated_at' => date( 'Y-m-d H:i:s' )
 		);
 
-        $position = null;
-
 		if ( $id = intval( $_REQUEST['id'] ) ) {
 			ninja_tables_DbTable()->where( 'id', $id )->update( $attributes );
 		} else {
 			$attributes['created_at'] = date( 'Y-m-d H:i:s' );
 
-			if (isset($_REQUEST['position']) && ($position = $_REQUEST['position']) === 'first') {
-			    $attributes['position'] = 1;
-
-			    $this->handlePosition($tableId);
-            } else {
-                $attributes['position'] = ninja_tables_DbTable()->where('table_id', $tableId)->count() + 1;
-            }
+			$attributes = apply_filters('ninja_tables_item_attributes', $attributes);
 
             $id = $insertId = ninja_tables_DbTable()->insert( $attributes );
 		}
@@ -884,18 +877,8 @@ class NinjaTablesAdmin {
 				'values'   => $formattedRow,
 				'row'      => json_decode( $item->value ),
                 'position' => property_exists($item, 'position') ? $item->position : null
-			),
-            'position' => $position
+			)
 		), 200 );
-	}
-
-    private function handlePosition($tableId)
-    {
-        $hasPro = defined('NINJATABLESPRO');
-
-        if ($hasPro) {
-            \NinjaTablesPro\Sortable::increment($tableId);
-        }
 	}
 
 	public function deleteData() {

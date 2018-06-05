@@ -10,7 +10,7 @@
         <br>
         <br>
         <span>
-            <a href="">Click here</a> to view the upgrade guide.
+            <a :href="upgradeGuide" target="_blank">Click here</a> to view the upgrade guide.
         </span>
 
         <span slot="footer" class="dialog-footer">
@@ -23,6 +23,11 @@
     export default {
         name: "SortableUpgradeNotice",
         props: ['show'],
+        data() {
+            return {
+                upgradeGuide: window.ninja_table_admin.upgradeGuide
+            }
+        },
         computed: {
             visible: {
                 get() {
