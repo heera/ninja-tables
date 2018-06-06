@@ -43,7 +43,7 @@ class NinjaTablesAdmin {
 	 * @param      string $plugin_name The name of this plugin.
 	 * @param      string $version     The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name = 'ninja-tables', $version = NINJA_TABLES_VERSION ) {
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
 		$this->cpt_name    = 'ninja-table';
@@ -216,7 +216,9 @@ class NinjaTablesAdmin {
 			'fluent_wp_url'  => 'https://wordpress.org/plugins/fluentform/',
 			'dismissed'      => $dismissed,
 			'isInstalled'    => $isInstalled,
-			'hasPro'         => defined( 'NINJATABLESPRO' )
+			'hasPro'         => defined( 'NINJATABLESPRO' ),
+            'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
+            'upgradeGuide'   => '#'
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -809,20 +811,22 @@ class NinjaTablesAdmin {
         $orderByField = 'id';
         $orderByType = 'DESC';
 
-        if ($tableSettings['sorting_type'] === 'manual_sort') {
-            $orderByField = 'position';
-            $orderByType = 'ASC';
-        } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
-            $orderByField = 'id';
-
-            if ($tableSettings['default_sorting'] === 'new_first') {
-                $orderByType = 'DESC';
-            } else {
+        if (isset($tableSettings['sorting_type'])) {
+            if ($tableSettings['sorting_type'] === 'manual_sort') {
+                $orderByField = 'position';
                 $orderByType = 'ASC';
+            } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
+                $orderByField = 'id';
+
+                if ($tableSettings['default_sorting'] === 'new_first') {
+                    $orderByType = 'DESC';
+                } else {
+                    $orderByType = 'ASC';
+                }
+            } elseif ($tableSettings['sorting_type'] === 'by_column') {
+                $orderByField = isset($tableSettings['sorting_column']) ? $tableSettings['sorting_column'] : 'id';
+                $orderByType = isset($tableSettings['sorting_column_by']) ? $tableSettings['sorting_column_by'] : 'DESC';
             }
-        } elseif ($tableSettings['sorting_type'] === 'by_column') {
-            $orderByField = isset($tableSettings['sorting_column']) ? $tableSettings['sorting_column'] : 'id';
-            $orderByType = isset($tableSettings['sorting_column_by']) ? $tableSettings['sorting_column_by'] : 'DESC';
         }
 
         return [$orderByField, $orderByType];
@@ -856,8 +860,10 @@ class NinjaTablesAdmin {
 			ninja_tables_DbTable()->where( 'id', $id )->update( $attributes );
 		} else {
 			$attributes['created_at'] = date( 'Y-m-d H:i:s' );
-			$insertId                 = ninja_tables_DbTable()->insert( $attributes );
-			$id                       = $insertId;
+
+			$attributes = apply_filters('ninja_tables_item_attributes', $attributes);
+
+            $id = $insertId = ninja_tables_DbTable()->insert( $attributes );
 		}
 
 		$item = ninja_tables_DbTable()->find( $id );
@@ -867,9 +873,10 @@ class NinjaTablesAdmin {
 		wp_send_json( array(
 			'message' => __( 'Successfully saved the data.', 'ninja-tables' ),
 			'item'    => array(
-				'id'     => $item->id,
-				'values' => $formattedRow,
-				'row'    => json_decode( $item->value )
+				'id'       => $item->id,
+				'values'   => $formattedRow,
+				'row'      => json_decode( $item->value ),
+                'position' => property_exists($item, 'position') ? $item->position : null
 			)
 		), 200 );
 	}

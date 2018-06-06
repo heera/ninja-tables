@@ -44,6 +44,12 @@
                                 <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
                             </div>
                         </div>
+
+                        <div v-if="!editId && manualSort && !insertAfterPosition">
+                            Add at
+                            <input type="radio" v-model="position" value="last" style="margin-left: 5px;">Last
+                            <input type="radio" v-model="position" value="first" style="margin-left: 10px;">First
+                        </div>
                     </div>
                     <div class="modal-footer row_full">
                         <div v-show="!editId" class="pull-left">
@@ -72,7 +78,7 @@
     import wp_editor from '../../common/_wp_editor';
     export default {
         name: 'add_data',
-        props: ['modal_visible', 'columns', 'table_id', 'item'],
+        props: ['modal_visible', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
         data() {
             return {
                 editorOption: {
@@ -96,6 +102,7 @@
                     
                 },
                 has_pro: !!window.ninja_table_admin.hasPro,
+                position: 'last'
             }
         },
         watch: {
@@ -132,9 +139,17 @@
                     target_action: 'store-table-data',
                     table_id: this.table_id,
                     row: this.newColumn,
-                    id: this.editId
+                    id: this.editId,
                 };
-                let that = this;
+
+                if (this.manualSort) {
+                    if (this.insertAfterPosition) {
+                        data['position'] = this.insertAfterPosition + 1;
+                    } else {
+                        data['position'] = this.position;
+                    }
+                }
+
                 jQuery.post(ajaxurl, data)
                     .then( (response) => {
                         this.$message({

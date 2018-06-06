@@ -8,6 +8,8 @@
                             :table_id="tableId" :columns="columns"
                             :item="updateItem"
                             :modal_visible="addDataModal"
+                            :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                            :insert-after-position="insertAfterPosition"
             ></add_data_modal>
 
             <div class="tablenav top">
@@ -34,7 +36,7 @@
                     </label>
                 </div>
                 <div class="pull-right">
-                    <button class="button button-primary button-large pull-right" @click="addDataModal = true">
+                    <button class="button button-primary button-large pull-right" @click="add()">
                         {{ $t('Add Data') }}
                     </button>
                 </div>
@@ -69,8 +71,13 @@
                     <el-table-column
                         fixed="right"
                         label="Actions"
+                        class-name="actions"
                         width="100">
                         <template slot-scope="scope">
+                            <a v-if="has_pro" @click="addAfter(scope)">
+                                <span class="dashicons dashicons-plus"></span>
+                            </a>
+
                             <a @click="showUpdateModal(scope)">
                                 <span class="dashicons dashicons-edit"></span>
                             </a>
@@ -110,6 +117,8 @@
         <div v-else-if="!loading" type="warning" style="margin-top: 15px" class="error">
             <p>{{ $t('Please set table configuration first.') }}</p>
         </div>
+
+        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false" />
     </div>
 </template>
 <script type="text/babel">
@@ -119,6 +128,7 @@
     import pagination from '../../common/pagination.vue';
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
+    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
 
     export default {
         name: 'TableDataItems',
@@ -126,12 +136,14 @@
             add_data_modal: addDataModal,
             ninja_pagination: pagination,
             Alert,
-            DeletePopOver
+            DeletePopOver,
+            SortableUpgradeNotice
         },
         props: ['config'],
         data() {
             return {
                 has_pro: !!window.ninja_table_admin.hasPro,
+                hasSortable: !!window.ninja_table_admin.hasSortable,
                 isCompact: true,
                 tableWidth: '100%',
                 tableData: [],
@@ -156,7 +168,10 @@
                 editIndex: null,
                 // is table row soring enabled flag.
                 sorting: false,
-                sortableInstance: null
+                sortableInstance: null,
+                sortableUpgradeNotice: false,
+                // insert after
+                insertAfterPosition: null
             }
         },
         watch: {
@@ -166,9 +181,16 @@
                 }
             },
             sorting(newVal) {
-                if (newVal && !this.has_pro) {
-                    this.sorting = false;
-                    window.ninjaTableBus.$emit('show_pro_popup');
+                if (newVal) {
+                    if (!this.has_pro) {
+                        this.sorting = false;
+                        window.ninjaTableBus.$emit('show_pro_popup');
+                    }
+
+                    if (!this.hasSortable) {
+                        this.sorting = false;
+                        this.sortableUpgradeNotice = true
+                    }
                 }
             }
         },
@@ -307,7 +329,26 @@
                 this.items[this.editIndex].values = item.values;
             },
             addItemOnTable(item) {
-                this.items.unshift(item);
+                let position = item.position;
+
+                if (position) {
+                    if (position === 'last') {
+                        this.items.push(item);
+                    } else if (position === 'first') {
+                        this.items.unshift(item);
+                    } else {
+                        this.items.splice(position - 1, 0, item);
+                    }
+                } else {
+                    this.items.unshift(item);
+                }
+
+                console.log('insertAfterPosition', this.insertAfterPosition);
+
+                if (this.insertAfterPosition) {
+                    this.insertAfterPosition += 1;
+                }
+
                 this.paginate.total++;
             },
             showUpdateModal(item) {
@@ -325,7 +366,7 @@
                 this.sortableInstance = Sortable.create(table, {
                     onEnd({ newIndex, oldIndex }) {
                         let oldItem = self.items[oldIndex];
-                        self.sortTable(oldItem.id, self.items[newIndex].position, oldItem.position);
+                        self.sortTable(oldItem.id, self.items[newIndex].position);
 
                         const targetRow = self.items.splice(oldIndex, 1)[0];
 
@@ -339,14 +380,22 @@
                         this.loading = true;
 
                         let promise = new Promise((resolve, reject) => {
-                            window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                            window.ninjaTableBus.$emit('initManualSorting', {
+                                table_id: this.tableId,
+                                page: this.paginate.current_page,
+                                per_page: this.paginate.per_page,
+                                search: this.searchString,
+                                default_sorting: this.config.settings.default_sorting
+                            }, resolve, reject);
                         })
 
                         promise
-                            .then(() => {
-                                this.getData().success(() => {
-                                    this.initSortable();
-                                })
+                            .then(res => {
+                                this.items = res.data;
+                                this.paginate.total = parseInt(res.total);
+                                this.paginate.last_page = parseInt(res.last_page)
+
+                                this.initSortable();
                             })
                             .catch(e => {
                                 console.log(e);
@@ -361,21 +410,26 @@
                     }
                 }
             },
-            sortTable(id, newPosition, oldPosition) {
+            sortTable(id, newPosition) {
                 this.loading = true;
 
                 let data = {
                     action: "ninja_tables_sort_table",
-                    tableId: this.tableId,
+                    table_id: this.tableId,
                     id,
                     newPosition,
-                    oldPosition
+                    page: this.paginate.current_page,
+                    per_page: this.paginate.per_page,
+                    search: this.searchString,
+                    default_sorting: this.config.settings.default_sorting
                 };
 
                 jQuery
                     .post(ajaxurl, data)
-                    .then(() => {
-
+                    .then(res => {
+                        this.items = res.data;
+                        this.paginate.total = parseInt(res.total);
+                        this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail(e => {
                         console.log(e);
@@ -383,6 +437,20 @@
                     .always(() => {
                         this.loading = false;
                     });
+            },
+            add() {
+                this.insertAfterPosition = null;
+                this.addDataModal = true
+            },
+            addAfter(scope) {
+                if (!this.hasSortable) {
+                    this.sortableUpgradeNotice = true;
+
+                    return
+                }
+
+                this.insertAfterPosition = scope.$index + 1;
+                this.addDataModal = true;
             }
         },
         mounted() {

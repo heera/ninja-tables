@@ -267,7 +267,8 @@
                 </div>
             </div>
         </div>
-        
+
+        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false" />
     </div>
 </template>
 <script type="text/babel">
@@ -279,6 +280,7 @@
     import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
     import ColumnsEditor from './includes/ColumnsEditor';
+    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
     
     import { tableLibs } from '../data/data'
 
@@ -286,7 +288,8 @@
         name: 'TableConfiguration',
         components: {
             draggable,
-            ColumnsEditor
+            ColumnsEditor,
+            SortableUpgradeNotice
         },
         props: ['config'],
         data() {
@@ -331,7 +334,9 @@
                 is_fluent_installed: window.ninja_table_admin.isInstalled,
                 fluent_url: window.ninja_table_admin.fluentform_url,
                 has_pro: !!window.ninja_table_admin.hasPro,
-                addVisible: false
+                hasSortable: !!window.ninja_table_admin.hasSortable,
+                addVisible: false,
+                sortableUpgradeNotice: false
             }
         },
         computed: {
@@ -357,6 +362,11 @@
                     if (!this.has_pro) {
                         this.tableSettings.sorting_type = oldVal;
                         window.ninjaTableBus.$emit('show_pro_popup', 1);
+                    } else if (!this.hasSortable) {
+                        if (!this.hasSortable) {
+                            this.tableSettings.sorting_type = oldVal;
+                            this.sortableUpgradeNotice = true
+                        }
                     } else {
                         this.initManualSorting();
                     }
@@ -487,7 +497,10 @@
             get,
             initManualSorting() {
                 let promise = new Promise((resolve, reject) => {
-                    window.ninjaTableBus.$emit('initManualSorting', this.tableId, resolve, reject);
+                    window.ninjaTableBus.$emit('initManualSorting', {
+                        table_id: this.tableId,
+                        noData: true
+                    }, resolve, reject);
                 })
             }
         },
