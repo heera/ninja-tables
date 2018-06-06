@@ -214,10 +214,9 @@
                     <div class="widget_body">
 
                         <div class="form_group">
-                            <label v-for="(colorName, colorKey) in colors" :for="colorKey">
-                                <input v-model="tableSettings.table_color" type="radio" :value="colorKey"
-                                       name="table_color" :id="colorKey"/> {{ colorName }}
-                            </label>
+                            <select class="form_control" v-model="tableSettings.table_color">
+                                <option v-for="(colorName, colorKey) in colors" :key="colorKey" :value="colorKey">{{ colorName }}</option>
+                            </select>
                         </div>
 
                         <div v-show="tableSettings.table_color == 'ninja_table_custom_color' && has_pro"
@@ -601,6 +600,7 @@
     .form_group {
         overflow: hidden;
         margin-bottom: 10px;
+        padding-right: 2px;
         label {
             display: block;
         }

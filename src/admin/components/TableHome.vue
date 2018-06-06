@@ -39,6 +39,10 @@
                     {{ $t('Advanced Settings') }}
                 </router-link>
 
+                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]" :to="{ name: 'additional_css', params: { table_id: tableId } }">
+                    {{ $t('Custom CSS') }}
+                </router-link>
+
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
                              :to="{ name: 'import-export', params: { table_id: tableId } }">
                     {{ $t('Import - Export') }}
