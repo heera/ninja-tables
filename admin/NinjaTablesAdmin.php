@@ -227,7 +227,7 @@ class NinjaTablesAdmin {
 			'isInstalled'    => $isInstalled,
 			'hasPro'         => defined( 'NINJATABLESPRO' ),
             'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
-            'upgradeGuide'   => '#',
+            'upgradeGuide'   => 'https://wpmanageninja.com/r/docs/ninja-tables/how-to-install-and-upgrade/#upgrade',
             'hasValidLicense' => get_option('_ninjatables_pro_license_status')
 		) );
 
