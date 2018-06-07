@@ -19,7 +19,7 @@
                 <a :href="preview_url" target="_blank">
                     <el-button size="mini">{{ $t('Preview') }}</el-button>
                 </a>
-                <a v-if="!has_pro" href="#" target="_blank">
+                <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank">
                     <el-button type="danger" size="mini">{{ $t('Buy Pro') }}</el-button>
                 </a>
             </span>

@@ -16,6 +16,12 @@
                             <i class="el-icon-setting"></i>
                             <span>Permission</span>
                         </el-menu-item>
+
+                        <el-menu-item  v-if="has_pro"  @click="active_menu = 'license'" index="license">
+                            <i class="dashicons dashicons-shield"></i>
+                            <span>License</span>
+                        </el-menu-item>
+                        
                     </el-menu>
                 </el-aside>
                 <el-main>
@@ -116,6 +122,10 @@
                     <template v-else-if="active_menu == 'privacy'">
                         <privacy />
                     </template>
+
+                    <template v-else-if="active_menu == 'license'">
+                        <license />
+                    </template>
                 </el-main>
             </el-container>
         </div>
@@ -170,14 +180,17 @@
 
 <script>
     import Privacy from './Privacy.vue'
+    import License from './Extras/License.vue'
 
     export default {
         name: 'Tools',
         components: {
-            Privacy
+            Privacy,
+            License
         },
         data() {
             return {
+                has_pro: window.ninja_table_admin.hasPro,
                 active_menu: 'import',
                 activeNames: [
                     '1',
@@ -311,6 +324,11 @@
                         this.importing = false;
                     }
                 });
+            }
+        },
+        mounted() {
+            if(this.$route.query.active_menu) {
+                this.active_menu = this.$route.query.active_menu;
             }
         }
     }

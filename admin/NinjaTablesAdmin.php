@@ -126,12 +126,21 @@ class NinjaTablesAdmin {
 			);
 			if ( ! defined( 'NINJATABLESPRO' ) ) {
 				$submenu['ninja_tables'][] = array(
-					__( 'Get Pro', 'ninja-tables' ),
+					__( '<span style="color:#f39c12;">Get Pro</span>', 'ninja-tables' ),
 					$capability,
 					'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu'
 				);
-			}
-
+			} else {
+				$license = get_option('_ninjatables_pro_license_status');
+				if($license != 'valid') {
+					$submenu['ninja_tables'][] = array(
+						'<span style="color:#f39c12;">Activate License</span>',
+						$capability,
+						'admin.php?page=ninja_tables#/tools?active_menu=license'
+					);
+                }
+				
+            }
 			$submenu['ninja_tables'][] = array(
 				__( 'Help', 'ninja-tables' ),
 				$capability,
@@ -218,7 +227,8 @@ class NinjaTablesAdmin {
 			'isInstalled'    => $isInstalled,
 			'hasPro'         => defined( 'NINJATABLESPRO' ),
             'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
-            'upgradeGuide'   => '#'
+            'upgradeGuide'   => '#',
+            'hasValidLicense' => get_option('_ninjatables_pro_license_status')
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
