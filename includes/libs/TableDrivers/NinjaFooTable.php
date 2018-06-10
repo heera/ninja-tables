@@ -10,7 +10,7 @@ class NinjaFooTable {
 		if ( is_rtl() ) {
 			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public-rtl.css";
 		}
-
+        
 		wp_enqueue_style(
 			'footable_styles',
 			$styleSrc,
@@ -19,6 +19,12 @@ class NinjaFooTable {
 			'all'
 		);
 		
+		$customCss = get_post_meta($tableArray['table_id'], '_ninja_tables_custom_css', true);
+		if($customCss) {
+		    add_action('wp_footer', function () use ($customCss) {
+		       echo "<style>". $customCss ."</style>";
+            });
+        }
 		
 		self::render( $tableArray );
 		
@@ -47,6 +53,7 @@ class NinjaFooTable {
 	}
 
 	private static function render( $tableArray ) {
+	    
 		extract( $tableArray );
 		if ( ! count( $columns ) ) {
 			return;
@@ -132,11 +139,18 @@ class NinjaFooTable {
 		$enableSearch = ( isset( $settings['enable_search'] ) )
 			? $settings['enable_search'] : false;
 
+		$default_sorting = false;
+		if($sortingType == 'manual_sort') {
+		    $default_sorting = 'manual_sort';
+        } else if(isset( $settings['default_sorting'] )) {
+			$default_sorting = $settings['default_sorting'];
+        }
+		
 		$configSettings = array(
 			'filtering'       => $enableSearch,
 			'paging'          => $pagingSettings,
 			'sorting'         => true,
-			'default_sorting' => ( isset( $settings['default_sorting'] ) ) ? $settings['default_sorting'] : false,
+			'default_sorting' => $default_sorting,
 			'defualt_filter'  => isset( $default_filter ) ? $default_filter : false,
             'expandFirst' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandFirst') ? true : false,
             'expandAll' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandAll') ? true : false,

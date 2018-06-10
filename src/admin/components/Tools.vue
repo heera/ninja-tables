@@ -330,6 +330,18 @@
             if(this.$route.query.active_menu) {
                 this.active_menu = this.$route.query.active_menu;
             }
+            jQuery('.ninja_table_tools_menu').on('click', () => {
+                this.active_menu = 'import';
+            });
+
+            jQuery('.ninja_table_import_menu').on('click', () => {
+                this.active_menu = 'import';
+            });
+
+            jQuery('.ninja_table_license_menu').on('click', () => {
+                this.active_menu = 'license';
+            });
+            
         }
     }
 </script>
@@ -338,7 +350,6 @@
     .form-item {
         margin: 10px 0;
     }
-
     .form-item label {
         width: 100px;
     }

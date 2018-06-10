@@ -107,41 +107,49 @@ class NinjaTablesAdmin {
 			'data:image/svg+xml;base64,'
 			. base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.98 249.25"><defs><style>.cls-1{fill:#fff;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:7px;}.cls-2{stroke:#9fa3a8;}.cls-3{stroke:#38444f;}</style></defs><title>Asset 7</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M312.48,249.25H9.5a9.51,9.51,0,0,1-9.5-9.5V9.5A9.51,9.51,0,0,1,9.5,0h303A9.51,9.51,0,0,1,322,9.5V239.75A9.51,9.51,0,0,1,312.48,249.25ZM9.5,7A2.53,2.53,0,0,0,7,9.5V239.75a2.53,2.53,0,0,0,2.5,2.5h303a2.53,2.53,0,0,0,2.5-2.5V9.5a2.53,2.53,0,0,0-2.5-2.5Z"/><rect class="cls-1" x="74.99" y="44.37" width="8.75" height="202.71"/><path class="cls-2" d="M129.37,234.08"/><path class="cls-2" d="M129.37,44.37"/><path class="cls-3" d="M189.37,234.08"/><path class="cls-3" d="M189.37,44.37"/><path class="cls-3" d="M249.37,234.08"/><path class="cls-3" d="M249.37,44.37"/><path class="cls-1" d="M6.16.51H315.82a6,6,0,0,1,6,6V50.32a.63.63,0,0,1-.63.63H.79a.63.63,0,0,1-.63-.63V6.51A6,6,0,0,1,6.16.51Z"/><rect class="cls-1" x="4.88" y="142.84" width="312.61" height="15.1"/><rect class="cls-1" x="22.47" y="89.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="89.99" width="165.67" height="16.97"/><rect class="cls-1" x="22.47" y="189.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="189.99" width="165.67" height="16.97"/></g></g></svg>' ),
 			25 );
-
+	
 		if ( current_user_can( $capability ) ) {
-			$submenu['ninja_tables'][] = array(
+			$submenu['ninja_tables']['all_tables'] = array(
 				__( 'All Tables', 'ninja-tables' ),
 				$capability,
-				'admin.php?page=ninja_tables#/'
+				'admin.php?page=ninja_tables#/',
 			);
-			$submenu['ninja_tables'][] = array(
+			$submenu['ninja_tables']['tools'] = array(
 				__( 'Tools', 'ninja-tables' ),
 				$capability,
-				'admin.php?page=ninja_tables#/tools'
+				'admin.php?page=ninja_tables#/tools',
+				'',
+				'ninja_table_tools_menu'
 			);
-			$submenu['ninja_tables'][] = array(
+			$submenu['ninja_tables']['import'] = array(
 				__( 'Import a Table', 'ninja-tables' ),
 				$capability,
-				'admin.php?page=ninja_tables#/tools'
+				'admin.php?page=ninja_tables#/tools',
+				'',
+				'ninja_table_import_menu'
 			);
 			if ( ! defined( 'NINJATABLESPRO' ) ) {
-				$submenu['ninja_tables'][] = array(
+				$submenu['ninja_tables']['upgrade_pro'] = array(
 					__( '<span style="color:#f39c12;">Get Pro</span>', 'ninja-tables' ),
 					$capability,
-					'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu'
+					'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu',
+					'',
+					'ninja_table_upgrade_menu'
 				);
 			} else {
 				$license = get_option('_ninjatables_pro_license_status');
 				if($license != 'valid') {
-					$submenu['ninja_tables'][] = array(
+					$submenu['ninja_tables']['activate_license'] = array(
 						'<span style="color:#f39c12;">Activate License</span>',
 						$capability,
-						'admin.php?page=ninja_tables#/tools?active_menu=license'
+						'admin.php?page=ninja_tables#/tools?active_menu=license',
+						'',
+						'ninja_table_license_menu'
 					);
                 }
 				
             }
-			$submenu['ninja_tables'][] = array(
+			$submenu['ninja_tables']['help'] = array(
 				__( 'Help', 'ninja-tables' ),
 				$capability,
 				'admin.php?page=ninja_tables#/help'
@@ -228,7 +236,8 @@ class NinjaTablesAdmin {
 			'hasPro'         => defined( 'NINJATABLESPRO' ),
             'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
             'upgradeGuide'   => '#',
-            'hasValidLicense' => get_option('_ninjatables_pro_license_status')
+            'hasValidLicense' => get_option('_ninjatables_pro_license_status'),
+            'ace_path_url' => plugin_dir_url( __DIR__ ) . "assets/libs/ace",
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -263,7 +272,8 @@ class NinjaTablesAdmin {
 			'upload-data'              => 'uploadData',
 			'duplicate-table'          => 'duplicateTable',
 			'export-data'              => 'exportData',
-			'dismiss_fluent_suggest'   => 'dismissPluginSuggest'
+			'dismiss_fluent_suggest'   => 'dismissPluginSuggest',
+            'save_custom_css'          => 'saveCustomCSS'
 		);
 
 		$requested_route = $_REQUEST['target_action'];
@@ -375,6 +385,16 @@ class NinjaTablesAdmin {
 		$this->{lcfirst( $mapper[ $plugin ] ) . 'Import'}();
 	}
 
+	public function saveCustomCSS() {
+		$tableId = intval( $_REQUEST['table_id'] );
+		$css = $_REQUEST['custom_css'];
+		$css = wp_strip_all_tags($css);
+		update_post_meta($tableId, '_ninja_tables_custom_css', $css);
+		wp_send_json_success(array(
+		        'message' => 'Custom CSS successfully saved'
+        ), 200);
+    }
+	
 	private function tablePressImport() {
 		try {
 			$tableId = intval( $_REQUEST['tableId'] );
@@ -658,12 +678,12 @@ class NinjaTablesAdmin {
 		$tableColumns = ninja_table_get_table_columns( $tableID, 'admin' );
 
 		$tableSettings = ninja_table_get_table_settings( $tableID, 'admin' );
-
+		$table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
 		wp_send_json( array(
 			'columns'     => $tableColumns,
 			'settings'    => $tableSettings,
 			'table'       => $table,
-			'preview_url' => site_url( '?ninjatable_preview=' . $tableID )
+			'preview_url' => site_url( '?ninjatable_preview=' . $tableID ),
 		), 200 );
 	}
 

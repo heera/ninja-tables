@@ -65,7 +65,11 @@
                     this.is_valid = 'valid';
                 })
                     .fail(error => {
-                        this.error_message = error.responseJSON.data.message;
+                        if(error.status == 400) {
+                            this.error_message = 'Looks like you did not update Ninja Table pro Add-On. Please update Ninja table Pro to latest version';
+                        } else {
+                            this.error_message = error.responseJSON.data.message;
+                        }
                     })
                     .always(() => {
                         this.doing_ajax = false;

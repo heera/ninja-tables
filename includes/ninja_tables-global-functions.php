@@ -115,11 +115,14 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 	
 	if($defaultSorting == 'new_first') {
 		$query->orderBy('id', 'desc');
+	} else if($defaultSorting == 'manual_sort') {
+		$query->orderBy('position', 'asc');
 	} else {
 		$query->orderBy('id', 'asc');
 	}
 	
 	$data = $query->get();
+
 	$formatted_data = array();
 	foreach ($data as $item) {
 		$values = json_decode($item->value, true);
@@ -161,4 +164,19 @@ function ninjaTablesAllowedHtmlTags($tags)
     );
 
     return $tags;
+}
+
+/**
+ * Determine if the table's data has been migrated for manual sorting.
+ * 
+ * @param  int  $tableId
+ * @return bool
+ */
+function ninjaTablesDataMigratedForManualSort($tableId)
+{
+	// The post meta table would have a flag that the data of
+	// the table is migrated to use for the manual sorting.
+	$postMetaKey = '_ninja_tables_data_migrated_for_manual_sort';
+	
+	return !!get_post_meta($tableId, $postMetaKey, true);
 }

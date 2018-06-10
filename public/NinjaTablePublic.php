@@ -71,6 +71,7 @@ class NinjaTablePublic {
 		
 		// cache the data
 		$disableCache = apply_filters('ninja_tables_disable_caching', false, $tableId);
+		$disableCache = true;
 		$formatted_data = false;
 		if(!$disableCache) {
 			$formatted_data = get_post_meta($tableId, '_ninja_table_cache_object', true);

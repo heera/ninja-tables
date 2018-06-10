@@ -104,3 +104,8 @@ add_shortcode( 'francesco_username_table_filter', function($atts) {
 // usage:
 // shortcode: [francesco_username_table_filter table_id="1"]
 // then it will filter only the loggedin user's username by default
+//
+//add_action('init', function () {
+//	print_r(ninja_table_get_table_settings( 5, 'admin' ));
+//	die();
+//});
