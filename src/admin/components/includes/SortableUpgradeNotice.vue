@@ -12,10 +12,7 @@
         <span>
             <a :href="upgradeGuide" target="_blank">Click here</a> to view the upgrade guide.
         </span>
-
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="close()">Cancel</el-button>
-          </span>
+        
     </el-dialog>
 </template>
 

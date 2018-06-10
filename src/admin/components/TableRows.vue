@@ -185,6 +185,8 @@
                     if (!this.has_pro) {
                         this.sorting = false;
                         window.ninjaTableBus.$emit('show_pro_popup');
+
+                        return;
                     }
 
                     if (!this.hasSortable) {

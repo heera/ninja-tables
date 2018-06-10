@@ -235,9 +235,9 @@ class NinjaTablesAdmin {
 			'isInstalled'    => $isInstalled,
 			'hasPro'         => defined( 'NINJATABLESPRO' ),
             'hasSortable'    => defined('NINJATABLESPRO_SORTABLE'),
-            'upgradeGuide'   => '#',
-            'hasValidLicense' => get_option('_ninjatables_pro_license_status'),
             'ace_path_url' => plugin_dir_url( __DIR__ ) . "assets/libs/ace",
+            'upgradeGuide'   => 'https://wpmanageninja.com/r/docs/ninja-tables/how-to-install-and-upgrade/#upgrade',
+            'hasValidLicense' => get_option('_ninjatables_pro_license_status')
 		) );
 
 		// Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -795,7 +795,7 @@ class NinjaTablesAdmin {
 		$search = esc_attr( $_REQUEST['search'] );
 
         list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
-
+        
 		$query = ninja_tables_DbTable()->where( 'table_id', $tableId );
 
 		if ( $search ) {
@@ -847,7 +847,6 @@ class NinjaTablesAdmin {
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
                 $orderByField = 'id';
-
                 if ($tableSettings['default_sorting'] === 'new_first') {
                     $orderByType = 'DESC';
                 } else {
