@@ -4,8 +4,8 @@ Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
 Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, responsive tables
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
-Tested up to: 4.9.5
-Stable tag: 2.1.2
+Tested up to: 4.9.6
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -136,6 +136,13 @@ Tables are usually introduced to present a huge amount of data in an organized w
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.2.0 ( Date: June 10, 2018 )
+* Added Duplicate table feature ( Most wanted feature by our users )
+* Added CSS Box into the table editor, Now you can paste your css for a table.
+* Added feature to re-arrange the rows. 
+* Now, You can add table row at the first / at the last / you can sort manually.
+* Overall Performance improvements
 
 = 2.1.1 ( Date: April 28, 2018 ) = 
 * Fix Table sorting for HTML Elements

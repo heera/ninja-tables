@@ -120,3 +120,7 @@ table.ninja_footable col {
     }
   }
 }
+
+.footable_parent table.foo-table.ninja_table_pro {
+  max-width: -webkit-fit-content !important;
+}

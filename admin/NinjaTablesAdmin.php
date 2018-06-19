@@ -852,9 +852,6 @@ class NinjaTablesAdmin {
                 } else {
                     $orderByType = 'ASC';
                 }
-            } elseif ($tableSettings['sorting_type'] === 'by_column') {
-                $orderByField = isset($tableSettings['sorting_column']) ? $tableSettings['sorting_column'] : 'id';
-                $orderByType = isset($tableSettings['sorting_column_by']) ? $tableSettings['sorting_column_by'] : 'DESC';
             }
         }
 
