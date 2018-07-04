@@ -5,7 +5,8 @@
             <!-- <bulk-actions style="margin-top: 10px;" @handle="handleBulkActions" /> -->
             <div style="margin-top:7px" class="pull-right">
                 <label class="form_group search_action" for="search">
-                    <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
+                    <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString"
+                           placeholder="Search" type="text"/>
                     <i @click="getData" class="el-icon-search"></i>
                 </label>
 
@@ -18,11 +19,13 @@
                 </router-link>
             </div>
         </div>
-        <hr />
-        
-        <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection" />
+        <hr/>
 
-        <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" :modal_visible.sync="modalVisible"></add-table-modal>
+        <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection"/>
+
+        <el-dialog title="Add New Table" :visible.sync="modalVisible">
+            <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>
+        </el-dialog>
     </div>
 </template>
 
@@ -30,14 +33,14 @@
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
     // import BulkActions from "./includes/BulkActions.vue";
-    
-    
+
+
     export default {
         name: 'all_tables',
         components: {
-            'list-all-tables' : ListAllTables,
+            'list-all-tables': ListAllTables,
             'add-table-modal': AddTableModal
-        //    BulkActions
+            //    BulkActions
         },
         data() {
             return {
@@ -50,7 +53,7 @@
         },
         methods: {
             addTableAction(tableId) {
-                this.$router.push({ name: 'data_columns', params: { table_id: tableId } });
+                this.$router.push({name: 'data_columns', params: {table_id: tableId}});
                 this.modalVisible = false;
             },
             getData() {
@@ -86,9 +89,13 @@
 
         },
         beforeMount() {
-            this.$options.components['home-extra'] =  (resolve, reject) => {
+            this.$options.components['home-extra'] = (resolve, reject) => {
                 // Pass the component definition to the resolve callback
-                jQuery.get(ajaxurl, {  action: 'ninja_tables_ajax_actions', target_action: 'get-dynamic-obj', name: this.name  })
+                jQuery.get(ajaxurl, {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'get-dynamic-obj',
+                    name: this.name
+                })
                     .done((res) => {
                         resolve(JSON.parse(res))
                     })

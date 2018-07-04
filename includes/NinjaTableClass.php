@@ -132,6 +132,13 @@ class NinjaTableClass {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/NinjaTablePublic.php';
 
+		/**
+		 * Load Tables Migration Class
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
+
 		$this->loader = new NinjaTablesLoader();
 	}
 

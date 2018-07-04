@@ -97,13 +97,13 @@
                                 </p>
                                 <table style="min-width: 400px;">
                                     <tbody>
-                                    <tr v-for="plugin in otherPlugins">
+                                    <tr v-for="(plugin, plugin_key) in otherPlugins">
                                         <td>{{ plugin }}</td>
                                         <td>
                                             <button class="btn btn-default btn-sm"
-                                                    @click="importFromOtherPlugin(plugin)"
+                                                    @click="importFromOtherPlugin(plugin_key)"
                                             >
-                                                <template v-if="btnsLoading[plugin]">
+                                                <template v-if="btnsLoading[plugin_key]">
                                                     {{ $t('Processing...') }}
                                                     <i class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
                                                 </template>
@@ -207,11 +207,13 @@
                     format: 'csv'
                 },
                 btnLoading: false,
-                otherPlugins: [
-                    'Table Press'
-                ],
+                otherPlugins: {
+                    'TablePress' : 'Table Press',
+                    'UltimateTables': 'Ultimate Tables'
+                },
                 btnsLoading: {
-                    'Table Press': false
+                    'TablePress': false,
+                    'UltimateTables': false
                 },
                 showPluginModal: false,
                 selectedPlugin: null,
@@ -274,7 +276,7 @@
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'get-tables-from-plugin',
-                    plugin
+                    plugin: plugin
                 };
 
                 jQuery.ajax({
@@ -314,13 +316,11 @@
                     data: data,
                     type: 'POST',
                     success: (response) => {
-                        this.$message.success(response.message);
-
+                        this.$message.success(response.data.message);
                         this.importing = false;
                     },
                     error: (error) => {
-                        this.$message.error(error.responseJSON.message);
-
+                        this.$message.error(error.responseJSON.data.message);
                         this.importing = false;
                     }
                 });

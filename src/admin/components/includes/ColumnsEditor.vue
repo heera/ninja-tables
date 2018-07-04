@@ -266,8 +266,8 @@
                 </template>
 
                 <template v-else>
-                    <button @click.prevent="deleteColumn" class="button">Delete</button>
-
+                    <button v-if="!hideDelete" @click.prevent="deleteColumn" class="button">Delete</button>
+                    
                     <button @click.prevent="store" class="button button-primary">
                         {{ $t('Update') }}
                     </button>
@@ -294,6 +294,14 @@
                 default: false
             },
             "updating": {
+                type: Boolean,
+                default: false
+            },
+            "moreSettings": {
+                type: Boolean,
+                default: false
+            },
+            "hideDelete": {
                 type: Boolean,
                 default: false
             }
@@ -327,7 +335,6 @@
                 },
                 formatType: 'standard',
                 has_pro: !!window.ninja_table_admin.hasPro,
-                moreSettings: false,
                 alignmentOptions: {
                     'center': 'Center',
                     'left': 'Left',
@@ -367,7 +374,6 @@
                 if (!this.moreSettings) {
                     this.showProPopUp();
                 }
-                
                 this.moreSettings = !this.moreSettings;
             },
             showProPopUp() {

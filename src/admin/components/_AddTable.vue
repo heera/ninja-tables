@@ -1,36 +1,25 @@
 <template>
     <!-- MODAL -->
-    <div class="modal fade" :style="{ display: modal_visible ? 'block' : 'none'}" :class="modal_visible && 'in'">
-        <div class="modal-dialog">
-            <div v-if="modal_visible" class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 v-if="table.ID">{{ $t('Update Table Info') }}</h4>
-                    <h4 v-else>{{ $t('Add New Table') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="name">{{ $t('Title') }}</label>
-                        <input type="text" id="name" class="form-control" v-model="table.post_title">
-                    </div>
-                    <div class="form-group">
-                        <label>{{ $t('Description') }}</label>
-                        <wp_editor v-model="table.post_content"></wp_editor>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
-                    <button class="btn btn-primary btn-flex" @click="addTable">
-                        <span v-if="table.ID">{{ $t('Update') }}</span>
-                        <span v-else>{{ $t('Add') }}</span>
-                        <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+   <div>
+       <div class="modal-body">
+           <div class="form-group">
+               <label for="name">{{ $t('Title') }}</label>
+               <input type="text" id="name" class="form-control" v-model="table.post_title">
+           </div>
+           <div class="form-group">
+               <label>{{ $t('Description') }}</label>
+               <wp_editor v-model="table.post_content"></wp_editor>
+           </div>
+       </div>
+       <div class="modal-footer">
+           <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
+           <button class="btn btn-primary btn-flex" @click="addTable">
+               <span v-if="table.ID">{{ $t('Update') }}</span>
+               <span v-else>{{ $t('Add') }}</span>
+               <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+           </button>
+       </div>
+   </div>
     <!-- END OF MODAL -->
 </template>
 
@@ -42,7 +31,6 @@
             wp_editor: wp_editor  
         },
         props: { 
-            modal_visible: Boolean,
             table: {
                 type: Object,
                 default() {

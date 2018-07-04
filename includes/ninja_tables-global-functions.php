@@ -150,6 +150,7 @@ function ninjaTablesClearTableDataCache($tableId) {
 
 function ninjaTablesAllowedHtmlTags($tags)
 {
+    $tags['a']['download'] = true;
     $tags['iframe'] = array(
         'src'             => true,
         'srcdoc'          => true,

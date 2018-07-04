@@ -1,16 +1,17 @@
 <template>
     <div>
         <template v-if="columns.length">
-            <add_data_modal v-if="columns.length"
-                            @modal_close="closeDataModal"
-                            @updateItem="updateItemOnTable"
-                            @createItem="addItemOnTable"
-                            :table_id="tableId" :columns="columns"
-                            :item="updateItem"
-                            :modal_visible="addDataModal"
-                            :manual-sort="config.settings.sorting_type === 'manual_sort'"
-                            :insert-after-position="insertAfterPosition"
-            ></add_data_modal>
+            <el-dialog :title="addDataModalTitle" :visible.sync="addDataModal">
+                <add_data_modal v-if="columns.length"
+                                @modal_close="closeDataModal"
+                                @updateItem="updateItemOnTable"
+                                @createItem="addItemOnTable"
+                                :table_id="tableId" :columns="columns"
+                                :item="updateItem"
+                                :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                                :insert-after-position="insertAfterPosition"
+                ></add_data_modal>
+            </el-dialog>
 
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
@@ -26,13 +27,15 @@
                         <input id="compact_view" type="checkbox" v-model="isCompact"/> Compact View
                     </label>
                     <label class="form_group search_action" for="search">
-                        <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString" placeholder="Search"  type="text"/>
-                            <i @click="getData" class="el-icon-search"></i>
+                        <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString"
+                               placeholder="Search" type="text"/>
+                        <i @click="getData" class="el-icon-search"></i>
                     </label>
 
                     <label>
                         <input type="checkbox" name="checkbox" v-model="sorting" @click="toggleSorting()">
-                        Sort Manually <template v-if="!has_pro">(Pro Feature)</template>
+                        Sort Manually
+                        <template v-if="!has_pro">(Pro Feature)</template>
                     </label>
                 </div>
                 <div class="pull-right">
@@ -41,38 +44,40 @@
                     </button>
                 </div>
             </div>
-            <hr />
-            
+            <hr/>
+
             <template v-if="columns.length">
-                <el-table 
-                    class="js-sortable-table"
-                    v-loading="loading"
-                    :data="items"
-                    row-key="id"
-                    border
-                    :class="{compact: isCompact, sorting: sorting}"
-                    :style="'width: '+tableWidth"
-                    @selection-change="handleSelectionChange"
+                <el-table
+                        class="js-sortable-table"
+                        v-loading="loading"
+                        :data="items"
+                        row-key="id"
+                        border
+                        :class="{compact: isCompact, sorting: sorting}"
+                        :style="'width: '+tableWidth"
+                        @selection-change="handleSelectionChange"
                 >
                     <el-table-column
-                        type="selection"
-                        fixed
-                        width="55">
+                            type="selection"
+                            fixed
+                            width="55">
                     </el-table-column>
                     <el-table-column
-                        v-for="(column, index) in columns"
-                        :label="column.name || column.key"
-                        :width="(columnLength == index + 1 ) ? '' : 150"
-                        :key="index">
+                            v-for="(column, index) in columns"
+                            :label="column.name || column.key"
+                            :render-header="addConfigIcon"
+                            :width="(columnLength == index + 1 ) ? '' : 150"
+                            :key="index">
                         <template slot-scope="scope">
-                            <div :title="scope.row.values[column.key]" class="cell-content" v-html="scope.row.values[column.key]"></div>
+                            <div :title="scope.row.values[column.key]" class="cell-content"
+                                 v-html="scope.row.values[column.key]"></div>
                         </template>
                     </el-table-column>
                     <el-table-column
-                        fixed="right"
-                        label="Actions"
-                        class-name="actions"
-                        width="100">
+                            fixed="right"
+                            label="Actions"
+                            class-name="actions"
+                            width="100">
                         <template slot-scope="scope">
                             <a v-if="has_pro" @click="addAfter(scope)">
                                 <span class="dashicons dashicons-plus"></span>
@@ -118,7 +123,17 @@
             <p>{{ $t('Please set table configuration first.') }}</p>
         </div>
 
-        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false" />
+        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
+
+        <el-dialog title="Edit Table Column" :visible.sync="showColumnEditor">
+            <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
+                            :updating="true"
+                            v-if="currentEditingColumn"
+                            :hideDelete="true"
+                            @store="storeSettings()"
+                            @cancel="showColumnEditor = false"
+            />
+        </el-dialog>
     </div>
 </template>
 <script type="text/babel">
@@ -129,6 +144,7 @@
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
+    import columnsEditor from './includes/ColumnsEditor'
 
     export default {
         name: 'TableDataItems',
@@ -137,7 +153,8 @@
             ninja_pagination: pagination,
             Alert,
             DeletePopOver,
-            SortableUpgradeNotice
+            SortableUpgradeNotice,
+            columnsEditor
         },
         props: ['config'],
         data() {
@@ -171,12 +188,16 @@
                 sortableInstance: null,
                 sortableUpgradeNotice: false,
                 // insert after
-                insertAfterPosition: null
+                insertAfterPosition: null,
+
+                showColumnEditor: false,
+                currentEditingColumn: false,
+                addDataModalTitle: 'Add Row'
             }
         },
         watch: {
             searchString() {
-                if(this.searchString == '') {
+                if (this.searchString == '') {
                     this.getData();
                 }
             },
@@ -217,23 +238,23 @@
                 };
                 this.loading = true;
                 return jQuery.get(ajaxurl, data)
-                             .success((res) => {
-                                this.items = res.data;
-                                this.paginate.total = parseInt(res.total);
-                                this.paginate.last_page = parseInt(res.last_page)
-                             })
-                             .fail((error) => {
+                    .success((res) => {
+                        this.items = res.data;
+                        this.paginate.total = parseInt(res.total);
+                        this.paginate.last_page = parseInt(res.last_page)
+                    })
+                    .fail((error) => {
 
-                             })
-                             .always(() => {
-                                 this.loading = false;
-                             });
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    });
             },
             addTableData() {
-                
+
             },
             getItemNumber(index) {
-                return this.paginate.per_page * (this.paginate.current_page -1 ) + (index + 1);
+                return this.paginate.per_page * (this.paginate.current_page - 1) + (index + 1);
             },
             goToPage(value) {
                 this.paginate.current_page = value;
@@ -244,7 +265,7 @@
                 this.getData();
             },
             confirmDeleteTable(tableId) {
-                if(confirm(this.$t('Are you sure, You want to delete this table'))) {
+                if (confirm(this.$t('Are you sure, You want to delete this table'))) {
                     this.deleteTable(tableId);
                 }
             },
@@ -288,7 +309,7 @@
                         message: this.$t('Delete canceled')
                     });
                 });
-                
+
             },
             deleteItem(id) {
                 let data = {
@@ -322,7 +343,7 @@
                 this.updateItem = null;
                 this.addDataModal = false;
                 this.editIndex = null;
-                
+
                 if (success) {
                     this.getData();
                 }
@@ -357,6 +378,7 @@
                 this.updateItem = item.row;
                 this.editIndex = item.$index;
                 this.addDataModal = true;
+                this.addDataModalTitle = 'Update Row';
             },
 
             /**
@@ -366,7 +388,7 @@
                 const table = document.querySelector('.js-sortable-table tbody');
                 const self = this;
                 this.sortableInstance = Sortable.create(table, {
-                    onEnd({ newIndex, oldIndex }) {
+                    onEnd({newIndex, oldIndex}) {
                         let oldItem = self.items[oldIndex];
                         self.sortTable(oldItem.id, self.items[newIndex].position);
 
@@ -442,42 +464,92 @@
             },
             add() {
                 this.insertAfterPosition = null;
-                this.addDataModal = true
+                this.addDataModal = true;
+                this.addDataModalTitle = 'Add Row';
             },
             addAfter(scope) {
                 if (!this.hasSortable) {
                     this.sortableUpgradeNotice = true;
-
+                    this.addDataModalTitle = 'Add Row';
                     return
                 }
 
                 this.insertAfterPosition = scope.$index + 1;
                 this.addDataModal = true;
+            },
+            addConfigIcon(h, {column, $index}) {
+                let self = this;
+                let result = h('i', {
+                    props: {
+                        size: 'mini',
+                        class: "el-icon-setting",
+                        plain: true,
+                        round: true
+                    },
+                    class: 'el-icon-setting nt-column-config',
+                    on: {
+                        click(query) {
+                            self.showColumnConfigModal($index - 1)
+                        }
+                    }
+                });
+                return h('span', null, [column.label, result]);
+            },
+            showColumnConfigModal(columnIndex) {
+                this.currentEditingColumn = this.columns[columnIndex];
+                this.showColumnEditor = true;
+            },
+            storeSettings() {
+                window.ninjaTableBus.$emit('updateTableColumns', () => {
+                    this.showColumnEditor = false;
+                    this.currentEditingColumn = false;
+                });
+               
             }
         },
         mounted() {
             this.getData();
-            this.tableWidth = jQuery('.wrap').width() +'px';
+            this.tableWidth = jQuery('.wrap').width() + 'px';
         }
     }
-</script> 
-<style>
+</script>
+<style lang="scss">
     .el-table {
         margin-top: 10px;
         margin-bottom: 10px;
     }
+
     .alert-warning {
         color: #8a6d3b;
         background-color: #fcf8e3;
         border-color: #faebcc;
     }
+
     .alert {
         padding: 15px;
         margin-bottom: 20px;
         border: 1px solid transparent;
         border-radius: 4px;
     }
+
     .sorting tr {
         cursor: move;
+    }
+
+    .el-table__header {
+        tr th:hover {
+            .nt-column-config {
+                display: inline-block !important;
+            }
+        }
+    }
+
+    .nt-column-config {
+        margin-left: 10px;
+        cursor: pointer;
+        display: none !important;
+        &:hover {
+            color: #58B7FF;
+        }
     }
 </style>

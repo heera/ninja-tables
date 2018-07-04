@@ -1,84 +1,80 @@
 <template>
     <!-- MODAL -->
-    <div class="modal fade" :style="{display: modal_visible ? 'block' : 'none'}" :class="modal_visible && 'in'">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="closeModal">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4><span v-if="editId">{{ $t('Update Row') }}</span><span v-else>{{ $t('Add Row') }}</span></h4>
-                    </div>
-                    <div v-if="modal_visible" class="modal-body">
-                        <div v-for="column in columns" class="form-group">
-                            <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
-                            <div v-if="column.data_type == 'textarea'">
-                                <textarea :placeholder="column.name" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]"></textarea>
-                            </div>
-                            <div v-else-if="column.data_type == 'html'">
-                                <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
-                            </div>
-                            <div v-else-if="column.data_type == 'number'">
-                                <input :placeholder="column.name" type="number" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
-                            </div>
-                            <div v-else-if="column.data_type == 'date'">
-                                <input :placeholder="column.dateFormat" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
-                            </div>
-                            <div v-else-if="column.data_type == 'selection'">
-                                <el-select
-                                        style="width: 100%"
-                                        v-model="newColumn[column.key]"
-                                        filterable
-                                        allow-create
-                                        default-first-option
-                                        placeholder="Choose One from List">
-                                    <el-option
-                                            v-for="item in getFromSelectionStr(column.selections)"
-                                            :key="item"
-                                            :label="item"
-                                            :value="item">
-                                    </el-option>
-                                </el-select>
-                            </div>
-                            <div v-else>
-                                <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control" v-model="newColumn[column.key]">
-                            </div>
-                        </div>
-
-                        <div v-if="!editId && manualSort && !insertAfterPosition">
-                            Add at
-                            <input type="radio" v-model="position" value="last" style="margin-left: 5px;">Last
-                            <input type="radio" v-model="position" value="first" style="margin-left: 10px;">First
-                        </div>
-                    </div>
-                    <div class="modal-footer row_full">
-                        <div v-show="!editId" class="pull-left">
-                            <label for="adding_more">
-                                <input type="checkbox" id="adding_more" v-model="continueAdding" /> Add Next Item
-                            </label>
-                        </div>
-                        <div class="pull-right">
-                            <button class="btn btn-default" @click.prevent="closeModal">{{ $t('Cancel') }}</button>
-                            <button type="submit" class="btn btn-primary btn-flex" @click="addData">
-                                <span v-if="editId"> {{ $t('Update') }}</span>
-                                <span v-else>{{ $t('Add') }}</span>
-                                <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                            </button>
-                        </div>
-                    </div>
+    <div>
+        <div>
+            <div v-for="column in columns" class="form-group">
+                <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
+                <div v-if="column.data_type == 'textarea'">
+                    <textarea :placeholder="column.name" :id="slugify(column.key)" class="form-control"
+                              v-model="newColumn[column.key]"></textarea>
                 </div>
+                <div v-else-if="column.data_type == 'html'">
+                    <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
+                </div>
+                <div v-else-if="column.data_type == 'number'">
+                    <input :placeholder="column.name" type="number" :id="slugify(column.key)" class="form-control"
+                           v-model="newColumn[column.key]">
+                </div>
+                <div v-else-if="column.data_type == 'date'">
+                    <input :placeholder="column.dateFormat" type="text" :id="slugify(column.key)" class="form-control"
+                           v-model="newColumn[column.key]">
+                </div>
+                <div v-else-if="column.data_type == 'selection'">
+                    <el-select
+                            style="width: 100%"
+                            v-model="newColumn[column.key]"
+                            filterable
+                            allow-create
+                            default-first-option
+                            placeholder="Choose One from List">
+                        <el-option
+                                v-for="item in getFromSelectionStr(column.selections)"
+                                :key="item"
+                                :label="item"
+                                :value="item">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div v-else>
+                    <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control"
+                           v-model="newColumn[column.key]">
+                </div>
+            </div>
+
+            <div v-if="!editId && manualSort && !insertAfterPosition">
+                Add at
+                <input type="radio" v-model="position" value="last" style="margin-left: 5px;">Last
+                <input type="radio" v-model="position" value="first" style="margin-left: 10px;">First
+            </div>
+        </div>
+        <div class="modal-footer row_full">
+            <div v-show="!editId" class="pull-left">
+                <label for="adding_more">
+                    <input type="checkbox" id="adding_more" v-model="continueAdding"/> Add Next Item
+                </label>
+            </div>
+            <div class="pull-right">
+                <button class="btn btn-default" @click.prevent="closeModal">{{ $t('Cancel') }}</button>
+                <button type="submit" class="btn btn-primary btn-flex" @click="addData">
+                    <span v-if="editId"> {{ $t('Update') }}</span>
+                    <span v-else>{{ $t('Add') }}</span>
+                    <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+                </button>
+            </div>
         </div>
     </div>
+       
     <!-- END OF MODAL -->
 </template>
 
 <script type="text/babel">
-   import each from 'lodash/each';
-   
+    import each from 'lodash/each';
+
     import wp_editor from '../../common/_wp_editor';
+
     export default {
         name: 'add_data',
-        props: ['modal_visible', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
+        props: ['columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
         data() {
             return {
                 editorOption: {
@@ -87,31 +83,31 @@
                             ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons
                             ['blockquote', 'code-block'],
 
-                            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-                            [{ 'align': [] }],
-                            [{ 'direction': 'rtl' }]
+                            [{'header': 1}, {'header': 2}],               // custom button values
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+                            [{'align': []}],
+                            [{'direction': 'rtl'}]
                         ]
                     }
                 },
                 btnLoading: false,
                 editId: null,
                 continueAdding: true,
-                newColumn: {
-                    
-                },
+                newColumn: {},
                 has_pro: !!window.ninja_table_admin.hasPro,
-                position: 'last'
+                position: 'last',
+                modal_title: 'Add Row'
             }
         },
         watch: {
             item() {
                 this.initNewColumnObj();
-                if(this.item) {
+                if (this.item) {
                     this.editId = this.item.id;
                 } else {
                     this.editId = null;
+                    this.modal_title = 'Update Row'
                 }
             }
         },
@@ -120,11 +116,11 @@
                 let valid = false;
                 const encodedColumn = {};
                 each(this.newColumn, (value) => {
-                        if(value) {
-                            valid = true;
-                        }
+                    if (value) {
+                        valid = true;
+                    }
                 });
-                if(!valid) {
+                if (!valid) {
                     this.$message({
                         showClose: true,
                         message: 'Please add at least 1 value to the row',
@@ -133,7 +129,7 @@
                     return;
                 }
                 this.btnLoading = true;
-                
+
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'store-table-data',
@@ -151,24 +147,24 @@
                 }
 
                 jQuery.post(ajaxurl, data)
-                    .then( (response) => {
+                    .then((response) => {
                         this.$message({
                             showClose: true,
                             message: response.message,
                             type: 'success'
                         });
                         this.initNewColumnObj();
-                        
-                        if(this.editId) {
+
+                        if (this.editId) {
                             this.$emit('updateItem', response.item);
                         } else {
                             this.$emit('createItem', response.item);
                         }
-                        if(this.editId || !this.continueAdding)  {
+                        if (this.editId || !this.continueAdding) {
                             this.$emit('modal_close');
                         }
                     })
-                    .fail( (error) => {
+                    .fail((error) => {
                         this.$message({
                             showClose: true,
                             message: error.responseJSON.data.message,
@@ -191,11 +187,10 @@
                 });
                 this.newColumn = columnObj;
             },
-            onEditorChange(key, {editor, html, text }) {
+            onEditorChange(key, {editor, html, text}) {
                 this.newColumn[key] = html;
             },
-            slugify(text)
-            {
+            slugify(text) {
                 return text.toString().toLowerCase()
                     .replace(/\s+/g, '-')           // Replace spaces with -
                     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars

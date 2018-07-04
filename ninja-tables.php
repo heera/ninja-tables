@@ -71,3 +71,9 @@ function run_ninja_tables()
 
 // kick off
 run_ninja_tables();
+
+//add_action('init', function (){
+//    add_filter( 'wp_kses_allowed_html', 'ninjaTablesAllowedHtmlTags' );
+//    var_dump(wp_kses_post( '<a href="#" download="jewel.pdf">Jewe</a>' ));
+//    die();
+//});
