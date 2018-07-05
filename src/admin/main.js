@@ -17,7 +17,8 @@ import {
     RadioGroup,
     Radio,
     Select,
-    Option
+    Option,
+    Switch
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -49,6 +50,7 @@ Vue.use(Option);
 Vue.use(Checkbox);
 Vue.use(RadioGroup);
 Vue.use(Radio);
+Vue.use(Switch);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

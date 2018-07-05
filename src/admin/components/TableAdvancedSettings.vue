@@ -70,8 +70,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="section_block">
+            <h3>Caching</h3>
+            <div class="caching-block">
+                <div class="form-group">
+                    <span style="margin-right: 5px;">Disable Caching</span>
+                    <el-switch v-model="tableSettings.shouldNotCache" active-value="yes" inactive-value="no" />
+                </div>
+            </div>
+        </div>
         
-        <el-button  @click="storeSettings()" size="small" type="primary">Update Settings</el-button>
+        <el-button @click="storeSettings()" size="small" type="primary">Update Settings</el-button>
     </div>
 </template>
 

@@ -110,7 +110,7 @@ if( ! function_exists('ninja_table_is_in_production_mood') ) {
 }
 
 
-function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
+function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false) {
 	$query = ninja_tables_DbTable()->where('table_id', $tableId);
 	
 	if($defaultSorting == 'new_first') {
@@ -134,8 +134,7 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false) {
 	// Hook ninja_tables_get_public_data instead. 
 	// You should hook this if you need to cache your filter modifications
 	$formatted_data = apply_filters('ninja_tables_get_raw_table_data', $formatted_data, $tableId);
-	
-	$disableCache = apply_filters('ninja_tables_disable_caching', false, $tableId);
+
 	if(!$disableCache) {
 		update_post_meta($tableId, '_ninja_table_cache_object', $formatted_data);
 	}
