@@ -43,6 +43,8 @@ if( ! function_exists('ninja_table_get_table_settings')) {
 if( ! function_exists('getDefaultNinjaTableSettings')) {
     function getDefaultNinjaTableSettings()
     {
+        $renderType = defined('NINJATABLESPRO') ? 'legacy_table' : 'ajax_table';
+
         $defaults = array(
             "perPage"         => 20,
             "show_all"        => false,
@@ -54,7 +56,7 @@ if( ! function_exists('getDefaultNinjaTableSettings')) {
             "column_sorting"  => true,
             "default_sorting" => 'new_first',
             "table_color"     => '',
-	        "render_type"     => 'ajax_table'
+	        "render_type"     => $renderType
         );
 
         return apply_filters('get_default_ninja_table_settings', $defaults);
