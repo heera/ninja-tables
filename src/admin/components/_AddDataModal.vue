@@ -47,11 +47,13 @@
             </div>
         </div>
 
-        <div slot="footer" class="dialog-footer">
-            <template v-show="!editId">
+        <div slot="footer" class="dialog-footer" :class="{ 'single-child': editId }">
+            <template v-if="!editId">
+                <div>
                 <label for="adding_more" class="dialog-footer-item">
                     <input type="checkbox" id="adding_more" v-model="continueAdding"/> Add Next Item
                 </label>
+                </div>
             </template>
 
             <div class="dialog-footer-item">
@@ -147,6 +149,8 @@
                     }
                 }
 
+                console.log(data);
+
                 jQuery.post(ajaxurl, data)
                     .then((response) => {
                         this.$message({
@@ -217,5 +221,8 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        &.single-child {
+            justify-content: flex-end;
+        }
     }
 </style>

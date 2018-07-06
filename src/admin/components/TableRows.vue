@@ -524,7 +524,7 @@
             },
             duplicateData(item) {
                 this.updateItem = Object.assign({}, item.row);
-                delete this.updateItem.id;
+                this.updateItem.id = null;
 
                 if (this.hasSortable) {
                     this.insertAfterPosition = item.$index + 1;
