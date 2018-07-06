@@ -82,8 +82,8 @@
                             <label v-for="(tableLib, tableKey) in tableLibs" :for="tableKey">
                                 <input v-model="tableSettings.library" type="radio" :value="tableKey"
                                        name="table_library" :id="tableKey"/> {{ tableLib.title }}
-                                <el-tooltip placement="top-end" :content="tableLib.description">
-                                    <i class="el-icon-information"></i>
+                                <el-tooltip placement="top-end" effect="light" :content="tableLib.description">
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
                         </div>
@@ -98,26 +98,26 @@
                             <label for="show_title">
                                 <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/> {{
                                 $t('Show Table Title') }}
-                                <el-tooltip placement="top-end"
+                                <el-tooltip placement="top-end" effect="light"
                                             content="Enable this if you want to show table title in frontend">
-                                    <i class="el-icon-information"></i>
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
                             <label for="show_description">
                                 <input v-model="tableSettings.show_description" type="checkbox" value="1"
                                        id="show_description"/> {{ $t('Show Table Description') }}
-                                <el-tooltip placement="top-end"
+                                <el-tooltip placement="top-end" effect="light"
                                             content="Enable this if you want to show table description in frontend">
-                                    <i class="el-icon-information"></i>
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
 
                             <label v-if="tableLibs[tableSettings.library].supports.ajax" for="enable_ajax">
                                 <input v-model="tableSettings.enable_ajax" type="checkbox" value="1" id="enable_ajax"/>
                                 {{ $t('Enable Ajax Loading') }}
-                                <el-tooltip placement="top-end"
+                                <el-tooltip placement="top-end" effect="light"
                                             content="Enable this if you have more than 10,000 records in your table">
-                                    <i class="el-icon-information"></i>
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
                             <label for="enable_search">
@@ -185,8 +185,8 @@
                                 <input v-model="tableSettings.css_lib" type="radio" name="stylingLib" :id="libKey"
                                        :value="libKey"/>
                                 {{ tableLib.title }}
-                                <el-tooltip placement="top-end" :content="tableLib.description">
-                                    <i class="el-icon-information"></i>
+                                <el-tooltip placement="top-end" effect="light" :content="tableLib.description">
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
                         </div>
@@ -201,8 +201,8 @@
                                 <input v-model="tableSettings.css_classes" type="checkbox" name="table_styles"
                                        :value="tableStyle.key" :id="'table_style_'+tableStyle.key"/>
                                 {{ tableStyle.title }}
-                                <el-tooltip placement="top-end" :content="tableStyle.description">
-                                    <i class="el-icon-information"></i>
+                                <el-tooltip placement="top-end" effect="light" :content="tableStyle.description">
+                                    <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
                         </div>

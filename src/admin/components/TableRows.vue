@@ -1,17 +1,18 @@
 <template>
     <div>
         <template v-if="columns.length">
-            <el-dialog :title="addDataModalTitle" :visible.sync="addDataModal">
-                <add_data_modal v-if="columns.length"
-                                @modal_close="closeDataModal"
-                                @updateItem="updateItemOnTable"
-                                @createItem="addItemOnTable"
-                                :table_id="tableId" :columns="columns"
-                                :item="updateItem"
-                                :manual-sort="config.settings.sorting_type === 'manual_sort'"
-                                :insert-after-position="insertAfterPosition"
-                ></add_data_modal>
-            </el-dialog>
+            <add_data_modal v-if="columns.length"
+                          :title="addDataModalTitle"
+                          :show="addDataModal"
+                          @modal_close="closeDataModal"
+                          @updateItem="updateItemOnTable"
+                          @createItem="addItemOnTable"
+                          :table_id="tableId"
+                          :columns="columns"
+                          :item="updateItem"
+                          :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                          :insert-after-position="insertAfterPosition"
+            ></add_data_modal>
 
             <div class="tablenav top">
                 <div class="alignleft actions bulkactions">
@@ -77,14 +78,24 @@
                             fixed="right"
                             label="Actions"
                             class-name="actions"
-                            width="100">
+                            width="120">
                         <template slot-scope="scope">
                             <a v-if="has_pro" @click="addAfter(scope)">
-                                <span class="dashicons dashicons-plus"></span>
+                                <el-tooltip placement="top-end" effect="light" content="Add data" :open-delay="500">
+                                    <span class="dashicons dashicons-plus"></span>
+                                </el-tooltip>
                             </a>
 
                             <a @click="showUpdateModal(scope)">
-                                <span class="dashicons dashicons-edit"></span>
+                                <el-tooltip placement="top-end" effect="light" content="Edit data" :open-delay="500">
+                                    <span class="dashicons dashicons-edit"></span>
+                                </el-tooltip>
+                            </a>
+
+                            <a @click="duplicateData(scope)">
+                                <el-tooltip placement="top-end" effect="light" content="Duplicate data" :open-delay="500">
+                                    <span class="dashicons dashicons-admin-page"></span>
+                                </el-tooltip>
                             </a>
                             <delete-pop-over @deleted="deleteItem(scope.row.id)"></delete-pop-over>
                         </template>
@@ -343,6 +354,7 @@
                 this.updateItem = null;
                 this.addDataModal = false;
                 this.editIndex = null;
+                this.insertAfterPosition = null;
 
                 if (success) {
                     this.getData();
@@ -417,7 +429,11 @@
                             .then(res => {
                                 this.items = res.data;
                                 this.paginate.total = parseInt(res.total);
-                                this.paginate.last_page = parseInt(res.last_page)
+                                this.paginate.last_page = parseInt(res.last_page);
+
+                                // Manually set the sorting type so that we
+                                // don't need to load the settings again.
+                                this.config.settings['sorting_type'] = 'manual_sort';
 
                                 this.initSortable();
                             })
@@ -465,15 +481,15 @@
             add() {
                 this.insertAfterPosition = null;
                 this.addDataModal = true;
-                this.addDataModalTitle = 'Add Row';
+                this.addDataModalTitle = 'Add Data';
             },
             addAfter(scope) {
                 if (!this.hasSortable) {
                     this.sortableUpgradeNotice = true;
-                    this.addDataModalTitle = 'Add Row';
                     return
                 }
 
+                this.addDataModalTitle = 'Add Data';
                 this.insertAfterPosition = scope.$index + 1;
                 this.addDataModal = true;
             },
@@ -505,6 +521,16 @@
                     this.currentEditingColumn = false;
                 });
                
+            },
+            duplicateData(item) {
+                this.updateItem = Object.assign({}, item.row);
+                delete this.updateItem.id;
+
+                if (this.hasSortable) {
+                    this.insertAfterPosition = item.$index + 1;
+                }
+                this.addDataModal = true;
+                this.addDataModalTitle = 'Duplicate Data';
             }
         },
         mounted() {

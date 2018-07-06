@@ -1,6 +1,5 @@
 <template>
-    <!-- MODAL -->
-    <div>
+    <el-dialog :title="title" :visible="show" @close="closeModal">
         <div>
             <div v-for="column in columns" class="form-group">
                 <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
@@ -47,13 +46,15 @@
                 <input type="radio" v-model="position" value="first" style="margin-left: 10px;">First
             </div>
         </div>
-        <div class="modal-footer row_full">
-            <div v-show="!editId" class="pull-left">
-                <label for="adding_more">
+
+        <div slot="footer" class="dialog-footer">
+            <template v-show="!editId">
+                <label for="adding_more" class="dialog-footer-item">
                     <input type="checkbox" id="adding_more" v-model="continueAdding"/> Add Next Item
                 </label>
-            </div>
-            <div class="pull-right">
+            </template>
+
+            <div class="dialog-footer-item">
                 <button class="btn btn-default" @click.prevent="closeModal">{{ $t('Cancel') }}</button>
                 <button type="submit" class="btn btn-primary btn-flex" @click="addData">
                     <span v-if="editId"> {{ $t('Update') }}</span>
@@ -62,9 +63,7 @@
                 </button>
             </div>
         </div>
-    </div>
-       
-    <!-- END OF MODAL -->
+    </el-dialog>
 </template>
 
 <script type="text/babel">
@@ -74,7 +73,7 @@
 
     export default {
         name: 'add_data',
-        props: ['columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
+        props: ['title', 'show', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
         data() {
             return {
                 editorOption: {
@@ -92,7 +91,6 @@
                     }
                 },
                 btnLoading: false,
-                editId: null,
                 continueAdding: true,
                 newColumn: {},
                 has_pro: !!window.ninja_table_admin.hasPro,
@@ -100,14 +98,17 @@
                 modal_title: 'Add Row'
             }
         },
+        computed: {
+            editId() {
+                return this.item && this.item.id;
+            }
+        },
         watch: {
             item() {
                 this.initNewColumnObj();
-                if (this.item) {
-                    this.editId = this.item.id;
-                } else {
-                    this.editId = null;
-                    this.modal_title = 'Update Row'
+
+                if (!this.item) {
+                    this.modal_title = 'Add Row'
                 }
             }
         },
@@ -209,4 +210,12 @@
             wp_editor: wp_editor
         }
     }
-</script> 
+</script>
+
+<style lang="scss">
+    .dialog-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
