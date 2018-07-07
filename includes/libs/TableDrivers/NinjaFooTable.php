@@ -29,6 +29,8 @@ class NinjaFooTable {
 		self::render( $tableArray );
 		
 		self::enqueue_assets();
+
+		static::headerColors($tableArray);
 	}
 
 	private static function enqueue_assets() {
@@ -50,6 +52,29 @@ class NinjaFooTable {
 				'empty_text' => __( 'No Result Found', 'ninja-tables' ),
 			)
 		) );
+	}
+
+    /**
+     * Set the table header colors.
+     *
+     * @param array $table
+     */
+    private static function headerColors($table)
+    {
+        $header_color_primary = isset($table['settings']['header_color_primary'])
+            ? $table['settings']['header_color_primary']
+            : '';
+
+        $header_color_secondary = isset($table['settings']['header_color_secondary'])
+            ? $table['settings']['header_color_secondary']
+            : '';
+
+        if ($header_color_primary || $header_color_secondary) {
+            wp_add_inline_style('footable_styles', "#footable_".$table['table_id']." .footable-header {
+                background: ".$header_color_primary.";
+                color: ".$header_color_secondary.";
+            }");
+        }
 	}
 
 	private static function render( $tableArray ) {
@@ -158,7 +183,8 @@ class NinjaFooTable {
 				'search_in'  => (isset($settings['search_in_text'])) ? sanitize_text_field($settings['search_in_text']) : __( 'Search in', 'ninja-tables' ),
 				'search'  => (isset($settings['search_placeholder'])) ? sanitize_text_field($settings['search_placeholder']) : __( 'Search', 'ninja-tables' ),
 				'no_result_text'  => (isset($settings['no_result_text'])) ? sanitize_text_field($settings['no_result_text']) : __( 'No Result Found', 'ninja-tables' ),
-			)
+			),
+            'shouldNotCache' => isset($settings['shouldNotCache']) ? $settings['shouldNotCache'] : false
 		);
 
 		$table_classes = self::getTableCssClass( $settings );
@@ -258,7 +284,9 @@ class NinjaFooTable {
 	}
 
 	private static function generateLegacyTableHTML( $table, $table_vars ) {
-		$disableCache = apply_filters( 'ninja_tables_disable_caching', false, $table->ID );
+	    $shouldNotCache = $table_vars['settings']['shouldNotCache'] === 'yes';
+
+		$disableCache = apply_filters( 'ninja_tables_disable_caching', $shouldNotCache, $table->ID );
 
 		$tableHtml = get_post_meta( $table->ID, '_ninja_table_cache_html', true );
 		

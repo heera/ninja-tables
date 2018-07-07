@@ -182,3 +182,16 @@ function ninjaTablesDataMigratedForManualSort($tableId)
 	
 	return !!get_post_meta($tableId, $postMetaKey, true);
 }
+
+/**
+ * Determine if the user wants to disable the caching for the table.
+ *
+ * @param  int $tableId
+ * @return bool
+ */
+function shouldNotCache($tableId)
+{
+    $tableSettings = ninja_table_get_table_settings($tableId, 'public');
+
+    return (isset($tableSettings['shouldNotCache']) && $tableSettings['shouldNotCache'] == 'yes') ? true : false;
+}

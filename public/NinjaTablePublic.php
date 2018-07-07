@@ -69,7 +69,7 @@ class NinjaTablePublic {
 		$tableId = intval($_REQUEST['table_id']);
 		$defaultSorting = sanitize_text_field($_REQUEST['default_sorting']);
 
-        $shouldNotCache = $this->shouldNotCache($tableId);
+        $shouldNotCache = shouldNotCache($tableId);
 
         // cache the data
 		$disableCache = apply_filters('ninja_tables_disable_caching', $shouldNotCache, $tableId);
@@ -150,17 +150,4 @@ class NinjaTablePublic {
 			);
 		}
 	}
-
-    /**
-     * Determine if the user wants to disable the caching for the table.
-     *
-     * @param  int $tableId
-     * @return bool
-     */
-	protected function shouldNotCache($tableId)
-    {
-        $tableSettings = ninja_table_get_table_settings($tableId, 'public');
-
-        return (isset($tableSettings['shouldNotCache']) && $tableSettings['shouldNotCache'] == 'yes') ? true : false;
-    }
 }

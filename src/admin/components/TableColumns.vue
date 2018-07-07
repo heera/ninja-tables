@@ -210,7 +210,7 @@
                 </div>
 
                 <div v-if="size(colors)" class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Color Schema') }} <span v-if="!has_pro">( Pro Feature )</span></h4>
+                    <h4 class="title">{{ $t('Table Color Schema') }} <span v-if="!has_pro">(Pro Feature)</span></h4>
                     <div class="widget_body">
 
                         <div class="form_group">
@@ -235,9 +235,37 @@
                         </div>
                     </div>
                 </div>
+
+                <!--Header Color Settings-->
+                <div class="ninja_widget">
+                    <h4 class="title">
+                        {{ $t('Header Colors') }}
+                        <span v-if="!has_pro">(Pro Feature)</span>
+                    </h4>
+                    <div class="widget_body">
+                        <div class="form_group">
+                            <label>Primary color (Background)</label>
+
+                            <el-color-picker show-alpha :disabled="!has_pro" @click.native="headerColorsClick()"
+                                             v-model="tableSettings.header_color_primary" />
+                        </div>
+
+                        <div class="form_group">
+                            <label>Secondary color (Text)</label>
+
+                            <el-color-picker show-alpha :disabled="!has_pro" @click.native="headerColorsClick()"
+                                             v-model="tableSettings.header_color_secondary" />
+
+                            <p>
+                                <span class="el-text-info">*</span>
+                                Use opposite colors for best result
+                            </p>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Other Settings') }} <span v-if="!has_pro">( Pro Feature )</span></h4>
+                    <h4 class="title">{{ $t('Other Settings') }} <span v-if="!has_pro">(Pro Feature)</span></h4>
                     <div class="widget_body">
                         <div class="form_group">
                             <label><input v-model="tableSettings.hide_header_row" type="checkbox">
@@ -502,6 +530,11 @@
                         noData: true
                     }, resolve, reject);
                 })
+            },
+            headerColorsClick() {
+                if (!this.has_pro) {
+                    this.showProAd();
+                }
             }
         },
         mounted() {
