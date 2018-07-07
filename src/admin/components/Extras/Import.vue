@@ -8,31 +8,39 @@
                 <form action="" id="fileUploadForm" class="">
                     <div class="form-group">
                         <input type="file" id="fileUpload" @click="clear">
-                        <button type="submit" class="btn btn-primary btn-flex btn-sm" @click.prevent="upload">
-                            {{ $t('Upload CSV') }}
-                            <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                        </button>
+
+                        <el-checkbox v-model="replace">Replace Existing Data</el-checkbox>
+                    </div>
+
+                    <div class="form-group">
+                        <el-button type="primary" icon="el-icon-upload2" size="small"
+                                   @click.prevent="upload" :loading="btnLoading">
+                            {{ $t('Import from CSV') }}
+                        </el-button>
                     </div>
                 </form>
                 <div class="ninja_suggest">
                     <p>
-                        Please note that, Your CSV data need to be as bellow to import. You may check video tutorial. Please <a target="_blank" href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables">check here.</a>
+                        Please note that, your CSV data structure need to follow the sample CSV.
+                        You may want to check the <a :href="tutorial">video tutorial here.</a>
                     </p>
                     <br>
                     <p>
-                        And also make sure the content is in UTF-8 format for the best result.
+                        Also make sure the content is in UTF-8 format, for the best result.
                     </p>
                 </div>
 
-                <h3>
-                    {{ $t('CSV Header Structure') }}
-                    <button type="button" class="btn btn-primary btn-sm"
-                            style="float: right"
-                            @click="download">
+                <div class="justify-items">
+                    <h3>
+                        {{ $t('CSV Header Structure') }}
+                    </h3>
+
+                    <el-button type="primary" icon="el-icon-download" size="small"
+                               style="float: right" @click="download">
                         {{ $t('Download Sample CSV') }}
-                    </button>
-                </h3>
-                
+                    </el-button>
+                </div>
+
                 <el-table border :data="sampleData" style="width: 100%" stripe>
                     <el-table-column v-for="column in columns"
                                      :prop="column.key"
@@ -50,12 +58,15 @@
 
 <script>
     import each from 'lodash/each'
+
     export default {
-        name: 'CsvUpload',
+        name: "Import",
         props: ['config', 'tableId'],
         data() {
             return {
                 btnLoading: false,
+                replace: false,
+                tutorial: "https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
             }
         },
         computed: {
@@ -92,6 +103,7 @@
                 formData.append('action', 'ninja_tables_ajax_actions');
                 formData.append('target_action', 'upload-data');
                 formData.append('table_id', this.tableId);
+                formData.append('replace', this.replace);
 
                 jQuery.ajax({
                     url: ajaxurl,
@@ -158,8 +170,18 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
     #fileUpload {
         max-width: 200px;
+    }
+
+    .justify-items {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .ninja_content .ninja_suggest {
+        background: #f1f1f1;
     }
 </style>

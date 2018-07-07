@@ -991,7 +991,16 @@ class NinjaTablesAdmin {
 			) );
 		}
 
-		ninja_tables_DbTable()->batch_insert( $data );
+		$replace = $_REQUEST['replace'] === 'true';
+
+		if ($replace) {
+		    ninja_tables_DbTable()->where('table_id', $tableId)->delete();
+        }
+
+        $data = apply_filters('ninja_tables_import_table_data', $data, $tableId);
+
+        ninja_tables_DbTable()->batch_insert($data);
+
 		ninjaTablesClearTableDataCache( $tableId );
 		wp_send_json( array(
 			'message' => __( 'Successfully uploaded data.', 'ninja-tables' )

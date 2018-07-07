@@ -25,10 +25,10 @@
 
 <script>
     import ExportTable from './_ExportTable.vue';
-    import ImportTable from './_Csv.vue';
+    import ImportTable from './Import';
 
     export default {
-        name: 'ExportImport',
+        name: "ExportImport",
         components: {
             'export': ExportTable,
             'import' : ImportTable
@@ -39,11 +39,6 @@
                 active_menu: 'import',
                 tableId: this.$route.params.table_id,
                 activeNames: ['1']
-            }
-        },
-        methods: {
-            handleChange() {
-                
             }
         }
     }
