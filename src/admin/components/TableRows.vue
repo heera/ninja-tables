@@ -2,16 +2,17 @@
     <div>
         <template v-if="columns.length">
             <add_data_modal v-if="columns.length"
-                          :title="addDataModalTitle"
-                          :show="addDataModal"
-                          @modal_close="closeDataModal"
-                          @updateItem="updateItemOnTable"
-                          @createItem="addItemOnTable"
-                          :table_id="tableId"
-                          :columns="columns"
-                          :item="updateItem"
-                          :manual-sort="config.settings.sorting_type === 'manual_sort'"
-                          :insert-after-position="insertAfterPosition"
+                            :title="addDataModalTitle"
+                            :show="addDataModal"
+                            @modal_close="closeDataModal"
+                            @updateItem="updateItemOnTable"
+                            @createItem="addItemOnTable"
+                            :table_id="tableId"
+                            :columns="columns"
+                            :item="updateItem"
+                            :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                            :insert-after-position="insertAfterPosition"
+                            :type="dataModalType"
             ></add_data_modal>
 
             <div class="tablenav top">
@@ -203,7 +204,8 @@
 
                 showColumnEditor: false,
                 currentEditingColumn: false,
-                addDataModalTitle: 'Add Row'
+                addDataModalTitle: 'Add Row',
+                dataModalType: 'add'
             }
         },
         watch: {
@@ -351,10 +353,11 @@
                     });
             },
             closeDataModal(success) {
-                this.updateItem = null;
                 this.addDataModal = false;
+                // this.updateItem = null;
                 this.editIndex = null;
                 this.insertAfterPosition = null;
+                this.dataModalType = 'add';
 
                 if (success) {
                     this.getData();
@@ -390,6 +393,7 @@
                 this.updateItem = item.row;
                 this.editIndex = item.$index;
                 this.addDataModal = true;
+                this.dataModalType = 'update';
                 this.addDataModalTitle = 'Update Row';
             },
 
@@ -479,8 +483,10 @@
                     });
             },
             add() {
+                this.updateItem = null;
                 this.insertAfterPosition = null;
                 this.addDataModal = true;
+                this.dataModalType = 'add';
                 this.addDataModalTitle = 'Add Data';
             },
             addAfter(scope) {
@@ -489,7 +495,9 @@
                     return
                 }
 
+                this.updateItem = null;
                 this.addDataModalTitle = 'Add Data';
+                this.dataModalType = 'add-after';
                 this.insertAfterPosition = scope.$index + 1;
                 this.addDataModal = true;
             },
@@ -530,6 +538,7 @@
                     this.insertAfterPosition = item.$index + 1;
                 }
                 this.addDataModal = true;
+                this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
             }
         },

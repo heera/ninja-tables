@@ -47,11 +47,11 @@
             </div>
         </div>
 
-        <div slot="footer" class="dialog-footer" :class="{ 'single-child': editId }">
-            <template v-if="!editId">
+        <div slot="footer" class="dialog-footer" :class="{ 'single-child': shouldNotContinueAdding }">
+            <template v-if="!shouldNotContinueAdding">
                 <div>
                 <label for="adding_more" class="dialog-footer-item">
-                    <input type="checkbox" id="adding_more" v-model="continueAdding"/> Add Next Item
+                    <input type="checkbox" id="adding_more" v-model="continueAdding"/> Continue Adding
                 </label>
                 </div>
             </template>
@@ -75,7 +75,7 @@
 
     export default {
         name: 'add_data',
-        props: ['title', 'show', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition'],
+        props: ['title', 'show', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition', 'type'],
         data() {
             return {
                 editorOption: {
@@ -103,6 +103,9 @@
         computed: {
             editId() {
                 return this.item && this.item.id;
+            },
+            shouldNotContinueAdding() {
+                return !!(this.editId || this.type === 'duplicate');
             }
         },
         watch: {
