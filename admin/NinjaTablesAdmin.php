@@ -617,11 +617,9 @@ class NinjaTablesAdmin
 
         $tableId = $this->createTable($tableAttributes);
 
-        update_post_meta($tableId, '_ninja_table_columns',
-            $content['columns']);
+        update_post_meta($tableId, '_ninja_table_columns', $content['columns']);
 
-        update_post_meta($tableId, '_ninja_table_settings',
-            $content['settings']);
+        update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
 
         if ($rows = $content['rows']) {
             $header = [];
@@ -874,13 +872,13 @@ class NinjaTablesAdmin
     /**
      * Get the order by field and order by type values.
      *
-     * @param  $tableId
-     *
+     * @param        $tableId
+     * @param  null  $tableSettings
      * @return array
      */
-    protected function getTableSortingParams($tableId)
+    protected function getTableSortingParams($tableId, $tableSettings = null)
     {
-        $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
+        $tableSettings = $tableSettings ?: ninja_table_get_table_settings($tableId, 'admin');
 
         $orderByField = 'id';
         $orderByType = 'DESC';
@@ -1044,9 +1042,11 @@ class NinjaTablesAdmin
 
         $tableColumns = ninja_table_get_table_columns($tableId, 'admin');
 
-        $data = ninja_tables_DbTable()->where('table_id', $tableId)
-            ->orderBy('id', 'DESC')
-            ->get();
+        $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
+
+        list($orderByField, $orderByType) = $this->getTableSortingParams($tableId, $tableSettings);
+
+        $data = ninja_tables_DbTable()->where('table_id', $tableId)->orderBy($orderByField, $orderByType)->get();
 
         if ($format == 'csv') {
 
@@ -1071,8 +1071,6 @@ class NinjaTablesAdmin
 
             $this->exportAsCSV(array_values($header), $exportData);
         } elseif ($format == 'json') {
-            $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
-
             $table = get_post($tableId);
 
             $tableItems = array_map(function ($item) {
