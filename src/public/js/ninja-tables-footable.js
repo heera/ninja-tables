@@ -4,12 +4,14 @@ jQuery(document).ready(function ($) {
             window.ninjaFooTablesInstance = [];
             let footables = $('table.foo-table.ninja_footable');
             let that = this;
-            $.each(footables, function (footable, table) {
+            $.each(footables, function (index, table) {
                 let $table = $(table);
                 $table.hide();
                 let tableId = $table.data('footable_id');
                 let tableSelector = 'ninja_footables_tables_' + tableId;
-                let tableConfig = window[tableSelector];
+                // The config is stored in an array since there
+                // could be more than one shortcode for a table.
+                let tableConfig = window[tableSelector][index];
                 jQuery.each(tableConfig.columns, (index, column) => {
                     if (column.type == 'date') {
                         if (tableConfig.render_type != 'legacy_table') {
