@@ -100,67 +100,78 @@ class NinjaTablesAdmin
     {
         global $submenu;
         $capability = ninja_table_admin_role();
+
+        // Continue only if the current user has
+        // the capability to manage ninja tables
+        if (!$capability) {
+            return;
+        }
+
         // Top-level page
         $menuName = __('NinjaTables', 'ninja-tables');
         if (defined('NINJATABLESPRO')) {
             $menuName .= ' Pro';
         }
 
-        add_menu_page($menuName,
-            $menuName, $capability, 'ninja_tables',
+        add_menu_page(
+            $menuName,
+            $menuName,
+            $capability,
+            'ninja_tables',
             array($this, 'main_page'),
-            'data:image/svg+xml;base64,'
-            .base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.98 249.25"><defs><style>.cls-1{fill:#fff;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:7px;}.cls-2{stroke:#9fa3a8;}.cls-3{stroke:#38444f;}</style></defs><title>Asset 7</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M312.48,249.25H9.5a9.51,9.51,0,0,1-9.5-9.5V9.5A9.51,9.51,0,0,1,9.5,0h303A9.51,9.51,0,0,1,322,9.5V239.75A9.51,9.51,0,0,1,312.48,249.25ZM9.5,7A2.53,2.53,0,0,0,7,9.5V239.75a2.53,2.53,0,0,0,2.5,2.5h303a2.53,2.53,0,0,0,2.5-2.5V9.5a2.53,2.53,0,0,0-2.5-2.5Z"/><rect class="cls-1" x="74.99" y="44.37" width="8.75" height="202.71"/><path class="cls-2" d="M129.37,234.08"/><path class="cls-2" d="M129.37,44.37"/><path class="cls-3" d="M189.37,234.08"/><path class="cls-3" d="M189.37,44.37"/><path class="cls-3" d="M249.37,234.08"/><path class="cls-3" d="M249.37,44.37"/><path class="cls-1" d="M6.16.51H315.82a6,6,0,0,1,6,6V50.32a.63.63,0,0,1-.63.63H.79a.63.63,0,0,1-.63-.63V6.51A6,6,0,0,1,6.16.51Z"/><rect class="cls-1" x="4.88" y="142.84" width="312.61" height="15.1"/><rect class="cls-1" x="22.47" y="89.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="89.99" width="165.67" height="16.97"/><rect class="cls-1" x="22.47" y="189.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="189.99" width="165.67" height="16.97"/></g></g></svg>'),
-            25);
+            ninja_table_get_icon_url(),
+            25
+        );
 
-        if (current_user_can($capability)) {
-            $submenu['ninja_tables']['all_tables'] = array(
-                __('All Tables', 'ninja-tables'),
+        $submenu['ninja_tables']['all_tables'] = array(
+            __('All Tables', 'ninja-tables'),
+            $capability,
+            'admin.php?page=ninja_tables#/',
+        );
+
+        $submenu['ninja_tables']['tools'] = array(
+            __('Tools', 'ninja-tables'),
+            $capability,
+            'admin.php?page=ninja_tables#/tools',
+            '',
+            'ninja_table_tools_menu'
+        );
+
+        $submenu['ninja_tables']['import'] = array(
+            __('Import a Table', 'ninja-tables'),
+            $capability,
+            'admin.php?page=ninja_tables#/tools',
+            '',
+            'ninja_table_import_menu'
+        );
+
+        if (!defined('NINJATABLESPRO')) {
+            $submenu['ninja_tables']['upgrade_pro'] = array(
+                __('<span style="color:#f39c12;">Get Pro</span>', 'ninja-tables'),
                 $capability,
-                'admin.php?page=ninja_tables#/',
-            );
-            $submenu['ninja_tables']['tools'] = array(
-                __('Tools', 'ninja-tables'),
-                $capability,
-                'admin.php?page=ninja_tables#/tools',
+                'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu',
                 '',
-                'ninja_table_tools_menu'
+                'ninja_table_upgrade_menu'
             );
-            $submenu['ninja_tables']['import'] = array(
-                __('Import a Table', 'ninja-tables'),
-                $capability,
-                'admin.php?page=ninja_tables#/tools',
-                '',
-                'ninja_table_import_menu'
-            );
-            if (!defined('NINJATABLESPRO')) {
-                $submenu['ninja_tables']['upgrade_pro'] = array(
-                    __('<span style="color:#f39c12;">Get Pro</span>', 'ninja-tables'),
+        } else {
+            $license = get_option('_ninjatables_pro_license_status');
+            if ($license != 'valid') {
+                $submenu['ninja_tables']['activate_license'] = array(
+                    '<span style="color:#f39c12;">Activate License</span>',
                     $capability,
-                    'https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_menu',
+                    'admin.php?page=ninja_tables#/tools?active_menu=license',
                     '',
-                    'ninja_table_upgrade_menu'
+                    'ninja_table_license_menu'
                 );
-            } else {
-                $license = get_option('_ninjatables_pro_license_status');
-                if ($license != 'valid') {
-                    $submenu['ninja_tables']['activate_license'] = array(
-                        '<span style="color:#f39c12;">Activate License</span>',
-                        $capability,
-                        'admin.php?page=ninja_tables#/tools?active_menu=license',
-                        '',
-                        'ninja_table_license_menu'
-                    );
-                }
-
             }
-            $submenu['ninja_tables']['help'] = array(
-                __('Help', 'ninja-tables'),
-                $capability,
-                'admin.php?page=ninja_tables#/help'
-            );
+
         }
 
+        $submenu['ninja_tables']['help'] = array(
+            __('Help', 'ninja-tables'),
+            $capability,
+            'admin.php?page=ninja_tables#/help'
+        );
     }
 
     public function main_page()

@@ -2,37 +2,35 @@
     <div class="privacy">
         <div class="ninja_header">
             <h2>Permission <span v-show="!hasPro">(Pro Feature)</span></h2>
-            <p>Provide other user roles to manage tables</p>
+            <p>Select user roles which can manage Ninja Tables</p>
         </div>
 
         <div class="ninja_content">
             <template v-if="hasPro">
-                <label for="capability">
-                    Select Role
-                    <el-tooltip class="item" effect="light" placement="top-start">
-                        <div slot="content">
-                            <h3>Select Role</h3>
+                <div class="form-group">
+                    <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
+                        Check all
+                    </el-checkbox>
+                </div>
 
-                            <p>
-                                The users with the selected role(s) will be <br> able to manage Ninja Tables.
-                            </p>
-                        </div>
+                <div class="form-group">
+                    <el-checkbox-group v-model="capability" @change="handleCheckedCapabilitiesChange">
+                        <el-checkbox v-for="role in roles" :label="role.key" :key="role.key">
+                            {{ role.name }}
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </div>
 
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </label>
-
-                <select name="capability" id="capability" v-model="capability">
-                    <option v-for="(role, capabilityOption) in roles" :key="capabilityOption" :value="capabilityOption">
-                        {{ role }}
-                    </option>
-                </select>
-                <button @click="store" class="btn btn-primary btn-sm">Update</button>
+                <div class="form-group">
+                    <el-button @click="store" type="primary" size="small">Save</el-button>
+                </div>
             </template>
             
             <template v-else>
                 Activate Ninja Tables Pro Add-on plugin to unlock this feature
-                <p><a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade">Buy Ninja Tables Pro Add-On</a></p>
+                <p>
+                    <a target="_blank" :href="upgrade">Buy Ninja Tables Pro Add-On</a>
+                </p>
             </template>
         </div>
     </div>
@@ -44,13 +42,11 @@
         data() {
             return {
                 hasPro: false,
-                roles: {
-                    manage_options: "Administrator",
-                    edit_others_posts: "Administrator + Editor",
-                    edit_published_posts: "Administrator + Editor + Author",
-                    edit_posts: "Administrator + Editor + Author + Contributor"
-                },
-                capability: "manage_options"
+                roles: [],
+                checkAll: false,
+                capability: ["administrator"],
+                isIndeterminate: false,
+                upgrade: `https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade`
             };
         },
         methods: {
@@ -62,7 +58,9 @@
                 jQuery
                     .get(ajaxurl, data)
                     .then(response => {
-                        this.capability = response.capability || 'manage_options'
+                        this.capability = response.capability;
+                        this.roles = response.roles;
+                        this.handleCheckedCapabilitiesChange(this.capability);
                     })
                     .fail(e => {});
             },
@@ -81,6 +79,15 @@
                         });
                     })
                     .fail(e => {});
+            },
+            handleCheckAllChange(val) {
+                this.capability = val ? this.roles.map(item => item.key) : [];
+                this.isIndeterminate = false;
+            },
+            handleCheckedCapabilitiesChange(value) {
+                let checkedCount = value.length;
+                this.checkAll = checkedCount === this.roles.length;
+                this.isIndeterminate = checkedCount > 0 && checkedCount < this.roles.length;
             }
         },
         mounted() {
