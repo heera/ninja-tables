@@ -153,7 +153,7 @@ class NinjaTablesAdmin
                 '',
                 'ninja_table_upgrade_menu'
             );
-        } else {
+        } else if(defined('NINJATABLESPRO_SORTABLE')) {
             $license = get_option('_ninjatables_pro_license_status');
             if ($license != 'valid') {
                 $submenu['ninja_tables']['activate_license'] = array(
@@ -164,7 +164,6 @@ class NinjaTablesAdmin
                     'ninja_table_license_menu'
                 );
             }
-
         }
 
         $submenu['ninja_tables']['help'] = array(
@@ -276,7 +275,7 @@ class NinjaTablesAdmin
 
     public function ajax_routes()
     {
-        if (!current_user_can(ninja_table_admin_role())) {
+        if (!ninja_table_admin_role()) {
             return;
         }
 
@@ -297,7 +296,8 @@ class NinjaTablesAdmin
             'duplicate-table'          => 'duplicateTable',
             'export-data'              => 'exportData',
             'dismiss_fluent_suggest'   => 'dismissPluginSuggest',
-            'save_custom_css'          => 'saveCustomCSS'
+            'save_custom_css'          => 'saveCustomCSS',
+            'get_access_roles'          => 'getAccessRoles'
         );
 
         $requested_route = $_REQUEST['target_action'];
@@ -1609,6 +1609,32 @@ class NinjaTablesAdmin
         wp_send_json(array(
             'message'  => __('Successfully duplicated table.', 'ninja-tables'),
             'table_id' => $newPostId
+        ), 200);
+    }
+    
+    
+    public function getAccessRoles() {
+        $roles = get_editable_roles();
+        $formatted = array();
+        $excludedRoles = array('subscriber', 'administrator');
+        foreach ($roles as $key => $role) {
+            if(!in_array($key, $excludedRoles)) {
+                $formatted[] = array(
+                    'name' => $role['name'],
+                    'key'  => $key
+                );
+            }
+        }
+        
+        $capability = get_option('_ninja_tables_permission');
+
+        if (is_string($capability)) {
+            $capability = [];
+        }
+        
+        wp_send_json(array(
+            'capability' => $capability,
+            'roles'      => $formatted
         ), 200);
     }
 }

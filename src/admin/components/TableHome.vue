@@ -2,7 +2,7 @@
     <div>
         <div class="settings_header">
             <div style="display: inline-block; margin-top: 8px;">
-                <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action"></i> <span
+                <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action">Edit</i> <span
                     class="section_title">{{ table.post_title }}</span>
                 <el-tooltip effect="dark"
                             content="Click to copy shortcode"
@@ -27,7 +27,6 @@
                 </a>
             </span>
         </div>
-
         <fieldset :class="[is_form_saving ? 'disabled' : '']" :disabled="is_form_saving">
             <h2 class="nav-tab-wrapper">
                 <router-link active-class="nav-tab-active" exact :class="[ 'nav-tab' ]"
@@ -71,7 +70,6 @@
         <el-dialog title="Update Table Info" :visible.sync="editTableModalShow">
             <edit_table :table="table" @modal_close="editTableModalShow = !editTableModalShow"></edit_table>
         </el-dialog>
-
     </div>
 </template>
 

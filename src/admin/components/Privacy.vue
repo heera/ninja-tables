@@ -2,7 +2,7 @@
     <div class="privacy">
         <div class="ninja_header">
             <h2>Permission <span v-show="!hasPro">(Pro Feature)</span></h2>
-            <p>Select user roles which can manage Ninja Tables</p>
+            <p>By default, Only Administrator have access to manage the tables. By selecting additional roles bellow, You can give access to manage your Tables to other user roles.</p>
         </div>
 
         <div class="ninja_content">
@@ -52,11 +52,11 @@
         methods: {
             get() {
                 let data = {
-                    action: "ninja_tables_get_permission",
+                    action: "ninja_tables_ajax_actions",
+                    target_action: 'get_access_roles'
                 };
-
-                jQuery
-                    .get(ajaxurl, data)
+                
+                jQuery.get(ajaxurl, data)
                     .then(response => {
                         this.capability = response.capability;
                         this.roles = response.roles;
