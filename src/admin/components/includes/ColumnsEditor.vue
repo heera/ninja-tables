@@ -4,7 +4,6 @@
         <el-form-item>
             <template slot="label">
                 {{ $t('Column Name') }}
-                
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
                         <h3>Column Name</h3>
@@ -247,13 +246,33 @@
 
                 <wp_editor v-model="model.header_html_content"></wp_editor>
             </el-form-item>
+            
+            <el-form-item>
+                <template slot="label">
+                    {{ $t("Filterable") }}
+
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Filterable</h3>
+
+                            <p>
+                                If You enable this then this column data will not be filterable at the frontend.
+                            </p>
+                        </div>
+
+                        <i class="el-icon-info el-text-info" />
+                    </el-tooltip>
+                </template>
+                <el-checkbox v-model="model.unfilterable" true-label="yes" false-label="no" value="yes" label="Disable frontend search for this column data"></el-checkbox>
+            </el-form-item>
+            
         </div>
 
         <div class="form_group">
             <button class="button" @click.prevent="toggleAdvancedSettings">
-                Advanced Settings
-
                 <i class="el-icon-setting el-text-info" />
+                <span v-if="moreSettings">Hide Advanced Settings</span>
+                <span v-else>Show Advanced Settings</span>
             </button>
 
             <div class="pull-right">

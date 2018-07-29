@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 
 class NinjaTablesTablePressMigration extends NinjaTablesMigration
 {
@@ -63,8 +63,8 @@ class NinjaTablesTablePressMigration extends NinjaTablesMigration
             $this->addRows($ninjaTableId, $formattedRows);
 
             return $ninjaTableId;
-        } catch (Exception $exception) {
-            return new WP_Error('broke', $exception->getMessage());
+        } catch ( \Exception $exception) {
+            return new \WP_Error('broke', $exception->getMessage());
         }
     }
 }

@@ -1,4 +1,4 @@
-table.foo-table.inverted {
+table.ninja_table_pro.inverted {
 
   &.table {
     a {
@@ -100,7 +100,7 @@ table.foo-table.inverted {
     color: rgba(255, 255, 255, 0.9);
     border: none;
   }
-  &.table th {
+  &.table thead > th {
     background-color: rgba(0, 0, 0, 0.15);
     border-color: rgba(255, 255, 255, 0.1) !important;
     color: rgba(255, 255, 255, 0.9) !important;

@@ -42,7 +42,7 @@ define('NINJA_TABLES_ASSET_VERSION', '2.1');
 function activate_ninja_tables()
 {
     require_once plugin_dir_path(__FILE__).'includes/NinjaTablesActivator.php';
-    NinjaTablesActivator::activate();
+    \NinjaTables\Classes\NinjaTablesActivator::activate();
 }
 
 
@@ -63,19 +63,11 @@ require plugin_dir_path(__FILE__).'includes/NinjaTableClass.php';
  *
  * @since    1.0.0
  */
-function run_ninja_tables()
+function ninja_tables_boot()
 {
-    $plugin = new NinjaTableClass();
+    $plugin = new \NinjaTables\Classes\NinjaTableClass();
     $plugin->run();
 }
 
 // kick off
-run_ninja_tables();
-
-
-add_action('admin_enqueue_scripts', function()
-{
-    if(isset($_GET['page']) && $_GET['page'] == 'ninja_tables') {
-        wp_enqueue_media();
-    }
-});
+ninja_tables_boot();

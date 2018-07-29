@@ -125,7 +125,7 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 }
 
 
-function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false)
+function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false)
 {
     $query = ninja_tables_DbTable()->where('table_id', $tableId);
 
@@ -137,6 +137,10 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
         $query->orderBy('id', 'asc');
     }
 
+    if($limit) {
+	    $query->limit($limit);
+    }
+    
     $data = $query->get();
 
     $formatted_data = array();
@@ -207,7 +211,6 @@ function ninjaTablesDataMigratedForManualSort($tableId)
 function shouldNotCache($tableId)
 {
     $tableSettings = ninja_table_get_table_settings($tableId, 'public');
-
     return (isset($tableSettings['shouldNotCache']) && $tableSettings['shouldNotCache'] == 'yes') ? true : false;
 }
 

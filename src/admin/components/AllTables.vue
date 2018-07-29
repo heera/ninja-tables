@@ -23,7 +23,12 @@
 
         <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection"/>
 
-        <el-dialog title="Add New Table" :visible.sync="modalVisible">
+        <el-dialog 
+                :title="$t('Add New Table')" 
+                :visible.sync="modalVisible"
+                top="50px"
+                :append-to-body="true"
+        >
             <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>
         </el-dialog>
     </div>

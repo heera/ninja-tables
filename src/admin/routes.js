@@ -7,8 +7,8 @@ const TableColumns = require('./components/TableColumns.vue');
 const ExportImport = require('./components/Extras/ExportImport');
 const UserComponents = require('./components/extras/UserComponents.vue')
 const Help = require('./components/extras/Help.vue');
-const TableAdvancedSettings = require('./components/TableAdvancedSettings');
 const TableAdditionalCss = require('./components/TableAdditionalCss');
+const TableDesignStudio = require('./components/TableDesignStudio');
 
 export const routes = [
     {
@@ -49,9 +49,9 @@ export const routes = [
                 component: TableColumns
             },
             {
-                path: 'advanced_settings',
-                name: 'advanced_settings',
-                component: TableAdvancedSettings
+                path: 'design_studio',
+                name: 'design_studio',
+                component: TableDesignStudio
             },
             {
                 path: 'additional_css',

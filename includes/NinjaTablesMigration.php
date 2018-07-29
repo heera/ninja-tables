@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 abstract class NinjaTablesMigration {
 	
 	protected $cpt_name = 'ninja-table';

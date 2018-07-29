@@ -126,8 +126,7 @@ const tableLibs = function() {
                 purple: 'Purple',
                 pink: 'Pink',
                 grey: 'Grey',
-                black: 'Black',
-                ninja_table_custom_color: 'Custom'
+                black: 'Black'
             }
         }
     };

@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 
 /**
  * Define the internationalization functionality

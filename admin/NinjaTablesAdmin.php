@@ -1,4 +1,8 @@
 <?php
+/*
+ * Do Not USE namespace because The Pro Add-On Used this Class
+ */
+use NinjaTable\TableDrivers\NinjaFooTable;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -244,7 +248,7 @@ class NinjaTablesAdmin
             $dismissed = true;
             update_option('_ninja_tables_plugin_suggest_dismiss', time() - 345600);
         }
-
+        
         wp_localize_script($this->plugin_name, 'ninja_table_admin', array(
             'img_url'         => plugin_dir_url(__DIR__)."assets/img/",
             'fluentform_url'  => $fluentUrl,
@@ -258,7 +262,11 @@ class NinjaTablesAdmin
             'hasValidLicense' => get_option('_ninjatables_pro_license_status'),
             'i18n'            => array(
                 'All Tables' => __('All tables', 'ninja-tables')
-            )
+            ),
+            'preview_required_scripts' => [
+	            plugin_dir_url(__DIR__)."assets/css/ninjatables-public.css",
+	            plugin_dir_url(__DIR__)."public/libs/footable/js/footable.min.js",
+            ]
         ));
 
         // Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -297,11 +305,11 @@ class NinjaTablesAdmin
             'export-data'              => 'exportData',
             'dismiss_fluent_suggest'   => 'dismissPluginSuggest',
             'save_custom_css'          => 'saveCustomCSS',
-            'get_access_roles'          => 'getAccessRoles'
+            'get_access_roles'          => 'getAccessRoles',
+            'get_table_preview_html'    => 'getTablePreviewHtml'
         );
 
         $requested_route = $_REQUEST['target_action'];
-
         if (isset($valid_routes[$requested_route])) {
             $this->{$valid_routes[$requested_route]}();
         }
@@ -1637,4 +1645,31 @@ class NinjaTablesAdmin
             'roles'      => $formatted
         ), 200);
     }
+    
+    public function getTablePreviewHtml() {
+       // sleep(3);
+        $tableId = intval($_REQUEST['table_id']);
+	    $tableColumns = ninja_table_get_table_columns($tableId, 'public');
+	    $tableSettings = ninja_table_get_table_settings($tableId, 'public');
+	   
+	    $formattedColumns = [];
+	    foreach ($tableColumns as $index => $column) {
+		    $formattedColumns[] = NinjaFooTable::getFormattedColumn( $column, $index, $tableSettings, true,
+			    'by_created_at' );
+	    }
+	    $formatted_data   = ninjaTablesGetTablesDataByID( $tableId, $tableSettings['default_sorting'], true, 25 );
+	    echo  self::loadView( 'public/views/table_inner_html', array(
+		    'table_columns' => $formattedColumns,
+		    'table_rows'    => $formatted_data
+	    ) );
+    }
+
+	private static function loadView( $file, $data ) {
+		$file = NINJA_TABLES_DIR_PATH . $file . '.php';
+		ob_start();
+		extract( $data );
+		include $file;
+
+		return ob_get_clean();
+	}
 }

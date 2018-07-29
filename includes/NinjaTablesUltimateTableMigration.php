@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 
 class NinjaTablesUltimateTableMigration extends NinjaTablesMigration
 {
@@ -7,7 +7,7 @@ class NinjaTablesUltimateTableMigration extends NinjaTablesMigration
 		$tables = array();
 		try {
 			$tables = $wpdb->get_results( "SELECT id as ID,title as post_title FROM {$wpdb->prefix}ultimatetables", OBJECT );
-		} catch (Exception $exception) {
+		} catch (\Exception $exception) {
 			
 		}
 		return $tables;
@@ -18,7 +18,7 @@ class NinjaTablesUltimateTableMigration extends NinjaTablesMigration
 			global $wpdb;
 			$table = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}ultimatetables WHERE id = {$tableId}");
 			if(!$table) {
-				return new WP_Error( 'broke', __('No Ultimate Table Found with the selected table', 'ninja-tables') );
+				return new \WP_Error( 'broke', __('No Ultimate Table Found with the selected table', 'ninja-tables') );
 			}
 			$tableBody = htmlspecialchars_decode( esc_html( $table->ivalues ) );
 			$items = explode( "t6r4ndt6r4ndt6r4ndt6r4ndt6r4ndt6r4ndt6r4ndkh6gfd57hgg", $tableBody );
@@ -49,8 +49,8 @@ class NinjaTablesUltimateTableMigration extends NinjaTablesMigration
 			$this->initTableConfiguration($ninjaTableId, $headerRow);
 			$this->addRows($ninjaTableId, $formattedRows);
 			return $ninjaTableId;
-		} catch (Exception $exception) {
-			return new WP_Error( 'broke', $exception->getMessage() );
+		} catch (\Exception $exception) {
+			return new \WP_Error( 'broke', $exception->getMessage() );
 		}
 	}
 }
