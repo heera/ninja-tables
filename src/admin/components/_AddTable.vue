@@ -1,7 +1,7 @@
 <template>
     <!-- MODAL -->
    <div>
-       <div class="modal-body">
+       <div class="ninja_modal-body">
            <div class="form-group">
                <label for="name">{{ $t('Title') }}</label>
                <input type="text" id="name" class="form-control" v-model="table.post_title">
@@ -50,7 +50,6 @@
                         toolbar: [
                             ['bold', 'italic', 'underline', 'strike', 'link'],         // toggled buttons
                             ['blockquote', 'code-block'],
-
                             [{ 'header': 1 }, { 'header': 2 }],               // custom button values
                             [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                             [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
@@ -64,7 +63,6 @@
         methods: {
             addTable: function() {
                 this.btnLoading = true;
-                
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'store-a-table',

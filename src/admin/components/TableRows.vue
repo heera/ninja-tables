@@ -41,13 +41,11 @@
                     </label>
                 </div>
                 <div class="pull-right">
-                    <button class="button button-primary button-large pull-right" @click="add()">
-                        {{ $t('Add Data') }}
-                    </button>
+                    <el-button size="small" type="primary" @click="add()"> {{ $t('Add Data') }}</el-button>
                 </div>
             </div>
             <hr/>
-
+            
             <template v-if="columns.length">
                 <el-table
                         class="js-sortable-table"
@@ -131,8 +129,11 @@
                 <p>{{ $t('Now add some data to the table.') }}</p>
             </div>
         </template>
-        <div v-else-if="!loading" type="warning" style="margin-top: 15px" class="error">
-            <p>{{ $t('Please set table configuration first.') }}</p>
+        <div v-else-if="!loading" type="warning" style="margin-top: 15px; text-align: center" class="instruction_block">
+            <h3>{{ $t('To get started please add table columns') }}</h3>
+            <router-link style="text-decoration: none" :to="{ name: 'data_columns', params: { table_id: tableId } }" class="el-button el-button--primary">
+                <span>Add Columns</span>
+            </router-link>
         </div>
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
@@ -586,5 +587,9 @@
         &:hover {
             color: #58B7FF;
         }
+    }
+    .instruction_block {
+        padding: 30px 20px;
+        background: white;
     }
 </style>

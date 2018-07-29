@@ -2,7 +2,7 @@
     <div>
         <div class="settings_header">
             <div style="display: inline-block; margin-top: 8px;">
-                <i title="Edit" @click="editTableModalShow = !editTableModalShow" class="el-icon-edit action">Edit</i> <span
+                <el-button class="ninja_mini" size="mini" @click="editTableModalShow = !editTableModalShow"><i title="Edit" class="el-icon-edit action">Edit</i></el-button> <span
                     class="section_title">{{ table.post_title }}</span>
                 <el-tooltip effect="dark"
                             content="Click to copy shortcode"
@@ -38,12 +38,11 @@
                              :to="{ name: 'data_columns', params: { table_id: tableId } }">
                     {{ $t('Table Configuration') }}
                 </router-link>
-
+                
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
-                             :to="{ name: 'advanced_settings', params: { table_id: tableId } }">
-                    {{ $t('Advanced Settings') }}
+                             :to="{ name: 'design_studio', params: { table_id: tableId } }">
+                    {{ $t('Table Design') }}
                 </router-link>
-
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
                              :to="{ name: 'additional_css', params: { table_id: tableId } }">
                     {{ $t('Custom CSS') }}
@@ -67,7 +66,12 @@
             <router-view v-if="config" :config="config"></router-view>
 
         </fieldset>
-        <el-dialog title="Update Table Info" :visible.sync="editTableModalShow">
+        <el-dialog 
+                title="Update Table Info" 
+                :visible.sync="editTableModalShow"
+                top="50px"
+                :append-to-body="true"
+        >
             <edit_table :table="table" @modal_close="editTableModalShow = !editTableModalShow"></edit_table>
         </el-dialog>
     </div>

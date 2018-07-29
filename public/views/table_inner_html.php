@@ -12,7 +12,6 @@
 	            $counter++;
 	            continue;
             }
-
 	    $colspan = '';
 	    if ($counter > 1) {
 		    $colspan = 'colspan="'.$counter.'"';

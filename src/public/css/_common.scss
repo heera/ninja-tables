@@ -1,4 +1,7 @@
 .foo-table  {
+  &.footable.table > thead > tr > th {
+    padding: 0.92857143em 0.78571429em;
+  }
   span.label.label-default {
     display: none;
     visibility: hidden;
@@ -47,10 +50,17 @@
     display: none !important;
     visibility: hidden;
   }
-  &.hide_all_borders {
-    border-color: transparent !important;
-    thead,tr, td, th, tfoot {
+  &.hide_all_borders.table {
+    thead {
       border-color: transparent !important;
+      tr, th, td {
+        border-color: transparent !important;
+      }
+    }
+    tbody {
+      th, td, th {
+        border-color: transparent !important;
+      }
     }
   }
   
@@ -64,6 +74,28 @@
   .form-group.footable-filtering-search input.form-control {
     margin-bottom: 0px !important;
   }
+  tbody tr.footable-detail-row {
+    > td {
+      padding: 5px !important; 
+    }
+    td {
+      table.footable-details {
+        margin-bottom: 0px;
+        tbody tr:nth-child(even) {
+          background: #f7f7f7 !important;
+        }
+      }
+    }
+    table.inverted {
+      tbody {
+        tr {
+          background: white !important;
+          color: black
+        }
+      }
+    }
+  }
+  
 }
 
 .footable_parent {
@@ -119,8 +151,4 @@ table.ninja_footable col {
       display: none;
     }
   }
-}
-
-.footable_parent table.foo-table.ninja_table_pro {
-  max-width: -webkit-fit-content !important;
 }

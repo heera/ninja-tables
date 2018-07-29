@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 
 /**
  * Register all actions and filters for the plugin

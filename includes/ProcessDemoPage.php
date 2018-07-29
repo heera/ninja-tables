@@ -1,4 +1,4 @@
-<?php namespace ninjaTable;
+<?php namespace NinjaTables\Classes;
 
 class ProcessDemoPage {
 	public function handleExteriorPages() {

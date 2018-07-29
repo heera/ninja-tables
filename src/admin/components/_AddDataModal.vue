@@ -1,6 +1,11 @@
 <template>
-    <el-dialog :title="title" :visible="show" @close="closeModal">
-        <div>
+    <el-dialog 
+            :title="title" 
+            :visible.sync="show"
+            top="50px"
+            :append-to-body="true"
+            @close="closeModal">
+        <div v-if="show">
             <div v-for="column in columns" class="form-group">
                 <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
                 <div v-if="column.data_type == 'textarea'">
@@ -152,8 +157,6 @@
                     }
                 }
 
-                console.log(data);
-
                 jQuery.post(ajaxurl, data)
                     .then((response) => {
                         this.$message({
@@ -169,6 +172,9 @@
                             this.$emit('createItem', response.item);
                         }
                         if (this.editId || !this.continueAdding) {
+                            this.$emit('modal_close');
+                        }
+                        if(this.type === 'duplicate') {
                             this.$emit('modal_close');
                         }
                     })

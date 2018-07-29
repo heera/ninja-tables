@@ -1,302 +1,195 @@
 <template>
     <div>
-        <div class="section-container">
-            <div class="section-column-9">
-                <div class="section_widget">
-                    <div class="heading">
-                        <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
-                        <h3 v-else class="title">{{ $t('All Available Table Columns') }}</h3>
-                        <div v-show="!addColumnStatus" class="inline_action">
-                            <button v-show="columns.length" @click="addColumnStatus = !addColumnStatus"
-                                    class="button button-primary">
-                                {{ $t('Add Column') }}
-                            </button>
-                        </div>
-                    </div>
-                    <div class="widget_body">
-                        <div v-show="addColumnStatus || !columns.length" class="column drawer">
-                            <div class="add_column_wrapper">
-                                <columns-editor :model="new_column" :has-pro="has_pro" 
-                                                @add="addNewColumn()"
-                                                @cancel="addColumnStatus = !addColumnStatus"
-                                />
+        <div style="margin-top: 15px;">
+            <el-container>
+                <el-aside width="200px">
+                    <el-menu background-color="#545c64"
+                             :default-active="active_menu"
+                             text-color="#fff"
+                             active-text-color="#ffd04b">
+                        <el-menu-item  @click="active_menu = 'columns'" index="columns">
+                            <i class="dashicons dashicons-editor-table"></i>
+                            <span>Columns</span>
+                        </el-menu-item>
+                        
+                        <el-menu-item  @click="active_menu = 'rendering_settings'" index="rendering_settings">
+                            <i class="dashicons dashicons-album"></i>
+                            <span>Rendering Settings</span>
+                        </el-menu-item>
+                        <el-menu-item  @click="active_menu = 'language_settings'" index="language_settings">
+                            <i class="dashicons dashicons-translation"></i>
+                            <span>Language Settings</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-aside>
+                <el-main>
+                    <template v-if="active_menu == 'columns'">
+                        <div class="ninja_header">
+                            <h2>Table Column Settings</h2>
+                            <div class="ninja_actions_action">
+                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
                             </div>
                         </div>
-                        <draggable v-model="columns" :options="{handle:'.handle', animation: 150}">
-                            <div class="column drawer" v-for="(column, index) in columns">
-                                <div class="header">
-                                    <span class="dashicons dashicons-editor-justify handle" />
-                                    <span>{{ column.name || column.key }}</span>
-                                    <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
+                        <div class="ninja_content">
+                            <div class="section_widget">
+                                <div class="heading">
+                                    <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
+                                    <h3 v-else class="title">{{ $t('All Available Table Columns') }}</h3>
+                                    <div v-show="!addColumnStatus" class="inline_action">
+                                        <el-button size="small" type="primary" v-show="columns.length" @click="addColumnStatus = !addColumnStatus">
+                                            {{ $t('Add Column') }}
+                                        </el-button>
+                                    </div>
                                 </div>
-                                <div class="drawer_body" :class="'drawer_body_'+index">
-                                    <columns-editor :model="column" :has-pro="has_pro" :updating="true" 
-                                                    @delete="deleteColumn(index)" 
-                                                    @store="storeSettings()"
-                                    />
+                                <div class="widget_body">
+                                    <div v-show="addColumnStatus || !columns.length" class="column drawer">
+                                        <div class="add_column_wrapper">
+                                            <columns-editor :model="new_column" :has-pro="has_pro"
+                                                            @add="addNewColumn()"
+                                                            @cancel="addColumnStatus = !addColumnStatus"
+                                            />
+                                        </div>
+                                    </div>
+                                    <draggable v-model="columns" :options="{handle:'.handle', animation: 150}">
+                                        <div class="column drawer"
+                                             v-for="(column, index) in columns"
+                                             :key="column.key"
+                                        >
+                                            <div class="header">
+                                                <span class="dashicons dashicons-editor-justify handle" />
+                                                <span>{{ column.name || column.key }}</span>
+                                                <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
+                                            </div>
+                                            <div class="drawer_body" :class="'drawer_body_'+index">
+                                                <columns-editor :model="column" :has-pro="has_pro" :updating="true"
+                                                                @delete="deleteColumn(index)"
+                                                                @store="storeSettings()"
+                                                />
+                                            </div>
+                                        </div>
+                                    </draggable>
                                 </div>
                             </div>
-                        </draggable>
-                    </div>
-                </div>
-                <div class="proms">
-                    <div class="help_section updated notice notice-success">
-                        <p>Need help to configure the columns and responsive breakdowns, Please check tutorial with
-                            video <a
-                                    href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables"
-                                    target="_blank">here</a></p>
-                    </div>
-                    <div v-if="!is_fluent_installed" class="notice notice-success">
-                        <p>Have you checked out FluentForm yet? We have developed a powerful Drag & Drop WordPress Form
-                            Builder plugin with some amazing Premium features <a :href="fluent_url">Download from
-                                WordPress.org</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="section-column-3 ninja_sidebar">
-                <div class="ninja_widget">
-                    <button @click="storeSettings()" class="button button-primary button-block button-large pull-right">
-                        {{ $t('Update Configuration') }}
-                    </button>
-                </div>
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Pagination') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label for="items_per_page">{{ $t('Pagination Items Per Page') }}</label>
-                            <input id="items_per_page" class="form_control" type="number"
-                                   v-model="tableSettings.perPage" :disabled="tableSettings.show_all == true"/>
-                        </div>
-                        <div class="form_group">
-                            <label for="disable_pagination"><input v-model="tableSettings.show_all"
-                                                                   id="disable_pagination" type="checkbox"/> {{
-                                $t('Disable Pagination ( Will show all items at once )') }}</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-if="size(tableLibs) > 1" class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Library') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label v-for="(tableLib, tableKey) in tableLibs" :for="tableKey">
-                                <input v-model="tableSettings.library" type="radio" :value="tableKey"
-                                       name="table_library" :id="tableKey"/> {{ tableLib.title }}
-                                <el-tooltip placement="top-end" effect="light" :content="tableLib.description">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Features') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-
-                            <label for="show_title">
-                                <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/> {{
-                                $t('Show Table Title') }}
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="Enable this if you want to show table title in frontend">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-                            <label for="show_description">
-                                <input v-model="tableSettings.show_description" type="checkbox" value="1"
-                                       id="show_description"/> {{ $t('Show Table Description') }}
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="Enable this if you want to show table description in frontend">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-
-                            <label v-if="tableLibs[tableSettings.library].supports.ajax" for="enable_ajax">
-                                <input v-model="tableSettings.enable_ajax" type="checkbox" value="1" id="enable_ajax"/>
-                                {{ $t('Enable Ajax Loading') }}
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="Enable this if you have more than 10,000 records in your table">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-                            <label for="enable_search">
-                                <input v-model="tableSettings.enable_search" type="checkbox" value="1"
-                                       id="enable_search"/> {{ $t('Enable the visitor to filter or search the table.')
-                                }}
-                            </label>
-                            <label v-if="tableLibs[tableSettings.library].supports.sorting && !tableSettings.enable_ajax"
-                                   for="column_sorting">
-                                <input v-model="tableSettings.column_sorting" type="checkbox" value="1"
-                                       id="column_sorting"/> {{ $t('Enable sorting of the table by the visitor') }}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Data Sorting') }}</h4>
-                    <br/>
-                    <div class="form_group">
-                        <label>
-                            <input v-model="tableSettings.sorting_type" type="radio" value="by_created_at"/> Sort By
-                            Data Create Date
-                        </label>
-                        <div v-if="tableSettings.sorting_type == 'by_created_at'" class="">
-                            <span>{{ $t('Sort Type') }}
-                                <select v-model="tableSettings.default_sorting">
-                                    <option value="new_first">{{ $t('Show New Items First') }}</option>
-                                    <option value="old_first">{{ $t('Show Old Items First') }}</option>
-                                </select>
-                            </span>
-                        </div>
-                        <br/>
-                        <label>
-                            <input v-model="tableSettings.sorting_type" type="radio" value="by_column"/> Sort By Table
-                            Column
-                        </label>
-                        <div v-if="tableSettings.sorting_type == 'by_column'">
-                            <label>{{ $t('Select Column') }}
-                                <select v-model="tableSettings.sorting_column">
-                                    <option v-for="column in columns" :value="column.key">{{ column.name }}</option>
-                                </select>
-                            </label>
-                            <label>{{ $t('Sort Type') }}
-                                <select v-model="tableSettings.sorting_column_by">
-                                    <option value="ASC">Ascending Way</option>
-                                    <option value="DESC">Descending Way</option>
-                                </select>
-                            </label>
-                        </div>
-                        <br>
-                        <label>
-                            <input v-model="tableSettings.sorting_type" type="radio" value="manual_sort" />
-
-                            Sort Manually <template v-if="!has_pro">(<strong>Pro Feature</strong>)</template>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Styling Library') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label v-for="(tableLib, libKey) in currentTableLibs" :for="libKey">
-                                <input v-model="tableSettings.css_lib" type="radio" name="stylingLib" :id="libKey"
-                                       :value="libKey"/>
-                                {{ tableLib.title }}
-                                <el-tooltip placement="top-end" effect="light" :content="tableLib.description">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-if="availableStyles" class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Styles') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label v-for="tableStyle in availableStyles" :for="'table_style_'+tableStyle.key">
-                                <input v-model="tableSettings.css_classes" type="checkbox" name="table_styles"
-                                       :value="tableStyle.key" :id="'table_style_'+tableStyle.key"/>
-                                {{ tableStyle.title }}
-                                <el-tooltip placement="top-end" effect="light" :content="tableStyle.description">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-if="size(colors)" class="ninja_widget">
-                    <h4 class="title">{{ $t('Table Color Schema') }} <span v-if="!has_pro">(Pro Feature)</span></h4>
-                    <div class="widget_body">
-
-                        <div class="form_group">
-                            <select class="form_control" v-model="tableSettings.table_color">
-                                <option v-for="(colorName, colorKey) in colors" :key="colorKey" :value="colorKey">{{ colorName }}</option>
-                            </select>
-                        </div>
-
-                        <div v-show="tableSettings.table_color == 'ninja_table_custom_color' && has_pro"
-                             class="form_group">
-                            <br/>
-                            <h4 class="title">Select Table Colors</h4>
-                            <div class="form_group">
-                                <label>Primary color (Background Color)</label>
-                                <el-color-picker show-alpha v-model="tableSettings.table_color_primary"></el-color-picker>
-                            </div>
-                            <div class="form_group">
-                                <label>Secondary color (Text Color)</label>
-                                <el-color-picker show-alpha v-model="tableSettings.table_color_secondary"></el-color-picker>
-                                <p>* Use opposite colors for best result</p>
+                            <div class="proms">
+                                <div class="help_section">
+                                    <p>Need help to configure the columns and responsive breakdowns, Please check tutorial with
+                                        video <a
+                                                href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables"
+                                                target="_blank">here</a></p>
+                                </div>
+                                <div v-if="!is_fluent_installed" class="help_section">
+                                    <p>Have you checked out FluentForm yet? We have developed a powerful Drag & Drop WordPress Form
+                                        Builder plugin with some amazing Premium features <a :href="fluent_url">Download from
+                                            WordPress.org</a></p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!--Header Color Settings-->
-                <div class="ninja_widget">
-                    <h4 class="title">
-                        {{ $t('Header Colors') }}
-                        <span v-if="!has_pro">(Pro Feature)</span>
-                    </h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label>Primary color (Background)</label>
-
-                            <el-color-picker show-alpha :disabled="!has_pro" @click.native="headerColorsClick()"
-                                             v-model="tableSettings.header_color_primary" />
+                    </template>
+                    
+                    <template v-else-if="active_menu == 'rendering_settings'">
+                        <div class="ninja_header">
+                            <h2>Table Render Settings</h2>
+                            <div class="ninja_actions_action">
+                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
+                            </div>
                         </div>
-
-                        <div class="form_group">
-                            <label>Secondary color (Text)</label>
-
-                            <el-color-picker show-alpha :disabled="!has_pro" @click.native="headerColorsClick()"
-                                             v-model="tableSettings.header_color_secondary" />
-
-                            <p>
-                                <span class="el-text-info">*</span>
-                                Use opposite colors for best result
-                            </p>
+                        <div class="ninja_style_wrapper">
+                            <div class="ninja_section_block_body">
+                                <div class="section_block_item">
+                                    <p>Please the select the settings for your table render method. Using Legacy table you can use
+                                        shortcodes in your cells and it will render the full table from php side. Table styles will be
+                                        same for both tables. Most of the cases you will need Ajax Table which is recommended
+                                        settings.</p>
+                                    <div class="card_block">
+                                        <div @click="changeTableType('ajax_table')"
+                                             :class="(tableSettings.render_type == 'ajax_table') ? 'selected_type' : ''"
+                                             class="section_card">
+                                            <div v-show="tableSettings.render_type == 'ajax_table'" class="selected_ribbon">Selected
+                                            </div>
+                                            <h4>Ajax Table</h4>
+                                            <p>
+                                                Use this settings if you have lots of data and don't need cell merge features. It will
+                                                load your data over ajax. Please note that, shortcodes in table will not work here.
+                                            </p>
+                                        </div>
+                                        <div @click="changeTableType('legacy_table')"
+                                             :class="(tableSettings.render_type == 'legacy_table') ? 'selected_type' : ''"
+                                             class="section_card">
+                                            <div v-show="tableSettings.render_type == 'legacy_table'" class="selected_ribbon">Selected
+                                            </div>
+                                            <h4>Advanced Table (Legacy)</h4>
+                                            <div>
+                                                <p>
+                                                    Use this table if you have small amount of data and need the following features
+                                                </p>
+                                                <ul class="ninja_render_features">
+                                                    <li><span class="dashicons dashicons-yes"></span> Colspan ( Cell-Merge )</li>
+                                                    <li><span class="dashicons dashicons-yes"></span> Server Side Dom-Generation</li>
+                                                    <li><span class="dashicons dashicons-yes"></span> Render shortcode into table cells
+                                                    </li>
+                                                    <li><span class="dashicons dashicons-yes"></span> Better for SEO</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="section_block_item">
+                                    <h3>
+                                        Caching
+                                        <el-tooltip placement="right" effect="light"
+                                                    content="To Optimize and load faster, We cache the table contents. It's not recommended to disable caching unless you know what you are doing">
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <div class="caching-block">
+                                        <div class="form-group">
+                                            <span style="margin-right: 5px;">Disable Caching</span>
+                                            <el-switch v-model="tableSettings.shouldNotCache" active-value="yes" inactive-value="no"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
-                    </div>
-                </div>
-                
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('Other Settings') }} <span v-if="!has_pro">(Pro Feature)</span></h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label><input v-model="tableSettings.hide_header_row" type="checkbox">
-                                Hide Header Row
-                            </label>
-                            <label><input v-model="tableSettings.hide_all_borders" type="checkbox">
-                                Hide All Borders
-                            </label>
+                    </template>
+
+                    <template v-else-if="active_menu == 'language_settings'">
+                        <div class="ninja_header">
+                            <h2>Langugae Settings</h2>
+                            <div class="ninja_actions_action">
+                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="ninja_widget">
-                    <h4 class="title">{{ $t('CSS Class') }}</h4>
-                    <div class="widget_body">
-                        <div class="form_group">
-                            <label for="extra_css_class">{{ $t('Extra CSS Class for the table') }}</label>
-                            <input id="extra_css_class" class="form_control" type="text"
-                                   v-model="tableSettings.extra_css_class"/>
+                        <div class="ninja_style_wrapper">
+                            <div class="section_block">
+                                <div class="language_block">
+                                    <div class="form_group">
+                                        <label for="no_result_text">Empty Results Text:</label>
+                                        <input v-model="tableSettings.no_result_text" id="no_result_text" type="text" class="form_control"
+                                               autocomplete="off">
+                                        <small>The text to display if the table contains no rows.</small>
+                                    </div>
+                                    <div class="form_group">
+                                        <label for="search_box_placeholder">Search Box Placeholder Text</label>
+                                        <input v-model="tableSettings.search_placeholder" id="search_box_placeholder" type="text"
+                                               class="form_control" autocomplete="off">
+                                        <small>Search Box Placeholder</small>
+                                    </div>
+                                    <div class="form_group">
+                                        <label for="search_box_in">Search Dropdown Heading</label>
+                                        <input v-model="tableSettings.search_in_text" id="search_box_in" type="text" class="form_control"
+                                               autocomplete="off">
+                                        <small>Search Dropdown Box Title</small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="ninja_widget">
-                    <button @click="storeSettings()" class="button button-primary button-block button-large pull-right">
-                        {{ $t('Update Configuration') }}
-                    </button>
-                </div>
-            </div>
+                    </template>
+                    
+                </el-main>
+            </el-container>
         </div>
-
-        <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false" />
+        
     </div>
 </template>
 <script type="text/babel">
@@ -308,7 +201,6 @@
     import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
     import ColumnsEditor from './includes/ColumnsEditor';
-    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
     
     import { tableLibs } from '../data/data'
 
@@ -316,12 +208,13 @@
         name: 'TableConfiguration',
         components: {
             draggable,
-            ColumnsEditor,
-            SortableUpgradeNotice
+            ColumnsEditor
         },
         props: ['config'],
         data() {
             return {
+                hasPro: !!window.ninja_table_admin.hasPro,
+                active_menu: 'columns',
                 table_color_primary: '#000',
                 table_color_secondary: '#fff',
                 tableId: this.$route.params.table_id,
@@ -367,62 +260,10 @@
                 sortableUpgradeNotice: false
             }
         },
-        computed: {
-            currentTableLibs() {
-                return this.tableLibs[this.tableSettings.library].css_libs;
-            },
-            colors() {
-                return this.tableLibs[this.tableSettings.library].colors;
-            },
-            availableStyles() {
-                let lib = this.currentTableLibs[this.tableSettings.css_lib];
-                if (lib)
-                    return lib.styles;
-                return false;
-            }
-        },
         watch: {
             'new_column.name': function () {
                 this.new_column.key = snakeCase(this.new_column.name)
             },
-            'tableSettings.sorting_type': function (newVal, oldVal) {
-                if (newVal === 'manual_sort') {
-                    if (!this.has_pro) {
-                        this.tableSettings.sorting_type = oldVal;
-                        window.ninjaTableBus.$emit('show_pro_popup', 1);
-                    } else if (!this.hasSortable) {
-                        if (!this.hasSortable) {
-                            this.tableSettings.sorting_type = oldVal;
-                            this.sortableUpgradeNotice = true
-                        }
-                    } else {
-                        this.initManualSorting();
-                    }
-                }
-            },
-            'tableSettings.table_color': function () {
-                if (this.has_pro) {
-                    return;
-                }
-                if (this.tableSettings.table_color != 'ninja_no_color_table') {
-                    window.ninjaTableBus.$emit('show_pro_popup', 1);
-                    this.tableSettings.table_color = 'ninja_no_color_table';
-                }
-            },
-            'tableSettings.hide_header_row': function () {
-                if (this.has_pro) {
-                    return;
-                }
-                window.ninjaTableBus.$emit('show_pro_popup', 1);
-                this.tableSettings.hide_header_row = false;
-            },
-            'tableSettings.hide_all_borders': function () {
-                if (this.has_pro) {
-                    return;
-                }
-                window.ninjaTableBus.$emit('show_pro_popup', 1);
-                this.tableSettings.hide_all_borders = false;
-            }
         },
         methods: {
             storeSettings() {
@@ -535,222 +376,15 @@
                 if (!this.has_pro) {
                     this.showProAd();
                 }
-            }
-        },
-        mounted() {
-
+            },
+            changeTableType(tableType) {
+                if(!this.hasPro && tableType == 'legacy_table') {
+                    window.ninjaTableBus.$emit('show_pro_popup', 1);
+                    this.tableSettings.render_type = 'ajax_table';
+                    return;
+                }
+                this.tableSettings.render_type  = tableType;
+            },
         }
     }
 </script>
-
-<style lang="scss">
-    
-    .loading-wrapper {
-        padding: 10px;
-        background: white;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    .ninja_sidebar {
-        margin-top: 10px;
-    }
-
-    .add_column_wrapper {
-        padding: 0 10px;
-    }
-
-    .ninja_widget {
-        display: block;
-        overflow: hidden;
-        padding: 15px 10px;
-        background: white;
-        margin-bottom: 15px;
-        border: 1px solid #e5e5e5;
-        -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
-        box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
-        .title {
-            margin: -15px -10px 0;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 14px;
-            padding: 8px 12px;
-            line-height: 1.4;
-        }
-        .widget_body {
-            padding-top: 10px;
-        }
-        .button-block {
-            width: 100%;
-        }
-    }
-
-    .pull-right {
-        float: right;
-    }
-
-    .section_widget {
-        border: 1px solid gray;
-        .heading {
-            display: block;
-            background: white;
-            border-bottom: 1px solid gray;
-            overflow: hidden;
-            padding: 10px;
-            .title {
-                float: left;
-                padding: 0px;
-                margin: 0px;
-            }
-            .inline_action {
-                float: right;
-            }
-        }
-        .widget_body {
-            background: white;
-            padding: 0px;
-        }
-    }
-
-    .drawer {
-        display: block;
-        border-bottom: 1px solid gray;
-        .drawer_body {
-            padding: 10px;
-            display: none;
-            .form_group {
-                // padding-right: 20px;
-            }
-        }
-        .header {
-            padding: 15px 10px;
-            background: #0073aa;
-            color: white;
-            font-weight: bold;
-            font-size: 17px;
-            .edit_icon {
-                float: right;
-                font-size: 12px;
-                cursor: pointer;
-            }
-            .handle {
-                cursor: move;
-                font-size: 20px;
-                margin-right: 5px;
-            }
-        }
-
-    }
-
-    .form_group {
-        overflow: hidden;
-        margin-bottom: 10px;
-        padding-right: 2px;
-        label {
-            display: block;
-        }
-        .form_control {
-            display: block;
-            width: 100%;
-        }
-        .normalLabel {
-            display: initial;
-            font-weight: normal;
-        }
-        .mt5 {
-            margin-top: 5px;
-        }
-    }
-
-    .section-container {
-        display: flex;
-        width: 100%;
-    }
-
-    .section-column-9 {
-        flex: 3;
-        padding: 10px;
-    }
-
-    .section-column-3 {
-        flex: 1;
-    }
-
-    /* mobile layout */
-    @media (max-width: 480px) {
-        .section-container {
-            display: -webkit-box;
-            display: -moz-box;
-            display: -ms-flexbox;
-            display: -webkit-flex;
-            display: flex;
-
-            width: 100%;
-
-            -webkit-box-orient: vertical;
-            -moz-box-orient: vertical;
-            -ms-flex-orient: vertical;
-            -webkit-orient: vertical;
-            orient: vertical;
-        }
-        .section-column-9 {
-            -webkit-box-ordinal-group: 1;
-            -moz-box-ordinal-group: 1;
-            -ms-flex-order: 1;
-            -webkit-order: 1;
-            order: 1;
-        }
-        .section-column-3 {
-
-            -webkit-box-ordinal-group: 2;
-            -moz-box-ordinal-group: 2;
-            -ms-flex-order: 2;
-            -webkit-order: 2;
-            order: 2;
-        }
-    }
-
-    .section-column:first-child {
-        margin-right: 20px;
-    }
-
-    .tooltip {
-        display: block !important;
-        padding: 4px;
-        z-index: 10000;
-
-        .tooltip-inner {
-            background: black;
-            color: white;
-            border-radius: 16px;
-            padding: 5px 10px 4px;
-        }
-
-        .tooltip-arrow {
-            display: none;
-        }
-
-        &[aria-hidden='true'] {
-            visibility: hidden;
-            opacity: 0;
-            transition: opacity .15s, visibility .15s;
-        }
-
-        &[aria-hidden='false'] {
-            visibility: visible;
-            opacity: 1;
-            transition: opacity .15s;
-        }
-    }
-
-    .help_section {
-        margin-top: 45px !important;
-    }
-
-    .ninja_widget {
-        label {
-            font-weight: 400;
-        }
-    }
-</style>

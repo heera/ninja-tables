@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTables\Classes;
 
 /**
  * The file that defines the core plugin class
@@ -12,6 +12,7 @@
  * @package    Wp_table_data_press
  * @subpackage Wp_table_data_press/includes
  */
+use NinjaTable\FrontEnd\NinjaTablePublic;
 
 /**
  * The core plugin class.
@@ -138,6 +139,8 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
 
 		$this->loader = new NinjaTablesLoader();
 	}
@@ -166,8 +169,8 @@ class NinjaTableClass {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new NinjaTablesAdmin( $this->get_plugin_name(), $this->get_version() );
-		$demoPage = new \ninjaTable\ProcessDemoPage();
+		$plugin_admin = new \NinjaTablesAdmin( $this->get_plugin_name(), $this->get_version() );
+		$demoPage = new ProcessDemoPage();
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
 		
@@ -180,6 +183,13 @@ class NinjaTableClass {
         $this->loader->add_action('init', $plugin_admin, 'add_tabales_to_editor');
         
         $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
+
+		add_action('admin_enqueue_scripts', function()
+		{
+			if(isset($_GET['page']) && $_GET['page'] == 'ninja_tables') {
+				wp_enqueue_media();
+			}
+		});
 	}
 
 	/**

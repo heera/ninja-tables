@@ -1,4 +1,4 @@
-<?php
+<?php namespace NinjaTable\FrontEnd;
 
 /**
  * The public-facing functionality of the plugin.
@@ -93,11 +93,9 @@ class NinjaTablePublic {
 		// register the shortcode 
 		$shortCodeBase = apply_filters('ninja_tables_shortcode_base', 'ninja_tables');
 		add_shortcode( $shortCodeBase, array($this, 'render_ninja_table_shortcode'));
-		
 	}
 	
-	public function render_ninja_table_shortcode($atts) {
-		
+	public function render_ninja_table_shortcode($atts, $content = '') {
 		extract(shortcode_atts(array(
 			'id' => false,
 			'filter' => false
@@ -124,9 +122,10 @@ class NinjaTablePublic {
 		    'table_id' => $table_id,
 			'columns' => $tableColumns,
 			'settings' => $tableSettings,
-			'table' => $table
+			'table' => $table,
+			'content' => $content
 		);
-
+		
 		$tableArray = apply_filters('ninja_table_js_config', $tableArray, $filter);
 		
 		ob_start();
