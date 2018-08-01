@@ -172,7 +172,9 @@ class NinjaFooTable {
 		$table_classes = self::getTableCssClass( $settings );
 
 		$tableHasColor = '';
+		
 		if ( ( ArrayHelper::get( $settings, 'table_color_type' ) == 'pre_defined_color'
+               && ArrayHelper::get( $settings, 'table_color' )
 		       && ArrayHelper::get( $settings, 'table_color' ) != 'ninja_no_color_table' )
 		) {
 			$tableHasColor = 'colored_table';

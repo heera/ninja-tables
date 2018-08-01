@@ -67,7 +67,11 @@ class ArrayHelper
         }
 
         if (static::exists($array, $key)) {
-            return $array[$key];
+            if($array[$key]) {
+	            return $array[$key];
+            } else {
+            	return $default;
+            }
         }
 
         foreach (explode('.', $key) as $segment) {
