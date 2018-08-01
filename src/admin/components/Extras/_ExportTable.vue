@@ -6,10 +6,9 @@
         </div>
         <div class="ninja_content">
 
-            <div class="ninja_block">
+            <div class="ninja_suggest">
                 <p>You can download the table data as CSV or JSON format, If you download as json then you can import the table to any Ninja Table Installation</p>
             </div>
-            <hr />
             <div class="ninja_export_block">
                 {{ $t('Format:') }}
                 <select v-model="selected">
@@ -17,7 +16,10 @@
                         {{ option }}
                     </option>
                 </select>
-                <button class="btn btn-sm btn-primary" @click="doExport()">Export</button>
+                <el-button type="primary" icon="el-icon-download" size="small"
+                           @click.prevent="doExport()">
+                    {{ $t('Export') }}
+                </el-button>
             </div>
         </div>
     </div>

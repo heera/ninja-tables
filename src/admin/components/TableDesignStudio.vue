@@ -2,7 +2,7 @@
     <div class="ninja_design">
         <div class="ninja_title_section">
             <div class="ninja_title">
-                <h3>Customize Your Table Style</h3>
+                <h3 style="margin-right: 15px;">Table Style Customization</h3>
                 <el-radio-group class="ninja_resp_tabs" size="mini" v-model="showingDevice">
                     <el-radio-button label="desktop"><span class="dashicons dashicons-desktop"></span> Desktop</el-radio-button>
                     <el-radio-button label="tablet"><span class="dashicons dashicons-tablet"></span> Tablet</el-radio-button>
@@ -64,7 +64,7 @@
                             </el-radio-button>
                         </el-radio-group>
                     </div>
-                    <div  v-if="availableStyles" class="form_group">
+                    <div  v-if="availableStyles" class="form_group label-normalize">
                         <h3 class="ninja_inner_title">Styles</h3>
                         <label
                                 v-for="tableStyle in availableStyles"
@@ -78,7 +78,7 @@
                             </el-tooltip>
                         </label>
                     </div>
-                    <div class="form_group">
+                    <div class="form_group label-normalize">
                         <h3 class="ninja_inner_title">Features</h3>
                         <label for="show_title">
                             <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/> {{
@@ -335,7 +335,7 @@
                     <div class="ninja_switch_wrapper">
                         <el-switch
                                 inactive-color="gray"
-                                active-text="Hide Pagination (All data will show at once)"
+                                active-text="Hide Pagination (Show all data at once)"
                                 active-value="true" inactive-value="false"
                                 v-model="tableSettings.show_all"></el-switch>
                     </div>
@@ -388,7 +388,7 @@
                     </div>
 
                     <div class="form_group">
-                        <label>{{ $t('Row Details ( Responsive Drawer ) Details') }} <span v-show="!has_pro">(PRO)</span></label>
+                        <label>{{ $t('Row Details (Responsive drawer)') }} <span v-show="!has_pro">(PRO)</span></label>
                         <el-radio-group size="mini" v-model="tableSettings.expand_type">
                             <el-radio-button label="default">
                                 Default

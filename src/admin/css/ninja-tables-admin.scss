@@ -707,6 +707,7 @@ ul.doc_items {
   background-color: white;
   color: black;
   min-height: 70vh;
+  padding: 15px;
 }
 
 .el-menu-item.is-active {
@@ -715,8 +716,8 @@ ul.doc_items {
 }
 
 .ninja_header {
-  margin: -20px -20px 20px;
-  padding: 10px 20px;
+  //margin: -20px -20px 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #eae7e7;
   background: #fbfdff;
 }
@@ -1024,13 +1025,13 @@ ul.ninja_render_features li {
 }
 
 .section_widget {
-  border: 1px solid gray;
   .heading {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: white;
-    border-bottom: 1px solid gray;
     overflow: hidden;
-    padding: 10px;
+    padding: 10px 0;
     .title {
       float: left;
       padding: 0px;
@@ -1048,7 +1049,7 @@ ul.ninja_render_features li {
 
 .drawer {
   display: block;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #434a50;
   .drawer_body {
     padding: 10px;
     display: none;
@@ -1058,9 +1059,9 @@ ul.ninja_render_features li {
   }
   .header {
     padding: 15px 10px;
-    background: #0073aa;
+    background: #535c63;
     color: white;
-    font-weight: bold;
+    //font-weight: bold;
     font-size: 17px;
     .edit_icon {
       float: right;
@@ -1242,8 +1243,11 @@ ul.ninja_render_features li {
   color: #636060;
 }
 .ninja_header {
-  padding: 15px 20px;
   overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   h2 {
     display: inline-block;
     margin: 0px;
@@ -1363,4 +1367,8 @@ input.form-control::placeholder {
 }
 .ninja_btn {
   text-decoration: none;
+}
+
+.label-normalize label {
+  font-weight: normal;
 }

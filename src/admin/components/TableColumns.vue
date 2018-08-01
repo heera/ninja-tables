@@ -34,7 +34,7 @@
                             <div class="section_widget">
                                 <div class="heading">
                                     <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
-                                    <h3 v-else class="title">{{ $t('All Available Table Columns') }}</h3>
+                                    <h3 v-else class="title">{{ $t('Available Columns') }}</h3>
                                     <div v-show="!addColumnStatus" class="inline_action">
                                         <el-button size="small" type="primary" v-show="columns.length" @click="addColumnStatus = !addColumnStatus">
                                             {{ $t('Add Column') }}
@@ -136,8 +136,12 @@
                                 <div class="section_block_item">
                                     <h3>
                                         Caching
-                                        <el-tooltip placement="right" effect="light"
-                                                    content="To Optimize and load faster, We cache the table contents. It's not recommended to disable caching unless you know what you are doing">
+                                        <el-tooltip placement="right" effect="light">
+                                            <div slot="content">
+                                                To optimize and load faster, we cache the table <br>
+                                                contents. It's not recommended to disable <br>
+                                                caching unless you know what you are doing
+                                            </div>
                                             <i class="el-icon-info el-text-info"></i>
                                         </el-tooltip>
                                     </h3>

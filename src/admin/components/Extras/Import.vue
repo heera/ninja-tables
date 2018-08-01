@@ -184,4 +184,8 @@
     .ninja_content .ninja_suggest {
         background: #f1f1f1;
     }
+
+    .ninja_content {
+        margin: 1em 0;
+    }
 </style>
