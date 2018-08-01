@@ -20,6 +20,11 @@
   margin-bottom: 20px;
 }
 
+.footable.table tbody tr td,
+.footable.table tr th {
+  word-break: keep-all;
+}
+
 .footable.table > caption + thead > tr:first-child > th,
 .footable.table > colgroup + thead > tr:first-child > th,
 .footable.table > thead:first-child > tr:first-child > th,
@@ -897,6 +902,10 @@ table.footable-editing.footable-editing-always-show button.footable-add {
   padding: 0.92857143em 0.78571429em;
 }
 
+.foo-table td.ninja_temp_cell {
+  display: none !important;
+}
+
 .foo-table span.label.label-default {
   display: none;
   visibility: hidden;
@@ -954,20 +963,30 @@ table.footable-editing.footable-editing-always-show button.footable-add {
   visibility: hidden;
 }
 
+.foo-table.hide_all_borders.table {
+  border-color: transparent;
+}
+
 .foo-table.hide_all_borders.table thead {
   border-color: transparent !important;
 }
 
 .foo-table.hide_all_borders.table thead tr,
-.foo-table.hide_all_borders.table thead th,
-.foo-table.hide_all_borders.table thead td {
+.foo-table.hide_all_borders.table thead td,
+.foo-table.hide_all_borders.table thead tr > th {
   border-color: transparent !important;
+  border-width: 0px !important;
 }
 
 .foo-table.hide_all_borders.table tbody th,
 .foo-table.hide_all_borders.table tbody td,
 .foo-table.hide_all_borders.table tbody th {
   border-color: transparent !important;
+}
+
+.foo-table.hide_all_borders.table tfoot tr > td {
+  border-color: transparent !important;
+  border: 0px !important;
 }
 
 .foo-table.ninja_table_search_disabled > thead tr.footable-filtering {

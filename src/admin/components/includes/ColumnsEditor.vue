@@ -197,7 +197,7 @@
                     </el-tooltip>
                 </template>
                 
-                <el-input type="number" v-model="model.width" />
+                <el-input type="number" :disabled="!hasPro" v-model="model.width" />
             </el-form-item>
             <!-- Text alignment -->
             <el-form-item>
@@ -226,7 +226,7 @@
 
             <!-- Enable / Disable Table HTML -->
             <el-form-item>
-                <el-checkbox v-model="model.enable_html_content" :value="true" label="Enable HTML Table Header Content"></el-checkbox>
+                <el-checkbox :disabled="!hasPro" v-model="model.enable_html_content" :value="true" label="Enable HTML Table Header Content"></el-checkbox>
             </el-form-item>
 
             <!-- model.header_html_content -->
@@ -263,7 +263,7 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
-                <el-checkbox v-model="model.unfilterable" true-label="yes" false-label="no" value="yes" label="Disable frontend search for this column data"></el-checkbox>
+                <el-checkbox :disabled="!hasPro" v-model="model.unfilterable" true-label="yes" false-label="no" value="yes" label="Disable frontend search for this column data"></el-checkbox>
             </el-form-item>
             
         </div>
@@ -287,9 +287,9 @@
                 <template v-else>
                     <button v-if="!hideDelete" @click.prevent="deleteColumn" class="button">Delete</button>
                     
-                    <button @click.prevent="store" class="button button-primary">
+                    <el-button @click.prevent="store" type="primary" size="small">
                         {{ $t('Update') }}
-                    </button>
+                    </el-button>
                 </template>
             </div>
         </div>

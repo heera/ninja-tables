@@ -267,8 +267,7 @@
         },
         methods: {
             storeSettings() {
-                this.doingAjax = true;
-                let filteredTableSettings = this.filterTableSettings(this.tableSettings);
+                this.doingAjax = true;;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'update-table-settings',
@@ -278,8 +277,6 @@
                 };
                 jQuery.post(ajaxurl, data)
                     .success((res) => {
-                        this.config.columns = this.columns;
-                        this.config.settings = filteredTableSettings;
                         this.$message({
                             showClose: true,
                             message: res.message,
@@ -292,15 +289,6 @@
                     .always(() => {
                         this.doingAjax = false;
                     });
-            },
-            filterTableSettings(settings) {
-                let validStyles = [];
-                forEach(this.availableStyles, (style) => {
-                    validStyles.push(style.key);
-                });
-                settings.css_classes = intersection(validStyles, this.tableSettings.css_classes);
-
-                return settings;
             },
             openDrawer(index) {
                 jQuery('.drawer_body_' + index).slideToggle();

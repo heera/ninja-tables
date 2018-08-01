@@ -13,15 +13,20 @@
         </div>
         <div class="ninja_design_wrapper">
         <div style="background: white; padding: 10px 20px;" class="design_preview">
+            <div class="ninja_upgrade_bar" v-if="showProNotice">
+               
+                    Color customization is a PRO feature. Please upgrade to pro apply this feature.
+                <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio">Upgrade To Pro</a>
+            </div>
             <div
                     :id="'footable_parent_'+tableId"
                     class="footable_parent ninja_table_wrapper loading_ninja_table wp_table_data_press_parent"
                     :class="wrapperClasses"
             >
+                
                 <h3 v-if="tableSettings.show_title" class="table_title footable_title">{{ config.table.post_title }}</h3>
                 <div v-if="tableSettings.show_description" class="table_description footable_description"
                      v-html="config.table.post_content"></div>
-
                 <table
                         v-show="app_ready"
                         :id="'footable_'+tableId"
@@ -384,7 +389,7 @@
                     </div>
 
                     <div class="form_group">
-                        <label>{{ $t('Row Details ( Responsive Drawer ) Details') }}</label>
+                        <label>{{ $t('Row Details ( Responsive Drawer ) Details') }} <span v-show="!has_pro">(PRO)</span></label>
                         <el-radio-group size="mini" v-model="tableSettings.expand_type">
                             <el-radio-button label="default">
                                 Default
@@ -541,6 +546,25 @@
                     cssClasses.push(style.key);
                 });
                 return cssClasses;
+            },
+            showProNotice() {
+                if(this.has_pro) {
+                    return false;
+                }
+                if(
+                    (
+                        this.tableSettings.table_color_type == 'custom_color' &&
+                        this.activeDesign == 'color_customization'
+                    )
+                    || 
+                    (
+                    this.activeDesign == 'color_customization' &&
+                    this.tableSettings.table_color && 
+                    this.tableSettings.table_color != 'ninja_no_color_table')
+                ) {
+                    return true;
+                }
+                return false;
             }
         },
         watch: {
@@ -590,7 +614,15 @@
                     this.reInitFootables();
                 });
             },
-            'tableSettings.expand_type'() {
+            'tableSettings.expand_type': function(new_val, old_val) {
+                if (new_val != 'default') {
+                    if (!this.has_pro) {
+                        this.tableSettings.expand_type = 'default';
+                        window.ninjaTableBus.$emit('show_pro_popup', 1);
+                        return;
+                    }
+                }
+                
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });
@@ -610,6 +642,9 @@
                     }
                 }
             },
+            activeDesign() {
+                this.checkColorPro();
+            }
         },
         methods: {
             fetchTableBody() {
@@ -635,6 +670,7 @@
                 })
             },
             storeSettings() {
+                this.checkColorPro();
                 this.savingSettings = true;
                 let filteredTableSettings = this.filterTableSettings(this.tableSettings);
                 let data = {
@@ -730,6 +766,7 @@
                 jQuery('#footable_' + this.tableId).footable(initConfig);
                 this.generateColorCss();
                 this.footableLoading = false;
+                jQuery("td:contains('#colspan#')").remove();
             },
 
             dysel(options) {
@@ -879,6 +916,19 @@
             changeColor(color, element) {
                 console.log(color);
                 this.$set(this.tableSettings, element, color);
+            },
+            checkColorPro() {
+                if(this.has_pro) {
+                    return;
+                }
+                if( this.tableSettings.table_color &&
+                    this.tableSettings.table_color != 'ninja_no_color_table' ||
+                    this.tableSettings.table_color_type != 'pre_defined_color'
+                )
+                {
+                    this.tableSettings.table_color_type = 'pre_defined_color';
+                    this.tableSettings.table_color = 'ninja_no_color_table';
+                }
             }
         },
         mounted() {

@@ -201,10 +201,9 @@
                     .then((response) => {
                         this.$message({
                             type: 'success',
-                            message: response.message
+                            message: response.data.message
                         });
-
-                        this.fetchTables();
+                        this.$router.push({ name: 'data_items', params: { table_id: response.data.table_id } });
                     })
                     .fail((error) => {
                         alert(error.responseJSON.data.message);

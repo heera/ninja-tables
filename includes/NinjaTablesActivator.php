@@ -45,6 +45,7 @@ class NinjaTablesActivator {
 		if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) != $table_name ) {
 			$sql = "CREATE TABLE $table_name (
 				id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				position int(11),
 				table_id int(11) NOT NULL,
 				attribute varchar(255) NOT NULL,
 				value longtext,

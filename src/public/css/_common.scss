@@ -2,6 +2,9 @@
   &.footable.table > thead > tr > th {
     padding: 0.92857143em 0.78571429em;
   }
+  td.ninja_temp_cell {
+    display: none !important;
+  }
   span.label.label-default {
     display: none;
     visibility: hidden;
@@ -51,15 +54,23 @@
     visibility: hidden;
   }
   &.hide_all_borders.table {
+    border-color: transparent;
     thead {
       border-color: transparent !important;
-      tr, th, td {
+      tr, td, tr > th {
         border-color: transparent !important;
+        border-width: 0px !important;
       }
     }
     tbody {
       th, td, th {
         border-color: transparent !important;
+      }
+    }
+    tfoot {
+      tr > td {
+        border-color: transparent !important;
+        border: 0px !important;
       }
     }
   }

@@ -3,6 +3,8 @@
  * Do Not USE namespace because The Pro Add-On Used this Class
  */
 use NinjaTable\TableDrivers\NinjaFooTable;
+use NinjaTables\Classes\NinjaTablesTablePressMigration;
+use NinjaTables\Classes\NinjaTablesUltimateTableMigration;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -491,6 +493,8 @@ class NinjaTablesAdmin
             $libraryClass = new NinjaTablesUltimateTableMigration();
         } else if ($plugin == 'TablePress') {
             $libraryClass = new NinjaTablesTablePressMigration();
+        } else if ($plugin == 'supsystic') {
+	        $libraryClass = new \NinjaTables\Classes\NinjaTablesSupsysticTableMigration();
         } else {
             return false;
         }
@@ -502,6 +506,8 @@ class NinjaTablesAdmin
     }
 
 
+    
+    
     private function importTableFromPlugin()
     {
         $plugin = esc_attr($_REQUEST['plugin']);
@@ -511,6 +517,8 @@ class NinjaTablesAdmin
             $libraryClass = new NinjaTablesUltimateTableMigration();
         } else if ($plugin == 'TablePress') {
             $libraryClass = new NinjaTablesTablePressMigration();
+        } else if ($plugin == 'supsystic') {
+	        $libraryClass = new \NinjaTables\Classes\NinjaTablesSupsysticTableMigration();
         } else {
             return false;
         }
@@ -1587,7 +1595,7 @@ class NinjaTablesAdmin
 
         // Duplicate table itself.
         $attributes = array(
-            'post_title'   => $post->post_title,
+            'post_title'   => $post->post_title . '( Duplicate )',
             'post_content' => $post->post_content,
             'post_type'    => $post->post_type,
             'post_status'  => 'publish'
@@ -1607,14 +1615,14 @@ class NinjaTablesAdmin
 
         // Duplicate table rows.
         $itemsTable = $wpdb->prefix.ninja_tables_db_table_name();
-
+        
         $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `attribute`, `value`, `created_at`, `updated_at`)";
         $sql .= " SELECT `position`, $newPostId, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
         $sql .= " WHERE `table_id` = $oldPostId";
 
         $wpdb->query($sql);
 
-        wp_send_json(array(
+        wp_send_json_success(array(
             'message'  => __('Successfully duplicated table.', 'ninja-tables'),
             'table_id' => $newPostId
         ), 200);

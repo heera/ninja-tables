@@ -138,6 +138,7 @@ class NinjaTableClass {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesSupsysticTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
@@ -155,7 +156,6 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function set_locale() {
-
 		$plugin_i18n = new NinjaTablesI18n();
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
@@ -190,6 +190,15 @@ class NinjaTableClass {
 				wp_enqueue_media();
 			}
 		});
+
+		add_filter('pre_set_site_transient_update_plugins', function ($updates) {
+			if (!empty($updates->response['ninja-tables-pro'])) {
+				$updates->response['ninja-tables-pro/ninja-tables-pro.php'] = $updates->response['ninja-tables-pro'];
+				unset($updates->response['ninja-tables-pro']);
+			}
+			return $updates;
+		}, 999, 1);
+		
 	}
 
 	/**

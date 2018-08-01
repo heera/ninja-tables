@@ -82,7 +82,7 @@
                    },
                    {
                        title: 'Ninja Tables Demo',
-                       url: 'https://wpmanageninja.com/r/docs/ninja-tables/demo/?utm_source=ninja-tables'
+                       url: 'https://wpmanageninja.com/docs/ninja-tables/configure-tables/?utm_source=ninja-tables'
                    },
                    {
                        title: 'Setting up a Table',
@@ -101,20 +101,16 @@
                        url: 'https://wpmanageninja.com/r/docs/ninja-tables/export-data/?utm_source=ninja-tables'
                    },
                    {
-                       title: 'Export Data from a Table',
-                       url: 'https://wpmanageninja.com/r/docs/ninja-tables/export-data/?utm_source=ninja-tables'
-                   },
-                   {
                        title: 'Import Table from CSV',
-                       url: 'https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-csv/?utm_source=ninja-tables'
+                       url: 'https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables'
                    },
                    {
                        title: 'Import Table from JSON file',
-                       url: 'https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-json-file/?utm_source=ninja-tables'
+                       url: 'https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables'
                    },
                    {
                        title: 'Import Table from Table Press Plugin',
-                       url: 'https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-table-press-plugin/?utm_source=ninja-tables'
+                       url: 'https://wpmanageninja.com/docs/ninja-tables/import-table-from-table-press-plugin/?utm_source=ninja-tables'
                    }
                ],
                 img_url: window.ninja_table_admin.img_url

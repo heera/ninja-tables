@@ -51,12 +51,20 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
             "library"         => 'footable',
             "css_lib"         => 'bootstrap3',
             "enable_ajax"     => false,
-            "css_classes"     => array(),
+            "css_classes"     => array(
+            	'table-striped',
+	            'table-bordered',
+	            'table-hover',
+	            'vertical_centered'
+            ),
             "enable_search"   => true,
             "column_sorting"  => true,
             "default_sorting" => 'new_first',
-            "table_color"     => '',
-            "render_type"     => $renderType
+            "table_color"     => 'ninja_no_color_table',
+            "render_type"     => $renderType,
+	        "table_color_type" => 'pre_defined_color',
+	        "expand_type" => 'default',
+	        
         );
 
         return apply_filters('get_default_ninja_table_settings', $defaults);

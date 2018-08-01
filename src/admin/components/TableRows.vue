@@ -575,15 +575,16 @@
     .el-table__header {
         tr th:hover {
             .nt-column-config {
-                display: inline-block !important;
+                opacity: 1;
             }
         }
     }
 
     .nt-column-config {
-        margin-left: 10px;
+        padding-left: 5px;
         cursor: pointer;
-        display: none !important;
+        opacity: 0;
+        display: inline-block;
         &:hover {
             color: #58B7FF;
         }

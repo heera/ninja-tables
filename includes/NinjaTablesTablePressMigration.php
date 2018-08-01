@@ -15,14 +15,19 @@ class NinjaTablesTablePressMigration extends NinjaTablesMigration
         $formattedTables = array();
 
         foreach ($tables as $table) {
+	        $is_already_imported = get_post_meta($table->ID, '_imported_to_ninja_table', true);
+	        $tableTitle = $table->post_title;
+	        if($is_already_imported) {
+		        $tableTitle .= ' (Already Imported)'; 
+	        }
             $temp = array(
                 'ID'                  => $table->ID,
-                'post_title'          => $table->post_title,
-                'is_already_imported' => get_post_meta($table->ID, '_imported_to_ninja_table', true)
+                'post_title'          => $tableTitle,
+	            'ninja_table_id'      => $is_already_imported
             );
             $formattedTables[] = $temp;
         }
-
+        
         return $formattedTables;
     }
 
@@ -61,7 +66,7 @@ class NinjaTablesTablePressMigration extends NinjaTablesMigration
             $ninjaTableId = $this->createTable($tableTitle);
             $this->initTableConfiguration($ninjaTableId, $headerRow);
             $this->addRows($ninjaTableId, $formattedRows);
-
+			update_post_meta($tableId, '_imported_to_ninja_table', $ninjaTableId);
             return $ninjaTableId;
         } catch ( \Exception $exception) {
             return new \WP_Error('broke', $exception->getMessage());

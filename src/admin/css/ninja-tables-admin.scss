@@ -1279,6 +1279,9 @@ ul.ninja_render_features li {
       height: auto;
       overflow: scroll;
     }
+    .el-radio-button--mini .el-radio-button__inner {
+      padding: 7px !important;
+    }
   }
   .design_preview {
     background: white;
@@ -1335,4 +1338,29 @@ input.form-control::placeholder {
       height: 10px;
     }
   }
+}
+.ninja_upgrade_bar {
+  margin: -10px -20px 0px;
+  background: #f35a59;
+  padding: 10px 20px;
+  overflow: hidden;
+  color: white;
+  a {
+    color: #f35a59;
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    background: white;
+    border: 1px solid white;
+    &:hover {
+      color: white;
+      background-color: #f35a59;
+      border: 1px solid white;
+      transition: background-color 0.3s ease;
+    }
+  }
+}
+.ninja_btn {
+  text-decoration: none;
 }

@@ -15,6 +15,11 @@
   max-width: 100%;
   margin-bottom: 20px;
 }
+
+.footable.table tbody tr td, .footable.table tr th {
+  word-break: keep-all;
+}
+
 .footable.table > caption + thead > tr:first-child > th,
 .footable.table > colgroup + thead > tr:first-child > th,
 .footable.table > thead:first-child > tr:first-child > th,

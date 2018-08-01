@@ -73,10 +73,10 @@
                                         </select>
 
                                         <span v-show="imports.format == 'csv'" class="help">
-                                Check tutorial for importing data from CSV file <a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables" target="_blank">here</a>
+                                Check tutorial for importing data from CSV file <a href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables" target="_blank">here</a>
                             </span>
                                         <span v-show="imports.format == 'json' || imports.format == 'ninjaJson'" class="help">
-                                Check tutorial for importing Table from JSON file <a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-json-file/?utm_source=ninja-tables" target="_blank">here</a>
+                                Check tutorial for importing Table from JSON file <a href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables" target="_blank">here</a>
                             </span>
                                     </div>
 
@@ -147,13 +147,18 @@
                     </el-table-column>
                     <el-table-column
                             label="Action"
-                            width="100"
                             fixed="right"
                     >
                         <template slot-scope="scope">
-                            <button class="btn btn-primary btn-sm"
+                            <el-button type="primary" size="mini"
                                     @click="importThisTable(scope.row, scope.$index)"
-                            >Import</button>
+                            >Import</el-button>
+                            <router-link
+                                    :to="{ name: 'data_items', params: { table_id: scope.row.ninja_table_id } }"
+                                    class="el-button el-button--danger el-button--mini ninja_btn"
+                                    v-if="scope.row.ninja_table_id" 
+                            >View Imported Table
+                            </router-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -209,7 +214,8 @@
                 btnLoading: false,
                 otherPlugins: {
                     'TablePress' : 'Table Press',
-                    'UltimateTables': 'Ultimate Tables'
+                    'UltimateTables': 'Ultimate Tables',
+                    'supsystic' : 'Data Tables Generator by Supsystic'
                 },
                 btnsLoading: {
                     'TablePress': false,
@@ -318,6 +324,7 @@
                     success: (response) => {
                         this.$message.success(response.data.message);
                         this.importing = false;
+                        this.$set(this.otherPluginTables[index], 'ninja_table_id', response.data.tableId);
                     },
                     error: (error) => {
                         this.$message.error(error.responseJSON.data.message);
@@ -337,7 +344,7 @@
             jQuery('.ninja_table_import_menu').on('click', () => {
                 this.active_menu = 'import';
             });
-
+            
             jQuery('.ninja_table_license_menu').on('click', () => {
                 this.active_menu = 'license';
             });

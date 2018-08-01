@@ -10,13 +10,13 @@
                     <ul class="list_features">
                         <li>Use Unlimited Colors in Your Tables</li>
                         <li>Add Media to Your Table Cells</li>
+                        <li>Drag and Drop Table Data Sorting</li>
                         <li>Use Advanced Date Sorting</li>
                         <li>Colspan/Cell Merging Feature</li>
                         <li>Use Shortcode in your table cell</li>
                         <li>Use Advanced Data Filtering</li>
                         <li>Use Advanced Customization Features</li>
                         <li>Get VIP Support for any Issue</li>
-                        <li>Lifetime Updates</li>
                         <li>Incremental New Premium Features</li>
                     </ul>
                 </div>
