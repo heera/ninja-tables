@@ -25,10 +25,10 @@
 <tbody>
 <?php
 $columnLength = count($table_columns) - 1;
-foreach ($table_rows as $table_row) :
+foreach ($table_rows as $row_index => $table_row) :
     $row = '';
     ?>
-    <tr>
+    <tr class="ninja_table_row_<?php echo $row_index; ?>">
         <?php
         $colSpanCounter = 1; // Make the colspan counter 1 at first
         foreach ($table_columns as $index => $table_column) {
