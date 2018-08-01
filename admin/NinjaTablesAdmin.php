@@ -1067,6 +1067,10 @@ class NinjaTablesAdmin
 
         $tableId = intval($_REQUEST['table_id']);
 
+        $tableTitle = get_the_title($tableId);
+        
+        $fileName = sanitize_title($tableTitle, date('Y-m-d-H-i-s'), 'preview');
+        
         $tableColumns = ninja_table_get_table_columns($tableId, 'admin');
 
         $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
@@ -1096,7 +1100,7 @@ class NinjaTablesAdmin
                 array_push($exportData, $temp);
             }
 
-            $this->exportAsCSV(array_values($header), $exportData);
+            $this->exportAsCSV(array_values($header), $exportData, $fileName.'.csv');
         } elseif ($format == 'json') {
             $table = get_post($tableId);
 
@@ -1111,7 +1115,7 @@ class NinjaTablesAdmin
                 'rows'     => $tableItems
             );
 
-            $this->exportAsJSON($exportData);
+            $this->exportAsJSON($exportData, $fileName.'.json');
         }
     }
 
