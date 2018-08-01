@@ -65,30 +65,49 @@ class NinjaFooTable {
 	 * @return void
 	 */
 	private static function addCustomColorCSS( $tableArray ) {
-		$colors = array();
+		$colors        = false;
+		$custom_css    = get_post_meta( $tableArray['table_id'], '_ninja_tables_custom_css', true );
 
-		$custom_css = get_post_meta( $tableArray['table_id'], '_ninja_tables_custom_css', true );
-		
-		if ( ArrayHelper::get( $tableArray, 'settings.table_color_type' ) == 'custom_color' ) {
-			$settings                     = $tableArray['settings'];
-			$colors['bodyPrimaryColor']   = ArrayHelper::get( $settings, 'table_color_primary' );
-			$colors['bodySecondaryColor'] = ArrayHelper::get( $settings, 'table_color_secondary' );
 
-			$colors['headerPrimaryColor']   = ArrayHelper::get( $settings, 'table_header_color_primary' );
-			$colors['headerSecondaryColor'] = ArrayHelper::get( $settings, 'table_color_header_secondary' );
+		if ( ArrayHelper::get( $tableArray, 'settings.table_color_type' ) == 'custom_color' && defined('NINJATABLESPRO') ) {
+			$colorSettings = $tableArray['settings'];
+			$colors = array(
+				'table_color_primary' => ArrayHelper::get($colorSettings, 'table_color_primary'),
+				'table_color_secondary' => ArrayHelper::get($colorSettings, 'table_color_secondary'),
+				'table_color_border' => ArrayHelper::get($colorSettings, 'table_color_border'),
+				
+				'table_search_color_primary' => ArrayHelper::get($colorSettings, 'table_search_color_primary'),
+				'table_search_color_secondary' => ArrayHelper::get($colorSettings, 'table_search_color_secondary'),
+				'table_search_color_border' => ArrayHelper::get($colorSettings, 'table_search_color_border'),
 
-			$colors['searchBarPrimaryColor']   = ArrayHelper::get( $settings, 'table_search_color_primary' );
-			$colors['searchBarSecondaryColor'] = ArrayHelper::get( $settings, 'table_search_color_secondary' );
+				'table_header_color_primary' => ArrayHelper::get($colorSettings, 'table_header_color_primary'),
+				'table_color_header_secondary' => ArrayHelper::get($colorSettings, 'table_color_header_secondary'),
+				'table_color_header_border' => ArrayHelper::get($colorSettings, 'table_color_header_border'),
+				
+				'alternate_color_status' => ArrayHelper::get($colorSettings, 'alternate_color_status'),
+				
+				'table_alt_color_primary' => ArrayHelper::get($colorSettings, 'table_alt_color_primary'),
+				'table_alt_color_secondary' => ArrayHelper::get($colorSettings, 'table_alt_color_secondary'),
+				'table_alt_color_hover' => ArrayHelper::get($colorSettings, 'table_alt_color_hover'),
+
+				'table_alt_2_color_primary' => ArrayHelper::get($colorSettings, 'table_alt_2_color_primary'),
+				'table_alt_2_color_secondary' => ArrayHelper::get($colorSettings, 'table_alt_2_color_secondary'),
+				'table_alt_2_color_hover' => ArrayHelper::get($colorSettings, 'table_alt_2_color_hover'),
+				
+				'table_footer_bg' => ArrayHelper::get($colorSettings, 'table_footer_bg'),
+				'table_footer_active' => ArrayHelper::get($colorSettings, 'table_footer_active'),
+				'table_footer_border' => ArrayHelper::get($colorSettings, 'table_footer_border'),
+			);
 		}
 
-		if(!$colors && $custom_css) {
-		    return;
-        }
+		if ( ! $colors && $custom_css ) {
+			return;
+		}
 
-		$css_prefix = '#footable_'.$tableArray['table_id'];
-		add_action('wp_footer', function () use ($custom_css, $colors, $css_prefix) {
+		$css_prefix = '#footable_' . $tableArray['table_id'];
+		add_action( 'wp_footer', function () use ( $custom_css, $colors, $css_prefix ) {
 			include 'views/ninja_footable_css.php';
-        });
+		} );
 	}
 
 	private static function render( $tableArray ) {
@@ -99,7 +118,7 @@ class NinjaFooTable {
 		}
 
 		$renderType = ArrayHelper::get( $settings, 'render_type', 'ajax_table' );
-		
+
 		$formatted_columns = array();
 		$sortingType       = ArrayHelper::get( $settings, 'sorting_type', 'by_created_at' );
 
@@ -153,16 +172,16 @@ class NinjaFooTable {
 		$table_classes = self::getTableCssClass( $settings );
 
 		$tableHasColor = '';
-		if ( ( ArrayHelper::get( $settings, 'table_color_type' ) == 'pre_defined_color' && 
-              ArrayHelper::get( $settings, 'table_color' ) != 'ninja_no_color_table')
+		if ( ( ArrayHelper::get( $settings, 'table_color_type' ) == 'pre_defined_color'
+		       && ArrayHelper::get( $settings, 'table_color' ) != 'ninja_no_color_table' )
 		) {
 			$tableHasColor = 'colored_table';
 			$table_classes .= ' inverted';
 		}
-		if( ArrayHelper::get( $settings, 'table_color_type' ) == 'custom_color' ) {
+		if ( ArrayHelper::get( $settings, 'table_color_type' ) == 'custom_color' ) {
 			$tableHasColor = 'colored_table';
 			$table_classes .= ' inverted ninja_custom_color';
-        }
+		}
 
 		if ( isset( $settings['hide_all_borders'] ) && $settings['hide_all_borders'] ) {
 			$table_classes .= ' hide_all_borders';
@@ -269,10 +288,10 @@ class NinjaFooTable {
 
 			return;
 		}
-		$tableColumns     = $table_vars['columns'];
-		
-		$formatted_data   = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
-		$tableHtml        = self::loadView( 'public/views/table_inner_html', array(
+		$tableColumns = $table_vars['columns'];
+
+		$formatted_data = ninjaTablesGetTablesDataByID( $table->ID, $table_vars['settings']['default_sorting'] );
+		$tableHtml      = self::loadView( 'public/views/table_inner_html', array(
 			'table_columns' => $tableColumns,
 			'table_rows'    => $formatted_data
 		) );

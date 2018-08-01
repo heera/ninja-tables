@@ -43,8 +43,7 @@
             </div>
             <div class="ninja_demo_disclaimer">
                 <p>
-                    <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10 items if you enable paginate.<br />
-                    Also note that, The table style may differ at the frontend as your theme may overwrite few css elements.
+                    <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10 items if you enable paginate. Also note that, The table style may differ at the frontend as your theme may overwrite few css elements.
                 </p>
             </div>
         </div>
@@ -238,37 +237,7 @@
                                     v-model="tableSettings.alternate_color_status"></el-switch>
                         </div>
                         <div class="ninja_alternate_colors" v-if="tableSettings.alternate_color_status == 'yes'">
-                            <h3 class="ninja_inner_title">Event Rows Colors</h3>
-                            <div class="ninja_color_blocks">
-                                <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_primary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_primary"></el-color-picker>
-                                        <label>Background</label>
-                                    </div>
-                                </div>
-                                <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_secondary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_secondary"></el-color-picker>
-                                        <label>Text</label>
-                                    </div>
-                                </div>
-                                <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_hover', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_hover"></el-color-picker>
-                                        <label>Hover Background</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <h3 class="ninja_inner_title">Odd Rows Colors</h3>
+                            <h3 class="ninja_inner_title">Odd Row Colors</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
                                     <div class="form_group">
@@ -294,6 +263,36 @@
                                                 @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_hover', color); }"
                                                 show-alpha
                                                 v-model="tableSettings.table_alt_2_color_hover"></el-color-picker>
+                                        <label>Hover Background</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="ninja_inner_title">Event Row Colors</h3>
+                            <div class="ninja_color_blocks">
+                                <div class="ninja_color_block">
+                                    <div class="form_group">
+                                        <el-color-picker
+                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_primary', color); }"
+                                                show-alpha
+                                                v-model="tableSettings.table_alt_color_primary"></el-color-picker>
+                                        <label>Background</label>
+                                    </div>
+                                </div>
+                                <div class="ninja_color_block">
+                                    <div class="form_group">
+                                        <el-color-picker
+                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_secondary', color); }"
+                                                show-alpha
+                                                v-model="tableSettings.table_alt_color_secondary"></el-color-picker>
+                                        <label>Text</label>
+                                    </div>
+                                </div>
+                                <div class="ninja_color_block">
+                                    <div class="form_group">
+                                        <el-color-picker
+                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_hover', color); }"
+                                                show-alpha
+                                                v-model="tableSettings.table_alt_color_hover"></el-color-picker>
                                         <label>Hover Background</label>
                                     </div>
                                 </div>
