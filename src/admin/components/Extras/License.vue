@@ -2,7 +2,7 @@
     <div class="license">
         <div class="ninja_header">
             <div v-if="is_valid != 'valid'">
-                <h2>Licensing</h2>
+                <h2>{{ $t('Licensing') }}</h2>
                 <p>
                     You need to activate your Ninja Table Pro by providing the license key bellow. If you don't have a
                     license key please <a href="https://wpmanageninja.com/checkout/purchase-history/" target="_blank">Click
@@ -11,27 +11,27 @@
                 </p>
             </div>
             <div v-else>
-                <h2>Your License is Active</h2>
+                <h2>{{ $t('Your License is Active') }}</h2>
             </div>
            
         </div>
         <div class="ninja_content">
             <div v-if="is_valid != 'valid'" class="license_form">
                 <label for="license_form_input">
-                    Enter your license key
+                    {{ $t('Enter your license key') }}
                 </label>
                 <div class="form_input">
                     <input v-model="licenseKey" placeholder="License Key" id="license_form_input"/>
                 </div>
-                <el-button v-loading="doing_ajax" @click="activateLicense()" class="license_submit" type="primary">Activate Ninja Tables Pro</el-button>
+                <el-button v-loading="doing_ajax" @click="activateLicense()" class="license_submit" type="primary">{{  $t('Activate Ninja Tables Pro') }}</el-button>
                 
                 <div class="nt_messages">
                     <p class="error_message" v-html="error_message" v-if="error_message"></p>
                 </div>
             </div>
             <div v-else class="license_success">
-                <h3>Your license is active! Enjoy Ninja Tables Pro Add On</h3>
-                <el-button v-loading="doing_ajax" @click="deactivateLicense()" class="license_submit" type="default" size="mini">Deactivate License</el-button>
+                <h3>{{ $t('Your license is active! Enjoy Ninja Tables Pro Add On') }}</h3>
+                <el-button v-loading="doing_ajax" @click="deactivateLicense()" class="license_submit" type="default" size="mini">{{ $t('Deactivate License') }}</el-button>
             </div>
         </div>
     </div>

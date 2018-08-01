@@ -1,16 +1,16 @@
 <template>
     <el-dialog :visible.sync="visible" class="sortable-upgrade-notice">
         <h1 slot="title" class="el-notifications">
-            <i class="el-icon-warning text-warning"></i> Upgrade Notice
+            <i class="el-icon-warning text-warning"></i> {{ $t('Upgrade Notice') }}
         </h1>
 
         <span>
-            Your Ninja Tables Pro plugin is outdated. Please upgrade to its latest version.
+            {{ $t('Your Ninja Tables Pro plugin is outdated. Please upgrade to its latest version.') }}
         </span>
         <br>
         <br>
         <span>
-            <a :href="upgradeGuide" target="_blank">Click here</a> to view the upgrade guide.
+            <a :href="upgradeGuide" target="_blank">{{ $t('Click here') }}</a> {{ $t('to view the upgrade guide.') }}
         </span>
         
     </el-dialog>

@@ -25,8 +25,6 @@
             apply() {
                 if (this.model) {
                     this.$emit('handle', this.model);
-
-                    console.log('called');
                 }
             }
         }

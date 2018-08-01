@@ -140,6 +140,7 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesSupsysticTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/I18nStrings.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
 

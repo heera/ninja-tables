@@ -182,9 +182,16 @@ class NinjaFooTable {
 		}
 		if ( ArrayHelper::get( $settings, 'table_color_type' ) == 'custom_color' ) {
 			$tableHasColor = 'colored_table';
-			$table_classes .= ' inverted ninja_custom_color';
+			$table_classes .= ' inverted ninja_custom_color ninja_custom_color';
 		}
 
+
+		if($pagingPosition = ArrayHelper::get($settings, 'pagination_position')) {
+			$table_classes .= ' footable-paging-'.$pagingPosition;
+		} else {
+			$table_classes .= ' footable-paging-right';
+		}
+		
 		if ( isset( $settings['hide_all_borders'] ) && $settings['hide_all_borders'] ) {
 			$table_classes .= ' hide_all_borders';
 		}

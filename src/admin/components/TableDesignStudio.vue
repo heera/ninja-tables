@@ -14,9 +14,8 @@
         <div class="ninja_design_wrapper">
         <div style="background: white; padding: 10px 20px;" class="design_preview">
             <div class="ninja_upgrade_bar" v-if="showProNotice">
-               
-                    Color customization is a PRO feature. Please upgrade to pro apply this feature.
-                <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio">Upgrade To Pro</a>
+                    {{ $t('Color customization is a PRO feature. Please upgrade to pro apply this feature.') }}
+                <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio">{{ $t('Upgrade To Pro') }}</a>
             </div>
             <div
                     :id="'footable_parent_'+tableId"
@@ -168,7 +167,7 @@
                             </div>
                         </div>
                         
-                        <h3 class="ninja_inner_title">Table Header Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Table Header Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
                                 <div class="form_group">
@@ -199,7 +198,7 @@
                             </div>
                         </div>
                 
-                        <h3 class="ninja_inner_title">Table Body Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Table Body Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
                                 <div class="form_group">
@@ -237,7 +236,7 @@
                                     v-model="tableSettings.alternate_color_status"></el-switch>
                         </div>
                         <div class="ninja_alternate_colors" v-if="tableSettings.alternate_color_status == 'yes'">
-                            <h3 class="ninja_inner_title">Odd Row Colors</h3>
+                            <h3 class="ninja_inner_title">{{ $t('Odd Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
                                     <div class="form_group">
@@ -267,7 +266,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h3 class="ninja_inner_title">Event Row Colors</h3>
+                            <h3 class="ninja_inner_title">{{ $t('Event Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
                                     <div class="form_group">
@@ -298,7 +297,7 @@
                                 </div>
                             </div>
                         </div>
-                        <h3 class="ninja_inner_title">Footer Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Footer Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
                                 <div class="form_group">
@@ -422,7 +421,7 @@
             </el-tabs>
             <div v-if="!has_pro" class="upgrade_box">
                 <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio" class="el-button el-button--danger el-button--small">
-                    <i class="dashicons dashicons-shield"></i> Upgrade To Pro to unlock advanced features
+                    <i class="dashicons dashicons-shield"></i> {{ $t('Upgrade To Pro to unlock advanced features') }}
                 </a>
             </div>
         </div>
@@ -450,7 +449,7 @@
                 activeDesign: 'features',
                 tableId: this.$route.params.table_id,
                 tableSettings: this.config.settings,
-                table_body_html: '<h1>hello There</h1>',
+                table_body_html: '',
                 data_loaded: false,
                 script_loaded: false,
                 footableLoading: false,
@@ -761,7 +760,7 @@
                         "container": "#footable_parent_" + this.tableId + " .paging-ui-container"
                     }
                 };
-                console.log(initConfig);
+               
                 jQuery('#footable_' + this.tableId).footable(initConfig);
                 this.generateColorCss();
                 this.footableLoading = false;
@@ -798,7 +797,7 @@
                             var mycallback = cb;
                             if (debug) { // if debug redefine callback and add console.log
                                 mycallback = function () {
-                                    console.log('Loaded NOW ' + (this.src || this.href) + ' >>');
+                                   
                                     cb();
                                 }
                             }
@@ -807,7 +806,7 @@
                             fileref.onload = mycallback
                         }
                         if (debug) {
-                            console.log('Armed ' + filename);
+                           
                         }
                         // push it into the header
                         document.getElementsByTagName("head")[0].appendChild(fileref);
@@ -913,7 +912,7 @@
                 jQuery('#table_designer_css').html(css);
             },
             changeColor(color, element) {
-                console.log(color);
+                
                 this.$set(this.tableSettings, element, color);
             },
             checkColorPro() {

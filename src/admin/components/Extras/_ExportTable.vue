@@ -2,7 +2,7 @@
     <div>
 
         <div class="ninja_header">
-            <h2>Export Table</h2>
+            <h2>{{$t('Export Table')}}</h2>
         </div>
         <div class="ninja_content">
 
@@ -52,9 +52,6 @@
             },
             doExport() {
                 let url = this.downloadLink(this.selected);
-
-                console.log(url);
-
                 location.href = url;
             }
         }

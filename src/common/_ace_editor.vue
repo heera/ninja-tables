@@ -24,7 +24,7 @@
             loadDependencies() {
                 if(typeof ace == 'undefined') {
                     jQuery.get(this.ace_path + '/ace.min.js', () => {
-                        console.log('loaded');
+                       
                         this.initAce();
                     });
                 } else {
@@ -49,7 +49,7 @@
                 });
 
                 editor.getSession().on("change", () => {
-                    console.log(editor.getSession().getValue());
+                   
                     this.$emit('input', editor.getSession().getValue());
                 });
                 

@@ -57,7 +57,7 @@
                                         >
                                             <div class="header">
                                                 <span class="dashicons dashicons-editor-justify handle" />
-                                                <span>{{ column.name || column.key }}</span>
+                                                <span @click="openDrawer(index)">{{ column.name || column.key }}</span>
                                                 <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">

@@ -350,7 +350,7 @@
                             message: this.$t('Something is wrong! Please try again'),
                             type: 'error'
                         });
-                        console.log(error, 'error')
+                        
                     });
             },
             closeDataModal(success) {
@@ -382,7 +382,7 @@
                     this.items.unshift(item);
                 }
 
-                console.log('insertAfterPosition', this.insertAfterPosition);
+               
 
                 if (this.insertAfterPosition) {
                     this.insertAfterPosition += 1;

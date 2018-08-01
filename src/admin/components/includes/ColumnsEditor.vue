@@ -44,7 +44,7 @@
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Data Type</h3>
+                        <h3> {{ $t('Data Type') }}</h3>
 
                         <p>
                             Choose the data type of the column.
@@ -69,7 +69,7 @@
 
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
-                        <h3>Date Format</h3>
+                        <h3> {{ $t('Date Format') }}</h3>
 
                         <p>
                             Pattern of the date value.
@@ -81,14 +81,14 @@
             </template>
 
             <el-radio-group v-model="formatType">
-                <el-radio label="standard">Standard</el-radio>
+                <el-radio label="standard">{{ $t('Standard') }}</el-radio>
                 <el-radio label="custom" @click.native="showProPopUp" :disabled="!hasPro">Custom</el-radio>
             </el-radio-group>
 
             <!-- Format dropdown -->
             <el-form-item v-if="formatType == 'standard'" >
                 <select v-model="model.dateFormat">
-                    <option value="">Select a Format</option>
+                    <option value="">{{ $t('Select a Format') }}</option>
                     <option v-for="(format, i) in dateFormats" :value="i" :key="i">
                         {{ i }} - (Ex: {{ format }})
                     </option>
@@ -186,7 +186,7 @@
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Maximum Width</h3>
+                            <h3>{{ $t('Maximum Width') }}</h3>
 
                             <p>
                                 Enter the maximum width of the column. This will be applied for the entire column
@@ -278,7 +278,7 @@
             <div class="pull-right">
                 <template v-if="!updating">
                     <button @click.prevent="cancel" class="button">
-                        Cancel
+                        {{ $t('Cancel') }}
                     </button>
 
                     <button @click.prevent="addColumn" class="button button-primary">Add Column</button>

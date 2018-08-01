@@ -8,11 +8,11 @@
                          active-text-color="#ffd04b">
                     <el-menu-item  @click="active_menu = 'import'" index="import">
                         <i class="el-icon-upload"></i>
-                        <span>Import Table</span>
+                        <span>{{$t('Import Table')}}</span>
                     </el-menu-item>
                     <el-menu-item @click="active_menu = 'export'" index="export">
                         <i class="el-icon-download"></i>
-                        <span>Export Table</span>
+                        <span>{{ $t('Export Table') }}</span>
                     </el-menu-item>
                 </el-menu>
             </el-aside>

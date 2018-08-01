@@ -83,9 +83,9 @@
                             type: 'warning'
                         }
                     ).then(() => {
-                        console.log('delete confirmations');
+                       
                     }).catch(() => {
-                        console.log('dont delete');
+                       
                     });
                 }
             }

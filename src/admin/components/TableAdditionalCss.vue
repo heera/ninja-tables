@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="section_block">
-            <h3>Additional CSS</h3>
+            <h3>{{ $t('Additional CSS') }}</h3>
 
             <ace_css_editor v-model="code"></ace_css_editor>
             <br/>

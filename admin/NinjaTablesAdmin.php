@@ -262,9 +262,7 @@ class NinjaTablesAdmin
             'ace_path_url'    => plugin_dir_url(__DIR__)."assets/libs/ace",
             'upgradeGuide'    => 'https://wpmanageninja.com/r/docs/ninja-tables/how-to-install-and-upgrade/#upgrade',
             'hasValidLicense' => get_option('_ninjatables_pro_license_status'),
-            'i18n'            => array(
-                'All Tables' => __('All tables', 'ninja-tables')
-            ),
+            'i18n'            => \NinjaTables\Classes\I18nStrings::getStrings(),
             'preview_required_scripts' => [
 	            plugin_dir_url(__DIR__)."assets/css/ninjatables-public.css",
 	            plugin_dir_url(__DIR__)."public/libs/footable/js/footable.min.js",

@@ -69,6 +69,10 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.mixin({
     methods: {
         $t(str) {
+            let transString = ninja_table_admin.i18n[str];
+            if(transString) {
+                return transString;
+            }
             return str;
         }
     },

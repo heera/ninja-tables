@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="ninja_header">
-            <h2>Import Table Data</h2>
+            <h2>{{ $t('Import Table Data') }}</h2>
         </div>
         <div class="ninja_content">
             <div v-if="columns.length">
@@ -9,7 +9,7 @@
                     <div class="form-group">
                         <input type="file" id="fileUpload" @click="clear">
 
-                        <el-checkbox v-model="replace">Replace Existing Data</el-checkbox>
+                        <el-checkbox v-model="replace">{{ $t('Replace Existing Data') }}</el-checkbox>
                     </div>
 
                     <div class="form-group">

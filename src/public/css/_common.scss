@@ -10,6 +10,22 @@
     visibility: hidden;
   }
   
+  &.footable-paging-right {
+    .footable-pagination-wrapper {
+      text-align: right;
+    }
+  }
+  &.footable-paging-center {
+    .footable-pagination-wrapper {
+      text-align: center;
+    }
+  }
+  &.footable-paging-left {
+    .footable-pagination-wrapper {
+      text-align: left;
+    }
+  }
+  
   table.footable-details tr th {
       white-space: initial;
       overflow: visible !important;
