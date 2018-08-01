@@ -1019,6 +1019,15 @@ table.footable-editing.footable-editing-always-show button.footable-add {
   color: black;
 }
 
+.foo-table tbody tr td a,
+.foo-table tbody tr td p,
+.foo-table tbody tr td h1,
+.foo-table tbody tr td h2,
+.foo-table tbody tr td h3 {
+  margin: 0;
+  padding: 0;
+}
+
 .footable_parent {
   overflow-x: auto;
   width: 100%;
@@ -1841,9 +1850,7 @@ table.ninja_footable col.hidden {
 
 .semantic_ui .ui.table thead th {
   cursor: auto;
-  background: #F9FAFB;
   text-align: inherit;
-  color: rgba(0, 0, 0, 0.87);
   padding: 0.92857143em 0.78571429em;
   vertical-align: inherit;
   font-style: none;
@@ -1851,6 +1858,11 @@ table.ninja_footable col.hidden {
   text-transform: none;
   border-bottom: 1px solid rgba(34, 36, 38, 0.1);
   border-left: none;
+}
+
+.semantic_ui .ui.table:not(.inverted) thead th {
+  background: #F9FAFB;
+  color: rgba(0, 0, 0, 0.87);
 }
 
 .semantic_ui .ui.table thead tr > th:first-child {
@@ -2668,10 +2680,6 @@ table.ninja_footable col.hidden {
   /*******************************
            Site Overrides
   *******************************/
-}
-
-.colored_table table.ninja_table_pro.inverted.table a {
-  color: rgba(255, 255, 255, 0.7);
 }
 
 .colored_table table.ninja_table_pro.inverted.table a.checkbox {
