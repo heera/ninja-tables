@@ -1,11 +1,11 @@
 === Ninja Tables - Best Responsive Table Plugin for WordPress ===
 Contributors: techjewel, adreastrian
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, tables from csv, responsive tables
+Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin, tables plugin, responsive tables
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.2.6
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,12 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 
 == Changelog ==
 
+= 2.3.0 ( Date: August 02, 2018 )
+* Fixed bug for rendering multiple table in a single page
+* Fix bug for column width and header text alignment
+* Fix bug for table not rendering issue
+
+
 = 2.2.6 ( Date: August 01, 2018 )
 * It's a big update with lots of improvement
 * Added Design studio for table to colorize tables visually. Now you can change settings and see instance preview
@@ -165,12 +171,6 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 * Added Permission for User Role based. You can assign custom role now.
 * Fix few css bug for table cell text wrap issues ( Thanks to our users to report it )
 
-= 2.2.6 ( Date: June 10, 2018 )
-* Added Duplicate table feature ( Most wanted feature by our users )
-* Added CSS Box into the table editor, Now you can paste your css for a table.
-* Added feature to re-arrange the rows. 
-* Now, You can add table row at the first / at the last / you can sort manually.
-* Overall Performance improvements
 
 = 2.1.1 ( Date: April 28, 2018 ) = 
 * Fix Table sorting for HTML Elements
