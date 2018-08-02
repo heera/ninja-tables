@@ -127,8 +127,55 @@ class NinjaFooTable {
 		$customCss = array();
 
 		foreach ( $columns as $index => $column ) {
-			$formatted_column    = static::getFormattedColumn( $column, $index, $settings, $globalSorting,
-				$sortingType );
+		    
+			$columnType    = self::getColumnType( $column );
+			$cssColumnName = 'ninja_column_' . $index;
+			$columnClasses = array( $cssColumnName );
+			if ( isset( $column['classes'] ) ) {
+				$userClasses   = explode( ' ', $column['classes'] );
+				$columnClasses = array_unique( array_merge( $columnClasses, $userClasses ) );
+			}
+			$customCss[ $cssColumnName ] = array();
+			if ( $columnWidth = ArrayHelper::get( $column, 'width' ) ) {
+				$customCss[ $cssColumnName ]['width'] = $columnWidth . 'px';
+			}
+			if ( $textAlign = ArrayHelper::get( $column, 'textAlign' ) ) {
+				$customCss[ $cssColumnName ]['textAlign'] = $textAlign;
+			}
+			$columnTitle = $column['name'];
+			if ( ArrayHelper::get( $column, 'enable_html_content' ) == 'true' ) {
+				if ( $columnContent = ArrayHelper::get( $column, 'header_html_content' ) ) {
+					$columnTitle = do_shortcode( $columnContent );
+				}
+			}
+
+			$formatted_column = array(
+				'name'        => $column['key'],
+				'title'       => $columnTitle,
+				'breakpoints' => $column['breakpoints'],
+				'type'        => $columnType,
+				'sortable'    => $globalSorting,
+				'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true,
+				'classes'     => $columnClasses,
+				'filterable'  => ( isset( $column['unfilterable'] ) && $column['unfilterable'] == 'yes' ) ? false : true
+			);
+
+			if ( $columnType == 'date' ) {
+				wp_enqueue_script(
+					'moment',
+					NINJA_TABLES_DIR_URL . "public/libs/moment/moment.min.js",
+					[],
+					'2.22.0',
+					true
+				);
+				$formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
+			}
+
+			if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
+				$formatted_column['sorted']    = true;
+				$formatted_column['direction'] = $settings['sorting_column_by'];
+			}
+		    
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
 		}
@@ -215,7 +262,7 @@ class NinjaFooTable {
 			'render_type' => $renderType,
 			'custom_css'  => $customCss
 		);
-
+        
 		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
 		include 'views/ninja_foo_table.php';
