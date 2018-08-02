@@ -5,7 +5,7 @@ Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,7 +154,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 
 == Changelog ==
 
-= 2.3.0 ( Date: August 01, 2018 )
+= 2.2.6 ( Date: August 01, 2018 )
 * It's a big update with lots of improvement
 * Added Design studio for table to colorize tables visually. Now you can change settings and see instance preview
 * Re-Arrange Table Config Components to make things easier.
@@ -165,7 +165,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 * Added Permission for User Role based. You can assign custom role now.
 * Fix few css bug for table cell text wrap issues ( Thanks to our users to report it )
 
-= 2.2.0 ( Date: June 10, 2018 )
+= 2.2.6 ( Date: June 10, 2018 )
 * Added Duplicate table feature ( Most wanted feature by our users )
 * Added CSS Box into the table editor, Now you can paste your css for a table.
 * Added feature to re-arrange the rows. 
