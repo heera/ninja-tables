@@ -359,13 +359,19 @@ class NinjaFooTable {
 		add_action( 'wp_footer', function () use ( $vars, $table_id ) {
 			?>
             <script type="text/javascript">
+                // The order of table shortcode given is important to render
+                // the tables. So, we'll calculate the proper position.
+                window['ninjaTablesPosition'] = 1 + (window['ninjaTablesPosition'] || 0);
+
                 // The config storage should be an array since there
                 // could be more than one shortcode for a table.
                 var key = "ninja_footables_tables_<?php echo $table_id;?>";
                 if (key in window) {
-                    window[key].push(<?php echo $vars ?>);
+                    window[key][window['ninjaTablesPosition'] - 1] = <?php echo $vars ?>;
                 } else {
-                    window[key] = [<?php echo $vars ?>];
+                    window[key] = {
+                        [window['ninjaTablesPosition'] - 1] : <?php echo $vars ?>
+                    };
                 }
             </script>
 			<?php
