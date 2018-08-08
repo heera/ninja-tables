@@ -199,14 +199,14 @@
                 
                 <el-input type="number" :disabled="!hasPro" v-model="model.width" />
             </el-form-item>
-            <!-- Text alignment -->
+            <!-- Header Text alignment -->
             <el-form-item>
                 <template slot="label">
-                    {{ $t("Text Align") }}
+                    {{ $t("Header Text Align") }}
 
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
-                            <h3>Text Alignment</h3>
+                            <h3>Header Text Alignment</h3>
 
                             <p>
                                 Choose the text alignment. This will be applied only for header
@@ -219,6 +219,27 @@
 
                 <select v-model="model.textAlign" :disabled="!hasPro">
                     <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions" 
+                            :value="alignmentVal" :key="alignmentVal"
+                    >{{ alignmentLabel }}</option>
+                </select>
+            </el-form-item>
+
+            <!-- Content Text alignment -->
+            <el-form-item>
+                <template slot="label">
+                    {{ $t("Row Content Text Align") }}
+                    
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Content Text Alignment</h3>
+                            <p> Choose the text alignment for Column Rows</p>
+                        </div>
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                </template>
+
+                <select v-model="model.contentAlign" :disabled="!hasPro">
+                    <option v-for="(alignmentLabel, alignmentVal) in contentAlignmentOptions"
                             :value="alignmentVal" :key="alignmentVal"
                     >{{ alignmentLabel }}</option>
                 </select>
@@ -355,12 +376,19 @@
                 formatType: 'standard',
                 has_pro: !!window.ninja_table_admin.hasPro,
                 alignmentOptions: {
+                    '': 'Default',
                     'center': 'Center',
                     'left': 'Left',
                     'right': 'Right',
                     'justify': 'Justify',
                     'start': 'Start',
                     'end': 'End',
+                },
+                contentAlignmentOptions: {
+                    '' : 'Default',
+                    'center': 'Center',
+                    'left': 'Left',
+                    'right': 'Right',
                 }
             };
         },
@@ -375,6 +403,12 @@
             this.model.dateFormat = this.model.dateFormat || "";
             this.model.enable_html_content = ['true', true].indexOf(this.model.enable_html_content) !== -1;
             this.model.header_html_content =  this.model.header_html_content || '';
+            if(!this.model.contentAlign) {
+                this.$set(this.model, 'contentAlign', '');
+            }
+            if(!this.model.textAlign) {
+                this.$set(this.model, 'textAlign', '');
+            }
         },
         methods: {
             addColumn() {
@@ -400,7 +434,7 @@
                     window.ninjaTableBus.$emit('show_pro_popup', 1);
                 }
             }
-        }
+        },
     };
 </script>
 

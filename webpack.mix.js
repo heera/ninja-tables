@@ -1,7 +1,7 @@
 const mix = require('laravel-mix');
 const exec = require('child_process').exec;
 const min = '';
-const assetVersion = '2.3';
+const assetVersion = '2.3.1';
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');
 

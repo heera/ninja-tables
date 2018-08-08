@@ -11,7 +11,7 @@
 			$table ); ?>
 	<?php endif; ?>
 	<?php do_action( 'ninja_tables_before_table_print', $table ); ?>
-    <table <?php echo $foo_table_attributes; ?>
+    <table data-ninja_table_instance="<?php echo $table_instance_name; ?>" <?php echo $foo_table_attributes; ?>
            id="footable_<?php echo intval( $table_id ); ?>"
            class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>">
         <colgroup>

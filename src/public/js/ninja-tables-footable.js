@@ -11,7 +11,12 @@ jQuery(document).ready(function ($) {
                 let tableSelector = 'ninja_footables_tables_' + tableId;
                 // The config is stored in an array since there
                 // could be more than one shortcode for a table.
-                let tableConfig = window[tableSelector][index];
+                let tableDataName = $(this).attr('data-ninja_table_instance');
+                
+                let tableConfig = window[tableDataName];
+                if(!tableConfig) {
+                    return;
+                }
                 jQuery.each(tableConfig.columns, (index, column) => {
                     if (column.type == 'date') {
                         if (tableConfig.render_type != 'legacy_table') {

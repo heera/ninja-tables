@@ -33,11 +33,12 @@
                     custom_css: this.code
                 })
                     .then(response => {
-                        this.$message({
+                        this.$message( {
                             showClose: true,
                             message: response.data.message,
                             type: 'success'
-                        });
+                        } );
+                        this.$set(this.config.table, 'custom_css', this.code );
                     })
                     .then(error => {
                         console.log(error);

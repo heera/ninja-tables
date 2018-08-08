@@ -499,8 +499,11 @@
                     classes.push('hide_all_borders');
                 }
                 classes.push('ninja_table_pro');
-                
-                let table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
+
+                let table_css_classes = [];
+                if(this.tableSettings.css_classes) {
+                    table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
+                }
                 
                 if(this.tableSettings.css_lib == 'semantic_ui') {
                     classes.push('ui');
@@ -518,6 +521,7 @@
                         breakpoints: column.breakpoints,
                         type: column.data_type,
                         sortable: true,
+                        classes: ['ninja_column_'+index],
                         visible: (column.breakpoints == 'hidden') ? false : true
                     });
                 });
@@ -760,11 +764,18 @@
                         "container": "#footable_parent_" + this.tableId + " .paging-ui-container"
                     }
                 };
-               
-                jQuery('#footable_' + this.tableId).footable(initConfig);
+               let $table = jQuery('#footable_' + this.tableId);
+                $table.footable(initConfig);
                 this.generateColorCss();
                 this.footableLoading = false;
                 jQuery("td:contains('#colspan#')").remove();
+                
+                this.config.columns.forEach((column, index) => {
+                    $table.find('th.ninja_column_'+index)
+                        .css('text-align', column.textAlign)
+                        .css('width', column.width+'px');
+                });
+                
             },
 
             dysel(options) {
@@ -927,12 +938,18 @@
                     this.tableSettings.table_color_type = 'pre_defined_color';
                     this.tableSettings.table_color = 'ninja_no_color_table';
                 }
+            },
+            generateDefaultCss() {
+                let columnContentCss = this.config.table.custom_css;
+                this.config.columns.forEach((column, index) => {
+                    columnContentCss += ` #footable_${this.tableId} td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
+                });
+                jQuery('#ninja_table_designer_common_css').html(columnContentCss);
             }
         },
         mounted() {
             this.fetchTableBody();
             this.loadRequiredScripts();
-
             if( !this.tableSettings.table_color_type ) {
                 if(this.tableSettings.table_color == 'ninja_table_custom_color') {
                     this.$set( this.tableSettings, 'table_color_type', 'custom_color' );
@@ -940,6 +957,7 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
+            this.generateDefaultCss();
         }
     }
 </script> 

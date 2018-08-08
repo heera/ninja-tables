@@ -53,7 +53,7 @@
                         :data="items"
                         row-key="id"
                         border
-                        :class="{compact: isCompact, sorting: sorting}"
+                        :class="{ compact: isCompact, sorting: sorting}"
                         :style="'width: '+tableWidth"
                         @selection-change="handleSelectionChange"
                 >
@@ -141,7 +141,7 @@
         <el-dialog title="Edit Table Column" :visible.sync="showColumnEditor">
             <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
                             :updating="true"
-                            v-if="currentEditingColumn"
+                            v-if="showColumnEditor"
                             :hideDelete="true"
                             @store="storeSettings()"
                             @cancel="showColumnEditor = false"

@@ -6,7 +6,9 @@ class NinjaFooTable {
 	public static $version = NINJA_TABLES_VERSION;
 
 	public static function run( $tableArray ) {
-
+        global $ninja_table_instances;
+        $tableInstance = 'ninja_table_instance_'.count($ninja_table_instances);
+		$ninja_table_instances[] = $tableInstance;
 		$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
 
 		if ( is_rtl() ) {
@@ -29,11 +31,13 @@ class NinjaFooTable {
 			}
 		}
 
-		self::render( $tableArray );
+		$tableArray['table_instance_name'] = $tableInstance;
 
 		self::enqueue_assets();
+		
+		self::render( $tableArray );
 
-		static::addCustomColorCSS( $tableArray );
+		
 	}
 
 	private static function enqueue_assets() {
@@ -60,15 +64,16 @@ class NinjaFooTable {
 	/**
 	 * Set the table header colors.
 	 *
-	 * @param array $tableArray
+	 * @param array  $tableArray
+	 *
+	 * @param string $extra_css
 	 *
 	 * @return void
 	 */
-	private static function addCustomColorCSS( $tableArray ) {
+	private static function addCustomColorCSS( $tableArray, $extra_css = '' ) {
 		$colors        = false;
 		$custom_css    = get_post_meta( $tableArray['table_id'], '_ninja_tables_custom_css', true );
-
-
+		
 		if ( ArrayHelper::get( $tableArray, 'settings.table_color_type' ) == 'custom_color' && defined('NINJATABLESPRO') ) {
 			$colorSettings = $tableArray['settings'];
 			$colors = array(
@@ -100,10 +105,12 @@ class NinjaFooTable {
 			);
 		}
 
-		if ( ! $colors && $custom_css ) {
+		$custom_css .= $extra_css;
+		
+		if ( ! $colors && !$custom_css ) {
 			return;
 		}
-
+		
 		$css_prefix = '#footable_' . $tableArray['table_id'];
 		add_action( 'wp_footer', function () use ( $custom_css, $colors, $css_prefix ) {
 			include 'views/ninja_footable_css.php';
@@ -126,8 +133,12 @@ class NinjaFooTable {
 
 		$customCss = array();
 
+		$columnContentCss = '';
+		
 		foreach ( $columns as $index => $column ) {
-		    
+			if( $contentAlign = ArrayHelper::get( $column, 'contentAlign' ) ) {
+				$columnContentCss .= '#footable_'.$tableArray['table_id'].' td.ninja_column_'.$index .' { text-align: '.$contentAlign.'; }';
+            }
 			$columnType    = self::getColumnType( $column );
 			$cssColumnName = 'ninja_column_' . $index;
 			$columnClasses = array( $cssColumnName );
@@ -232,7 +243,6 @@ class NinjaFooTable {
 			$table_classes .= ' inverted ninja_custom_color ninja_custom_color';
 		}
 
-
 		if($pagingPosition = ArrayHelper::get($settings, 'pagination_position')) {
 			$table_classes .= ' footable-paging-'.$pagingPosition;
 		} else {
@@ -263,63 +273,14 @@ class NinjaFooTable {
 			'custom_css'  => $customCss
 		);
         
-		self::addInlineVars( json_encode( $table_vars, true ), $table_id );
+		self::addInlineVars( json_encode( $table_vars, true ), $table_id, $table_instance_name );
 		$foo_table_attributes = self::getFootableAtrributes( $table_id );
+
+		static::addCustomColorCSS( $tableArray, $columnContentCss );
+
 		include 'views/ninja_foo_table.php';
 	}
-
-	public static function getFormattedColumn( $column, $index, $settings, $globalSorting, $sortingType ) {
-		$columnType    = self::getColumnType( $column );
-		$cssColumnName = 'ninja_column_' . $index;
-		$columnClasses = array( $cssColumnName );
-		if ( isset( $column['classes'] ) ) {
-			$userClasses   = explode( ' ', $column['classes'] );
-			$columnClasses = array_unique( array_merge( $columnClasses, $userClasses ) );
-		}
-		$customCss[ $cssColumnName ] = array();
-		if ( $columnWidth = ArrayHelper::get( $column, 'width' ) ) {
-			$customCss[ $cssColumnName ]['width'] = $columnWidth . 'px';
-		}
-		if ( $textAlign = ArrayHelper::get( $column, 'textAlign' ) ) {
-			$customCss[ $cssColumnName ]['textAlign'] = $textAlign;
-		}
-		$columnTitle = $column['name'];
-		if ( ArrayHelper::get( $column, 'enable_html_content' ) == 'true' ) {
-			if ( $columnContent = ArrayHelper::get( $column, 'header_html_content' ) ) {
-				$columnTitle = do_shortcode( $columnContent );
-			}
-		}
-
-		$formatted_column = array(
-			'name'        => $column['key'],
-			'title'       => $columnTitle,
-			'breakpoints' => $column['breakpoints'],
-			'type'        => $columnType,
-			'sortable'    => $globalSorting,
-			'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true,
-			'classes'     => $columnClasses,
-			'filterable'  => ( isset( $column['unfilterable'] ) && $column['unfilterable'] == 'yes' ) ? false : true
-		);
-
-		if ( $columnType == 'date' ) {
-			wp_enqueue_script(
-				'moment',
-				NINJA_TABLES_DIR_URL . "public/libs/moment/moment.min.js",
-				[],
-				'2.22.0',
-				true
-			);
-			$formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
-		}
-
-		if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
-			$formatted_column['sorted']    = true;
-			$formatted_column['direction'] = $settings['sorting_column_by'];
-		}
-
-		return $formatted_column;
-	}
-
+	
 	public static function getTableHTML( $table, $table_vars ) {
 
 		if ( $table_vars['render_type'] == 'ajax_table' ) {
@@ -401,25 +362,12 @@ class NinjaFooTable {
 		}
 	}
 
-	private static function addInlineVars( $vars, $table_id ) {
+	private static function addInlineVars( $vars, $table_id, $table_instance_name ) {
 
-		add_action( 'wp_footer', function () use ( $vars, $table_id ) {
+		add_action( 'wp_footer', function () use ( $vars, $table_id, $table_instance_name ) {
 			?>
             <script type="text/javascript">
-                // The order of table shortcode given is important to render
-                // the tables. So, we'll calculate the proper position.
-                window['ninjaTablesPosition'] = 1 + (window['ninjaTablesPosition'] || 0);
-
-                // The config storage should be an array since there
-                // could be more than one shortcode for a table.
-                var key = "ninja_footables_tables_<?php echo $table_id;?>";
-                if (key in window) {
-                    window[key][window['ninjaTablesPosition'] - 1] = <?php echo $vars ?>;
-                } else {
-                    window[key] = {
-                        [window['ninjaTablesPosition'] - 1] : <?php echo $vars ?>
-                    };
-                }
+                window['<?php echo $table_instance_name;?>'] = <?php echo $vars; ?>
             </script>
 			<?php
 		} );
@@ -455,4 +403,53 @@ class NinjaFooTable {
 
 		return (string) $atts_string;
 	}
+
+	public static function getFormattedColumn( $column, $index, $settings, $globalSorting, $sortingType ) {
+		$columnType    = self::getColumnType( $column );
+		$cssColumnName = 'ninja_column_' . $index;
+		$columnClasses = array( $cssColumnName );
+		if ( isset( $column['classes'] ) ) {
+			$userClasses   = explode( ' ', $column['classes'] );
+			$columnClasses = array_unique( array_merge( $columnClasses, $userClasses ) );
+		}
+		$customCss[ $cssColumnName ] = array();
+		if ( $columnWidth = ArrayHelper::get( $column, 'width' ) ) {
+			$customCss[ $cssColumnName ]['width'] = $columnWidth . 'px';
+		}
+		if ( $textAlign = ArrayHelper::get( $column, 'textAlign' ) ) {
+			$customCss[ $cssColumnName ]['textAlign'] = $textAlign;
+		}
+		$columnTitle = $column['name'];
+		if ( ArrayHelper::get( $column, 'enable_html_content' ) == 'true' ) {
+			if ( $columnContent = ArrayHelper::get( $column, 'header_html_content' ) ) {
+				$columnTitle = do_shortcode( $columnContent );
+			}
+		}
+		$formatted_column = array(
+			'name'        => $column['key'],
+			'title'       => $columnTitle,
+			'breakpoints' => $column['breakpoints'],
+			'type'        => $columnType,
+			'sortable'    => $globalSorting,
+			'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true,
+			'classes'     => $columnClasses,
+			'filterable'  => ( isset( $column['unfilterable'] ) && $column['unfilterable'] == 'yes' ) ? false : true
+		);
+		if ( $columnType == 'date' ) {
+			wp_enqueue_script(
+				'moment',
+				NINJA_TABLES_DIR_URL . "public/libs/moment/moment.min.js",
+				[],
+				'2.22.0',
+				true
+			);
+			$formatted_column['formatString'] = $column['dateFormat'] ?: 'MM/DD/YYYY';
+		}
+		if ( $sortingType == 'by_column' && $column['key'] == $settings['sorting_column'] ) {
+			$formatted_column['sorted']    = true;
+			$formatted_column['direction'] = $settings['sorting_column_by'];
+		}
+		return $formatted_column;
+	}
+
 }
