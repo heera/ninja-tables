@@ -5,7 +5,7 @@ Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.3.1
+Stable tag: 2.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,13 +154,8 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 
 == Changelog ==
 
-= 2.3.1 ( Date: August 08, 2018 ) = 
-* Added More features on Table Design Screen
-* Added Support for table row alignment
-* Fix custom CSS bug
-* Fix IE11 rendering bug
-* Added more shortcode parameters
-* improve table styling settings
+= 2.3.3 ( Date: August 09, 2018 ) = 
+* Fix bug for date type columns
 
 = 2.3.0 ( Date: August 02, 2018 )
 * Fixed bug for rendering multiple table in a single page

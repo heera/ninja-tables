@@ -29,22 +29,19 @@ if (!function_exists('ninja_table_get_table_settings')) {
     function ninja_table_get_table_settings($tableId, $scope = 'public')
     {
         $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
+	   
         if (!$tableSettings) {
-            $tableSettings = array();
-        }
-        
-        if(empty($tableSettings['css_classes'])) {
+            $tableSettings = getDefaultNinjaTableSettings();
+        } else if(empty($tableSettings['css_classes'])) {
 	        $tableSettings['css_classes'] = array();
-        }
+	    }
+	    
+	    $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
         
-        if(!$tableSettings) {
-	        $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
-        }
         return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings,
             $tableId);
     }
 }
-
 
 
 if (!function_exists('getDefaultNinjaTableSettings')) {

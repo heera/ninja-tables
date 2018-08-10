@@ -16,7 +16,7 @@
                     <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
                 </div>
                 <div v-else-if="column.data_type == 'number'">
-                    <input :placeholder="column.name" type="number" :id="slugify(column.key)" class="form-control"
+                    <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control"
                            v-model="newColumn[column.key]">
                 </div>
                 <div v-else-if="column.data_type == 'date'">

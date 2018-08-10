@@ -19,19 +19,17 @@ jQuery(document).ready(function ($) {
                 }
                 jQuery.each(tableConfig.columns, (index, column) => {
                     if (column.type == 'date') {
-                        if (tableConfig.render_type != 'legacy_table') {
-                            column.sortValue = function (valueOrElement) {
-                                if (valueOrElement) {
-                                    return moment(valueOrElement, column.formatString);
-                                }
-                                return null;
-                            };
-                        } 
+                        column.sortValue = function (valueOrElement) {
+                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+                                return moment( jQuery(valueOrElement).text(), column.formatString).format("X");
+                            }
+                            return moment( valueOrElement, column.formatString).format("X");
+                        };
                         column.formatter = function (value, options, rowData) {
                             if (value._i) {
                                 return  value._i;
                             }
-                            return null;
+                            return value;
                         }
                     } else if (column.type == 'html' && tableConfig.render_type == 'ajax_table') {
                         column.sortValue = function (valueOrElement) {

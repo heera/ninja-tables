@@ -80,13 +80,13 @@
                 </el-tooltip>
             </template>
 
-            <el-radio-group v-model="formatType">
+            <el-radio-group v-model="model.formatType">
                 <el-radio label="standard">{{ $t('Standard') }}</el-radio>
                 <el-radio label="custom" @click.native="showProPopUp" :disabled="!hasPro">Custom</el-radio>
             </el-radio-group>
 
             <!-- Format dropdown -->
-            <el-form-item v-if="formatType == 'standard'" >
+            <el-form-item v-if="model.formatType != 'custom'" >
                 <select v-model="model.dateFormat">
                     <option value="">{{ $t('Select a Format') }}</option>
                     <option v-for="(format, i) in dateFormats" :value="i" :key="i">
