@@ -1,7 +1,7 @@
 <template>
     <div>
-        <template v-if="columns.length">
-            <add_data_modal v-if="columns.length"
+        <template v-if="columns.length ">
+            <add_data_modal v-if="columns.length && addDataModal"
                             :title="addDataModalTitle"
                             :show="addDataModal"
                             @modal_close="closeDataModal"

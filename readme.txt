@@ -5,11 +5,11 @@ Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme.
+WP Responsive Table Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data, ajax. Build Tables without writing any code.
 
 == Description ==
 
@@ -70,6 +70,22 @@ If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables th
 
 == Usage ==
 To show one of your tables in a post, on a page, or in a text widget, just embed the Shortcode [ninja_tables id="TABLE_ID"] into the post/page/text widget, where <TABLE_ID> is the ID of your table (can be found on the “All Tables” screen.)
+
+== Build Any Type of Table ==
+You can build any type of table using Ninja Tables. Our Users already build various type of tables using this resposive table plugin.
+<ul><li>Data Tables</li>
+<li>Pricing Table</li>
+<li>Amazon Affiliate Product Table</li>
+<li>Product Comparion Table</li>
+<li>Responsive Product Specification Table</li>
+<li>Member List Table</li>
+<li>Customer List Table</li>
+<li>League Points Table</li>
+<li>Sports Team Member Table with Image</li>
+<li>Any Type of Data that need to be shown as tabular format</li></ul>
+
+== Blazing Fast Frontend Table Rendering ==
+We have optimized this plugin for last 1 year and we made the plugin feature rich but we did not compromise with you page speed. Ninja Table only load the scripts and styles on the pages where you inserted the shortcode. That means you site will not be slow. Our ajax technique load your thousanads of row withour slowing down your site. Our frontend javascript file is less than 4KB ( It's true ). We are continuing improve this plugin so you may contribute by giving us suggession and what do you think about this plugin anytime. Our engineers will get back to you as soon as possible.
 
 == Awesome Support ==
 Get dedicated support from our awesome happiness managers and developers and Yes! It's completely free.
@@ -138,7 +154,6 @@ Tables are usually introduced to present a huge amount of data in an organized w
 Yes, For that please check pro add one <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">here</a>
 
 
-
 == Screenshots ==
 
 1. Table Preview with Features
@@ -153,6 +168,11 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.3.4 ( Date: August 11, 2018 ) = 
+* Fix Sorting Issue
+* Added Design Suggesion on Table Design Tab
+* Fix Table Demo Preview for Non-Admin Users
 
 = 2.3.3 ( Date: August 09, 2018 ) = 
 * Fix bug for date type columns

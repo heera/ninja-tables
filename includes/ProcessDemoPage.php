@@ -3,7 +3,7 @@
 class ProcessDemoPage {
 	public function handleExteriorPages() {
 		if ( isset( $_GET['ninjatable_preview'] ) && $_GET['ninjatable_preview'] ) {
-			if(current_user_can(ninja_table_admin_role())) {
+			if(ninja_table_admin_role()) {
 				$tableId = intval( $_GET['ninjatable_preview'] );
 				$this->loadDefaultPageTemplate();
 				$this->renderPreview( $tableId );

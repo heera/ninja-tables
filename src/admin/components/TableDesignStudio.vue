@@ -419,6 +419,13 @@
                     </div>
                 </el-tab-pane>
             </el-tabs>
+            
+            <div class="ninja_design_tips" v-if="design_tips.length">
+                <ul class="ninja_design_tips_lists">
+                    <li v-for="design_tip in design_tips"><i class="el-icon-warning"></i> <span v-html="design_tip"></span></li>
+                </ul>
+            </div>
+            
             <div v-if="!has_pro" class="upgrade_box">
                 <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio" class="el-button el-button--danger el-button--small">
                     <i class="dashicons dashicons-shield"></i> {{ $t('Upgrade To Pro to unlock advanced features') }}
@@ -459,7 +466,7 @@
                 tableInnerHtml : '',
                 showingDevice: 'desktop',
                 hasSortable: !!window.ninja_table_admin.hasSortable,
-                sortableUpgradeNotice: false
+                sortableUpgradeNotice: false,
             }
         },
         computed: {
@@ -567,6 +574,20 @@
                     return true;
                 }
                 return false;
+            },
+            design_tips() {
+                let tips = [];
+                if(this.tableSettings.table_color_type == 'custom_color') {
+                    if(
+                        !this.tableSettings.table_search_color_primary ||
+                        !this.tableSettings.table_header_color_primary ||
+                        !this.tableSettings.table_color_primary ||
+                        !this.tableSettings.table_color_secondary 
+                    ) {
+                        tips.push('You should set colors at <b>"Table Colors"</b> Tab');
+                    }
+                }
+                return tips;
             }
         },
         watch: {

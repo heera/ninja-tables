@@ -1372,3 +1372,13 @@ input.form-control::placeholder {
 .label-normalize label {
   font-weight: normal;
 }
+
+.ninja_design_tips {
+  color: red;
+  padding: 10px 10px;
+  background: white;
+  border: 1px solid red;
+  ul.ninja_design_tips_lists {
+    margin: 0px;
+  }
+}

@@ -21,7 +21,7 @@ jQuery(document).ready(function ($) {
                     if (column.type == 'date') {
                         column.sortValue = function (valueOrElement) {
                             if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
-                                return moment( jQuery(valueOrElement).text(), column.formatString).format("X");
+                                valueOrElement = jQuery(valueOrElement).text();
                             }
                             return moment( valueOrElement, column.formatString).format("X");
                         };
@@ -31,12 +31,25 @@ jQuery(document).ready(function ($) {
                             }
                             return value;
                         }
-                    } else if (column.type == 'html' && tableConfig.render_type == 'ajax_table') {
+                    } else if (column.type == 'html' || column.type == 'text') {
                         column.sortValue = function (valueOrElement) {
-                            valueOrElement = '<div>'+valueOrElement+'</div>';
-                            return jQuery(valueOrElement).text();
+                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+                                return jQuery(valueOrElement).text();
+                            } else {
+                                return jQuery('<div>'+valueOrElement+"</div>").text();
+                            }
                         };
                         column.type = 'text';
+                    }  else if(column.type == 'numeric') {
+                        column.sortValue = function (valueOrElement) {
+                            if (FooTable.is.element(valueOrElement)  || FooTable.is.jq(valueOrElement)) {
+                                valueOrElement = jQuery(valueOrElement).text();
+                            }
+                            let numberValue = Number(valueOrElement.replace(/[^0-9\.-]+/g,""));
+                            
+                            console.log(numberValue);
+                            return numberValue;
+                        };
                     }
                 });
                 if (tableConfig.render_type === 'legacy_table') {

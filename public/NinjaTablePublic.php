@@ -160,7 +160,8 @@ class NinjaTablePublic {
 			'columns' => $tableColumns,
 			'settings' => $tableSettings,
 			'table' => $table,
-			'content' => $content
+			'content' => $content,
+			'shortCodeData' => $shortCodeData
 		);
 		
 		$tableArray = apply_filters('ninja_table_js_config', $tableArray, $filter);

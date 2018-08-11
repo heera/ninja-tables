@@ -80,7 +80,7 @@ if (!function_exists('ninja_table_admin_role')) {
         if(current_user_can('administrator')) {
             return 'administrator';
         }
-        $roles = apply_filters('ninja_table_admin_role', ['administrator']);
+        $roles = apply_filters('ninja_table_admin_role', array('administrator'));
         if(is_string($roles)) {
             $roles = array($roles);
         }

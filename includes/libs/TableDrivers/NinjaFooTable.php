@@ -118,12 +118,11 @@ class NinjaFooTable {
 	}
 
 	private static function render( $tableArray ) {
-
 		extract( $tableArray );
 		if ( ! count( $columns ) ) {
 			return;
 		}
-
+		
 		$renderType = ArrayHelper::get( $settings, 'render_type', 'ajax_table' );
 
 		$formatted_columns = array();
@@ -383,6 +382,9 @@ class NinjaFooTable {
 		);
 
 		if ( in_array( $type, $acceptedTypes ) ) {
+		    if($type == 'number') {
+		        return 'numeric';
+            }
 			return $type;
 		}
 
