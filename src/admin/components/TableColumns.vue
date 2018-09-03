@@ -159,7 +159,7 @@
 
                     <template v-else-if="active_menu == 'language_settings'">
                         <div class="ninja_header">
-                            <h2>Langugae Settings</h2>
+                            <h2>Language Settings</h2>
                             <div class="ninja_actions_action">
                                 <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
                             </div>
