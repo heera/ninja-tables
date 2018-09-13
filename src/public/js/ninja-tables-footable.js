@@ -49,16 +49,13 @@ jQuery(document).ready(function ($) {
                                 return;
                             }
                             valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
-                            console.log(valueOrElement);
                             if(column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
                             }
-                            console.log(valueOrElement);
                             if(column.decimalSeparator) {
                                 valueOrElement = valueOrElement.split(column.decimalSeparator).join(".");
                             }
                             
-                            console.log(valueOrElement);
                             let numberValue = Number(valueOrElement);
                           
                             if (isNaN(numberValue)) {
