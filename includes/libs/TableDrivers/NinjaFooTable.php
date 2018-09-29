@@ -185,6 +185,12 @@ class NinjaFooTable {
 				$formatted_column['sorted']    = true;
 				$formatted_column['direction'] = $settings['sorting_column_by'];
 			}
+			
+			if($columnType == 'numeric') {
+				$formatted_column['thousandSeparator'] = isset($column['thousandSeparator']) ? $column['thousandSeparator'] : '';
+				$formatted_column['decimalSeparator'] = isset($column['decimalSeparator']) ? $column['decimalSeparator'] : '';
+            }
+			
 		    
 			$formatted_columns[] = apply_filters( 'ninja_table_column_attributes', $formatted_column, $column,
 				$table_id, $tableArray );
@@ -435,7 +441,8 @@ class NinjaFooTable {
 			'sortable'    => $globalSorting,
 			'visible'     => ( $column['breakpoints'] == 'hidden' ) ? false : true,
 			'classes'     => $columnClasses,
-			'filterable'  => ( isset( $column['unfilterable'] ) && $column['unfilterable'] == 'yes' ) ? false : true
+			'filterable'  => ( isset( $column['unfilterable'] ) && $column['unfilterable'] == 'yes' ) ? false : true,
+            'column' => $column
 		);
 		if ( $columnType == 'date' ) {
 			wp_enqueue_script(

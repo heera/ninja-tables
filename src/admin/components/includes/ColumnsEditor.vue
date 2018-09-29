@@ -101,8 +101,55 @@
             </el-form-item>
         </el-form-item>
 
+        <!--Date Format -->
+        <temmplate v-else-if="model.data_type == 'number' && hasPro">
+            <el-form-item>
+                <template slot="label">
+                    {{ $t('Thousand Separator') }}
+
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3> {{ $t('Thousand Separator') }}</h3>
+                            <p>
+                                Please Provide The Thousand Separator If Any.
+                            </p>
+                        </div>
+
+                        <i class="el-icon-info el-text-info" />
+                    </el-tooltip>
+                </template>
+                <el-radio-group v-model="model.thousandSeparator">
+                    <el-radio label="">None</el-radio>
+                    <el-radio label=".">Dot (.)</el-radio>
+                    <el-radio label=",">Comma (,)</el-radio>
+                </el-radio-group>
+            </el-form-item>
+            <el-form-item>
+                <template slot="label">
+                    {{ $t('Decimal Separator') }}
+
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3> {{ $t('Thousand Separator') }}</h3>
+                            <p>
+                                Please Provide The Decimal Separator If Any.
+                            </p>
+                        </div>
+
+                        <i class="el-icon-info el-text-info" />
+                    </el-tooltip>
+                </template>
+                <el-radio-group v-model="model.decimalSeparator">
+                    <el-radio label="">None</el-radio>
+                    <el-radio label=".">Dot (.)</el-radio>
+                    <el-radio label=",">Comma (,)</el-radio>
+                </el-radio-group>
+            </el-form-item>
+        </temmplate>
+        
+        
         <!--Selection Field -->
-        <el-form-item v-if="model.data_type == 'selection'">
+        <el-form-item v-else-if="model.data_type == 'selection'">
             <template slot="label">
                 {{ $t('Select Items') }}
 
@@ -322,7 +369,7 @@
     export default {
         name: "ColumnsEditor",
         components: {
-          'wp_editor':  wpEditor
+            'wp_editor':  wpEditor
         },
         props: {
             "model": {
