@@ -4,6 +4,7 @@ jQuery(document).ready(function ($) {
             window.ninjaFooTablesInstance = [];
             let footables = $('table.foo-table.ninja_footable');
             let that = this;
+            const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
             $.each(footables, function (index, table) {
                 let $table = $(table);
                 $table.hide();
@@ -42,22 +43,22 @@ jQuery(document).ready(function ($) {
                         column.type = 'text';
                     } else if (column.type == 'numeric') {
                         column.sortValue = function (valueOrElement) {
-                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+                            
+                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement) || isHTML(valueOrElement)) {
                                 valueOrElement = jQuery(valueOrElement).text();
                             }
                             if (!valueOrElement) {
                                 return;
                             }
                             valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
-                            if(column.thousandSeparator) {
+                            if(valueOrElement && column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
                             }
-                            if(column.decimalSeparator) {
+                            if(valueOrElement && column.decimalSeparator) {
                                 valueOrElement = valueOrElement.split(column.decimalSeparator).join(".");
                             }
-                            
                             let numberValue = Number(valueOrElement);
-                          
+                          console.log(valueOrElement);
                             if (isNaN(numberValue)) {
                                 return valueOrElement;
                             }
