@@ -6,7 +6,7 @@
                 Custom Search Filters is useful if you want to add select box / Radio Button to show a group of rows of
                 your table.
                 <br/>
-                To learn more about this <a target="_blank" href="#">click here</a>
+                To learn more about this <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/custom-filters-on-ninja-tables/">click here</a>
             </p>
         </div>
         <div class="ninja_style_wrapper">

@@ -35,7 +35,7 @@
                     </label>
 
                     <label>
-                        <input type="checkbox" name="checkbox" v-model="sorting" @click="toggleSorting()">
+                        <input type="checkbox" name="checkbox" v-model="sorting">
                         Sort Manually
                         <template v-if="!has_pro">(Pro Feature)</template>
                     </label>
@@ -46,7 +46,7 @@
                 </div>
             </div>
             <hr/>
-            
+
             <template v-if="columns.length">
                 <el-table
                         class="js-sortable-table"
@@ -93,7 +93,8 @@
                             </a>
 
                             <a @click="duplicateData(scope)">
-                                <el-tooltip placement="top-end" effect="light" content="Duplicate data" :open-delay="500">
+                                <el-tooltip placement="top-end" effect="light" content="Duplicate data"
+                                            :open-delay="500">
                                     <span class="dashicons dashicons-admin-page"></span>
                                 </el-tooltip>
                             </a>
@@ -248,9 +249,13 @@
 
                     if (!this.hasSortable) {
                         this.sorting = false;
-                        this.sortableUpgradeNotice = true
+                        this.sortableUpgradeNotice = true;
+
+                        return;
                     }
                 }
+
+                this.toggleSorting(newVal);
             },
             'new_column.name': function () {
                 this.new_column.key = snakeCase(this.new_column.name)
@@ -375,7 +380,7 @@
                             message: this.$t('Something is wrong! Please try again'),
                             type: 'error'
                         });
-                        
+
                     });
             },
             closeDataModal(success) {
@@ -407,7 +412,6 @@
                     this.items.unshift(item);
                 }
 
-               
 
                 if (this.insertAfterPosition) {
                     this.insertAfterPosition += 1;
@@ -493,43 +497,38 @@
                     }
                 });
             },
-            toggleSorting() {
-                if (this.has_pro) {
-                    if (!this.sorting) {
-                        this.loading = true;
+            toggleSorting(shouldSort) {
+                if (shouldSort) {
+                    this.loading = true;
 
-                        let promise = new Promise((resolve, reject) => {
-                            window.ninjaTableBus.$emit('initManualSorting', {
-                                table_id: this.tableId,
-                                page: this.paginate.current_page,
-                                per_page: this.paginate.per_page,
-                                search: this.searchString,
-                                default_sorting: this.config.settings.default_sorting
-                            }, resolve, reject);
-                        })
+                    let promise = new Promise((resolve, reject) => {
+                        window.ninjaTableBus.$emit('initManualSorting', {
+                            table_id: this.tableId,
+                            page: this.paginate.current_page,
+                            per_page: this.paginate.per_page,
+                            search: this.searchString,
+                            default_sorting: this.config.settings.default_sorting
+                        }, resolve, reject);
+                    });
 
-                        promise
-                            .then(res => {
-                                this.items = res.data;
-                                this.paginate.total = parseInt(res.total);
-                                this.paginate.last_page = parseInt(res.last_page);
+                    promise.then(res => {
+                        this.items = res.data;
+                        this.paginate.total = parseInt(res.total);
+                        this.paginate.last_page = parseInt(res.last_page);
 
-                                // Manually set the sorting type so that we
-                                // don't need to load the settings again.
-                                this.config.settings['sorting_type'] = 'manual_sort';
+                        // Manually set the sorting type so that we
+                        // don't need to load the settings again.
+                        this.config.settings['sorting_type'] = 'manual_sort';
 
-                                this.initSortable();
-                            })
-                            .catch(e => {
-                                console.log(e);
-                            })
-                            .then(() => {
-                                this.loading = false;
-                            });
-                    } else {
-                        if (this.sortableInstance) {
-                            this.sortableInstance.destroy();
-                        }
+                        this.initSortable();
+                    }).catch(e => {
+                        console.log(e);
+                    }).then(() => {
+                        this.loading = false;
+                    });
+                } else {
+                    if (this.sortableInstance) {
+                        this.sortableInstance.destroy();
                     }
                 }
             },
@@ -666,6 +665,7 @@
             color: #58B7FF;
         }
     }
+
     .instruction_block {
         padding: 30px 20px;
         background: white;
