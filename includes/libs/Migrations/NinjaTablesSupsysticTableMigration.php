@@ -1,4 +1,4 @@
-<?php namespace NinjaTables\Classes;
+<?php namespace NinjaTables\Classes\Libs\Migrations;
 
 class NinjaTablesSupsysticTableMigration extends NinjaTablesMigration
 {

@@ -70,11 +70,17 @@
                     :total="paginate.total">
             </el-pagination>
         </div>
-        
-        <div v-if="!loading && !is_installed && items.length > 1">
+
+        <div v-if="!loading && !is_installed && items.length > 2 && !hasPro">
             <a style="display: block;width: 800px;margin: 40px auto 0px;max-width: 100%;" target="_blank" href="https://wordpress.org/plugins/fluentform">
                 <img style="max-width: 100%" :src="img_url_path+'fluent_banner.png'"/>
             </a>
+        </div>
+        <div style="margin-top: 100px;" class="text-center" v-else-if="items.length > 3 && !hasPro">
+            <hr />
+            <h3>Love Ninja Tables? Upgrade to Pro and get more exciting features and Performance</h3>
+
+            <a class="button button-primary" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade">Upgrade To Pro</a>
         </div>
     </div>
 </template>
@@ -108,6 +114,7 @@
                     last_page: 1,
                     per_page: 10
                 },
+                hasPro: !!window.ninja_table_admin.hasPro,
                 is_installed: window.ninja_table_admin.isInstalled,
                 img_url_path: window.ninja_table_admin.img_url
             }
@@ -130,6 +137,9 @@
                         this.paginate.current_page = response.current_page;
                         this.paginate.last_page = response.last_page;
                         this.pageLoading = false;
+                        if(response.total) {
+                            this.$emit('total_table', response.total);
+                        }
                     })
                     .fail((error) => {
                         vueNotification.error('Something went wrong, please try again.');

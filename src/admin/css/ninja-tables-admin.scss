@@ -1244,7 +1244,6 @@ ul.ninja_render_features li {
 }
 .ninja_header {
   overflow: hidden;
-  display: flex;
   justify-content: space-between;
   align-items: center;
 
@@ -1379,6 +1378,16 @@ input.form-control::placeholder {
   background: white;
   border: 1px solid red;
   ul.ninja_design_tips_lists {
-    margin: 0px;
+    margin: 0;
+  }
+}
+
+.el-checkbox-group {
+  overflow: hidden;
+  width: 100%;
+  label.el-checkbox {
+    display: inline-block;
+    margin-left: 0px;
+    margin-right: 20px;
   }
 }

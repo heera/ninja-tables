@@ -9,7 +9,7 @@
     display: none;
     visibility: hidden;
   }
-  
+
   &.footable-paging-right {
     .footable-pagination-wrapper {
       text-align: right;
@@ -25,7 +25,7 @@
       text-align: left;
     }
   }
-  
+
   table.footable-details tr th {
       white-space: initial;
       overflow: visible !important;
@@ -49,7 +49,7 @@
       display: none !important;
     }
   }
-  
+
   li.dropdown-header {
     padding-left: 20px;
     padding-bottom: 5px;
@@ -91,20 +91,21 @@
       }
     }
   }
-  
-  &.ninja_table_search_disabled > thead tr.footable-filtering {
+
+  &.ninja_table_search_disabled > thead tr.footable-filtering .footable-filtering-search {
     display: none !important;
     visibility: hidden !important;
   }
   .form-group.footable-filtering-search .input-group-btn > button {
     margin: 0px !important;
+    height: auto !important;
   }
   .form-group.footable-filtering-search input.form-control {
     margin-bottom: 0px !important;
   }
   tbody tr.footable-detail-row {
     > td {
-      padding: 5px !important; 
+      padding: 5px !important;
     }
     td {
       table.footable-details {
@@ -123,14 +124,14 @@
       }
     }
   }
-  
+
   tbody tr td {
     a, p, h1, h2, h3 {
       margin: 0;
       padding: 0;
     }
   }
-  
+
 }
 
 .footable_parent {
@@ -145,7 +146,6 @@
       }
     }
   }
-
 }
 
 .loading_ninja_table1 {
@@ -154,6 +154,18 @@
   background: gray !important;
   table {
     display: none;
+  }
+}
+
+.ninja_custom_select_radio, .ninja_custom_select_checkbox {
+  label {
+    &:nth-child(2) {
+      margin-left: 5px;
+    }
+    margin-right: 10px;
+    &:last-child {
+      margin-right: 5px;
+    }
   }
 }
 

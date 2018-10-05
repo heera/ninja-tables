@@ -54,12 +54,12 @@
                     <i class="el-icon-info el-text-info" />
                 </el-tooltip>
             </template>
-            
             <select v-model="model.data_type">
                 <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey" :key="typeKey">
                     {{ typeName }}
                 </option>
             </select>
+            <p v-show="hasPro">Select HTML Field if you want to add Link, media or any type of html</p>
         </el-form-item>
 
         <!--Date Format -->
@@ -102,7 +102,7 @@
         </el-form-item>
 
         <!--Date Format -->
-        <temmplate v-else-if="model.data_type == 'number' && hasPro">
+        <template v-else-if="model.data_type == 'number' && hasPro">
             <el-form-item>
                 <template slot="label">
                     {{ $t('Thousand Separator') }}
@@ -145,7 +145,7 @@
                     <el-radio label=",">Comma (,)</el-radio>
                 </el-radio-group>
             </el-form-item>
-        </temmplate>
+        </template>
         
         
         <!--Selection Field -->
@@ -332,6 +332,25 @@
                     </el-tooltip>
                 </template>
                 <el-checkbox :disabled="!hasPro" v-model="model.unfilterable" true-label="yes" false-label="no" value="yes" label="Disable frontend search for this column data"></el-checkbox>
+            </el-form-item>
+
+            <el-form-item>
+                <template slot="label">
+                    {{ $t("Sortable") }}
+
+                    <el-tooltip class="item" placement="bottom-start" effect="light">
+                        <div slot="content">
+                            <h3>Sortable</h3>
+
+                            <p>
+                                If You enable this then this column data will not be sortable at the frontend.
+                            </p>
+                        </div>
+
+                        <i class="el-icon-info el-text-info" />
+                    </el-tooltip>
+                </template>
+                <el-checkbox :disabled="!hasPro" v-model="model.unsortable" true-label="yes" false-label="no" value="yes" label="Disable frontend sorting for this column"></el-checkbox>
             </el-form-item>
             
         </div>

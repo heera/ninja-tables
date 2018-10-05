@@ -42,6 +42,7 @@
                 </div>
                 <div class="pull-right">
                     <el-button size="small" type="primary" @click="add()"> {{ $t('Add Data') }}</el-button>
+                    <el-button size="small" type="info" @click="addColumn()"> {{ $t('Add Column') }}</el-button>
                 </div>
             </div>
             <hr/>
@@ -117,7 +118,7 @@
                                 @size-change="handleSizeChange"
                                 @current-change="goToPage"
                                 :current-page.sync="paginate.current_page"
-                                :page-sizes="[10, 20, 50, 100]"
+                                :page-sizes="[10, 20, 50, 100, 500, 2000]"
                                 :page-size="paginate.per_page"
                                 layout="total, sizes, prev, pager, next, jumper"
                                 :total="paginate.total">
@@ -131,9 +132,9 @@
         </template>
         <div v-else-if="!loading" type="warning" style="margin-top: 15px; text-align: center" class="instruction_block">
             <h3>{{ $t('To get started please add table columns') }}</h3>
-            <router-link style="text-decoration: none" :to="{ name: 'data_columns', params: { table_id: tableId } }" class="el-button el-button--primary">
-                <span>Add Columns</span>
-            </router-link>
+            <el-button @click="addColumn()" type="primary">
+                Add Column
+            </el-button>
         </div>
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
@@ -147,10 +148,20 @@
                             @cancel="showColumnEditor = false"
             />
         </el-dialog>
+
+        <el-dialog title="Add Table Column" :visible.sync="columnModal">
+            <columns-editor :model="new_column" :has-pro="has_pro"
+                            @add="addNewColumn()"
+                            @cancel="columnModal = !columnModal"
+            />
+        </el-dialog>
     </div>
 </template>
 <script type="text/babel">
     import Sortable from 'sortablejs';
+
+    import findIndex from 'lodash/findIndex';
+    import snakeCase from 'lodash/snakeCase'
 
     import addDataModal from './_AddDataModal';
     import pagination from '../../common/pagination.vue';
@@ -172,6 +183,16 @@
         props: ['config'],
         data() {
             return {
+                columnModal: false,
+                new_column: {
+                    name: '',
+                    key: '',
+                    breakpoints: '',
+                    data_type: 'text',
+                    dateFormat: '',
+                    header_html_content: "",
+                    enable_html_content: false
+                },
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
                 isCompact: true,
@@ -196,6 +217,7 @@
                 multipleSelection: [],
                 updateItem: null,
                 editIndex: null,
+
                 // is table row soring enabled flag.
                 sorting: false,
                 sortableInstance: null,
@@ -229,7 +251,10 @@
                         this.sortableUpgradeNotice = true
                     }
                 }
-            }
+            },
+            'new_column.name': function () {
+                this.new_column.key = snakeCase(this.new_column.name)
+            },
         },
         computed: {
             columns() {
@@ -398,6 +423,59 @@
                 this.addDataModalTitle = 'Update Row';
             },
 
+            addColumn() {
+                this.columnModal = true;
+            },
+
+            validateColumn(column) {
+                if (!column.name) {
+                    this.$message({
+                        showClose: true,
+                        message: this.$t('Name is required'),
+                        type: 'error'
+                    });
+                    return false;
+                }
+                if (!column.key) {
+                    this.$message({
+                        showClose: true,
+                        message: this.$t('Column Key is required'),
+                        type: 'error'
+                    });
+                    return false;
+                }
+                // check uniqueness
+                let uniqueStatus = findIndex(this.columns, (co) => {
+                    return co.key == column.key
+                });
+                if (uniqueStatus === -1) {
+                    return true;
+                }
+                this.$message({
+                    showClose: true,
+                    message: this.$t('Column Key needs to be unique. Please add a suffix / prefix to make it unique'),
+                    type: 'error'
+                });
+                return false;
+            },
+
+            addNewColumn() {
+                if (this.validateColumn(this.new_column)) {
+                    this.config.columns.push(this.new_column);
+                    this.new_column = {
+                        name: '',
+                        key: '',
+                        breakpoints: '',
+                        data_type: 'text',
+                        dateFormat: '',
+                        header_html_content: "",
+                        enable_html_content: false
+                    };
+                    this.columnModal = false;
+                    this.storeSettings();
+                }
+            },
+
             /**
              * Sortable JS initiate for table
              */
@@ -529,7 +607,6 @@
                     this.showColumnEditor = false;
                     this.currentEditingColumn = false;
                 });
-               
             },
             duplicateData(item) {
                 this.updateItem = Object.assign({}, item.row);

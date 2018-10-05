@@ -16,6 +16,12 @@
                             <i class="dashicons dashicons-album"></i>
                             <span>Rendering Settings</span>
                         </el-menu-item>
+
+                        <el-menu-item  @click="active_menu = 'custom_filters'" index="custom_filters">
+                            <i class="dashicons dashicons-filter"></i>
+                            <span>Custom Filters</span>
+                        </el-menu-item>
+
                         <el-menu-item  @click="active_menu = 'language_settings'" index="language_settings">
                             <i class="dashicons dashicons-translation"></i>
                             <span>Language Settings</span>
@@ -189,6 +195,10 @@
                             </div>
                         </div>
                     </template>
+
+                    <template v-else-if="active_menu == 'custom_filters'">
+                        <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
+                    </template>
                     
                 </el-main>
             </el-container>
@@ -201,18 +211,18 @@
     import findIndex from 'lodash/findIndex';
     import get from 'lodash/get'
     import size from 'lodash/size'
-    import forEach from 'lodash/forEach'
-    import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
     import ColumnsEditor from './includes/ColumnsEditor';
-    
+    import NinjaCustomFilters from './includes/CustomFilter';
+
     import { tableLibs } from '../data/data'
 
     export default {
         name: 'TableConfiguration',
         components: {
             draggable,
-            ColumnsEditor
+            ColumnsEditor,
+            NinjaCustomFilters
         },
         props: ['config'],
         data() {
@@ -271,7 +281,7 @@
         },
         methods: {
             storeSettings() {
-                this.doingAjax = true;;
+                this.doingAjax = true;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'update-table-settings',

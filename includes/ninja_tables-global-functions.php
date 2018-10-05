@@ -32,12 +32,11 @@ if (!function_exists('ninja_table_get_table_settings')) {
 	   
         if (!$tableSettings) {
             $tableSettings = getDefaultNinjaTableSettings();
+            $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
         } else if(empty($tableSettings['css_classes'])) {
 	        $tableSettings['css_classes'] = array();
 	    }
-	    
-	    $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
-        
+
         return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings,
             $tableId);
     }

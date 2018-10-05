@@ -136,13 +136,22 @@ class NinjaTableClass {
 		/**
 		 * Load Tables Migration Class
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesMigration.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesSupsysticTableMigration.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesUltimateTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesSupsysticTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesTablePressMigration.php';
+		
+		
+		
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/I18nStrings.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Lead/LeadFlow.php';
+		
+		/*
+		 * Load Table Importers
+		 */
+		
 
 		$this->loader = new NinjaTablesLoader();
 	}
@@ -171,8 +180,10 @@ class NinjaTableClass {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new \NinjaTablesAdmin( $this->get_plugin_name(), $this->get_version() );
+		$leadActions = new \WPManageNinja\Lead\LeadFlow();
 		$demoPage = new ProcessDemoPage();
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
+		$this->loader->add_action( 'init', $leadActions, 'boot' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
 		
 		$this->loader->add_action('save_post', $plugin_admin, 'saveNinjaTableFlagOnShortCode');

@@ -13,11 +13,13 @@
                         <li>Drag and Drop Table Data Sorting</li>
                         <li>Use Advanced Date Sorting</li>
                         <li>Colspan/Cell Merging Feature</li>
+                        <li>Create Custom Filter UI in Table</li>
                         <li>Use Shortcode in your table cell</li>
                         <li>Use Advanced Data Filtering</li>
                         <li>Use Advanced Customization Features</li>
                         <li>Get VIP Support for any Issue</li>
                         <li>Incremental New Premium Features</li>
+                        <li>And Many More feature</li>
                     </ul>
                 </div>
                 <span slot="footer" class="dialog-footer">

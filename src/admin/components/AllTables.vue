@@ -2,7 +2,6 @@
     <div>
         <div class="row clearfix">
             <h1 class="wp-heading-inline">{{ $t('All Tables') }}</h1>
-            <!-- <bulk-actions style="margin-top: 10px;" @handle="handleBulkActions" /> -->
             <div style="margin-top:7px" class="pull-right">
                 <label class="form_group search_action" for="search">
                     <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString"
@@ -21,7 +20,45 @@
         </div>
         <hr/>
 
-        <list-all-tables :searchString="searchString" :searchAction="searchAction" @selection="makeSelection"/>
+        <list-all-tables
+                v-show="published_tables"
+                @total_table="published_tables = true"
+                :searchString="searchString"
+                :searchAction="searchAction"
+                @selection="makeSelection"/>
+
+        <div v-if="!published_tables" class="ninja_intro_welcome">
+            <h2>Welcome to Ninja Tables</h2>
+            <p>Thank you for installing Ninja Tables - Best Responsive Table Plugin for WordPress</p>
+            <div class="ninja_actions">
+                <el-button type="success" @click="modalVisible = !modalVisible">Click here to create your first Table</el-button>
+                <router-link :to="{ name: 'tools' }">
+                    <el-button type="info">{{ $t( 'Import From CSV' ) }}</el-button>
+                </router-link>
+            </div>
+            <hr />
+
+            <div class="ninja_docs">
+                <h4>Check Ninja Table Documentation:</h4>
+                <ul>
+                    <li>
+                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/configure-tables/?ninja_intro=1">
+                            Demo and Basic Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/setting-up-a-table/?ninja_intro=1">
+                            Setting up a table
+                        </a>
+                    </li>
+                    <li>
+                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/configure-responsive-breakdowns-for-table/?ninja_intro=1">
+                            Make your table looks good in all devices
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
         <el-dialog 
                 :title="$t('Add New Table')" 
@@ -31,26 +68,27 @@
         >
             <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>
         </el-dialog>
+        <lead-modal></lead-modal>
     </div>
 </template>
 
 <script type="text/babel">
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
-    // import BulkActions from "./includes/BulkActions.vue";
-
+    const leadModal = require('./Extras/lead');
 
     export default {
         name: 'all_tables',
         components: {
             'list-all-tables': ListAllTables,
-            'add-table-modal': AddTableModal
+            'add-table-modal': AddTableModal,
+            'lead-modal': leadModal
             //    BulkActions
         },
         data() {
             return {
                 modalVisible: false,
-                name: 'Jewel',
+                published_tables : parseInt(window.ninja_table_admin.published_tables),
                 searchAction: 0,
                 searchString: '',
                 selected: []
@@ -58,7 +96,7 @@
         },
         methods: {
             addTableAction(tableId) {
-                this.$router.push({name: 'data_columns', params: {table_id: tableId}});
+                this.$router.push({name: 'data_items', params: {table_id: tableId}});
                 this.modalVisible = false;
             },
             getData() {
@@ -116,5 +154,21 @@
     label.form_group.search_action {
         padding-top: 0;
         margin-bottom: 0;
+    }
+    .ninja_intro_welcome {
+        max-width: 600px;
+        margin: 45px auto 0px;
+        padding: 30px 20px;
+        background: white;
+        text-align: center;
+        h2 {
+            font-size: 30px;
+        }
+        .ninja_actions {
+            margin-bottom: 30px;
+        }
+        .ninja_docs {
+            text-align: left;
+        }
     }
 </style>

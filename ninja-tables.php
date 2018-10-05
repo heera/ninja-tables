@@ -13,9 +13,9 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Ninja Tables
- * Plugin URI:        https://wpmanageninja.com/ninja-tables/
+ * Plugin URI:        https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
  * Description:       The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
- * Version:           2.3.4
+ * Version:           2.4.0
  * Author:            WPManageNinja
  * Author URI:        https://wpmanageninja.com/
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if (!defined('WPINC')) {
 define('NINJA_TABLES_DIR_URL', plugin_dir_url(__FILE__));
 define('NINJA_TABLES_DIR_PATH', plugin_dir_path(__FILE__));
 define('NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL.'public/');
-define('NINJA_TABLES_VERSION', '2.3.4');
+define('NINJA_TABLES_VERSION', '2.4.0');
 define('NINJA_TABLES_ASSET_VERSION', '2.3.4');
 
 $ninja_table_instances = array();
@@ -40,10 +40,10 @@ $ninja_table_instances = array();
  * The code that runs during plugin activation.
  * This action is documented in includes/NinjaTablesActivator.php
  */
-function activate_ninja_tables()
+function activate_ninja_tables($network_wide)
 {
     require_once plugin_dir_path(__FILE__).'includes/NinjaTablesActivator.php';
-    \NinjaTables\Classes\NinjaTablesActivator::activate();
+    \NinjaTables\Classes\NinjaTablesActivator::activate($network_wide);
 }
 
 register_activation_hook(__FILE__, 'activate_ninja_tables');

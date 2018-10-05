@@ -4,6 +4,7 @@ jQuery(document).ready(function ($) {
             window.ninjaFooTablesInstance = [];
             let footables = $('table.foo-table.ninja_footable');
             let that = this;
+            const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
             $.each(footables, function (index, table) {
                 let $table = $(table);
                 $table.hide();
@@ -42,22 +43,23 @@ jQuery(document).ready(function ($) {
                         column.type = 'text';
                     } else if (column.type == 'numeric') {
                         column.sortValue = function (valueOrElement) {
-                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+
+                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement) || isHTML(valueOrElement)) {
                                 valueOrElement = jQuery(valueOrElement).text();
                             }
                             if (!valueOrElement) {
-                                return;
+                                return '';
                             }
                             valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
-                            if(column.thousandSeparator) {
+                            if (valueOrElement && column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
                             }
-                            if(column.decimalSeparator) {
+                            if (valueOrElement && column.decimalSeparator) {
                                 valueOrElement = valueOrElement.split(column.decimalSeparator).join(".");
                             }
-                            
+
                             let numberValue = Number(valueOrElement);
-                          
+
                             if (isNaN(numberValue)) {
                                 return valueOrElement;
                             }
@@ -90,6 +92,15 @@ jQuery(document).ready(function ($) {
             if (tableConfig.settings.defualt_filter) {
                 enabledSearch = true;
             }
+
+            if (tableConfig.custom_filter_key) {
+                let filterKey = tableConfig.custom_filter_key;
+                initConfig.components = {
+                    filtering: FooTable[filterKey]
+                };
+                enabledSearch = true;
+            }
+
             initConfig.filtering = {
                 "enabled": enabledSearch,
                 "delay": 1,
@@ -113,6 +124,8 @@ jQuery(document).ready(function ($) {
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
+
+
             let $tableInstance = $table
                 .on('postinit.ft.table', () => {
                     this.commonTasks($table, tableConfig);
@@ -132,12 +145,20 @@ jQuery(document).ready(function ($) {
                 "expandAll": tableConfig.settings.expandAll,
                 "empty": tableConfig.settings.i18n.no_result_text
             };
-
             initConfig.sorting = {
                 "enabled": !!tableConfig.settings.sorting
             };
             let enabledSearch = !!tableConfig.settings.filtering;
             if (tableConfig.settings.defualt_filter) {
+                enabledSearch = true;
+            }
+
+
+            if (tableConfig.custom_filter_key) {
+                let filterKey = tableConfig.custom_filter_key;
+                initConfig.components = {
+                    filtering: FooTable[filterKey]
+                };
                 enabledSearch = true;
             }
 
@@ -165,6 +186,7 @@ jQuery(document).ready(function ($) {
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
             jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
+
             let $tableInstance = $table.on('postinit.ft.table', () => {
                 this.commonTasks($table, tableConfig);
             }).footable(initConfig);

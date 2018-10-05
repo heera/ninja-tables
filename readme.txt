@@ -1,15 +1,15 @@
-=== Ninja Tables - Best Responsive Table Plugin for WordPress ===
-Contributors: techjewel, adreastrian
+=== Ninja Tables - Best Responsive WP Data Tables Plugin for WordPress ===
+Contributors: techjewel, adreastrian, heera, wpmanageninja
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  table, WordPress tables Plugin, wp tables, data tables, datatables plugin, csv data
+Tags:  table, WP Data tables, WordPress tables Plugin, Import from TablePress, wp tables, data tables, datatables plugin, csv data
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.3.4
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Responsive Table Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data, ajax. Build Tables without writing any code.
+WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data, ajax. Build Tables without writing any code.
 
 == Description ==
 
@@ -17,15 +17,15 @@ WP Responsive Table Builder Plugin. Unlimited colors and templates, drag-&-drop 
 
 Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
 
-[youtube https://www.youtube.com/watch?v=4J12jxYkhaE]
+[youtube https://www.youtube.com/watch?v=-s0Gi39gOhE]
 
 == For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Online Demo Here</a> ==
 
-== Try my another awesome contact form plugin for free ==
-[WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
-
 == The Easiest Responsive Table Plugin on WordPress ==
 Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
+
+== Live Video Preview ==
+[youtube https://www.youtube.com/watch?v=YVK-4PSAbXw]
 
 == 100+ Table Styles ==
 NinjaTables shipped with 3 most popular CSS library with multiple color schema and table style.
@@ -66,6 +66,9 @@ If you use ULTIMATE TABLES plugin and want to Ninja Tables then We made this pro
 == Import From Data Tables Generator by Supsystic Plugin ==
 If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Data Tables Generator by Supsystic from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Data Tables Generator by Supsystic" that will show all the Supsystic Tables. With a single click you can transfer any table to Ninja Tables. 
 
+== Create WordPress Data Tables in a minute ==
+With Ninja Tables, You can create Data Tables with thousands of rows easily. No Coding required. With our powerful drag and drop features, You can do it easily. It will take less than few minutes.
+
 == <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/" target="blank">Try Pro Add-On</a> ==
 
 == Usage ==
@@ -105,6 +108,11 @@ We always hear our users. We have a dedicated support team. We try to integrate 
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-csv/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from CSV</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-json-file/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from JSON file</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-table-press-plugin/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from Table Press Plugin</a></li></ul>
+
+
+== Try Best Contact From Builder Plugin Too ==
+[WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
+
 
 So, give this plugin a try and check the awesome powerful features and table styles, Let us know what you loved and what else you need more. 
 
@@ -168,6 +176,16 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.4.0 ( Date: October 05, 2018 ) =
+* Added Multi-Site Compitable
+* Added Feature custom Filters
+* Optimize for large amount of Data Tables
+* Now You can add column from Table Rows Screen
+* Sorting Bug fixed for undefined values
+* Typo Fixed
+* Estimated Work hour for this release: 120 Human hours
+* Estimated Coffee consumed: 103 (Thanks to Chanchal)
 
 = 2.3.4 ( Date: August 11, 2018 ) = 
 * Fix Sorting Issue

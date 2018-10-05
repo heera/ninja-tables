@@ -4,3 +4,5 @@ svn.php
 assets/css/*
 assets/js/*
 assets/js/ninja-tables-admin.js
+.idea
+freemius/*

@@ -135,6 +135,7 @@ class NinjaTablePublic {
 			return;
 		}
 		$tableSettings = ninja_table_get_table_settings($table_id, 'public');
+
 		$tableSettings = apply_filters( 'ninja_tables_rendering_table_settings', $tableSettings, $shortCodeData, $table);
 		
 		$tableColumns = ninja_table_get_table_columns($table_id, 'public');
