@@ -26,6 +26,15 @@
     }
   }
 
+
+  .footable-pagination-wrapper .pagination:before {
+    content: none !important;
+  }
+
+  .footable-pagination-wrapper .pagination:after {
+    content: none !important;
+  }
+
   table.footable-details tr th {
       white-space: initial;
       overflow: visible !important;
@@ -99,6 +108,7 @@
   .form-group.footable-filtering-search .input-group-btn > button {
     margin: 0px !important;
     height: auto !important;
+    padding: 6px 12px !important;
   }
   .form-group.footable-filtering-search input.form-control {
     margin-bottom: 0px !important;

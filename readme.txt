@@ -1,15 +1,15 @@
 === Ninja Tables - Best Responsive WP Data Tables Plugin for WordPress ===
 Contributors: techjewel, adreastrian, heera, wpmanageninja
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  table, WP Data tables, WordPress tables Plugin, Import from TablePress, wp tables, data tables, datatables plugin, csv data
+Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.7
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data, ajax. Build Tables without writing any code.
+WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data. #1 Table Plugin, Build Table without writing any code.
 
 == Description ==
 
@@ -176,6 +176,12 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 2.4.1 ( Date: October 08, 2018 ) =
+* Fix Table Search Dropdown UI issue for some theme
+* Make color picker more useful
+* Few UI and UX bug fix
+* Update Nag bug fix
 
 = 2.4.0 ( Date: October 05, 2018 ) =
 * Added Multi-Site Compitable

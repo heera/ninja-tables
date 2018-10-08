@@ -4,16 +4,17 @@
             :visible.sync="leadVisible"
             title="We made a few tweaks to Ninja Tables"
     >
-        <div  v-loading="loading" class="ninja_permission_wrapper">
-            <p>Hey {{display_name}},<br />
-                Never miss an important update - opt in to our security & feature updates notifications. We will never spam / share your data, We will only send emails about important updates</p>
+        <div v-loading="loading" class="ninja_permission_wrapper">
+            <p>Hey {{display_name}},<br/>
+                Never miss an important update - opt in to our security & feature updates notifications. We will never
+                spam / share your data, We will only send emails about important updates</p>
             <el-button @click="optin('yes')" type="success">Opt-in and Continue</el-button>
             <el-button @click="optin('no')" class="pull-right" size="mini">Skip</el-button>
 
             <div class="ninja_permissions">
                 <a @click.prevent="showPermission = !showPermission" href="#">What permissions are being granted?</a>
                 <p v-show="showPermission" class="permissions">
-                    Name, email, Site URL, ip Address and uninstall event
+                    Name, email, Site URL, Plugins info, ip Address and uninstall event
                 </p>
             </div>
         </div>
@@ -47,11 +48,14 @@
                         });
                     })
                     .fail((error) => {
-                        
+
                     })
                     .always(() => {
                         this.leadVisible = false;
                         this.loading = false;
+                        if (status === 'yes') {
+                            window.ninja_table_admin.show_lead_pop_up = false;
+                        }
                     });
             }
         }

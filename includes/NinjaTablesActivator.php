@@ -3,7 +3,7 @@
 /**
  * Fired during plugin activation
  *
- * @link       https://authlab.io
+ * @link       https://wpmanageninja.com
  * @since      1.0.0
  *
  * @package    Wp_table_data_press

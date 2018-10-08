@@ -10,7 +10,7 @@ use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://authlab.io
+ * @link       https://wpmanageninja.com
  * @since      1.0.0
  *
  * @package    ninja-tables

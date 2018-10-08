@@ -139,93 +139,66 @@
                         <h3 class="ninja_inner_title">Search Bar Colors</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                    label="Background"
+                                    v-model="tableSettings.table_search_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_search_color_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_search_color_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                         
                         <h3 class="ninja_inner_title">{{ $t('Table Header Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_header_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_header_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_header_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_header_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_header_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_color_header_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_header_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_header_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_color_header_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                 
                         <h3 class="ninja_inner_title">{{ $t('Table Body Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_color_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="changeColor($event, 'table_color_border')"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_color_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                         <div class="ninja_switch_wrapper">
@@ -239,92 +212,65 @@
                             <h3 class="ninja_inner_title">{{ $t('Odd Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_primary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_primary"></el-color-picker>
-                                        <label>Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Background"
+                                            v-model="tableSettings.table_alt_2_color_primary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_secondary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_secondary"></el-color-picker>
-                                        <label>Text</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Text"
+                                            v-model="tableSettings.table_alt_2_color_secondary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_hover', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_hover"></el-color-picker>
-                                        <label>Hover Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Hover Background"
+                                            v-model="tableSettings.table_alt_2_color_hover"
+                                    ></ninja-color-picker>
                                 </div>
                             </div>
                             <h3 class="ninja_inner_title">{{ $t('Event Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_primary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_primary"></el-color-picker>
-                                        <label>Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Background"
+                                            v-model="tableSettings.table_alt_color_primary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_secondary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_secondary"></el-color-picker>
-                                        <label>Text</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Text"
+                                            v-model="tableSettings.table_alt_color_secondary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_hover', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_hover"></el-color-picker>
-                                        <label>Hover Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Hover Background"
+                                            v-model="tableSettings.table_alt_color_hover"
+                                    ></ninja-color-picker>
                                 </div>
                             </div>
                         </div>
                         <h3 class="ninja_inner_title">{{ $t('Footer Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_bg', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_bg"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_footer_bg"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_active', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_active"></el-color-picker>
-                                    <label>Active</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Active"
+                                        v-model="tableSettings.table_footer_active"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_footer_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                     </div>
@@ -444,11 +390,13 @@
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
+    import NinjaColorPicker from './Extras/ColorPicker';
     export default {
         name: 'table_preview',
         props: ['config'],
         components: {
-            SortableUpgradeNotice
+            SortableUpgradeNotice,
+            NinjaColorPicker
         },
         data() {
             return {

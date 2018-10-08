@@ -5,7 +5,7 @@ class LeadOptIn
 {
 	private $apiUrl = 'https://wpmanageninja.com/?wpmn_api=product_users';
 	private $options;
-	private $dismissTime = 60; // 1 minute for now
+	private $dismissTime = 2592000; // 30 days
 	
 	public function __construct($optionArray) {
 		$this->options = $optionArray;
@@ -61,13 +61,17 @@ class LeadOptIn
 			'display_name' => $currentUser->display_name,
 			'email' => $currentUser->user_email,
 			'site_url' => site_url(),
-			'request_from' => $this->get_request_from()
+			'request_from' => $this->get_request_from(),
+            'plugins' => $this->getPluginsInfo(),
+            'ninja_doing_action' => 'activate'
 		);
-		$dataString = http_build_query($data);
-		wp_remote_get($this->apiUrl.'&'.$dataString, array(
-			'sslverify' => false
+		wp_remote_post($this->apiUrl, array(
+            'method' => 'POST',
+            'sslverify' => false,
+            'body' => $data
  		));
 	}
+
 
 	// Function to get the client IP address
 	public function get_request_from() {
@@ -89,4 +93,21 @@ class LeadOptIn
 		return $ipaddress;
 	}
 
+
+	private function getPluginsInfo()
+    {
+        $activePlugins = get_option('active_plugins', array());
+        $inActivePlugins = array();
+        $all_plugins = get_plugins();
+        foreach ($all_plugins as $pluginName => $plugin) {
+            if(!in_array($pluginName, $activePlugins)) {
+                $inActivePlugins[] = $pluginName;
+            }
+        }
+
+        return array(
+            'actives' => $activePlugins,
+            'inactives' => $inActivePlugins
+        );
+    }
 }

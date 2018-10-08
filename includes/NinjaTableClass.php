@@ -1,18 +1,19 @@
-<?php namespace NinjaTables\Classes;
-
+<?php
+namespace NinjaTables\Classes;
 /**
  * The file that defines the core plugin class
  *
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://authlab.io
+ * @link       https://wpmanageninja.com
  * @since      1.0.0
  *
  * @package    Wp_table_data_press
  * @subpackage Wp_table_data_press/includes
  */
 use NinjaTable\FrontEnd\NinjaTablePublic;
+use NinjaTables\Admin\DeactivationMessage;
 
 /**
  * The core plugin class.
@@ -126,6 +127,7 @@ class NinjaTableClass {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/NinjaTablesAdmin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/DeactivationMessage.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -210,7 +212,14 @@ class NinjaTableClass {
 			}
 			return $updates;
 		}, 999, 1);
-		
+
+
+		global $pagenow;
+        $showMessageBox = new DeactivationMessage();
+		if($pagenow == 'plugins.php') {
+            $this->loader->add_action('admin_footer', $showMessageBox, 'addPluginDeactivationMessage');
+        }
+        $this->loader->add_action('wp_ajax_ninja-tables_deactivate_feedback', $showMessageBox, 'broadcastFeedback');
 	}
 
 	/**
@@ -280,4 +289,9 @@ class NinjaTableClass {
 	public function get_version() {
 		return $this->version;
 	}
+
+
+	public function addPluginDeactivationMessage() {
+
+    }
 }
