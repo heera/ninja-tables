@@ -137,39 +137,19 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 
 function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false)
 {
-    $query = ninja_tables_DbTable()->where('table_id', $tableId);
+    $providerName = sanitize_title(
+        get_post_meta($tableId, 'ninja_tables_data_provider', true), 'default', 'display'
+    );
 
-    if ($defaultSorting == 'new_first') {
-        $query->orderBy('id', 'desc');
-    } else if ($defaultSorting == 'manual_sort') {
-        $query->orderBy('position', 'asc');
-    } else {
-        $query->orderBy('id', 'asc');
-    }
-
-    if($limit) {
-	    $query->limit($limit);
-    }
-    
-    $data = $query->get();
-
-    $formatted_data = array();
-    foreach ($data as $item) {
-        $values = json_decode($item->value, true);
-        $values = array_map('do_shortcode', $values);
-        $formatted_data[] = $values;
-    }
-
-    // Please do not hook this filter unless you don't know what you are doing.
-    // Hook ninja_tables_get_public_data instead.
-    // You should hook this if you need to cache your filter modifications
-    $formatted_data = apply_filters('ninja_tables_get_raw_table_data', $formatted_data, $tableId);
-
-    if (!$disableCache) {
-        update_post_meta($tableId, '_ninja_table_cache_object', $formatted_data);
-    }
-
-    return $formatted_data;
+    return apply_filters(
+        // 'ninja_tables_fetching_table_rows_csv',
+        'ninja_tables_fetching_table_rows_'.$providerName,
+        array(),
+        $tableId,
+        $defaultSorting,
+        $disableCache,
+        $limit
+    );
 }
 
 function ninjaTablesClearTableDataCache($tableId)

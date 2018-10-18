@@ -136,6 +136,21 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/NinjaTablePublic.php';
 
 		/**
+		 * The class is responsible for providing data for the table (default data source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/DefaultProvider.php';
+
+		/**
+		 * The trait is responsible for parsing csv data into array.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/ParseCsvToArray.php';
+
+		/**
+		 * The class is responsible for providing data for the table (google spreadsheet data source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/GoogleProvider.php';
+
+		/**
 		 * Load Tables Migration Class
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesMigration.php';
@@ -230,24 +245,38 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new NinjaTablePublic( $this->get_plugin_name(), $this->get_version() );
+
+		$plugin_public = new NinjaTablePublic($this->get_plugin_name(), $this->get_version());
+
 		$this->loader->add_action('init', $plugin_public, 'register_table_render_functions');
+
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueueNinjaTableScript', 100);
 		
-		$this->loader->add_action('wp_ajax_wp_ajax_ninja_tables_public_action',
+		$this->loader->add_action(
+			'wp_ajax_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
 		
-		$this->loader->add_action('wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
+		$this->loader->add_action(
+			'wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
 		
 		// run foo table
-		$this->loader->add_action('ninja_tables-render-table-footable', 'NinjaTable\TableDrivers\NinjaFooTable', 'run');
-		$this->loader->add_action('ninja_tables_inside_table_render', 'NinjaTable\TableDrivers\NinjaFooTable', 'getTableHTML', 10, 2);
-		
+		$this->loader->add_action(
+			'ninja_tables-render-table-footable',
+			'NinjaTable\TableDrivers\NinjaFooTable',
+			'run'
+		);
+
+		$this->loader->add_action('ninja_tables_inside_table_render',
+			'NinjaTable\TableDrivers\NinjaFooTable',
+			'getTableHTML',
+			10,
+			2
+		);
 	}
 
 	/**

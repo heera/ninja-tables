@@ -11,6 +11,8 @@
  */
 
 use NinjaTables\Classes\ArrayHelper;
+use NinjaTable\FrontEnd\DataProviders\DefaultProvider;
+use NinjaTable\FrontEnd\DataProviders\GoogleProvider;
 
 /**
  * The public-facing functionality of the plugin.
@@ -49,12 +51,15 @@ class NinjaTablePublic {
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $version )
+	{
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
+		$this->registerDataProviders();
 	}
 	
-	public function register_ajax_routes() {
+	public function register_ajax_routes()
+	{
 		$validRoutes = array(
 			'get-all-data'    => 'getAllData',
 		);
@@ -104,13 +109,15 @@ class NinjaTablePublic {
 		wp_die();
 	}
     
-	public function register_table_render_functions() {
+	public function register_table_render_functions()
+	{
 		// register the shortcode 
 		$shortCodeBase = apply_filters('ninja_tables_shortcode_base', 'ninja_tables');
 		add_shortcode( $shortCodeBase, array($this, 'render_ninja_table_shortcode'));
 	}
 	
-	public function render_ninja_table_shortcode($atts, $content = '') {
+	public function render_ninja_table_shortcode($atts, $content = '')
+	{
 		
 		$shortCodeDefaults = array(
 			'id' => false,
@@ -172,7 +179,8 @@ class NinjaTablePublic {
 		return ob_get_clean();
 	}
 	
-	public function enqueueNinjaTableScript() {
+	public function enqueueNinjaTableScript()
+	{
 		global $post;
 		if(is_a( $post, 'WP_Post' ) && get_post_meta($post->ID, '_has_ninja_tables', true)) {
 			$styleSrc = NINJA_TABLES_DIR_URL . "assets/css/ninjatables-public.css";
@@ -187,5 +195,11 @@ class NinjaTablePublic {
 				'all'
 			);
 		}
+	}
+
+	protected function registerDataProviders()
+	{
+		(new DefaultProvider)->boot();
+		(new GoogleProvider)->boot();
 	}
 }
