@@ -141,14 +141,9 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/DefaultProvider.php';
 
 		/**
-		 * The trait is responsible for parsing csv data into array.
+		 * The class is responsible for providing external data (CSV/Google Spreadsheet Data Source).
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/ParseCsvToArray.php';
-
-		/**
-		 * The class is responsible for providing data for the table (google spreadsheet data source).
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/GoogleProvider.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/CsvProvider.php';
 
 		/**
 		 * Load Tables Migration Class

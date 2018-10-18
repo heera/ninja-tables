@@ -2,9 +2,30 @@
 
 namespace NinjaTable\FrontEnd\DataProviders;
 
-trait ParseCsvToArray
+use NinjaTable\FrontEnd\DataProviders\ParseCsvToArray;
+
+class CsvProvider
 {
-	public function csvToArray($url, $delimiter = ',')
+	public function boot()
+	{
+		add_filter('ninja_tables_fetching_table_rows_csv', array($this, 'data'), 10, 5);
+	}
+
+	public function data($data, $tableId, $defaultSorting, $disableCache, $limit)
+	{
+		// The following url will be an empty string in real, using one for testing
+		$url = 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv';
+
+		$url = sanitize_title(
+	        get_post_meta($tableId, 'ninja_tables_data_provider_url', true), $url, 'display'
+	    );
+
+	    // TODO: Maybe validate url first
+
+	    return $url ? $this->getDataFromCsv($tableId, $url) : $data;
+	}
+
+	protected function csvToArray($url, $delimiter = ',')
 	{
 	    $header = NULL;
 	    $data = array();
@@ -22,7 +43,7 @@ trait ParseCsvToArray
 	    return array($header, $data);
 	}
 
-	public function getDataFromCsv($tableId, $url, $delimiter = ',')
+	protected function getDataFromCsv($tableId, $url, $delimiter = ',')
 	{
 		$columns = array();
 		foreach(ninja_table_get_table_columns($tableId) as $column) {
