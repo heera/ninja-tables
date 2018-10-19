@@ -2,7 +2,7 @@
 
 namespace NinjaTable\FrontEnd\DataProviders;
 
-use NinjaTable\FrontEnd\DataProviders\ParseCsvToArray;
+use League\Csv\Reader;
 
 class CsvProvider
 {
@@ -25,25 +25,7 @@ class CsvProvider
 	    return $url ? $this->getDataFromCsv($tableId, $url) : $data;
 	}
 
-	protected function csvToArray($url, $delimiter = ',')
-	{
-	    $header = NULL;
-	    $data = array();
-	    if (($handle = fopen($url, 'r')) !== FALSE) {
-	        while (($row = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
-	            if(!$header) {
-	            	$header = $row;
-	            } else {
-	            	$data[] = array_combine($header, $row);
-	            }
-	        }
-	        fclose($handle);
-	    }
-
-	    return array($header, $data);
-	}
-
-	protected function getDataFromCsv($tableId, $url, $delimiter = ',')
+	protected function getDataFromCsv($tableId, $url)
 	{
 		$columns = array();
 		foreach(ninja_table_get_table_columns($tableId) as $column) {
@@ -51,16 +33,25 @@ class CsvProvider
 			$columns[$column['name']] = $column;
 		}
 
-		list($header, $data) = $this->csvToArray($url);
+		return array_map(function($row) use ($columns) {
+			$newRow = array();
+			foreach ($columns as $key => $column) {
+				$newRow[$column['key']] = $row[$key];
+			}
+			return $newRow;
+		}, $this->csvToArray($url));
+	}
 
-		if ($data) {
-			return array_map(function($row) use ($columns) {
-				$newRow = array();
-				foreach ($columns as $key => $column) {
-					$newRow[$column['key']] = $row[$key];
-				}
-				return $newRow;
-			}, $data);
-		}
+	protected function csvToArray($url)
+	{
+		$reader = Reader::createFromString(file_get_contents($url));
+
+	    $data = array();
+		$header = $reader->fetchOne();
+		foreach ($reader->setOffset(1)->fetch() as $row) {
+            $data[] = array_combine($header, $row);
+        }
+
+	    return $data;
 	}
 }
