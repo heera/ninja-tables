@@ -17,10 +17,8 @@ class CsvProvider
 		$url = 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv';
 
 		$url = sanitize_title(
-	        get_post_meta($tableId, 'ninja_tables_data_provider_url', true), $url, 'display'
+	        get_post_meta($tableId, '_ninja_tables_data_provider_url', true), $url, 'display'
 	    );
-
-	    // TODO: Maybe validate url first
 
 	    return $url ? $this->getDataFromCsv($tableId, $url) : $data;
 	}
@@ -29,7 +27,10 @@ class CsvProvider
 	{
 		$columns = array();
 		foreach(ninja_table_get_table_columns($tableId) as $column) {
-			// Should be original_name instead of name
+			// Should be original_name instead of name for real
+			// $columns[$column['original_name']] = $column;
+			
+			// For dev test, use the previous one once it gets implemented
 			$columns[$column['name']] = $column;
 		}
 
