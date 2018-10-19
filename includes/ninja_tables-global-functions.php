@@ -2,7 +2,7 @@
 /**
  * Globally-accessible functions
  *
- * @link           https://wpmanageninja.com
+ * @link           https://authlab.io
  * @since          1.0.0
  *
  * @package        wp_table_data_press
@@ -138,7 +138,7 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false)
 {
     $providerName = sanitize_title(
-        get_post_meta($tableId, 'ninja_tables_data_provider', true), 'default', 'display'
+        get_post_meta($tableId, '_ninja_tables_data_provider', true), 'default', 'display'
     );
 
     return apply_filters(
