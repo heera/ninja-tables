@@ -19,14 +19,13 @@
                    <input type="text" id="name" class="form-control" v-model="table.post_title">
                </div>
                <div class="form-group">
-                   <label>{{ $t('Description') }}</label>
-                   <wp_editor v-model="table.post_content"></wp_editor>
+                   <label for="editor">{{ $t('Description') }}</label>
+                   <wp_editor id="editor" v-model="table.post_content"></wp_editor>
                </div>
-               <input
-               type="text"
-               class="form-control"
-               v-model="table.remote_url"
-               placeholder="Enter Remote URL ..." />
+               <div class="form-group">
+                   <label for="remote_url">{{ $t('Remote URL') }}</label>
+	               <input id="remote_url" type="text" class="form-control" v-model="table.remote_url" />
+	           </div>
            </div>
         </div>
 
