@@ -1,34 +1,49 @@
 <template>
-    <!-- MODAL -->
-   <div>
-       <div class="ninja_modal-body">
-           <div class="form-group">
-               <label for="name">{{ $t('Title') }}</label>
-               <input type="text" id="name" class="form-control" v-model="table.post_title">
+    <el-tabs type="border-card" v-model="activeTabName" @tab-click="handleTabClick">
+        <el-tab-pane name='default'>
+            <span slot="label"><i class="el-icon-setting"></i> Default</span>
+            <div>
+               <div class="ninja_modal-body">
+                   <div class="form-group">
+                       <label for="name">{{ $t('Title') }}</label>
+                       <input type="text" id="name" class="form-control" v-model="table.post_title">
+                   </div>
+                   <div class="form-group">
+                       <label>{{ $t('Description') }}</label>
+                       <wp_editor v-model="table.post_content"></wp_editor>
+                   </div>
+               </div>
+               <div class="modal-footer">
+                   <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
+                   <button class="btn btn-primary btn-flex" @click="addTable">
+                       <span v-if="table.ID">{{ $t('Update') }}</span>
+                       <span v-else>{{ $t('Add') }}</span>
+                       <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+                   </button>
+               </div>
            </div>
-           <div class="form-group">
-               <label>{{ $t('Description') }}</label>
-               <wp_editor v-model="table.post_content"></wp_editor>
-           </div>
-       </div>
-       <div class="modal-footer">
-           <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
-           <button class="btn btn-primary btn-flex" @click="addTable">
-               <span v-if="table.ID">{{ $t('Update') }}</span>
-               <span v-else>{{ $t('Add') }}</span>
-               <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-           </button>
-       </div>
-   </div>
-    <!-- END OF MODAL -->
+        </el-tab-pane>
+
+        <el-tab-pane name='google_spread_sheet'>
+            <span slot="label"><i class="el-icon-document"></i> Link To Google Spreadsheet</span>
+            <data-source-step :steps="['Spredsheet URL', 'Column Settings']" type="google-csv"/>
+        </el-tab-pane>
+
+        <el-tab-pane name='csv'>
+            <span slot="label"><i class="el-icon-upload2"></i> Link To CSV</span>
+            <data-source-step :steps="['Remote URL', 'Column Settings']" type="csv"/>
+        </el-tab-pane>
+    </el-tabs>
 </template>
 
 <script type="text/babel">
-    import wp_editor from '../../common/_wp_editor'
+    import wp_editor from '../../common/_wp_editor';
+    import DataSourcceSettingsStep from './includes/DataSourcceSettingsStep';
     export default {
         name: 'add_table',
         components: {
-            wp_editor: wp_editor  
+            wp_editor: wp_editor,
+            'data-source-step': DataSourcceSettingsStep,
         },
         props: { 
             table: {
@@ -37,13 +52,14 @@
                     return {
                         ID: null,
                         post_title: '',
-                        post_content: ''
+                        post_content: '',
                     }
                 }
             }
         },
         data() {
             return {
+                activeTabName: 'default',
                 btnLoading: false,
                 editorOption: {
                     modules: {
@@ -61,6 +77,11 @@
             }
         },
         methods: {
+            handleTabClick(tab, event) {
+                setTimeout(() => {
+                    jQuery(tab.$el).find('input:first').focus();
+                }, 0);
+            },
             addTable: function() {
                 this.btnLoading = true;
                 let data = {
