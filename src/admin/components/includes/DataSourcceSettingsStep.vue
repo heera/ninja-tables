@@ -23,7 +23,7 @@
                    <wp_editor v-model="table.post_content"></wp_editor>
                </div>
                <div class="form-group">
-                   <label for="remote_url">{{ $t('Remote URL') }}</label>
+                   <label for="remote_url">{{ $t('Data Source URL') }}</label>
 	               <input id="remote_url" type="text" class="form-control" v-model="table.remote_url" />
 	           </div>
            </div>
