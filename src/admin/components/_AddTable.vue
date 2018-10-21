@@ -27,13 +27,13 @@
         <el-tab-pane name='google_spread_sheet'>
             <span slot="label"><i class="el-icon-document"></i> Link To Google Spreadsheet</span>
             <data-source-step
-            type="google-csv" :steps="['Spredsheet URL', 'Column Settings']" :cancel="closeModal" />
+            type="google-csv" :steps="['Table Settings', 'Column Settings']" :cancel="closeModal" />
         </el-tab-pane>
 
         <el-tab-pane name='csv'>
-            <span slot="label"><i class="el-icon-upload2"></i> Link To CSV</span>
+            <span slot="label"><i class="el-icon-upload2"></i> Link To An External CSV</span>
             <data-source-step
-            type="csv" :steps="['Remote URL', 'Column Settings']" :cancel="closeModal" />
+            type="csv" :steps="['Table Settings', 'Column Settings']" :cancel="closeModal" />
         </el-tab-pane>
     </el-tabs>
 </template>
