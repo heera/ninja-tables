@@ -19,8 +19,8 @@
                    <input type="text" id="name" class="form-control" v-model="table.post_title">
                </div>
                <div class="form-group">
-                   <label for="editor">{{ $t('Description') }}</label>
-                   <wp_editor id="editor" v-model="table.post_content"></wp_editor>
+                   <label>{{ $t('Description') }}</label>
+                   <wp_editor v-model="table.post_content"></wp_editor>
                </div>
                <div class="form-group">
                    <label for="remote_url">{{ $t('Remote URL') }}</label>
@@ -52,6 +52,11 @@
         :loading="btnLoading"
         style="margin-top: 12px; float: right;"
         @click="nextStep">{{ activeStep == 0 ? $t('Next') : $t('Save') }}</el-button>
+
+        <el-button
+        type="danger"
+        style="margin-top: 12px; float: right;"
+        @click="closeModal">{{ $t('Cancel') }}</el-button>
 	</div>
 </template>
 
@@ -61,6 +66,10 @@
 		name: 'Remote-Data-Source',
 		components: { wp_editor },
 		props: {
+            cancel: {
+                type: Function,
+                required: true
+            },
 			type: {
 				type: String,
 				required: true
@@ -119,6 +128,16 @@
                 	this.$message({showClose: true, message: message, type: 'error'});
                 })
                 .always(() => this.btnLoading = false);
+            },
+            closeModal() {
+                this.table = {
+                    post_title: '',
+                    post_content: '',
+                    remote_url: 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv',
+                    column_mapings: null
+                };
+                this.activeStep = 0;
+                this.cancel();
             },
 		}
 	};
