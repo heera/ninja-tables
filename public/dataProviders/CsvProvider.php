@@ -9,26 +9,45 @@ class CsvProvider
 	public function boot()
 	{
 		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 2);
+		add_filter('ninja_tables_get_table_settings', array($this, 'getTableSettings'));
 		add_filter('ninja_tables_fetching_table_rows_csv', array($this, 'data'), 10, 5);
 	}
 
 	public function getTableData($data, $tableId)
 	{
 		try {
+			$newData = [];
 			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
-		
 			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
-				$response[] = array(
-					'id' => ++$key,
+				$newData[] = array(
+					'id' => $key++,
 					'values' => $value,
 					'position' => null,
 				);
 			}
 
-			return $response ? $response : $data;
+			return $newData ? $newData : $data;
 			
 		} catch (\Exception $e) {
 			return $data;
+		}
+	}
+
+	public function getTableSettings($table)
+	{
+		try {
+			$provider = $providerName = sanitize_title(
+				get_post_meta($table->ID, '_ninja_tables_data_provider', true), 'default', 'display'
+			);
+
+			if ($provider == 'csv') {
+				$table->isEditable = false;
+			}
+			
+			return $table;
+			
+		} catch (\Exception $e) {
+			return $table;
 		}
 	}
 

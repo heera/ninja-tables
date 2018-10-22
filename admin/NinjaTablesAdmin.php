@@ -698,17 +698,18 @@ class NinjaTablesAdmin
     public function getTableSettings()
     {
         $tableID = intval($_REQUEST['table_id']);
+        
         $table = get_post($tableID);
-        $tableColumns = ninja_table_get_table_columns($tableID, 'admin');
+        
+        $table->isEditable = true;
 
-        $tableSettings = ninja_table_get_table_settings($tableID, 'admin');
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
 
         wp_send_json(array(
-            'columns' => $tableColumns,
-            'settings' => $tableSettings,
-            'table' => $table,
             'preview_url' => site_url('?ninjatable_preview=' . $tableID),
+            'columns' => ninja_table_get_table_columns($tableID, 'admin'),
+            'settings' => ninja_table_get_table_settings($tableID, 'admin'),
+            'table' => apply_filters('ninja_tables_get_table_settings', $table),
         ), 200);
     }
 
@@ -845,6 +846,7 @@ class NinjaTablesAdmin
             );
         }
 
+        // External data source providers need to provide the data from somewhere else
         $response = apply_filters('ninja_tables_get_table_data', $response, $tableId);
         
         wp_send_json(array(

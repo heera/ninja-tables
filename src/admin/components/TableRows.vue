@@ -15,7 +15,7 @@
                             :type="dataModalType"
             ></add_data_modal>
 
-            <div class="tablenav top">
+            <div v-if="config.table.isEditable" class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <label for="bulk-action-selector-top" class="screen-reader-text">
                         {{ $t('Select bulk action') }}
@@ -59,6 +59,7 @@
                         @selection-change="handleSelectionChange"
                 >
                     <el-table-column
+                            v-if="config.table.isEditable"
                             type="selection"
                             fixed
                             width="55">
@@ -75,6 +76,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column
+                            v-if="config.table.isEditable"
                             fixed="right"
                             label="Actions"
                             class-name="actions"
@@ -104,7 +106,7 @@
                 </el-table>
 
                 <div class="tablenav bottom">
-                    <div class="alignleft actions bulkactions">
+                    <div v-if="config.table.isEditable" class="alignleft actions bulkactions">
                         <label for="bulk-action-selector-top" class="screen-reader-text">
                             {{ $t('Select bulk action') }}
                         </label>
