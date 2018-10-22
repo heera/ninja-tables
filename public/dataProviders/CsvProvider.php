@@ -8,17 +8,33 @@ class CsvProvider
 {
 	public function boot()
 	{
+		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 2);
 		add_filter('ninja_tables_fetching_table_rows_csv', array($this, 'data'), 10, 5);
+	}
+
+	public function getTableData($data, $tableId)
+	{
+		try {
+			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
+		
+			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
+				$response[] = array(
+					'id' => ++$key,
+					'values' => $value,
+					'position' => null,
+				);
+			}
+
+			return $response ? $response : $data;
+			
+		} catch (\Exception $e) {
+			return $data;
+		}
 	}
 
 	public function data($data, $tableId, $defaultSorting, $disableCache, $limit)
 	{
-		// The following url will be an empty string in real, using one for testing
-		$url = 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv';
-
-		$url = sanitize_title(
-	        get_post_meta($tableId, '_ninja_tables_data_provider_url', true), $url, 'display'
-	    );
+		$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
 
 	    return $url ? $this->getDataFromCsv($tableId, $url) : $data;
 	}
@@ -27,11 +43,7 @@ class CsvProvider
 	{
 		$columns = array();
 		foreach(ninja_table_get_table_columns($tableId) as $column) {
-			// Should be original_name instead of name for real
-			// $columns[$column['original_name']] = $column;
-			
-			// For dev test, use the previous one once it gets implemented
-			$columns[$column['name']] = $column;
+			$columns[$column['original_name']] = $column;
 		}
 
 		return array_map(function($row) use ($columns) {

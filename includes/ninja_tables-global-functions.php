@@ -142,7 +142,6 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
     );
 
     return apply_filters(
-        // 'ninja_tables_fetching_table_rows_csv',
         'ninja_tables_fetching_table_rows_'.$providerName,
         array(),
         $tableId,

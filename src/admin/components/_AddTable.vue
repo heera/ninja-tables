@@ -26,14 +26,12 @@
 
         <el-tab-pane name='google_spread_sheet'>
             <span slot="label"><i class="el-icon-document"></i> Link To Google Spreadsheet</span>
-            <data-source-step
-            type="google-csv" :steps="['Table Settings', 'Column Settings']" :cancel="closeModal" />
+            <data-source-step type="google-csv" :tableCreated="fireTableCreated" />
         </el-tab-pane>
 
         <el-tab-pane name='csv'>
             <span slot="label"><i class="el-icon-upload2"></i> Link To An External CSV</span>
-            <data-source-step
-            type="csv" :steps="['Table Settings', 'Column Settings']" :cancel="closeModal" />
+            <data-source-step type="csv" :tableCreated="fireTableCreated" />
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -104,7 +102,7 @@
                         if(this.table.ID) {
                             this.closeModal();
                         } else {
-                            this.$emit('table_inserted', response.table_id);
+                            this.fireTableCreated(response.table_id);
                         }
                     })
                     .fail( (error) => {
@@ -131,7 +129,10 @@
             },
             onEditorChange({ editor, html, text }) {
                 this.table.post_content = html
-            }
+            },
+            fireTableCreated(table_id) {
+                this.$emit('table_inserted', table_id);
+            },
         }
     }
 </script> 
