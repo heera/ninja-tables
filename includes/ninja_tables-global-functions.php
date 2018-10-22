@@ -37,9 +37,8 @@ if (!function_exists('ninja_table_get_table_settings')) {
 	        $tableSettings['css_classes'] = array();
 	    }
 
-        return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings,
-            $tableId);
-    }
+        return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings, $tableId);
+    }  
 }
 
 
