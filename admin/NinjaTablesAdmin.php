@@ -323,8 +323,7 @@ class NinjaTablesAdmin
             'save_custom_css' => 'saveCustomCSS',
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
-            'get-external-data-source' => 'getExternalDataSource',
-            'save-external-data-source' => 'saveExternalDataSource'
+            'set-external-data-source' => 'createTableWithExternalDataSource',
         );
 
         $requested_route = $_REQUEST['target_action'];
@@ -384,8 +383,14 @@ class NinjaTablesAdmin
             ), 423);
         }
 
-        $postId = intval($_REQUEST['tableId']);
+        wp_send_json(array(
+            'table_id' => $this->saveTable($postId = intval($_REQUEST['tableId'])),
+            'message' => __('Table '. ($postId ? 'updated' : 'created') .' successfully.', 'ninja-tables')
+        ), 200);
+    }
 
+    protected function saveTable($postId)
+    {
         $attributes = array(
             'post_title' => sanitize_text_field($_REQUEST['post_title']),
             'post_content' => wp_kses_post($_REQUEST['post_content']),
@@ -395,21 +400,12 @@ class NinjaTablesAdmin
 
         if (!$postId) {
             $postId = wp_insert_post($attributes);
-
-            wp_send_json(array(
-                'message' => __('Successfully added table.', 'ninja-tables'),
-                'table_id' => $postId
-            ), 200);
         } else {
             $attributes['ID'] = $postId;
             wp_update_post($attributes);
-
-            wp_send_json(array(
-                'message' => __('Successfully updated table.',
-                    'ninja-tables'),
-                'table_id' => $postId
-            ), 200);
         }
+
+        return $postId;
     }
 
     public function importTable()
@@ -849,6 +845,8 @@ class NinjaTablesAdmin
             );
         }
 
+        $response = apply_filters('ninja_tables_get_table_data', $response, $tableId);
+        
         wp_send_json(array(
             'total' => $total,
             'per_page' => $perPage,
@@ -1682,36 +1680,39 @@ class NinjaTablesAdmin
         add_option($option, true);
     }
 
-    public function getExternalDataSource()
+    public function createTableWithExternalDataSource()
     {
-        // Validate
-        if(empty($title = sanitize_text_field($_REQUEST['data']['post_title']))) {
+        // Validate Title
+        if(empty($title = sanitize_text_field($_REQUEST['post_title']))) {
             $messages['title'] = __('The title field is required.', 'ninja-tables');
         }
-        if(empty($url = esc_url_raw($_REQUEST['data']['remote_url'])) || !is_valid_url($url)) {
+
+        // Validate URL
+        if(empty($url = esc_url_raw($_REQUEST['remote_url'])) || !is_valid_url($url)) {
             $messages['url'] = __('The url field is empty or invalid.', 'ninja-tables');
         }
 
+        // If Validation failed
         if (array_filter($messages)) {
             wp_send_json_error(array('message' => $messages), 422);
             wp_die();
         }
 
-        // Validation passed, ensure the correct url if requesting goggle spreadsheet
+        // Ensure the correct url if requesting goggle spreadsheet
         if(($type = $_REQUEST['type']) == 'google-csv') {
             $parsedUrl = parse_url($url);
             $path = substr($parsedUrl['path'], 0, strrpos($parsedUrl['path'], '/'));
             $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $path . '/pub?output=csv';
         }
 
-        // Make sure no occured from wp_remote_get
+        // Make sure no error occured from wp_remote_get
         $response = wp_remote_get($url);
         if (is_wp_error($response)) {
-            wp_send_json_error([
+            wp_send_json_error(array(
                 'message' => array(
                     'error' => __($response->get_error_message(), 'ninja-tables'),
                 )
-            ], 400);
+            ), 400);
             wp_die();
         }
 
@@ -1722,26 +1723,42 @@ class NinjaTablesAdmin
                 $headers = League\Csv\Reader::createFromString(
                     $response['body']
                 )->fetchOne();
-                wp_send_json_success(array_combine($headers, $headers));
+                
+                $headers = $this->formatHeader($headers);
+
+                foreach ($headers as $key => $column) {
+                    $columns[] = array(
+                        'name' => $column,
+                        'key' => $key,
+                        'breakpoints' => null,
+                        'data_type' => 'text',
+                        'dateFormat' => null,
+                        'header_html_content' => null,
+                        'enable_html_content' => false,
+                        'contentAlign' => null,
+                        'textAlign' => null,
+                        'original_name' => $column
+                    );
+                }
+
+                ($tableId = $this->saveTable(intval($_REQUEST['tableId'])))
+                && update_post_meta($tableId, '_ninja_table_columns', $columns)
+                && update_post_meta($tableId, '_ninja_tables_data_provider', 'csv')
+                && update_post_meta($tableId, '_ninja_tables_data_provider_url', $url)
+                && wp_send_json_success(array('table_id' => $tableId));
+
             } else {
-                wp_send_json_error([
+                wp_send_json_error(array(
                     'message' => array(
                         'error' => __(
                             'Expected CSV but received invalid data type from the given url.',
                             'ninja-tables'
                         ),
                     )
-                ], 400);
+                ), 400);
             }
         }
         // elseif(Maybe for other data types) 
-        wp_die();
-    }
-
-    public function saveExternalDataSource()
-    {
-        // TODO: Implement the column structure and save
-        wp_send_json_success($_REQUEST);
         wp_die();
     }
 }
