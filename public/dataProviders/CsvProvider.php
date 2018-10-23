@@ -16,11 +16,11 @@ class CsvProvider
 	public function getTableSettings($table)
 	{
 		try {
-			$provider = $providerName = sanitize_title(
+			$provider = sanitize_title(
 				get_post_meta($table->ID, '_ninja_tables_data_provider', true), 'default', 'display'
 			);
 
-			if ($provider == 'csv') {
+			if (in_array($provider, array('csv', 'google-csv'))) {
 				$table->isEditable = false;
 			}
 			

@@ -324,6 +324,7 @@ class NinjaTablesAdmin
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
+            'update-external-data-source' => 'updateTableWithExternalDataSource',
         );
 
         $requested_route = $_REQUEST['target_action'];
@@ -1689,10 +1690,11 @@ class NinjaTablesAdmin
         add_option($option, true);
     }
 
-    public function createTableWithExternalDataSource()
+    // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
+    public function createTableWithExternalDataSource($shouldUpdate = false)
     {
         // Validate Title
-        if(empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+        if(!$shouldUpdate && empty($title = sanitize_text_field($_REQUEST['post_title']))) {
             $messages['title'] = __('The title field is required.', 'ninja-tables');
         }
 
@@ -1726,7 +1728,7 @@ class NinjaTablesAdmin
         }
 
         // For csv data type (google or other)
-        if (strpos($type, 'csv') !== false) {
+        if (in_array($type, array('csv', 'google-csv'))) {
             $headers = $response['headers'];
             if(strpos($headers['content-type'], 'csv') !== false) {
                 $headers = League\Csv\Reader::createFromString(
@@ -1750,11 +1752,16 @@ class NinjaTablesAdmin
                     );
                 }
 
-                ($tableId = $this->saveTable(intval($_REQUEST['tableId'])))
-                && update_post_meta($tableId, '_ninja_table_columns', $columns)
-                && update_post_meta($tableId, '_ninja_tables_data_provider', 'csv')
-                && update_post_meta($tableId, '_ninja_tables_data_provider_url', $url)
-                && wp_send_json_success(array('table_id' => $tableId));
+                if ($shouldUpdate) {
+                    $tableId = $_REQUEST['tableId'];
+                } else {
+                    $tableId = $this->saveTable(intval($_REQUEST['tableId']));
+                }
+
+                update_post_meta($tableId, '_ninja_table_columns', $columns);
+                update_post_meta($tableId, '_ninja_tables_data_provider', $type);
+                update_post_meta($tableId, '_ninja_tables_data_provider_url', $url);
+                wp_send_json_success(array('table_id' => $tableId));
 
             } else {
                 wp_send_json_error(array(
@@ -1767,7 +1774,19 @@ class NinjaTablesAdmin
                 ), 400);
             }
         }
-        // elseif(Maybe for other data types) 
+
         wp_die();
+    }
+
+    // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
+    public function updateTableWithExternalDataSource()
+    {
+        $tableId = $_REQUEST['tableId'];
+
+        $table = get_post($tableId);
+
+        $_REQUEST['type'] = get_post_meta($tableId, '_ninja_tables_data_provider', true);
+        
+        $this->createTableWithExternalDataSource(true);
     }
 }
