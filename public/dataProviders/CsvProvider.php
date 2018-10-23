@@ -8,29 +8,9 @@ class CsvProvider
 {
 	public function boot()
 	{
-		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 2);
 		add_filter('ninja_tables_get_table_settings', array($this, 'getTableSettings'));
+		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 5);
 		add_filter('ninja_tables_fetching_table_rows_csv', array($this, 'data'), 10, 5);
-	}
-
-	public function getTableData($data, $tableId)
-	{
-		try {
-			$newData = [];
-			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
-			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
-				$newData[] = array(
-					'id' => $key++,
-					'values' => $value,
-					'position' => null,
-				);
-			}
-
-			return $newData ? $newData : $data;
-			
-		} catch (\Exception $e) {
-			return $data;
-		}
 	}
 
 	public function getTableSettings($table)
@@ -48,6 +28,33 @@ class CsvProvider
 			
 		} catch (\Exception $e) {
 			return $table;
+		}
+	}
+
+	public function getTableData($tableId, $data, $total, $perPage, $offset)
+	{
+		try {
+			$newData = [];
+			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
+			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
+				$newData[] = array(
+					'id' => ++$key,
+					'values' => $value,
+					'position' => $key,
+				);
+			}
+
+			if ($totalNewData = count($newData)) {
+				return array(
+					array_slice($newData, $offset, $perPage),
+					$totalNewData
+				);
+			}
+			
+			return array($data, $total);
+			
+		} catch (\Exception $e) {
+			return array($data, $total);
 		}
 	}
 
