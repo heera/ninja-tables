@@ -846,8 +846,15 @@ class NinjaTablesAdmin
             );
         }
 
-        // External data source providers need to provide the data from somewhere else
-        $response = apply_filters('ninja_tables_get_table_data', $response, $tableId);
+        // Needed for external data source providers
+        list($response, $total) = apply_filters(
+            'ninja_tables_get_table_data',
+            $tableId,
+            $response,
+            $total,
+            $perPage,
+            $skip
+        );
         
         wp_send_json(array(
             'total' => $total,
