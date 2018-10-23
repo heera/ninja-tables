@@ -15,7 +15,19 @@
                             :type="dataModalType"
             ></add_data_modal>
 
-            <div v-if="config.table.isEditable" class="tablenav top">
+            <div v-if="!isEditable" class="tablenav top">
+                <el-input
+                placeholder="Remote URL..."
+                v-model="externalDataSourceUrl"
+                v-on:keyup.enter="updateTableSettings">
+                    <el-button
+                    slot="append"
+                    :loading="syncing"
+                    @click="updateTableSettings">Sync Table</el-button>
+                </el-input>
+            </div>
+
+            <div v-if="isEditable" class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <label for="bulk-action-selector-top" class="screen-reader-text">
                         {{ $t('Select bulk action') }}
@@ -59,7 +71,7 @@
                         @selection-change="handleSelectionChange"
                 >
                     <el-table-column
-                            v-if="config.table.isEditable"
+                            v-if="isEditable"
                             type="selection"
                             fixed
                             width="55">
@@ -76,7 +88,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column
-                            v-if="config.table.isEditable"
+                            v-if="isEditable"
                             fixed="right"
                             label="Actions"
                             class-name="actions"
@@ -106,7 +118,7 @@
                 </el-table>
 
                 <div class="tablenav bottom">
-                    <div v-if="config.table.isEditable" class="alignleft actions bulkactions">
+                    <div v-if="isEditable" class="alignleft actions bulkactions">
                         <label for="bulk-action-selector-top" class="screen-reader-text">
                             {{ $t('Select bulk action') }}
                         </label>
@@ -206,6 +218,7 @@
                 addDataModal: false,
                 tableId: this.$route.params.table_id,
                 loading: false,
+                syncing: false,
                 bulkAction: -1,
                 selectAll: 0,
                 checkedItems: [],
@@ -231,7 +244,10 @@
                 showColumnEditor: false,
                 currentEditingColumn: false,
                 addDataModalTitle: 'Add Row',
-                dataModalType: 'add'
+                dataModalType: 'add',
+
+                // Used for external data sources
+                externalDataSourceUrl: null,
             }
         },
         watch: {
@@ -269,6 +285,10 @@
             },
             columnLength() {
                 return this.columns.length
+            },
+            isEditable() {
+                const c = this.config;
+                return c && 'isEditable' in c.table && c.table.isEditable;
             }
         },
         methods: {
@@ -619,6 +639,37 @@
                 this.addDataModal = true;
                 this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
+            },
+            /**
+             * Used to re-sync table settings with external data source
+             * @return void
+             */
+            updateTableSettings() {
+                this.syncing = true;
+                jQuery.post(ajaxurl, {
+                    tableId: this.config.table.ID,
+                    remote_url: this.externalDataSourceUrl,
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'update-external-data-source'
+                })
+                .then(response => {
+                    if(response.success) {
+                        this.$message({
+                            type: 'success',
+                            showClose:true,
+                            message: 'Table Columns Updated.'
+                        });
+                    }
+                })
+                .fail(({responseJSON}) => {
+                    let first = Object.keys(responseJSON.data.message)[0];
+                    this.$message({
+                        type: 'error',
+                        showClose:true,
+                        message: responseJSON.data.message[first]
+                    });
+                })
+                .always(() => this.syncing = false);
             }
         },
         mounted() {

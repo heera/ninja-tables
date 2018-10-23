@@ -140,6 +140,8 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
         get_post_meta($tableId, '_ninja_tables_data_provider', true), 'default', 'display'
     );
 
+    $providerName = in_array($providerName, array('csv', 'google-csv')) ? 'csv' : $providerName;
+
     return apply_filters(
         'ninja_tables_fetching_table_rows_'.$providerName,
         array(),
