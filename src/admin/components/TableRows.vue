@@ -21,7 +21,7 @@
                     type="info"
                     title="Table Settings"
                     :closable="false">
-                        {{ isEditableMessage || 'You can update settings here...' }}
+                        {{ isEditableMessage }}
                         <span
                             style="color:#0073aa;cursor:pointer;"
                             @click="isUpdatingTableSettings = !isUpdatingTableSettings">
