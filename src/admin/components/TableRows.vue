@@ -15,16 +15,31 @@
                             :type="dataModalType"
             ></add_data_modal>
 
-            <div v-if="!isEditable" class="tablenav top">
-                <el-input
-                placeholder="Remote URL..."
-                v-model="externalDataSourceUrl"
-                v-on:keyup.enter="updateTableSettings">
-                    <el-button
-                    slot="append"
-                    :loading="syncing"
-                    @click="updateTableSettings">Sync Table</el-button>
-                </el-input>
+            <div v-if="dataSourceType == 'external'" class="tablenav top">
+                <el-alert
+                    show-icon
+                    type="info"
+                    title="Table Settings"
+                    :closable="false">
+                        {{ isEditableMessage || 'You can update settings here...' }}
+                        <span
+                            style="color:#0073aa;cursor:pointer;"
+                            @click="isUpdatingTableSettings = !isUpdatingTableSettings">
+                                {{ isUpdatingTableSettings ? 'Hide Settings' : 'Show Settings' }}
+                        </span>
+                </el-alert>
+
+                <div v-show="isUpdatingTableSettings">
+                    <el-input
+                    placeholder="Remote URL..."
+                    v-model="externalDataSourceUrl"
+                    v-on:keyup.enter="updateTableSettings">
+                        <el-button
+                        slot="append"
+                        :loading="syncing"
+                        @click="updateTableSettings">Sync Table Settings</el-button>
+                    </el-input>
+                </div>
             </div>
 
             <div v-if="isEditable" class="tablenav top">
@@ -247,7 +262,8 @@
                 dataModalType: 'add',
 
                 // Used for external data sources
-                externalDataSourceUrl: null,
+                isUpdatingTableSettings: false,
+                externalDataSourceUrl: this.config.table.remoteURL,
             }
         },
         watch: {
@@ -286,9 +302,17 @@
             columnLength() {
                 return this.columns.length
             },
+            dataSourceType() {
+                const c = this.config;
+                return (c && 'dataSourceType' in c.table) ? c.table.dataSourceType : 'default';
+            },
             isEditable() {
                 const c = this.config;
-                return c && 'isEditable' in c.table && c.table.isEditable;
+                return (c && 'isEditable' in c.table) ? c.table.isEditable : true;
+            },
+            isEditableMessage() {
+                const c = this.config;
+                return (c && 'isEditableMessage' in c.table) ? c.table.isEditableMessage : null;
             }
         },
         methods: {
@@ -659,6 +683,7 @@
                             showClose:true,
                             message: 'Table Columns Updated.'
                         });
+                        this.externalDataSourceUrl = response.data.remote_url;
                     }
                 })
                 .fail(({responseJSON}) => {

@@ -701,8 +701,6 @@ class NinjaTablesAdmin
         $tableID = intval($_REQUEST['table_id']);
         
         $table = get_post($tableID);
-        
-        $table->isEditable = true;
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
 
@@ -1761,7 +1759,7 @@ class NinjaTablesAdmin
                 update_post_meta($tableId, '_ninja_table_columns', $columns);
                 update_post_meta($tableId, '_ninja_tables_data_provider', $type);
                 update_post_meta($tableId, '_ninja_tables_data_provider_url', $url);
-                wp_send_json_success(array('table_id' => $tableId));
+                wp_send_json_success(array('table_id' => $tableId, 'remote_url' => $url));
 
             } else {
                 wp_send_json_error(array(
