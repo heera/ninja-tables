@@ -1751,7 +1751,20 @@ class NinjaTablesAdmin
                 }
 
                 if ($shouldUpdate) {
-                    $tableId = $_REQUEST['tableId'];
+                    $tableId = intval($_REQUEST['tableId']);
+                    $oldColumns = get_post_meta(
+                        $tableId, '_ninja_table_columns', true
+                    );
+                    foreach ($columns as $key => $newColumn) {
+                        foreach ($oldColumns as $oldColumn) {
+                            if ($oldColumn['original_name'] == $newColumn['original_name']) {
+                                $columns[$key] = $oldColumn;
+                            }
+                        }
+                    }
+
+                    // Reset/Reorder array indices
+                    $columns = array_values($columns);
                 } else {
                     $tableId = $this->saveTable(intval($_REQUEST['tableId']));
                 }
