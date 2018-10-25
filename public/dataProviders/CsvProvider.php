@@ -22,6 +22,9 @@ class CsvProvider
 
 			if (in_array($provider, array('csv', 'google-csv'))) {
 				$table->isEditable = false;
+				$table->dataSourceType = 'external';
+				$table->remoteURL = get_post_meta($table->ID, '_ninja_tables_data_provider_url', true);
+				$table->isEditableMessage = 'Your table columns were initially created from the external data source url so if you have made any changes in that resource (added/removed columns) then you may re-sync the settings to reflect the changes here. Otherwise you\'ll see data according to old column settings.';
 			}
 			
 			return $table;
