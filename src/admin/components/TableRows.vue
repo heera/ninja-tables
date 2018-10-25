@@ -681,7 +681,7 @@
                         this.$message({
                             type: 'success',
                             showClose:true,
-                            message: 'Table Columns Updated.'
+                            message: 'Table columns updated, please refresh to see changes.'
                         });
                         this.externalDataSourceUrl = response.data.remote_url;
                     }
