@@ -63,7 +63,7 @@
                 </template>
             </h2>
 
-            <router-view v-if="config" :config="config"></router-view>
+            <router-view v-if="config" :config="config" :getColumnSettings="getSettings"></router-view>
 
         </fieldset>
         <el-dialog 
@@ -140,7 +140,7 @@
                     .done(response => {
                         this.config = response;
                         this.table = response.table;
-                        this.preview_url = response.preview_url
+                        this.preview_url = response.preview_url;
                     })
                     .fail((error) => {
                         console.log(error);
