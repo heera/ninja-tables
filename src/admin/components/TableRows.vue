@@ -210,7 +210,7 @@
             SortableUpgradeNotice,
             columnsEditor
         },
-        props: ['config'],
+        props: ['config', 'getColumnSettings'],
         data() {
             return {
                 columnModal: false,
@@ -678,10 +678,11 @@
                 })
                 .then(response => {
                     if(response.success) {
+                        this.getColumnSettings();
                         this.$message({
                             type: 'success',
                             showClose:true,
-                            message: 'Table columns updated, please refresh to see changes.'
+                            message: 'Table column settings updated successfully.'
                         });
                         this.externalDataSourceUrl = response.data.remote_url;
                     }
