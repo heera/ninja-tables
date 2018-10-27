@@ -679,6 +679,7 @@
                 .then(response => {
                     if(response.success) {
                         this.getColumnSettings();
+                        this.getData();
                         this.$message({
                             type: 'success',
                             showClose:true,
