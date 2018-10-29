@@ -14,8 +14,12 @@
 	            </el-select>
 	        </el-col>
 
-	        <el-col :sm="4" :md="4" v-model="condition.conditionalValue">
-	            <el-input size="small" placeholder="Please Enter Value"></el-input>
+	        <el-col :sm="4" :md="4">
+	            <el-input
+		            size="small"
+		            placeholder="Please Enter Value"
+		            v-model="condition.conditionalValue"
+	            ></el-input>
 	        </el-col>
 
 	        <el-col :sm="1" :md="1">

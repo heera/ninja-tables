@@ -726,7 +726,11 @@ class NinjaTablesAdmin
                         if ($column_index == 'header_html_content' || $column_index == 'selections') {
                             $column[$column_index] = wp_kses_post($column_value);
                         } else {
-                            $column[$column_index] = sanitize_text_field($column_value);
+                            if (is_array($column_value)) {
+                                $column[$column_index] = ninja_tables_sanitize_array($column_value);
+                            } else {
+                                $column[$column_index] = sanitize_text_field($column_value);
+                            }
                         }
                     }
                     $tableColumns[] = $column;
@@ -1697,7 +1701,7 @@ class NinjaTablesAdmin
         }
 
         // Validate URL
-        if(empty($url = esc_url_raw($_REQUEST['remote_url'])) || !is_valid_url($url)) {
+        if(empty($url = esc_url_raw($_REQUEST['remote_url'])) || !ninja_tables_is_valid_url($url)) {
             $messages['url'] = __('The url field is empty or invalid.', 'ninja-tables');
         }
 

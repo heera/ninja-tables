@@ -77,7 +77,7 @@ class NinjaTablePublic {
 		$tableId = intval($_REQUEST['table_id']);
 		$defaultSorting = sanitize_text_field($_REQUEST['default_sorting']);
 
-        $shouldNotCache = shouldNotCache($tableId);
+        $shouldNotCache = ninja_tables_shouldNotCache($tableId);
 		$tableSettings = ninja_table_get_table_settings($tableId, 'public');
 
 		$is_ajax_table = true;
