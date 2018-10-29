@@ -4,7 +4,7 @@
                 show-alpha
                 @active-change="changeColor"
                 v-model="color"></el-color-picker>
-        <label>{{label}}</label>
+        <label v-if="label">{{label}}</label>
     </div>
 </template>
 
@@ -38,7 +38,7 @@
             }
         },
         mounted() {
-            console.log(this.value);
+            // console.log(this.value);
             this.color = this.value;
         }
     }

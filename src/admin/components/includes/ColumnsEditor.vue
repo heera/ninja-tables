@@ -397,7 +397,7 @@
 
 <script>
     import wpEditor from '../../../common/_wp_editor';
-    import conditional from '../../../common/Conditional';
+    import conditional from './_conditional';
     export default {
         name: "ColumnsEditor",
         components: {
