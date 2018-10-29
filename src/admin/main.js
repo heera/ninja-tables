@@ -26,6 +26,8 @@ import {
     Steps,
     Step,
     Alert,
+    Row,
+    Col,
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -65,6 +67,8 @@ Vue.use(TabPane);
 Vue.use(Steps);
 Vue.use(Step);
 Vue.use(Alert);
+Vue.use(Row);
+Vue.use(Col);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
