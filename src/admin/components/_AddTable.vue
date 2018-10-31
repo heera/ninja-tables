@@ -14,12 +14,12 @@
                    </div>
                </div>
                <div class="modal-footer">
-                   <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
-                   <button class="btn btn-primary btn-flex" @click="addTable">
+                   <el-button type="danger" size="small" @click="closeModal">{{ $t('Cancel') }}</el-button>
+                   <el-button type="primary" size="small" @click="addTable">
                        <span v-if="table.ID">{{ $t('Update') }}</span>
                        <span v-else>{{ $t('Add') }}</span>
                        <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                   </button>
+                   </el-button>
                </div>
            </div>
         </el-tab-pane>
