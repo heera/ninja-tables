@@ -1,3 +1,6 @@
+import Event from './EventBus';
+import './ninja-tables-footable-ready-event';
+
 jQuery(document).ready(function ($) {
     const ninja_table_app = {
         initTables: function () {
@@ -124,10 +127,9 @@ jQuery(document).ready(function ($) {
             };
 
 
-            let $tableInstance = $table
-                .on('postinit.ft.table', () => {
-                    this.commonTasks($table, tableConfig);
-                }).footable(initConfig);
+            let $tableInstance = $table.on('ready.ft.table', (e, fooTable) => {
+                this.commonTasks($table, tableConfig);
+            }).footable(initConfig);
 
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
@@ -185,7 +187,7 @@ jQuery(document).ready(function ($) {
             };
             jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
 
-            let $tableInstance = $table.on('postinit.ft.table', () => {
+            let $tableInstance = $table.on('ready.ft.table', (e, fooTable) => {
                 this.commonTasks($table, tableConfig);
             }).footable(initConfig);
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
@@ -197,6 +199,8 @@ jQuery(document).ready(function ($) {
             jQuery.each(cssStyles, (className, values) => {
                 $table.find('.' + className).css(values);
             });
+
+            Event.trigger('ninja-tables-ready', [$table, tableConfig]);
         }
     };
     ninja_table_app.initTables();

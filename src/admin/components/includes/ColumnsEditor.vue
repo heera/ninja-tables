@@ -508,7 +508,9 @@
                 this.$emit('store');
             },
             onTabClick(tab, event) {
+                this.hideDelete = false;
                 if (['advanced', 'conditional'].indexOf(tab.name) != -1) {
+                    this.hideDelete = true;
                     if (!this.moreSettings) {
                         this.showProPopUp();
                     } else {

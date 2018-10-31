@@ -20,8 +20,7 @@ if (!function_exists('ninja_table_get_table_columns')) {
         if (!$tableColumns || !is_array($tableColumns)) {
             $tableColumns = array();
         }
-        return apply_filters('ninja_get_table_columns_'.$scope, $tableColumns,
-            $tableId);
+        return apply_filters('ninja_get_table_columns_'.$scope, $tableColumns, $tableId);
     }
 }
 
@@ -29,7 +28,7 @@ if (!function_exists('ninja_table_get_table_settings')) {
     function ninja_table_get_table_settings($tableId, $scope = 'public')
     {
         $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
-	   
+
         if (!$tableSettings) {
             $tableSettings = getDefaultNinjaTableSettings();
             $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);

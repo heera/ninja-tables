@@ -204,8 +204,9 @@ class NinjaFooTable
             }
 
 
-            $formatted_columns[] = apply_filters('ninja_table_column_attributes', $formatted_column, $column,
-                $table_id, $tableArray);
+            $formatted_columns[] = apply_filters(
+                'ninja_table_column_attributes', $formatted_column, $column, $table_id, $tableArray
+            );
         }
 
         if ($settings['show_all']) {
