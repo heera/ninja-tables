@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="column-condition-config">
 		<el-row v-for="(condition, index) in column.conditions" :key="index">
 	        <el-col :sm="2" :md="2">
 	            <div class="if-cell-value">If Cell Value</div>
@@ -121,20 +121,37 @@
 	}	
 </script>
 
-<style scoped>
-	.el-col {
-		margin: 0 5px;
+<style lang="scss">
+	.column-condition-config {
+		.el-row{
+			display: flex;
+			margin-bottom: 5px;
+		}
+		.el-col {
+			margin: 0 5px;
+			display: flex;
+			.conditional_color_block{
+				width: 100%;
+                .el-color-picker__trigger{
+                    width: 100%;
+                    height: 33px;
+                }
+			}
+		}
+		.el-col:first-child > .if-cell-value{
+			white-space: nowrap;
+			/*text-transform: uppercase;*/
+		}
+		.if-cell-value {
+			margin-top: 10px;
+			font-weight: 400;
+		}
+		.form_group {
+			margin:0;
+			height: 35px;
+		}
+		.el-color-picker {
+			width: 100% !important;
+		}
 	}
-	.if-cell-value {
-		margin-top: 10px;
-    	font-weight: 400;
-	}
-	.form_group {
-		margin:0;
-		height: 35px;
-	}
-	.el-color-picker {
-		width: 100% !important;
-	}
-	
 </style>
