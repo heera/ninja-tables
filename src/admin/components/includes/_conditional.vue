@@ -28,9 +28,9 @@
 
 	        <el-col :sm="4" :md="4">
 	            <el-select size="small" v-model="condition.targetAction">
+	                <el-option label="Set cell content" value="set-cell-content"></el-option>
 	                <el-option label="Set cell color" value="set-cell-color"></el-option>
 	                <el-option label="Reset cell color to default" value="reset-cell-color-to-default"></el-option>
-	                <el-option label="Set cell content" value="set-cell-content"></el-option>
 	                <el-option label="Set cell CSS class" value="set-cell-css-class"></el-option>
 	                <el-option label="Remove cell CSS class" value="remove-cell-css-class"></el-option>
 	                <el-option label="Set row color" value="set-row-color"></el-option>
