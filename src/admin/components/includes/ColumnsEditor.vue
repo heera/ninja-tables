@@ -373,11 +373,14 @@
             <div class="form_group">
                 <div class="pull-right">
                     <template v-if="!updating">
-                        <button @click.prevent="cancel" class="button">
+                        <el-button @click.prevent="cancel" type="danger" size="small">
                             {{ $t('Cancel') }}
-                        </button>
+                        </el-button>
 
-                        <button @click.prevent="addColumn" class="button button-primary">Add Column</button>
+                        <el-button
+                        @click.prevent="addColumn"
+                        type="primary"
+                        size="small">Add Column</el-button>
                     </template>
 
                     <template v-else>

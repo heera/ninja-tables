@@ -62,12 +62,12 @@
             </template>
 
             <div class="dialog-footer-item">
-                <button class="btn btn-default" @click.prevent="closeModal">{{ $t('Cancel') }}</button>
-                <button type="submit" class="btn btn-primary btn-flex" @click="addData">
+                <el-button @click.prevent="closeModal" type="danger" size="small">{{ $t('Cancel') }}</el-button>
+                <el-button type="primary" size="small" @click="addData">
                     <span v-if="editId"> {{ $t('Update') }}</span>
                     <span v-else>{{ $t('Add') }}</span>
                     <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                </button>
+                </el-button>
             </div>
         </div>
     </el-dialog>

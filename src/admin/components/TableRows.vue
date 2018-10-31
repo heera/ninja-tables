@@ -179,7 +179,7 @@
             />
         </el-dialog>
 
-        <el-dialog title="Add Table Column" :visible.sync="columnModal">
+        <el-dialog title="Add Table Column" width="65%" :visible.sync="columnModal">
             <columns-editor :model="new_column" :has-pro="has_pro"
                             @add="addNewColumn()"
                             @cancel="columnModal = !columnModal"

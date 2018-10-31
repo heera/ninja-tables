@@ -32,9 +32,9 @@
                     <template v-if="active_menu == 'columns'">
                         <div class="ninja_header">
                             <h2>Table Column Settings</h2>
-                            <div class="ninja_actions_action">
+                            <!-- <div class="ninja_actions_action">
                                 <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="ninja_content">
                             <div class="section_widget">
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                                 <div class="widget_body">
-                                    <div v-show="addColumnStatus || !columns.length" class="column drawer">
+                                    <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
                                             <columns-editor :model="new_column" :has-pro="has_pro"
                                                             @add="addNewColumn()"

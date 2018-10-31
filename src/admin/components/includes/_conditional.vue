@@ -17,7 +17,7 @@
 	        <el-col :sm="4" :md="4">
 	            <el-input
 		            size="small"
-		            placeholder="Please Enter Value"
+		            placeholder="Enter Value"
 		            v-model="condition.conditionalValue"
 	            ></el-input>
 	        </el-col>
@@ -45,7 +45,7 @@
 	        <el-col :sm="4" :md="4">
 	            <el-input
 		            size="small"
-		            placeholder="Please Enter Value"
+		            placeholder="Enter Value"
 		            v-model="condition.targetValue"
 		            v-show="!shouldShowColorPicker(condition)"
 	            ></el-input>
@@ -60,14 +60,14 @@
 
 	        <el-col :sm="3" :md="3">
 	            <el-button
-		            size="small"
+		            size="mini"
 		            type="primary"
 		            icon="el-icon-plus"
 		            @click="addCondition"
 	            ></el-button>
 
 	            <el-button
-		            size="small"
+		            size="mini"
 		            type="danger"
 		            icon="el-icon-minus"
 		            @click="removeCondition(index)"
@@ -152,6 +152,10 @@
 		}
 		.el-color-picker {
 			width: 100% !important;
+		}
+
+		.el-button--mini {
+		    padding: 5px 13px;
 		}
 	}
 </style>

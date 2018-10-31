@@ -14,6 +14,7 @@
 
         <el-button
         type="primary"
+        size="small"
         :loading="btnLoading"
         style="margin-top: 12px; float: right;"
         @click="save">{{ $t('Save') }}</el-button>
