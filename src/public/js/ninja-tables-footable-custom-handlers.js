@@ -7,7 +7,7 @@ export default {
 		$elements.length && $elements.css('color', column.cellDefaultcolor);
 	},
 	SetCellContent: function($elements, $table, condition, colIndex, column) {
-		$elements.length && $elements.text(condition.targetValue);
+		$elements.length && $elements.html(condition.targetValue);
 	},
 	SetCellCssClass: function($elements, $table, condition, colIndex, column) {
 		$elements.length && $elements.addClass(condition.targetValue);

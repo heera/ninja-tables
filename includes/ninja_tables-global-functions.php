@@ -243,7 +243,7 @@ if (!function_exists('ninja_tables_sanitize_array')) {
             if (is_array($value)) {
                 $array[$key] = ninja_tables_sanitize_array($value);
             } else {
-                $array[$key] = sanitize_text_field($value);
+                $array[$key] = wp_kses_post($value);
             }
         }
 
