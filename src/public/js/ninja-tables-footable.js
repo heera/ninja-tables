@@ -1,12 +1,12 @@
 import Event from './EventBus';
-import './ninja-tables-footable-ready-event';
+import './ninja-tables-footable-custom-event';
 
 jQuery(document).ready(function ($) {
     const ninja_table_app = {
         initTables: function () {
+            let that = this;
             window.ninjaFooTablesInstance = [];
             let footables = $('table.foo-table.ninja_footable');
-            let that = this;
             const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
             $.each(footables, function (index, table) {
                 let $table = $(table);
@@ -21,6 +21,7 @@ jQuery(document).ready(function ($) {
                 if (!tableConfig) {
                     return;
                 }
+
                 jQuery.each(tableConfig.columns, (index, column) => {
                     if (column.type == 'date') {
                         column.sortValue = function (valueOrElement) {
@@ -68,10 +69,21 @@ jQuery(document).ready(function ($) {
                         };
                     }
                 });
+
+                $table.on('ready.ft.table', (e, fooTable) => {
+                    that.onReadyFooTable($table, tableConfig);
+                }).on('postdraw.ft.table', (e, fooTable) => {
+                    Event.trigger(
+                        'ninja-tables-apply-conditional-formatting',
+                        [$table, tableConfig]
+                    );
+                });
+
                 if (tableConfig.render_type === 'legacy_table') {
                     that.initLegacyTable($table, tableConfig);
                     return;
                 }
+
                 that.initResponsiveTable($table, tableConfig);
             });
         },
@@ -126,10 +138,7 @@ jQuery(document).ready(function ($) {
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
 
-
-            let $tableInstance = $table.on('ready.ft.table', (e, fooTable) => {
-                this.commonTasks($table, tableConfig);
-            }).footable(initConfig);
+            let $tableInstance = $table.footable(initConfig);
 
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
@@ -187,20 +196,17 @@ jQuery(document).ready(function ($) {
             };
             jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
 
-            let $tableInstance = $table.on('ready.ft.table', (e, fooTable) => {
-                this.commonTasks($table, tableConfig);
-            }).footable(initConfig);
+            let $tableInstance = $table.footable(initConfig);
+
             window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
             jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
             $table.find('.ninja_temp_cell').remove();
         },
-        commonTasks($table, tableConfig) {
+        onReadyFooTable($table, tableConfig) {
             let cssStyles = tableConfig.custom_css;
             jQuery.each(cssStyles, (className, values) => {
                 $table.find('.' + className).css(values);
             });
-
-            Event.trigger('ninja-tables-ready', [$table, tableConfig]);
         }
     };
     ninja_table_app.initTables();
