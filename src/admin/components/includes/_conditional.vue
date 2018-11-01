@@ -7,10 +7,46 @@
 
 	        <el-col :sm="4" :md="4">
 	            <el-select size="small" v-model="condition.conditionalOperator">
+
 	                <el-option label="Equal" value="equal"></el-option>
 	                <el-option label="Not Equal" value="not-equal"></el-option>
-	                <el-option label="Contains" value="contains"></el-option>
-	                <el-option label="Does Not Contain" value="does-not-contain"></el-option>
+	                
+	                <el-option
+		                v-if="['number', 'date'].indexOf(column.data_type) == -1"
+		                label="Contains"
+		                value="contains"
+	                ></el-option>
+
+	                <el-option
+		                v-if="['number', 'date'].indexOf(column.data_type) == -1"
+		                label="Does Not Contain"
+		                value="does-not-contain"
+	                ></el-option>
+
+	                <el-option
+		               v-if="['number', 'date'].indexOf(column.data_type) != -1"
+		                label="Less Than"
+		                value="less-than"
+	                ></el-option>
+
+	                <el-option
+		               v-if="['number', 'date'].indexOf(column.data_type) != -1"
+		                label="Greater Than"
+		                value="greater-than"
+	                ></el-option>
+
+	                <el-option
+		               v-if="['number', 'date'].indexOf(column.data_type) != -1"
+		                label="Less Than Or Equal To"
+		                value="less-than-or-equal-to"
+	                ></el-option>
+
+	                <el-option
+		                v-if="['number', 'date'].indexOf(column.data_type) != -1"
+		                label="Greater Than Or Equal To"
+		                value="greater-than-or-equal-to"
+	                ></el-option>
+
 	            </el-select>
 	        </el-col>
 
