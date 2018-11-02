@@ -40,6 +40,8 @@ function getElements($table, condition, colIndex, column) {
     	$elements = getGreaterThan($table, cellClass, condition, column);
 	} else if (condition.conditionalOperator == 'greater-than-or-equal-to') {
     	$elements = getGreaterThanOrEqualTo($table, cellClass, condition, column);
+	} else if (condition.conditionalOperator == 'between') {
+    	$elements = getBetween($table, cellClass, condition, column);
 	}
 
 	return $elements;
@@ -71,44 +73,54 @@ function getDoesNotContains($table, cellClass, condition, column) {
 
 function getLessThan($table, cellClass, condition, column) {
 	return $table.find('tbody .' + cellClass).filter((i, td) => {
-		let text = jQuery(td).text();
-		if (isValidDate(text, column) || isValidNumber(text, column)) {
-			return parseInt(text, 10) < parseInt(condition.conditionalValue, 10);
+		let cellValue = jQuery(td).text();
+		if (isValidNumber(cellValue, column)) {
+			cellValue = parseInt(cellValue, 10);
 		}
+		return cellValue < condition.conditionalValue;
 	});
 }
 
 function getLessThanOrEqualTo($table, cellClass, condition, column) {
 	return $table.find('tbody .' + cellClass).filter((i, td) => {
-		let text = jQuery(td).text();
-		if (isValidDate(text, column) || isValidNumber(text, column)) {
-			return parseInt(jQuery(td).text(), 10) <= parseInt(condition.conditionalValue, 10);
+		let cellValue = jQuery(td).text();
+		if (isValidNumber(cellValue, column)) {
+			cellValue = parseInt(cellValue, 10);
 		}
+		return cellValue <= condition.conditionalValue;
 	});
 }
 
 function getGreaterThan($table, cellClass, condition, column) {
 	return $table.find('tbody .' + cellClass).filter((i, td) => {
-		let text = jQuery(td).text();
-		if (isValidDate(text, column) || isValidNumber(text, column)) {
-			return parseInt(jQuery(td).text(), 10) > parseInt(condition.conditionalValue, 10);
+		let cellValue = jQuery(td).text();
+		if (isValidNumber(cellValue, column)) {
+			cellValue = parseInt(cellValue, 10);
 		}
+		return cellValue > condition.conditionalValue;
 	});
 }
 
 function getGreaterThanOrEqualTo($table, cellClass, condition, column) {
 	return $table.find('tbody .' + cellClass).filter((i, td) => {
-		let text = jQuery(td).text();
-		if (isValidDate(text, column) || isValidNumber(text, column)) {
-			return parseInt(jQuery(td).text(), 10) >= parseInt(condition.conditionalValue, 10);
+		let cellValue = jQuery(td).text();
+		if (isValidNumber(cellValue, column)) {
+			cellValue = parseInt(cellValue, 10);
 		}
+		return cellValue >= condition.conditionalValue;
 	});
 }
 
-function isValidDate(value, column) {
-	return value && column.type == 'date' && moment(
-		value, column.formatString, true
-	).isValid();
+function getBetween($table, cellClass, condition, column) {
+	return $table.find('tbody .' + cellClass).filter((i, td) => {
+		let cellValue = jQuery(td).text();
+		let minVal = condition.conditionalValue;
+		let maxVal = condition.conditionalValue2;
+		if (isValidNumber(cellValue, column)) {
+			cellValue = parseInt(cellValue, 10);
+		}
+		return cellValue >= minVal && cellValue <= maxVal;
+	});
 }
 
 function isValidNumber(value, column) {

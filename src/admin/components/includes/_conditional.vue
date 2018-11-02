@@ -1,5 +1,26 @@
 <template>
 	<div class="column-condition-config">
+		<el-row>
+			<el-col>
+				<el-col :sm="20" :md="20">
+					<el-alert
+						:closable=false
+						title="Note:"
+					    type="info"
+					    show-icon>
+					    You can add conditions for the column here. To add conditions, just click the <b>Add Condition</b> button and then set the rules for the condition when it will be applied.
+					</el-alert>
+		        </el-col>
+
+            	<el-button
+		            size="medium"
+		            type="primary"
+		            @click="addCondition"
+	            >Add Condition</el-button>
+
+	        </el-col>
+		</el-row>
+		<hr>
 		<el-row v-for="(condition, index) in column.conditions" :key="index">
 	        <el-col :sm="2" :md="2">
 	            <div class="if-cell-value">If Cell Value</div>
@@ -47,14 +68,28 @@
 		                value="greater-than-or-equal-to"
 	                ></el-option>
 
+	                <el-option
+		                v-if="['number', 'date'].indexOf(column.data_type) != -1"
+		                label="Between (Min & Max Values)"
+		                value="between"
+	                ></el-option>
+
 	            </el-select>
 	        </el-col>
 
 	        <el-col :sm="4" :md="4">
 	            <el-input
 		            size="small"
-		            placeholder="Enter Value"
+		            :placeholder="condition.conditionalOperator == 'between' ? 'Min value' : 'Enter Value'"
 		            v-model="condition.conditionalValue"
+	            ></el-input>
+	        </el-col>
+
+	        <el-col :sm="4" :md="4" v-if="condition.conditionalOperator == 'between'">
+	            <el-input
+		            size="small"
+		            placeholder="Max Value"
+		            v-model="condition.conditionalValue2"
 	            ></el-input>
 	        </el-col>
 
@@ -94,14 +129,7 @@
                 </div>
 	        </el-col>
 
-	        <el-col :sm="3" :md="3">
-	            <el-button
-		            size="mini"
-		            type="primary"
-		            icon="el-icon-plus"
-		            @click="addCondition"
-	            ></el-button>
-
+	        <el-col :sm="2" :md="2">
 	            <el-button
 		            size="mini"
 		            type="danger"
@@ -109,6 +137,14 @@
 		            @click="removeCondition(index)"
 	            ></el-button>
 	        </el-col>
+	    </el-row>
+
+	    <el-row v-if="!column.conditions.length">
+	    	<el-alert
+	    		center
+	    		:closable=false
+				title="You didn't add any conditions for this colimn yet!"
+			    type="info"></el-alert>
 	    </el-row>
 	</div>
 </template>
@@ -126,6 +162,7 @@
 				defaultCondition: {
 					conditionalOperator: null,
 					conditionalValue: null,
+					conditionalValue2: null,
 					targetAction: null,
 					targetValue: null,
 					targetValueColor: null,
@@ -137,9 +174,7 @@
 				this.column.conditions.push({...this.defaultCondition});
 			},
 			removeCondition(index) {
-				if (this.column.conditions.length > 1) {
-					this.column.conditions.splice(index, 1);
-				}
+				this.column.conditions.splice(index, 1);
 			},
 			shouldShowColorPicker(condition) {
 				return [
@@ -151,7 +186,7 @@
 		},
 		created() {
 			if (!this.column.conditions) {
-				this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
+				this.$set(this.column, 'conditions', []);
 			}
 		}
 	}	
