@@ -14,7 +14,12 @@
                    </div>
                </div>
                <div class="modal-footer">
-                   <el-button type="danger" size="small" @click="closeModal">{{ $t('Cancel') }}</el-button>
+                   <!-- <el-button
+                       type="danger"
+                       size="small"
+                       @click="closeModal"
+                   >{{ $t('Cancel') }}</el-button> -->
+
                    <el-button type="primary" size="small" @click="addTable">
                        <span v-if="table.ID">{{ $t('Update') }}</span>
                        <span v-else>{{ $t('Add') }}</span>
@@ -33,16 +38,23 @@
             <span slot="label"><i class="el-icon-upload2"></i> Link To An External CSV</span>
             <data-source-step type="csv" :tableCreated="fireTableCreated" />
         </el-tab-pane>
+
+        <el-tab-pane name='fluent_form'>
+            <span slot="label"><i class="el-icon-tickets"></i> Link To FluentForm</span>
+            <fluent-form-data-source :tableCreated="fireTableCreated" />
+        </el-tab-pane>
     </el-tabs>
 </template>
 
 <script type="text/babel">
     import wp_editor from '../../common/_wp_editor';
+    import FluentForm from './includes/FluentForm';
     import DataSourcceSettingsStep from './includes/DataSourcceSettingsStep';
     export default {
         name: 'add_table',
         components: {
             wp_editor: wp_editor,
+            'fluent-form-data-source': FluentForm,
             'data-source-step': DataSourcceSettingsStep,
         },
         props: { 

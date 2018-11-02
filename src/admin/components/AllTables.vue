@@ -64,6 +64,7 @@
                 :title="$t('Add New Table')" 
                 :visible.sync="modalVisible"
                 top="50px"
+                width="65%"
                 :append-to-body="true"
         >
             <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>
