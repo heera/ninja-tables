@@ -29,17 +29,16 @@
 				type: String,
 				required: true
 			},
-            tableCreated: {
-                type: Function,
-                required: true
-            }
+      tableCreated: {
+          type: Function,
+          required: true
+      }
 		},
 		data() {
 			return {
 				table: {
 					post_title: '',
-					remote_url: 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv',
-					column_mapings: null
+					remote_url: 'https://docs.google.com/spreadsheets/d/1c6SgWh5SgIErKFXbHYeMLtz6LPHHlAWjmXGVPZd7LKk/pub?output=csv'
 				},
         btnLoading: false
 			}

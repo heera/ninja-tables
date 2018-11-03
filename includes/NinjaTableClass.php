@@ -146,6 +146,11 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/CsvProvider.php';
 
 		/**
+		 * The class is responsible for providing external data (FluentForm Data Source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/FluentFormProvider.php';
+
+		/**
 		 * Load Tables Migration Class
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesMigration.php';
