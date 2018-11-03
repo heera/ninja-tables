@@ -13,6 +13,7 @@
 use NinjaTables\Classes\ArrayHelper;
 use NinjaTable\FrontEnd\DataProviders\CsvProvider;
 use NinjaTable\FrontEnd\DataProviders\DefaultProvider;
+use NinjaTable\FrontEnd\DataProviders\FluentFormProvider;
 
 /**
  * The public-facing functionality of the plugin.
@@ -200,6 +201,7 @@ class NinjaTablePublic {
 
 	protected function registerDataProviders()
 	{
+		(new FluentFormProvider)->boot();
 		(new DefaultProvider)->boot();
 		(new CsvProvider)->boot();
 	}

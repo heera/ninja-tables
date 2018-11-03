@@ -9,7 +9,7 @@ class CsvProvider
 	public function boot()
 	{
 		add_filter('ninja_tables_get_table_settings', array($this, 'getTableSettings'));
-		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 5);
+		add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 4);
 		add_filter('ninja_tables_fetching_table_rows_csv', array($this, 'data'), 10, 5);
 	}
 
@@ -34,9 +34,17 @@ class CsvProvider
 		}
 	}
 
-	public function getTableData($tableId, $data, $total, $perPage, $offset)
+	public function getTableData($data, $tableId, $perPage, $offset)
 	{
 		try {
+			$provider = sanitize_title(
+				get_post_meta($tableId, '_ninja_tables_data_provider', true), 'default', 'display'
+			);
+
+			if (!in_array($provider, array('csv', 'google-csv'))) {
+				return $data;
+			}
+
 			$newData = [];
 			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
 			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
@@ -47,17 +55,13 @@ class CsvProvider
 				);
 			}
 
-			if ($totalNewData = count($newData)) {
-				return array(
-					array_slice($newData, $offset, $perPage),
-					$totalNewData
-				);
-			}
-			
-			return array($data, $total);
-			
+			return array(
+				array_slice($newData, $offset, $perPage),
+				count($newData)
+			);
+
 		} catch (\Exception $e) {
-			return array($data, $total);
+			return $data;
 		}
 	}
 
