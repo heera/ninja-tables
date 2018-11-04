@@ -14,12 +14,6 @@
                    </div>
                </div>
                <div class="modal-footer">
-                   <!-- <el-button
-                       type="danger"
-                       size="small"
-                       @click="closeModal"
-                   >{{ $t('Cancel') }}</el-button> -->
-
                    <el-button type="primary" size="small" @click="addTable">
                        <span v-if="table.ID">{{ $t('Update') }}</span>
                        <span v-else>{{ $t('Add') }}</span>
