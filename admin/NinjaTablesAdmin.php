@@ -272,6 +272,7 @@ class NinjaTablesAdmin
             'current_user_name' => $currentUser->display_name,
             'isInstalled' => $isInstalled,
             'hasPro' => defined('NINJATABLESPRO'),
+            'hasFluentForm' => function_exists('wpFluentForm'),
             'hasAdvancedFilters' => class_exists('NinjaTablesPro\CustomFilters'),
             'hasSortable' => defined('NINJATABLESPRO_SORTABLE'),
             'ace_path_url' => plugin_dir_url(__DIR__) . "assets/libs/ace",

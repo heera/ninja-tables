@@ -21,7 +21,10 @@ class FluentFormProvider
             if ($provider == 'fluent-form') {
                 $table->isEditable = false;
                 $table->dataSourceType = $provider;
-                $table->isEditableMessage = '...';
+                $table->isEditableMessage = 'Fluent Form Resync Alert!!!';
+                $table->fluentFormFormId = get_post_meta(
+                    $table->ID, '_ninja_tables_data_provider_ff_form_id', true
+                );
             }
             
             return $table;
