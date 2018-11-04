@@ -1,5 +1,5 @@
 <template>
-    <div v-if="has_FluentForm">
+    <div v-if="hasFluentForm">
         <div class="form-group">
            <label for="name">{{ $t('Title') }}</label>
            <input type="text" id="name" class="form-control" v-model="post_title">
@@ -68,7 +68,7 @@
                     id: null,
                     fields: []
                 },
-                has_FluentForm: !!window.ninja_table_admin.hasFluentForm,
+                hasFluentForm: !!window.ninja_table_admin.hasFluentForm,
             };
         },
         methods: {
@@ -120,7 +120,7 @@
             }
         },
         created() {
-            this.fetchForms();
+            this.hasFluentForm && this.fetchForms();
         },
     };
 </script>
