@@ -16,16 +16,24 @@
             ></add_data_modal>
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
-                <el-alert
-                    show-icon
-                    type="info"
-                    title="Table Settings"
-                    :closable="false">
-                        {{ isEditableMessage }}
-                        <span style="color:#0073aa;cursor:pointer;" @click="updateTableSettings">
-                            Sync Table Settings
-                        </span>
-                </el-alert>
+                <el-row>
+                    <el-col :md="20">
+                        <el-alert
+                            show-icon
+                            type="info"
+                            title="Table Settings"
+                            :closable="false">
+                                {{ isEditableMessage }}
+                        </el-alert>
+                    </el-col>
+
+                    <el-col :md="4">
+                        <el-button
+                        :loading="syncing"
+                        @click="updateTableSettings">Sync Table Settings</el-button>
+                    </el-col>
+
+                </el-row>
             </div>
 
             <div v-if="dataSourceType == 'external'" class="tablenav top">
