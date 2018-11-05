@@ -364,6 +364,7 @@ class NinjaTablesAdmin
 
         foreach ($tables as $table) {
             $table->preview_url = site_url('?ninjatable_preview=' . $table->ID);
+            $table->dataSourceType = get_post_meta($table->ID, '_ninja_tables_data_provider', true);
         }
 
         $total = wp_count_posts('ninja-table');
