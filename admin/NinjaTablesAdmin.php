@@ -1816,9 +1816,7 @@ class NinjaTablesAdmin
         }
 
         if ($provider == 'fluent-form') {
-            // TODO:: Implement update
-            wp_send_json_success(array('remote_url' => ''));
-            wp_die();
+            $this->createTableWithFluentFormDataSource(true);
         }
     }
 
@@ -1829,28 +1827,43 @@ class NinjaTablesAdmin
         }
     }
 
-    public function createTableWithFluentFormDataSource()
+    public function createTableWithFluentFormDataSource($shouldUpdate = false)
     {
-        // Validate Title
-        if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
-            $messages['title'] = __('The title field is required.', 'ninja-tables');
-        }
+        if (!$shouldUpdate) {
+            // Validate Title
+            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+                $messages['title'] = __('The title field is required.', 'ninja-tables');
+            }
 
-        // Validate Columns
-        $fields = isset($_REQUEST['form']['fields']) ? $_REQUEST['form']['fields'] : array();
-        if (!($fields = ninja_tables_sanitize_array($fields))) {
-            $messages['fields'] = __('No fields were selected.', 'ninja-tables');
-        }
+            // Validate Columns
+            $fields = isset($_REQUEST['form']['fields']) ? $_REQUEST['form']['fields'] : array();
+            if (!($fields = ninja_tables_sanitize_array($fields))) {
+                $messages['fields'] = __('No fields were selected.', 'ninja-tables');
+            }
 
-        // If Validation failed
-        if (array_filter($messages)) {
-            wp_send_json_error(array('message' => $messages), 422);
-            wp_die();
-        }
-        
-        $headers = array();
-        foreach ($fields as $field) {
-            $headers[] = reset(array_values($field));
+            // If Validation failed
+            if (array_filter($messages)) {
+                wp_send_json_error(array('message' => $messages), 422);
+                wp_die();
+            }
+
+            $headers = array();
+            foreach ($fields as $field) {
+                $headers[] = reset(array_values($field));
+            }
+            $formId = $_REQUEST['form']['id'];
+        } else {
+            $tableId = intval($_REQUEST['tableId']);
+            $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
+            $form = wpFluentForm('FluentForm\App\Modules\Form\Form')->fetchForm($formId);
+
+            $fields = array_map(function($field) {
+                return $field->attributes->name;
+            }, (json_decode($form->form_fields))->fields);
+
+            $headers = array_filter($fields, function($field) {
+                return !!$field;
+            });
         }
 
         $headers = $this->formatHeader($headers);
@@ -1870,10 +1883,25 @@ class NinjaTablesAdmin
             );
         }
 
-        $tableId = $this->saveTable();
+        if ($shouldUpdate) {
+            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
+            foreach ($columns as $key => $newColumn) {
+                foreach ($oldColumns as $oldColumn) {
+                    if ($oldColumn['original_name'] == $newColumn['original_name']) {
+                        $columns[$key] = $oldColumn;
+                    }
+                }
+            }
+
+            // Reset/Reorder array indices
+            $columns = array_values($columns);
+        } else {
+            $tableId = $this->saveTable();
+        }
+
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
-        update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $_REQUEST['form']['id']);
+        update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
 
         wp_send_json_success(array('table_id' => $tableId, 'form_id' => $_REQUEST['form']['id']));
     }
