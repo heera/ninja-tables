@@ -1825,8 +1825,6 @@ class NinjaTablesAdmin
         if (function_exists('wpFluentForm')) {
             wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
         }
-
-        wp_send_json_error(array('message' => 'FluentForm not found!'), 422);
     }
 
     public function createTableWithFluentFormDataSource($shouldUpdate = false)
@@ -1868,7 +1866,7 @@ class NinjaTablesAdmin
                     return !!$field;
                 });
             } else {
-                wp_send_json_error(array('message' => 'FluentForm not found!'), 422);
+                wp_send_json_error(array('message' => ['FluentForm not found!']), 422);
             }
         }
 
