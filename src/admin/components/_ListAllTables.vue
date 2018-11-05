@@ -13,9 +13,15 @@
             <el-table-column :label="$t('Title')">
                 <template slot-scope="scope">
                     <strong>
-                        <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                        <template v-if="shouldBeVisible(scope.row)">
+                            <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                                {{ scope.row.post_title }}
+                            </router-link>
+                        </template>
+
+                        <template v-else>
                             {{ scope.row.post_title }}
-                        </router-link>
+                        </template>
                     
                         <span v-show="scope.row.post_status != 'publish'">
                             ({{ scope.row.post_status }})
@@ -23,17 +29,17 @@
                     </strong>
 
                     <div class="row-actions">
-                        <span class="row-edit">
+                        <span class="row-edit" v-if="shouldBeVisible(scope.row)">
                             <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
                                 {{ $t('Edit') }}
                             </router-link> |
                         </span>
 
-                        <span class="row-preview">
+                        <span class="row-preview" v-if="shouldBeVisible(scope.row)">
                             <a :href="scope.row.preview_url" target="_blank">{{ $t('Preview') }}</a> |
                         </span>
 
-                        <span class="row-duplicate">
+                        <span class="row-duplicate" v-if="shouldBeVisible(scope.row)">
                             <a href="#" @click.prevent="duplicate(scope.row.ID)">{{ $t('Duplicate') }}</a> |
                         </span>
 
@@ -41,6 +47,12 @@
                             <a @click.prevent="confirmDeleteTable(scope.row.ID)" href="#">{{ $t('Delete') }}</a>
                         </span>
                     </div>
+                </template>
+            </el-table-column>
+            
+            <el-table-column :label="$t('Data Source')">
+                <template slot-scope="scope">
+                    <strong>{{ dataSourceType(scope.row) }}</strong>
                 </template>
             </el-table-column>
 
@@ -115,8 +127,8 @@
                     per_page: 10
                 },
                 hasPro: !!window.ninja_table_admin.hasPro,
+                img_url_path: window.ninja_table_admin.img_url,
                 is_installed: window.ninja_table_admin.isInstalled,
-                img_url_path: window.ninja_table_admin.img_url
             }
         },
         methods: {
@@ -145,17 +157,14 @@
                         vueNotification.error('Something went wrong, please try again.');
                     });
             },
-
             goToPage(value) {
                 this.paginate.current_page = value;
                 this.fetchTables();
             },
-
             handleSizeChange(val) {
                 this.paginate.per_page = val;
                 this.fetchTables();
             },
-            
             confirmDeleteTable(tableId) {
 
                 this.$confirm('Are you sure, You want to delete this table?', 'Warning', {
@@ -171,7 +180,6 @@
                     });
                 });
             },
-
             deleteTable(tableId) {
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -191,15 +199,9 @@
                         alert(error.responseJSON.data.message);
                     });
             },
-            
-            handleBulkAction() {
-                
-            },
-
             handleSelectionChange(tables) {
                 this.$emit('selection', tables.map(table => table.ID));
             },
-
             duplicate(tableId) {
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -218,6 +220,18 @@
                     .fail((error) => {
                         alert(error.responseJSON.data.message);
                     });
+            },
+            shouldBeVisible(table) {
+                if(table.dataSourceType == 'fluent-form') {
+                    return window.ninja_table_admin.hasFluentForm;
+                }
+
+                return true;
+            },
+            dataSourceType(table) {
+                let dataSource = table.dataSourceType || 'Default';
+                dataSource = dataSource.indexOf('google') > -1 ? 'Google SpreadSheet' : dataSource;
+                return dataSource;
             }
         },
         mounted() {
