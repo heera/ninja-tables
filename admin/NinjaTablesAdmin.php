@@ -1825,6 +1825,8 @@ class NinjaTablesAdmin
         if (function_exists('wpFluentForm')) {
             wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
         }
+
+        wp_send_json_error(array('message' => 'FluentForm not found!'), 422);
     }
 
     public function createTableWithFluentFormDataSource($shouldUpdate = false)
@@ -1853,17 +1855,21 @@ class NinjaTablesAdmin
             }
             $formId = $_REQUEST['form']['id'];
         } else {
-            $tableId = intval($_REQUEST['tableId']);
-            $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
-            $form = wpFluentForm('FluentForm\App\Modules\Form\Form')->fetchForm($formId);
+            if (function_exists('wpFluentForm')) {
+                $tableId = intval($_REQUEST['tableId']);
+                $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
+                $form = wpFluentForm('FluentForm\App\Modules\Form\Form')->fetchForm($formId);
 
-            $fields = array_map(function($field) {
-                return $field->attributes->name;
-            }, (json_decode($form->form_fields))->fields);
+                $fields = array_map(function($field) {
+                    return $field->attributes->name;
+                }, (json_decode($form->form_fields))->fields);
 
-            $headers = array_filter($fields, function($field) {
-                return !!$field;
-            });
+                $headers = array_filter($fields, function($field) {
+                    return !!$field;
+                });
+            } else {
+                wp_send_json_error(array('message' => 'FluentForm not found!'), 422);
+            }
         }
 
         $headers = $this->formatHeader($headers);
