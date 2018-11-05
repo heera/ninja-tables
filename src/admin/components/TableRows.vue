@@ -22,10 +22,8 @@
                     title="Table Settings"
                     :closable="false">
                         {{ isEditableMessage }}
-                        <span
-                            style="color:#0073aa;cursor:pointer;"
-                            @click="1==1">
-                                Sync Fluent Form "ID: {{config.table.fluentFormFormId}}"
+                        <span style="color:#0073aa;cursor:pointer;" @click="updateTableSettings">
+                            Sync Table Settings
                         </span>
                 </el-alert>
             </div>
@@ -275,7 +273,7 @@
                 currentEditingColumn: false,
                 addDataModalTitle: 'Add Row',
                 dataModalType: 'add',
-
+                dataSource: 'default',
                 // Used for external data sources
                 isUpdatingTableSettings: false,
                 externalDataSourceUrl: this.config.table.remoteURL,
@@ -345,6 +343,7 @@
                 return jQuery.get(ajaxurl, data)
                     .success((res) => {
                         this.items = res.data;
+                        this.dataSource = res.data_source;
                         this.paginate.total = parseInt(res.total);
                         this.paginate.last_page = parseInt(res.last_page)
                     })

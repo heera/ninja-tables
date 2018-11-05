@@ -867,7 +867,10 @@ class NinjaTablesAdmin
             'per_page' => $perPage,
             'current_page' => $currentPage,
             'last_page' => ceil($total / $perPage),
-            'data' => $response
+            'data' => $response,
+            'data_source' => sanitize_title(
+                get_post_meta($tableId, '_ninja_tables_data_provider', true), 'default', 'display'
+            )
         ), 200);
     }
 
@@ -1800,13 +1803,23 @@ class NinjaTablesAdmin
     // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
     public function updateTableWithExternalDataSource()
     {
-        $tableId = $_REQUEST['tableId'];
+        $table = get_post(
+            $tableId = intval($_REQUEST['tableId'])
+        );
 
-        $table = get_post($tableId);
+        $provider = $_REQUEST['type'] = get_post_meta(
+            $tableId, '_ninja_tables_data_provider', true
+        );
 
-        $_REQUEST['type'] = get_post_meta($tableId, '_ninja_tables_data_provider', true);
-        
-        $this->createTableWithExternalDataSource(true);
+        if ($provider == 'google-csv') {
+            $this->createTableWithExternalDataSource(true);
+        }
+
+        if ($provider == 'fluent-form') {
+            // TODO:: Implement update
+            wp_send_json_success(array('remote_url' => ''));
+            wp_die();
+        }
     }
 
     public function getFluentformForms()
