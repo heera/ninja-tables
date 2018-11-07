@@ -1,7 +1,6 @@
 <template>
     <el-form ref="form" :model="model" label-width="200px" class="form-wrapper">
-        <el-tabs type="border-card" v-model="activeTab" @tab-click="onTabClick">
-            
+        <el-tabs v-model="activeTab" @tab-click="onTabClick">
             <!-- Basic Settings -->
             <el-tab-pane label="Basic Settings" name="basic">
                 <!-- Column Name -->

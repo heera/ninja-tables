@@ -1404,3 +1404,11 @@ input.form-control::placeholder {
 .handle {
   cursor: move;
 }
+.el-select-dropdown.el-popper, .el-color-dropdown.el-color-picker__panel {
+  z-index: 999999 !important;
+}
+.no_padding_body {
+  .el-dialog__body {
+    padding-top: 0px;
+  }
+}

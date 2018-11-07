@@ -191,7 +191,7 @@
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
 
-        <el-dialog title="Edit Table Column" :visible.sync="showColumnEditor">
+        <el-dialog class="no_padding_body" :append-to-body="true" top="50px" title="Edit Table Column" width="70%" :visible.sync="showColumnEditor">
             <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
                             :updating="true"
                             v-if="showColumnEditor"
@@ -201,7 +201,7 @@
             />
         </el-dialog>
 
-        <el-dialog title="Add Table Column" width="65%" :visible.sync="columnModal">
+        <el-dialog top="50px" :append-to-body="true" title="Add Table Column" width="70%" :visible.sync="columnModal">
             <columns-editor :model="new_column" :has-pro="has_pro"
                             @add="addNewColumn()"
                             @cancel="columnModal = !columnModal"
