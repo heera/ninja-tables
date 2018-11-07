@@ -32,9 +32,6 @@
                     <template v-if="active_menu == 'columns'">
                         <div class="ninja_header">
                             <h2>Table Column Settings</h2>
-                            <!-- <div class="ninja_actions_action">
-                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
-                            </div> -->
                         </div>
                         <div class="ninja_content">
                             <div class="section_widget">
@@ -139,9 +136,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="section_block_item">
+                                <div v-if="config.table.hasCacheFeature" class="section_block_item">
                                     <h3>
-                                        Caching
+                                        Disable Caching
                                         <el-tooltip placement="right" effect="light">
                                             <div slot="content">
                                                 To optimize and load faster, we cache the table <br>
@@ -155,6 +152,26 @@
                                         <div class="form-group">
                                             <span style="margin-right: 5px;">Disable Caching</span>
                                             <el-switch v-model="tableSettings.shouldNotCache" active-value="yes" inactive-value="no"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="config.table.hasExternalCachingInterval" class="section_block_item">
+                                    <h3>
+                                        Caching Interval
+                                        <el-tooltip placement="right" effect="light">
+                                            <div slot="content">
+                                                To optimize and load faster, You can cache the table data for certain minutes <br/>
+                                                so the data will load from cached data. Please Provide the value in minutes.
+                                            </div>
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <div class="caching-block">
+                                        <div style="max-width: 400px" class="form-group">
+                                            <span style="margin-right: 5px;">Caching Interval (In Minutes)</span>
+                                            <el-input type="number" size="small" v-model="tableSettings.caching_interval"></el-input>
+                                            <p>Keep Blank or 0 to disable caching for table data</p>
+                                            <p v-if="tableSettings.caching_interval > 60">Current Caching Interval: <b>{{ (tableSettings.caching_interval / 60).toFixed(2) }} hours</b></p>
                                         </div>
                                     </div>
                                 </div>
@@ -203,7 +220,6 @@
                 </el-main>
             </el-container>
         </div>
-        
     </div>
 </template>
 <script type="text/babel">

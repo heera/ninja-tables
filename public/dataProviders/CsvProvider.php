@@ -24,7 +24,12 @@ class CsvProvider
 				$table->isEditable = false;
 				$table->dataSourceType = 'external';
 				$table->remoteURL = get_post_meta($table->ID, '_ninja_tables_data_provider_url', true);
-				$table->isEditableMessage = 'Your table columns were initially created from the external data source url so if you have made any changes in that resource (added/removed columns) then you may re-sync the settings to reflect the changes here. Otherwise you\'ll see data according to old column settings.';
+				$table->isEditableMessage = 'Your table columns were initially created from the external data source url so if you have made changes in that resource (added/removed columns) then you may re-sync the settings to reflect the changes here. Otherwise you\'ll see data according to your current column settings.';
+                $table->isExpotable = false;
+                $table->isImportable = false;
+                $table->isSortable = false;
+                $table->hasCacheFeature = false;
+                $table->hasExternalCachingInterval = true;
 			}
 			
 			return $table;
@@ -45,7 +50,16 @@ class CsvProvider
 				return $data;
 			}
 
-			$newData = [];
+
+            $cachedData = ninjaTableGetExternalCachedData($tableId);
+            if($cachedData) {
+                return array(
+                    array_slice($cachedData, $offset, $perPage),
+                    count($cachedData )
+                );
+            }
+
+			$newData = array();
 			$url = get_post_meta($tableId, '_ninja_tables_data_provider_url', true);
 			foreach ($this->getDataFromCsv($tableId, $url) as $key => $value) {
 				$newData[] = array(
@@ -55,11 +69,12 @@ class CsvProvider
 				);
 			}
 
-			return array(
-				array_slice($newData, $offset, $perPage),
-				count($newData)
-			);
+			ninjaTableSetExternalCacheData( $tableId, $newData );
 
+			return array(
+                array_slice( $newData, $offset, $perPage ),
+                count( $newData )
+            );
 		} catch (\Exception $e) {
 			return $data;
 		}

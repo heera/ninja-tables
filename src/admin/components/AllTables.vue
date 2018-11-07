@@ -61,10 +61,10 @@
         </div>
 
         <el-dialog 
-                :title="$t('Add New Table')" 
+                :title="$t('Select your table type and create')"
                 :visible.sync="modalVisible"
                 top="50px"
-                width="65%"
+                width="75%"
                 :append-to-body="true"
         >
             <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>

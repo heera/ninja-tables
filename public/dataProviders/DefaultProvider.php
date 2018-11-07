@@ -6,11 +6,42 @@ class DefaultProvider
 {
 	public function boot()
 	{
-		add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 5);
+        add_filter('ninja_tables_get_table_settings', array($this, 'getTableSettings'));
+        add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 5);
 	}
+
+    public function getTableSettings($table)
+    {
+        try {
+            $provider = sanitize_title(
+                get_post_meta($table->ID, '_ninja_tables_data_provider', true), 'default', 'display'
+            );
+
+            if ($provider == 'default') {
+                $table->isEditable = true;
+                $table->dataSourceType = 'default';
+                $table->isExpotable = true;
+                $table->isImportable = true;
+                $table->isSortable = true;
+                $table->hasCacheFeature = true;
+            }
+
+            return $table;
+
+        } catch (\Exception $e) {
+            return $table;
+        }
+    }
 
 	public function data($data, $tableId, $defaultSorting, $disableCache, $limit)
 	{
+        if (!$disableCache) {
+            $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
+            if($cachedData) {
+                return $cachedData;
+            }
+        }
+
 		$query = ninja_tables_DbTable()->where('table_id', $tableId);
 
 	    if ($defaultSorting == 'new_first') {

@@ -4,6 +4,7 @@
  */
 
 use NinjaTable\TableDrivers\NinjaFooTable;
+use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesTablePressMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
 
@@ -353,7 +354,6 @@ class NinjaTablesAdmin
             'order' => 'DESC',
             'post_type' => $this->cpt_name,
             'post_status' => 'any',
-
         );
 
         if (isset($_REQUEST['search']) && $_REQUEST['search']) {
@@ -366,6 +366,8 @@ class NinjaTablesAdmin
             $table->preview_url = site_url('?ninjatable_preview=' . $table->ID);
             $table->dataSourceType = get_post_meta($table->ID, '_ninja_tables_data_provider', true);
         }
+
+        $tables = apply_filters('ninja_tables_get_all_tables', $tables);
 
         $total = wp_count_posts('ninja-table');
         $total = intval($total->publish);
@@ -455,7 +457,7 @@ class NinjaTablesAdmin
         } elseif ($plugin == 'TablePress') {
             $libraryClass = new NinjaTablesTablePressMigration();
         } elseif ($plugin == 'supsystic') {
-            $libraryClass = new \NinjaTables\Classes\NinjaTablesSupsysticTableMigration();
+            $libraryClass = new NinjaTablesSupsysticTableMigration();
         } else {
             return false;
         }
@@ -477,7 +479,7 @@ class NinjaTablesAdmin
         } elseif ($plugin == 'TablePress') {
             $libraryClass = new NinjaTablesTablePressMigration();
         } elseif ($plugin == 'supsystic') {
-            $libraryClass = new \NinjaTables\Classes\NinjaTablesSupsysticTableMigration();
+            $libraryClass = new NinjaTablesSupsysticTableMigration();
         } else {
             return false;
         }
@@ -1645,7 +1647,6 @@ class NinjaTablesAdmin
 
     public function getTablePreviewHtml()
     {
-        // sleep(3);
         $tableId = intval($_REQUEST['table_id']);
         $tableColumns = ninja_table_get_table_columns($tableId, 'public');
         $tableSettings = ninja_table_get_table_settings($tableId, 'public');
@@ -1656,6 +1657,11 @@ class NinjaTablesAdmin
                 'by_created_at');
         }
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true, 25);
+
+        if(count($formatted_data) > 25) {
+            $formatted_data = array_slice($formatted_data, 0, 25);
+        }
+
         echo self::loadView('public/views/table_inner_html', array(
             'table_columns' => $formattedColumns,
             'table_rows' => $formatted_data

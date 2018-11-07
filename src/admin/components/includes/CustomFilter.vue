@@ -6,50 +6,57 @@
                 Custom Search Filters is useful if you want to add select box / Radio Button to show a group of rows of
                 your table.
                 <br/>
-                To learn more about this <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/custom-filters-on-ninja-tables/">click here</a>
+                To learn more about this <a target="_blank"
+                                            href="https://wpmanageninja.com/docs/ninja-tables/custom-filters-on-ninja-tables/">click
+                here</a>
             </p>
         </div>
         <div class="ninja_style_wrapper">
             <div v-if="hasAdvancedFilters" class="section_block">
-                <el-table
-                        border
-                        stripe
-                        v-if="table_filters.length"
-                        :data="table_filters"
-                >
-                    <el-table-column
-                            prop="title"
-                            label="Name">
-                    </el-table-column>
-                    <el-table-column
-                            prop="type"
-                            label="Type">
-                    </el-table-column>
-                    <el-table-column
-                            label="Target Columns">
-                        <template slot-scope="scope">
-                            <code v-for="columnKey in scope.row.columns" v-show="columnKeyPairs[columnKey]">{{
-                                columnKeyPairs[columnKey] }}</code>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Action">
-                        <template slot-scope="scope">
-                            <el-button @click="edit(scope.row)" size="mini" type="primary"
+                <table v-if="table_filters.length" class="wp-list-table table-bordered widefat fixed striped">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Target Columns</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <draggable
+                            :options="{handle:'.handle'}"
+                            :list="table_filters"
+                            :element="'tbody'"
+                            @change="saveFilters()"
+                    >
+                    <tr v-for="(table_filter, filter_index) in table_filters">
+                        <td><span class="dashicons dashicons-editor-justify handle"></span> {{ table_filter.title }}</td>
+                        <td>{{ table_filter.type }}</td>
+                        <td>
+                            <code v-for="columnKey in table_filter.columns" v-show="columnKeyPairs[columnKey]">
+                                {{ columnKeyPairs[columnKey] }}
+                            </code>
+                        </td>
+                        <td>
+                            <el-button @click="edit(table_filter)" size="mini" type="primary"
                                        icon="el-icon-edit"></el-button>
-                            <el-button size="mini" @click="deleteFilter(scope.$index)" type="danger"
+                            <el-button size="mini" @click="deleteFilter(filter_index)" type="danger"
                                        icon="el-icon-delete"></el-button>
-                        </template>
-                    </el-table-column>
-                </el-table>
+                        </td>
+                    </tr>
+                    </draggable>
+                </table>
             </div>
             <div v-else-if="hasPro" class="section_block">
-                <h3>Custom Filters is introduced in version 2.4.0. Please upgrade <b>Ninja tables pro</b> plugin to use this feature</h3>
+                <h3>Custom Filters is introduced in version 2.4.0. Please upgrade <b>Ninja tables pro</b> plugin to use
+                    this feature</h3>
             </div>
             <div v-else class="section_block text-center">
-                <h3>Custom Filters is pro only features. Please purchase <b>"Ninja Tables Pro"</b> to use this feature</h3>
+                <h3>Custom Filters is pro only features. Please purchase <b>"Ninja Tables Pro"</b> to use this feature
+                </h3>
 
-                <a class="el-button el-button--danger" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_custom_filter">Purchase Now</a>
+                <a class="el-button el-button--danger" target="_blank"
+                   href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_custom_filter">Purchase
+                    Now</a>
 
             </div>
         </div>
@@ -88,12 +95,14 @@
 
     import each from 'lodash/each';
     import NinjaFilterEditor from './_filterEditor'
+    import draggable from 'vuedraggable'
 
     export default {
         name: 'custom_filter',
         props: ['table_id', 'columns'],
         components: {
-            NinjaFilterEditor
+            NinjaFilterEditor,
+            draggable
         },
         data() {
             return {
