@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="section_block">
-            <h3>Additional CSS</h3>
+            <h3>{{ $t('Additional CSS') }}</h3>
 
             <ace_css_editor v-model="code"></ace_css_editor>
             <br/>
@@ -33,11 +33,12 @@
                     custom_css: this.code
                 })
                     .then(response => {
-                        this.$message({
+                        this.$message( {
                             showClose: true,
                             message: response.data.message,
                             type: 'success'
-                        });
+                        } );
+                        this.$set(this.config.table, 'custom_css', this.code );
                     })
                     .then(error => {
                         console.log(error);

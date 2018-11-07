@@ -16,7 +16,7 @@
                     <wp_editor :editor_id="slugify(column.key)" v-model="newColumn[column.key]"></wp_editor>
                 </div>
                 <div v-else-if="column.data_type == 'number'">
-                    <input :placeholder="column.name" type="number" :id="slugify(column.key)" class="form-control"
+                    <input :placeholder="column.name" type="text" :id="slugify(column.key)" class="form-control"
                            v-model="newColumn[column.key]">
                 </div>
                 <div v-else-if="column.data_type == 'date'">
@@ -62,12 +62,12 @@
             </template>
 
             <div class="dialog-footer-item">
-                <button class="btn btn-default" @click.prevent="closeModal">{{ $t('Cancel') }}</button>
-                <button type="submit" class="btn btn-primary btn-flex" @click="addData">
+                <el-button @click.prevent="closeModal" type="danger" size="small">{{ $t('Cancel') }}</el-button>
+                <el-button type="primary" size="small" @click="addData">
                     <span v-if="editId"> {{ $t('Update') }}</span>
                     <span v-else>{{ $t('Add') }}</span>
                     <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-                </button>
+                </el-button>
             </div>
         </div>
     </el-dialog>

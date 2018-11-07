@@ -15,6 +15,11 @@
   max-width: 100%;
   margin-bottom: 20px;
 }
+
+.footable.table tbody tr td, .footable.table tr th {
+  word-break: keep-all;
+}
+
 .footable.table > caption + thead > tr:first-child > th,
 .footable.table > colgroup + thead > tr:first-child > th,
 .footable.table > thead:first-child > tr:first-child > th,
@@ -324,6 +329,10 @@
   position: absolute;
   margin: 4px 0 0 -20px;
   line-height: normal;
+
+}
+.footable .checkbox-inline input[type=checkbox] {
+  display: block !important;
 }
 /* dropdown-menu */
 .footable .dropdown-menu {
@@ -350,6 +359,7 @@
 }
 .footable .open > .dropdown-menu {
   display: block;
+  list-style: none !important;
 }
 .footable .dropdown-menu-right {
   right: 0;
@@ -672,7 +682,7 @@ table.footable > tfoot > tr > th.footable-sortable {
 td.footable-sortable > span.fooicon,
 th.footable-sortable > span.fooicon {
   position: absolute;
-  right: 6px;
+  right: 0px;
   top: 50%;
   margin-top: -7px;
   opacity: 0;

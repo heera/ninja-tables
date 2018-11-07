@@ -26,6 +26,10 @@
   color: rgba(0, 0, 0, 0.87);
   border-collapse: separate;
   border-spacing: 0px;
+
+  tbody tr:last-child td {
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+  }
 }
 .ui.table:first-child {
   margin-top: 0em;
@@ -53,9 +57,8 @@
 }
 .ui.table thead th {
   cursor: auto;
-  background: #F9FAFB;
+ 
   text-align: inherit;
-  color: rgba(0, 0, 0, 0.87);
   padding: 0.92857143em 0.78571429em;
   vertical-align: inherit;
   font-style: none;
@@ -64,6 +67,12 @@
   border-bottom: 1px solid rgba(34, 36, 38, 0.1);
   border-left: none;
 }
+
+.ui.table:not(.inverted) thead th {
+  background: #F9FAFB;
+  color: rgba(0, 0, 0, 0.87);
+}
+
 .ui.table thead tr > th:first-child {
   border-left: none;
 }

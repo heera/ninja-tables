@@ -1,7 +1,7 @@
 <template>
     <div class="wp_vue_editor_wrapper" :class="'editor_wrapper_'+ninja_editor_id">
         <template v-if="hasWpEditor">
-            <button v-if="!has_pro" type="button" class="button ninja_demo_media_button"><span class="dashicons dashicons-admin-media"></span> Add Media (pro)</button>
+            <button @click="showPro" v-if="!has_pro" type="button" class="button ninja_demo_media_button"><span class="dashicons dashicons-admin-media"></span> Add Media (pro)</button>
             <textarea class="wp_vue_editor" :id="ninja_editor_id">{{value}}</textarea>
         </template>
         <template v-else>
@@ -94,14 +94,13 @@
             changeContentEvent() {
                 let content = wp.editor.getContent(this.ninja_editor_id);
                 this.$emit('input', content);
+            },
+            showPro() {
+                window.ninjaTableBus.$emit('show_pro_popup', 1);
             }
         },
         mounted() {
             this.initEditor();
-            jQuery('.editor_wrapper'+this.ninja_editor_id+' .ninja_demo_media_button').on('click', function (e) {
-                e.preventDefault();
-                window.ninjaTableBus.$emit('show_pro_popup', 1);
-            });
         },
         beforeDestroy() {
           

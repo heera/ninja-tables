@@ -16,27 +16,27 @@ const tableLibs = function() {
                         {
                             key: 'table-striped',
                             title: 'Striped rows',
-                            description: 'add zebra-striping to any table row'
+                            description: 'Add zebra-striping to any table row'
                         },
                         {
                             key: 'table-bordered',
                             title: 'Bordered table',
-                            description: 'borders on all sides of the table and cells'
+                            description: 'Borders on all sides of the table and cells'
                         },
                         {
                             key: 'table-hover',
                             title: 'Hover rows',
-                            description: 'enable a hover state on table rows'
+                            description: 'Enable a hover state on table rows'
                         },
                         {
                             key: 'table-condensed',
                             title: 'Condensed table',
-                            description: 'make tables more compact by cutting cell padding in half'
+                            description: 'Make tables more compact by cutting cell padding in half'
                         },
                         {
                             key: 'vertical_centered',
-                            title: 'Vertically Center Table Cell Contents',
-                            description: 'Make Cell Contents Vertically Center'
+                            title: 'Vertically centered table cell contents',
+                            description: 'Make cell contents vertically centered'
                         }
                     ]
                 },
@@ -47,27 +47,27 @@ const tableLibs = function() {
                         {
                             key: 'table-striped',
                             title: 'Striped rows',
-                            description: 'add zebra-striping to any table row'
+                            description: 'Add zebra-striping to any table row'
                         },
                         {
                             key: 'table-bordered',
                             title: 'Bordered table',
-                            description: 'borders on all sides of the table and cells'
+                            description: 'Borders on all sides of the table and cells'
                         },
                         {
                             key: 'table-hover',
                             title: 'Hover rows',
-                            description: 'enable a hover state on table rows'
+                            description: 'Enable a hover state on table rows'
                         },
                         {
                             key: 'table-sm',
                             title: 'Small table',
-                            description: 'make tables more compact by cutting cell padding in half'
+                            description: 'Make tables more compact by cutting cell padding in half'
                         },
                         {
                             key: 'vertical_centered',
-                            title: 'Vertically Center Table Cell Contents',
-                            description: 'Make Cell Contents Vertically Center'
+                            title: 'Vertically centered table cell contents',
+                            description: 'Make cell contents vertically centered'
                         }
                     ]
                 },
@@ -88,27 +88,27 @@ const tableLibs = function() {
                         {
                             key: 'selectable',
                             title: 'Hover rows',
-                            description: 'enable a hover state on table rows'
+                            description: 'Enable a hover state on table rows'
                         },
                         {
                             key: 'celled',
                             title: 'Bordered table',
-                            description: 'borders on all sides of the table and cells'
+                            description: 'Borders on all sides of the table and cells'
                         },
                         {
                             key: 'striped',
                             title: 'Striped rows',
-                            description: 'add zebra-striping to any table row'
+                            description: 'Add zebra-striping to any table row'
                         },
                         {
                             key: 'compact',
                             title: 'Compact Table',
-                            description: 'make tables more compact by cutting cell padding in half'
+                            description: 'Make tables more compact by cutting cell padding in half'
                         },
                         {
                             key: 'vertical_centered',
-                            title: 'Vertically Center Table Cell Contents',
-                            description: 'Make Cell Contents Vertically Center'
+                            title: 'Vertically centered table cell contents',
+                            description: 'Make cell contents vertically centered'
                         }
                     ]
                 },

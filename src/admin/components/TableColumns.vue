@@ -16,6 +16,12 @@
                             <i class="dashicons dashicons-album"></i>
                             <span>Rendering Settings</span>
                         </el-menu-item>
+
+                        <el-menu-item  @click="active_menu = 'custom_filters'" index="custom_filters">
+                            <i class="dashicons dashicons-filter"></i>
+                            <span>Custom Filters</span>
+                        </el-menu-item>
+
                         <el-menu-item  @click="active_menu = 'language_settings'" index="language_settings">
                             <i class="dashicons dashicons-translation"></i>
                             <span>Language Settings</span>
@@ -26,15 +32,15 @@
                     <template v-if="active_menu == 'columns'">
                         <div class="ninja_header">
                             <h2>Table Column Settings</h2>
-                            <div class="ninja_actions_action">
+                            <!-- <div class="ninja_actions_action">
                                 <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="ninja_content">
                             <div class="section_widget">
                                 <div class="heading">
                                     <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
-                                    <h3 v-else class="title">{{ $t('All Available Table Columns') }}</h3>
+                                    <h3 v-else class="title">{{ $t('Available Columns') }}</h3>
                                     <div v-show="!addColumnStatus" class="inline_action">
                                         <el-button size="small" type="primary" v-show="columns.length" @click="addColumnStatus = !addColumnStatus">
                                             {{ $t('Add Column') }}
@@ -42,7 +48,7 @@
                                     </div>
                                 </div>
                                 <div class="widget_body">
-                                    <div v-show="addColumnStatus || !columns.length" class="column drawer">
+                                    <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
                                             <columns-editor :model="new_column" :has-pro="has_pro"
                                                             @add="addNewColumn()"
@@ -57,7 +63,7 @@
                                         >
                                             <div class="header">
                                                 <span class="dashicons dashicons-editor-justify handle" />
-                                                <span>{{ column.name || column.key }}</span>
+                                                <span @click="openDrawer(index)">{{ column.name || column.key }}</span>
                                                 <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">
@@ -136,8 +142,12 @@
                                 <div class="section_block_item">
                                     <h3>
                                         Caching
-                                        <el-tooltip placement="right" effect="light"
-                                                    content="To Optimize and load faster, We cache the table contents. It's not recommended to disable caching unless you know what you are doing">
+                                        <el-tooltip placement="right" effect="light">
+                                            <div slot="content">
+                                                To optimize and load faster, we cache the table <br>
+                                                contents. It's not recommended to disable <br>
+                                                caching unless you know what you are doing
+                                            </div>
                                             <i class="el-icon-info el-text-info"></i>
                                         </el-tooltip>
                                     </h3>
@@ -155,7 +165,7 @@
 
                     <template v-else-if="active_menu == 'language_settings'">
                         <div class="ninja_header">
-                            <h2>Langugae Settings</h2>
+                            <h2>Language Settings</h2>
                             <div class="ninja_actions_action">
                                 <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
                             </div>
@@ -185,6 +195,10 @@
                             </div>
                         </div>
                     </template>
+
+                    <template v-else-if="active_menu == 'custom_filters'">
+                        <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
+                    </template>
                     
                 </el-main>
             </el-container>
@@ -197,18 +211,18 @@
     import findIndex from 'lodash/findIndex';
     import get from 'lodash/get'
     import size from 'lodash/size'
-    import forEach from 'lodash/forEach'
-    import intersection from 'lodash/intersection';
     import snakeCase from 'lodash/snakeCase'
     import ColumnsEditor from './includes/ColumnsEditor';
-    
+    import NinjaCustomFilters from './includes/CustomFilter';
+
     import { tableLibs } from '../data/data'
 
     export default {
         name: 'TableConfiguration',
         components: {
             draggable,
-            ColumnsEditor
+            ColumnsEditor,
+            NinjaCustomFilters
         },
         props: ['config'],
         data() {
@@ -268,7 +282,6 @@
         methods: {
             storeSettings() {
                 this.doingAjax = true;
-                let filteredTableSettings = this.filterTableSettings(this.tableSettings);
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'update-table-settings',
@@ -278,8 +291,6 @@
                 };
                 jQuery.post(ajaxurl, data)
                     .success((res) => {
-                        this.config.columns = this.columns;
-                        this.config.settings = filteredTableSettings;
                         this.$message({
                             showClose: true,
                             message: res.message,
@@ -292,15 +303,6 @@
                     .always(() => {
                         this.doingAjax = false;
                     });
-            },
-            filterTableSettings(settings) {
-                let validStyles = [];
-                forEach(this.availableStyles, (style) => {
-                    validStyles.push(style.key);
-                });
-                settings.css_classes = intersection(validStyles, this.tableSettings.css_classes);
-
-                return settings;
             },
             openDrawer(index) {
                 jQuery('.drawer_body_' + index).slideToggle();

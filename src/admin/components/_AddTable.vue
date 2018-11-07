@@ -1,34 +1,55 @@
 <template>
-    <!-- MODAL -->
-   <div>
-       <div class="ninja_modal-body">
-           <div class="form-group">
-               <label for="name">{{ $t('Title') }}</label>
-               <input type="text" id="name" class="form-control" v-model="table.post_title">
+    <el-tabs type="border-card" v-model="activeTabName" @tab-click="handleTabClick">
+        <el-tab-pane name='default'>
+            <span slot="label"><i class="el-icon-setting"></i> Default</span>
+            <div>
+               <div class="ninja_modal-body">
+                   <div class="form-group">
+                       <label for="name">{{ $t('Title') }}</label>
+                       <input type="text" id="name" class="form-control" v-model="table.post_title">
+                   </div>
+                   <div class="form-group">
+                       <label>{{ $t('Description') }}</label>
+                       <wp_editor v-model="table.post_content"></wp_editor>
+                   </div>
+               </div>
+               <div class="modal-footer">
+                   <el-button type="primary" size="small" @click="addTable">
+                       <span v-if="table.ID">{{ $t('Update') }}</span>
+                       <span v-else>{{ $t('Add') }}</span>
+                       <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+                   </el-button>
+               </div>
            </div>
-           <div class="form-group">
-               <label>{{ $t('Description') }}</label>
-               <wp_editor v-model="table.post_content"></wp_editor>
-           </div>
-       </div>
-       <div class="modal-footer">
-           <button class="btn btn-default" @click="closeModal">{{ $t('Cancel') }}</button>
-           <button class="btn btn-primary btn-flex" @click="addTable">
-               <span v-if="table.ID">{{ $t('Update') }}</span>
-               <span v-else>{{ $t('Add') }}</span>
-               <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
-           </button>
-       </div>
-   </div>
-    <!-- END OF MODAL -->
+        </el-tab-pane>
+
+        <el-tab-pane name='google_spread_sheet'>
+            <span slot="label"><i class="el-icon-document"></i> Link To Google Spreadsheet</span>
+            <data-source-step type="google-csv" :tableCreated="fireTableCreated" />
+        </el-tab-pane>
+
+        <el-tab-pane name='csv'>
+            <span slot="label"><i class="el-icon-upload2"></i> Link To An External CSV</span>
+            <data-source-step type="csv" :tableCreated="fireTableCreated" />
+        </el-tab-pane>
+
+        <el-tab-pane name='fluent_form'>
+            <span slot="label"><i class="el-icon-tickets"></i> Link To FluentForm</span>
+            <fluent-form-data-source :tableCreated="fireTableCreated" />
+        </el-tab-pane>
+    </el-tabs>
 </template>
 
 <script type="text/babel">
-    import wp_editor from '../../common/_wp_editor'
+    import wp_editor from '../../common/_wp_editor';
+    import FluentForm from './includes/FluentForm';
+    import DataSourcceSettingsStep from './includes/DataSourcceSettingsStep';
     export default {
         name: 'add_table',
         components: {
-            wp_editor: wp_editor  
+            wp_editor: wp_editor,
+            'fluent-form-data-source': FluentForm,
+            'data-source-step': DataSourcceSettingsStep,
         },
         props: { 
             table: {
@@ -37,13 +58,14 @@
                     return {
                         ID: null,
                         post_title: '',
-                        post_content: ''
+                        post_content: '',
                     }
                 }
             }
         },
         data() {
             return {
+                activeTabName: 'default',
                 btnLoading: false,
                 editorOption: {
                     modules: {
@@ -61,6 +83,11 @@
             }
         },
         methods: {
+            handleTabClick(tab, event) {
+                setTimeout(() => {
+                    jQuery(tab.$el).find('input:first').focus();
+                }, 0);
+            },
             addTable: function() {
                 this.btnLoading = true;
                 let data = {
@@ -81,7 +108,7 @@
                         if(this.table.ID) {
                             this.closeModal();
                         } else {
-                            this.$emit('table_inserted', response.table_id);
+                            this.fireTableCreated(response.table_id);
                         }
                     })
                     .fail( (error) => {
@@ -108,7 +135,10 @@
             },
             onEditorChange({ editor, html, text }) {
                 this.table.post_content = html
-            }
+            },
+            fireTableCreated(table_id) {
+                this.$emit('table_inserted', table_id);
+            },
         }
     }
 </script> 

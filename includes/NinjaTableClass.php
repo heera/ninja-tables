@@ -1,18 +1,19 @@
-<?php namespace NinjaTables\Classes;
-
+<?php
+namespace NinjaTables\Classes;
 /**
  * The file that defines the core plugin class
  *
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       https://authlab.io
+ * @link       https://wpmanageninja.com
  * @since      1.0.0
  *
  * @package    Wp_table_data_press
  * @subpackage Wp_table_data_press/includes
  */
 use NinjaTable\FrontEnd\NinjaTablePublic;
+use NinjaTables\Admin\DeactivationMessage;
 
 /**
  * The core plugin class.
@@ -126,6 +127,7 @@ class NinjaTableClass {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/NinjaTablesAdmin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/DeactivationMessage.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
@@ -134,13 +136,39 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/NinjaTablePublic.php';
 
 		/**
+		 * The class is responsible for providing data for the table (default data source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/DefaultProvider.php';
+
+		/**
+		 * The class is responsible for providing external data (CSV/Google Spreadsheet Data Source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/CsvProvider.php';
+
+		/**
+		 * The class is responsible for providing external data (FluentForm Data Source).
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/FluentFormProvider.php';
+
+		/**
 		 * Load Tables Migration Class
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesMigration.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesUltimateTableMigration.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/NinjaTablesTablePressMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesUltimateTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesSupsysticTableMigration.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesTablePressMigration.php';
+		
+		
+		
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/I18nStrings.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Lead/LeadFlow.php';
+		
+		/*
+		 * Load Table Importers
+		 */
+		
 
 		$this->loader = new NinjaTablesLoader();
 	}
@@ -155,7 +183,6 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function set_locale() {
-
 		$plugin_i18n = new NinjaTablesI18n();
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 	}
@@ -170,8 +197,10 @@ class NinjaTableClass {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new \NinjaTablesAdmin( $this->get_plugin_name(), $this->get_version() );
+		$leadActions = new \WPManageNinja\Lead\LeadFlow();
 		$demoPage = new ProcessDemoPage();
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
+		$this->loader->add_action( 'init', $leadActions, 'boot' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
 		
 		$this->loader->add_action('save_post', $plugin_admin, 'saveNinjaTableFlagOnShortCode');
@@ -190,6 +219,22 @@ class NinjaTableClass {
 				wp_enqueue_media();
 			}
 		});
+
+		add_filter('pre_set_site_transient_update_plugins', function ($updates) {
+			if (!empty($updates->response['ninja-tables-pro'])) {
+				$updates->response['ninja-tables-pro/ninja-tables-pro.php'] = $updates->response['ninja-tables-pro'];
+				unset($updates->response['ninja-tables-pro']);
+			}
+			return $updates;
+		}, 999, 1);
+
+
+		global $pagenow;
+        $showMessageBox = new DeactivationMessage();
+		if($pagenow == 'plugins.php') {
+            $this->loader->add_action('admin_footer', $showMessageBox, 'addPluginDeactivationMessage');
+        }
+        $this->loader->add_action('wp_ajax_ninja-tables_deactivate_feedback', $showMessageBox, 'broadcastFeedback');
 	}
 
 	/**
@@ -200,24 +245,38 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function define_public_hooks() {
-		$plugin_public = new NinjaTablePublic( $this->get_plugin_name(), $this->get_version() );
+
+		$plugin_public = new NinjaTablePublic($this->get_plugin_name(), $this->get_version());
+
 		$this->loader->add_action('init', $plugin_public, 'register_table_render_functions');
+
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueueNinjaTableScript', 100);
 		
-		$this->loader->add_action('wp_ajax_wp_ajax_ninja_tables_public_action',
+		$this->loader->add_action(
+			'wp_ajax_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
 		
-		$this->loader->add_action('wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
+		$this->loader->add_action(
+			'wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
 		
 		// run foo table
-		$this->loader->add_action('ninja_tables-render-table-footable', 'NinjaTable\TableDrivers\NinjaFooTable', 'run');
-		$this->loader->add_action('ninja_tables_inside_table_render', 'NinjaTable\TableDrivers\NinjaFooTable', 'getTableHTML', 10, 2);
-		
+		$this->loader->add_action(
+			'ninja_tables-render-table-footable',
+			'NinjaTable\TableDrivers\NinjaFooTable',
+			'run'
+		);
+
+		$this->loader->add_action('ninja_tables_inside_table_render',
+			'NinjaTable\TableDrivers\NinjaFooTable',
+			'getTableHTML',
+			10,
+			2
+		);
 	}
 
 	/**
@@ -259,4 +318,9 @@ class NinjaTableClass {
 	public function get_version() {
 		return $this->version;
 	}
+
+
+	public function addPluginDeactivationMessage() {
+
+    }
 }

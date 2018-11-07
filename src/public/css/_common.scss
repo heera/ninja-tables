@@ -2,11 +2,39 @@
   &.footable.table > thead > tr > th {
     padding: 0.92857143em 0.78571429em;
   }
+  td.ninja_temp_cell {
+    display: none !important;
+  }
   span.label.label-default {
     display: none;
     visibility: hidden;
   }
-  
+
+  &.footable-paging-right {
+    .footable-pagination-wrapper {
+      text-align: right;
+    }
+  }
+  &.footable-paging-center {
+    .footable-pagination-wrapper {
+      text-align: center;
+    }
+  }
+  &.footable-paging-left {
+    .footable-pagination-wrapper {
+      text-align: left;
+    }
+  }
+
+
+  .footable-pagination-wrapper .pagination:before {
+    content: none !important;
+  }
+
+  .footable-pagination-wrapper .pagination:after {
+    content: none !important;
+  }
+
   table.footable-details tr th {
       white-space: initial;
       overflow: visible !important;
@@ -26,10 +54,11 @@
     left: 0px;
 
     &:after {
-      content: " ";
+      content: "";
+      display: none !important;
     }
   }
-  
+
   li.dropdown-header {
     padding-left: 20px;
     padding-bottom: 5px;
@@ -51,10 +80,12 @@
     visibility: hidden;
   }
   &.hide_all_borders.table {
+    border-color: transparent;
     thead {
       border-color: transparent !important;
-      tr, th, td {
+      tr, td, tr > th {
         border-color: transparent !important;
+        border-width: 0px !important;
       }
     }
     tbody {
@@ -62,21 +93,29 @@
         border-color: transparent !important;
       }
     }
+    tfoot {
+      tr > td {
+        border-color: transparent !important;
+        border: 0px !important;
+      }
+    }
   }
-  
-  &.ninja_table_search_disabled > thead tr.footable-filtering {
+
+  &.ninja_table_search_disabled > thead tr.footable-filtering .footable-filtering-search {
     display: none !important;
     visibility: hidden !important;
   }
   .form-group.footable-filtering-search .input-group-btn > button {
     margin: 0px !important;
+    height: auto !important;
+    padding: 6px 12px !important;
   }
   .form-group.footable-filtering-search input.form-control {
     margin-bottom: 0px !important;
   }
   tbody tr.footable-detail-row {
     > td {
-      padding: 5px !important; 
+      padding: 5px !important;
     }
     td {
       table.footable-details {
@@ -95,7 +134,14 @@
       }
     }
   }
-  
+
+  tbody tr td {
+    a, p, h1, h2, h3 {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
 }
 
 .footable_parent {
@@ -110,7 +156,6 @@
       }
     }
   }
-
 }
 
 .loading_ninja_table1 {
@@ -119,6 +164,18 @@
   background: gray !important;
   table {
     display: none;
+  }
+}
+
+.ninja_custom_select_radio, .ninja_custom_select_checkbox {
+  label {
+    &:nth-child(2) {
+      margin-left: 5px;
+    }
+    margin-right: 10px;
+    &:last-child {
+      margin-right: 5px;
+    }
   }
 }
 

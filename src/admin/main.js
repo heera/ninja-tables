@@ -22,7 +22,12 @@ import {
     CheckboxGroup,
     RadioButton,
     TabPane,
-    Tabs
+    Tabs,
+    Steps,
+    Step,
+    Alert,
+    Row,
+    Col,
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
@@ -59,6 +64,11 @@ Vue.use(Switch);
 Vue.use(CheckboxGroup);
 Vue.use(Tabs);
 Vue.use(TabPane);
+Vue.use(Steps);
+Vue.use(Step);
+Vue.use(Alert);
+Vue.use(Row);
+Vue.use(Col);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
@@ -69,6 +79,10 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.mixin({
     methods: {
         $t(str) {
+            let transString = ninja_table_admin.i18n[str];
+            if(transString) {
+                return transString;
+            }
             return str;
         }
     },

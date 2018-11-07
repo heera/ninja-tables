@@ -2,7 +2,7 @@
     <div class="ninja_design">
         <div class="ninja_title_section">
             <div class="ninja_title">
-                <h3>Customize Your Table Style</h3>
+                <h3 style="margin-right: 15px;">Table Style Customization</h3>
                 <el-radio-group class="ninja_resp_tabs" size="mini" v-model="showingDevice">
                     <el-radio-button label="desktop"><span class="dashicons dashicons-desktop"></span> Desktop</el-radio-button>
                     <el-radio-button label="tablet"><span class="dashicons dashicons-tablet"></span> Tablet</el-radio-button>
@@ -13,15 +13,19 @@
         </div>
         <div class="ninja_design_wrapper">
         <div style="background: white; padding: 10px 20px;" class="design_preview">
+            <div class="ninja_upgrade_bar" v-if="showProNotice">
+                    {{ $t('Color customization is a PRO feature. Please upgrade to pro apply this feature.') }}
+                <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio">{{ $t('Upgrade To Pro') }}</a>
+            </div>
             <div
                     :id="'footable_parent_'+tableId"
                     class="footable_parent ninja_table_wrapper loading_ninja_table wp_table_data_press_parent"
                     :class="wrapperClasses"
             >
+                
                 <h3 v-if="tableSettings.show_title" class="table_title footable_title">{{ config.table.post_title }}</h3>
                 <div v-if="tableSettings.show_description" class="table_description footable_description"
                      v-html="config.table.post_content"></div>
-
                 <table
                         v-show="app_ready"
                         :id="'footable_'+tableId"
@@ -38,8 +42,7 @@
             </div>
             <div class="ninja_demo_disclaimer">
                 <p>
-                    <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10 items if you enable paginate.<br />
-                    Also note that, The table style may differ at the frontend as your theme may overwrite few css elements.
+                    <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10 items if you enable paginate. Also note that, The table style may differ at the frontend as your theme may overwrite few css elements.
                 </p>
             </div>
         </div>
@@ -60,7 +63,7 @@
                             </el-radio-button>
                         </el-radio-group>
                     </div>
-                    <div  v-if="availableStyles" class="form_group">
+                    <div  v-if="availableStyles" class="form_group label-normalize">
                         <h3 class="ninja_inner_title">Styles</h3>
                         <label
                                 v-for="tableStyle in availableStyles"
@@ -74,7 +77,7 @@
                             </el-tooltip>
                         </label>
                     </div>
-                    <div class="form_group">
+                    <div class="form_group label-normalize">
                         <h3 class="ninja_inner_title">Features</h3>
                         <label for="show_title">
                             <input v-model="tableSettings.show_title" type="checkbox" value="1" id="show_title"/> {{
@@ -136,93 +139,66 @@
                         <h3 class="ninja_inner_title">Search Bar Colors</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                    label="Background"
+                                    v-model="tableSettings.table_search_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_search_color_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_search_color_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_search_color_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_search_color_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                         
-                        <h3 class="ninja_inner_title">Table Header Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Table Header Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_header_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_header_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_header_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_header_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_header_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_color_header_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_header_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_header_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_color_header_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                 
-                        <h3 class="ninja_inner_title">Table Body Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Table Body Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_primary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_primary"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_color_primary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_color_secondary', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_secondary"></el-color-picker>
-                                    <label>Text</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Text"
+                                        v-model="tableSettings.table_color_secondary"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="changeColor($event, 'table_color_border')"
-                                            show-alpha
-                                            v-model="tableSettings.table_color_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_color_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                         <div class="ninja_switch_wrapper">
@@ -233,95 +209,68 @@
                                     v-model="tableSettings.alternate_color_status"></el-switch>
                         </div>
                         <div class="ninja_alternate_colors" v-if="tableSettings.alternate_color_status == 'yes'">
-                            <h3 class="ninja_inner_title">Event Rows Colors</h3>
+                            <h3 class="ninja_inner_title">{{ $t('Odd Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_primary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_primary"></el-color-picker>
-                                        <label>Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Background"
+                                            v-model="tableSettings.table_alt_2_color_primary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_secondary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_secondary"></el-color-picker>
-                                        <label>Text</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Text"
+                                            v-model="tableSettings.table_alt_2_color_secondary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_color_hover', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_color_hover"></el-color-picker>
-                                        <label>Hover Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Hover Background"
+                                            v-model="tableSettings.table_alt_2_color_hover"
+                                    ></ninja-color-picker>
                                 </div>
                             </div>
-                            <h3 class="ninja_inner_title">Odd Rows Colors</h3>
+                            <h3 class="ninja_inner_title">{{ $t('Event Row Colors') }}</h3>
                             <div class="ninja_color_blocks">
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_primary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_primary"></el-color-picker>
-                                        <label>Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Background"
+                                            v-model="tableSettings.table_alt_color_primary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_secondary', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_secondary"></el-color-picker>
-                                        <label>Text</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Text"
+                                            v-model="tableSettings.table_alt_color_secondary"
+                                    ></ninja-color-picker>
                                 </div>
                                 <div class="ninja_color_block">
-                                    <div class="form_group">
-                                        <el-color-picker
-                                                @active-change="(color) => { this.$set(tableSettings, 'table_alt_2_color_hover', color); }"
-                                                show-alpha
-                                                v-model="tableSettings.table_alt_2_color_hover"></el-color-picker>
-                                        <label>Hover Background</label>
-                                    </div>
+                                    <ninja-color-picker
+                                            label="Hover Background"
+                                            v-model="tableSettings.table_alt_color_hover"
+                                    ></ninja-color-picker>
                                 </div>
                             </div>
                         </div>
-                        <h3 class="ninja_inner_title">Footer Colors</h3>
+                        <h3 class="ninja_inner_title">{{ $t('Footer Colors') }}</h3>
                         <div class="ninja_color_blocks">
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_bg', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_bg"></el-color-picker>
-                                    <label>Background</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Background"
+                                        v-model="tableSettings.table_footer_bg"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_active', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_active"></el-color-picker>
-                                    <label>Active</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Active"
+                                        v-model="tableSettings.table_footer_active"
+                                ></ninja-color-picker>
                             </div>
                             <div class="ninja_color_block">
-                                <div class="form_group">
-                                    <el-color-picker
-                                            @active-change="(color) => { this.$set(tableSettings, 'table_footer_border', color); }"
-                                            show-alpha
-                                            v-model="tableSettings.table_footer_border"></el-color-picker>
-                                    <label>Border</label>
-                                </div>
+                                <ninja-color-picker
+                                        label="Border"
+                                        v-model="tableSettings.table_footer_border"
+                                ></ninja-color-picker>
                             </div>
                         </div>
                     </div>
@@ -331,7 +280,7 @@
                     <div class="ninja_switch_wrapper">
                         <el-switch
                                 inactive-color="gray"
-                                active-text="Hide Pagination (All data will show at once)"
+                                active-text="Hide Pagination (Show all data at once)"
                                 active-value="true" inactive-value="false"
                                 v-model="tableSettings.show_all"></el-switch>
                     </div>
@@ -384,7 +333,7 @@
                     </div>
 
                     <div class="form_group">
-                        <label>{{ $t('Row Details ( Responsive Drawer ) Details') }}</label>
+                        <label>{{ $t('Row Details (Responsive drawer)') }} <span v-show="!has_pro">(PRO)</span></label>
                         <el-radio-group size="mini" v-model="tableSettings.expand_type">
                             <el-radio-button label="default">
                                 Default
@@ -416,9 +365,16 @@
                     </div>
                 </el-tab-pane>
             </el-tabs>
+            
+            <div class="ninja_design_tips" v-if="design_tips.length">
+                <ul class="ninja_design_tips_lists">
+                    <li v-for="design_tip in design_tips"><i class="el-icon-warning"></i> <span v-html="design_tip"></span></li>
+                </ul>
+            </div>
+            
             <div v-if="!has_pro" class="upgrade_box">
                 <a target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_studio" class="el-button el-button--danger el-button--small">
-                    <i class="dashicons dashicons-shield"></i> Upgrade To Pro to unlock advanced features
+                    <i class="dashicons dashicons-shield"></i> {{ $t('Upgrade To Pro to unlock advanced features') }}
                 </a>
             </div>
         </div>
@@ -434,11 +390,13 @@
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
+    import NinjaColorPicker from './Extras/ColorPicker';
     export default {
         name: 'table_preview',
         props: ['config'],
         components: {
-            SortableUpgradeNotice
+            SortableUpgradeNotice,
+            NinjaColorPicker
         },
         data() {
             return {
@@ -446,7 +404,7 @@
                 activeDesign: 'features',
                 tableId: this.$route.params.table_id,
                 tableSettings: this.config.settings,
-                table_body_html: '<h1>hello There</h1>',
+                table_body_html: '',
                 data_loaded: false,
                 script_loaded: false,
                 footableLoading: false,
@@ -456,7 +414,7 @@
                 tableInnerHtml : '',
                 showingDevice: 'desktop',
                 hasSortable: !!window.ninja_table_admin.hasSortable,
-                sortableUpgradeNotice: false
+                sortableUpgradeNotice: false,
             }
         },
         computed: {
@@ -496,8 +454,11 @@
                     classes.push('hide_all_borders');
                 }
                 classes.push('ninja_table_pro');
-                
-                let table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
+
+                let table_css_classes = [];
+                if(this.tableSettings.css_classes) {
+                    table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
+                }
                 
                 if(this.tableSettings.css_lib == 'semantic_ui') {
                     classes.push('ui');
@@ -515,6 +476,7 @@
                         breakpoints: column.breakpoints,
                         type: column.data_type,
                         sortable: true,
+                        classes: ['ninja_column_'+index],
                         visible: (column.breakpoints == 'hidden') ? false : true
                     });
                 });
@@ -541,6 +503,39 @@
                     cssClasses.push(style.key);
                 });
                 return cssClasses;
+            },
+            showProNotice() {
+                if(this.has_pro) {
+                    return false;
+                }
+                if(
+                    (
+                        this.tableSettings.table_color_type == 'custom_color' &&
+                        this.activeDesign == 'color_customization'
+                    )
+                    || 
+                    (
+                    this.activeDesign == 'color_customization' &&
+                    this.tableSettings.table_color && 
+                    this.tableSettings.table_color != 'ninja_no_color_table')
+                ) {
+                    return true;
+                }
+                return false;
+            },
+            design_tips() {
+                let tips = [];
+                if(this.tableSettings.table_color_type == 'custom_color') {
+                    if(
+                        !this.tableSettings.table_search_color_primary ||
+                        !this.tableSettings.table_header_color_primary ||
+                        !this.tableSettings.table_color_primary ||
+                        !this.tableSettings.table_color_secondary 
+                    ) {
+                        tips.push('You should set colors at <b>"Table Colors"</b> Tab');
+                    }
+                }
+                return tips;
             }
         },
         watch: {
@@ -590,7 +585,15 @@
                     this.reInitFootables();
                 });
             },
-            'tableSettings.expand_type'() {
+            'tableSettings.expand_type': function(new_val, old_val) {
+                if (new_val != 'default') {
+                    if (!this.has_pro) {
+                        this.tableSettings.expand_type = 'default';
+                        window.ninjaTableBus.$emit('show_pro_popup', 1);
+                        return;
+                    }
+                }
+                
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });
@@ -610,6 +613,9 @@
                     }
                 }
             },
+            activeDesign() {
+                this.checkColorPro();
+            }
         },
         methods: {
             fetchTableBody() {
@@ -635,6 +641,7 @@
                 })
             },
             storeSettings() {
+                this.checkColorPro();
                 this.savingSettings = true;
                 let filteredTableSettings = this.filterTableSettings(this.tableSettings);
                 let data = {
@@ -726,10 +733,18 @@
                         "container": "#footable_parent_" + this.tableId + " .paging-ui-container"
                     }
                 };
-                console.log(initConfig);
-                jQuery('#footable_' + this.tableId).footable(initConfig);
+               let $table = jQuery('#footable_' + this.tableId);
+                $table.footable(initConfig);
                 this.generateColorCss();
                 this.footableLoading = false;
+                jQuery("td:contains('#colspan#')").remove();
+                
+                this.config.columns.forEach((column, index) => {
+                    $table.find('th.ninja_column_'+index)
+                        .css('text-align', column.textAlign)
+                        .css('width', column.width+'px');
+                });
+                
             },
 
             dysel(options) {
@@ -762,7 +777,7 @@
                             var mycallback = cb;
                             if (debug) { // if debug redefine callback and add console.log
                                 mycallback = function () {
-                                    console.log('Loaded NOW ' + (this.src || this.href) + ' >>');
+                                   
                                     cb();
                                 }
                             }
@@ -771,7 +786,7 @@
                             fileref.onload = mycallback
                         }
                         if (debug) {
-                            console.log('Armed ' + filename);
+                           
                         }
                         // push it into the header
                         document.getElementsByTagName("head")[0].appendChild(fileref);
@@ -877,14 +892,33 @@
                 jQuery('#table_designer_css').html(css);
             },
             changeColor(color, element) {
-                console.log(color);
+                
                 this.$set(this.tableSettings, element, color);
+            },
+            checkColorPro() {
+                if(this.has_pro) {
+                    return;
+                }
+                if( this.tableSettings.table_color &&
+                    this.tableSettings.table_color != 'ninja_no_color_table' ||
+                    this.tableSettings.table_color_type != 'pre_defined_color'
+                )
+                {
+                    this.tableSettings.table_color_type = 'pre_defined_color';
+                    this.tableSettings.table_color = 'ninja_no_color_table';
+                }
+            },
+            generateDefaultCss() {
+                let columnContentCss = this.config.table.custom_css;
+                this.config.columns.forEach((column, index) => {
+                    columnContentCss += ` #footable_${this.tableId} td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
+                });
+                jQuery('#ninja_table_designer_common_css').html(columnContentCss);
             }
         },
         mounted() {
             this.fetchTableBody();
             this.loadRequiredScripts();
-
             if( !this.tableSettings.table_color_type ) {
                 if(this.tableSettings.table_color == 'ninja_table_custom_color') {
                     this.$set( this.tableSettings, 'table_color_type', 'custom_color' );
@@ -892,6 +926,7 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
+            this.generateDefaultCss();
         }
     }
 </script> 

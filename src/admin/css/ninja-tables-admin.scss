@@ -198,7 +198,7 @@ label.form_group {
     .cell-content {
       height: 28px;
       overflow: hidden;
-      white-space: nowrap;
+      white-space: normal;
       -o-text-overflow: ellipsis;
       -ms-text-overflow: ellipsis;
       text-overflow: ellipsis;
@@ -707,6 +707,7 @@ ul.doc_items {
   background-color: white;
   color: black;
   min-height: 70vh;
+  padding: 15px;
 }
 
 .el-menu-item.is-active {
@@ -715,8 +716,8 @@ ul.doc_items {
 }
 
 .ninja_header {
-  margin: -20px -20px 20px;
-  padding: 10px 20px;
+  //margin: -20px -20px 20px;
+  padding-bottom: 15px;
   border-bottom: 1px solid #eae7e7;
   background: #fbfdff;
 }
@@ -1024,13 +1025,13 @@ ul.ninja_render_features li {
 }
 
 .section_widget {
-  border: 1px solid gray;
   .heading {
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: white;
-    border-bottom: 1px solid gray;
     overflow: hidden;
-    padding: 10px;
+    padding: 10px 0;
     .title {
       float: left;
       padding: 0px;
@@ -1048,7 +1049,7 @@ ul.ninja_render_features li {
 
 .drawer {
   display: block;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #434a50;
   .drawer_body {
     padding: 10px;
     display: none;
@@ -1058,9 +1059,9 @@ ul.ninja_render_features li {
   }
   .header {
     padding: 15px 10px;
-    background: #0073aa;
+    background: #535c63;
     color: white;
-    font-weight: bold;
+    //font-weight: bold;
     font-size: 17px;
     .edit_icon {
       float: right;
@@ -1242,8 +1243,10 @@ ul.ninja_render_features li {
   color: #636060;
 }
 .ninja_header {
-  padding: 15px 20px;
   overflow: hidden;
+  justify-content: space-between;
+  align-items: center;
+
   h2 {
     display: inline-block;
     margin: 0px;
@@ -1278,6 +1281,9 @@ ul.ninja_render_features li {
       background: #e5e5e5;
       height: auto;
       overflow: scroll;
+    }
+    .el-radio-button--mini .el-radio-button__inner {
+      padding: 7px !important;
     }
   }
   .design_preview {
@@ -1334,5 +1340,54 @@ input.form-control::placeholder {
       font-size: 20px;
       height: 10px;
     }
+  }
+}
+.ninja_upgrade_bar {
+  margin: -10px -20px 0px;
+  background: #f35a59;
+  padding: 10px 20px;
+  overflow: hidden;
+  color: white;
+  a {
+    color: #f35a59;
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    background: white;
+    border: 1px solid white;
+    &:hover {
+      color: white;
+      background-color: #f35a59;
+      border: 1px solid white;
+      transition: background-color 0.3s ease;
+    }
+  }
+}
+.ninja_btn {
+  text-decoration: none;
+}
+
+.label-normalize label {
+  font-weight: normal;
+}
+
+.ninja_design_tips {
+  color: red;
+  padding: 10px 10px;
+  background: white;
+  border: 1px solid red;
+  ul.ninja_design_tips_lists {
+    margin: 0;
+  }
+}
+
+.el-checkbox-group {
+  overflow: hidden;
+  width: 100%;
+  label.el-checkbox {
+    display: inline-block;
+    margin-left: 0px;
+    margin-right: 20px;
   }
 }

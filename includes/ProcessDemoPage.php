@@ -3,7 +3,7 @@
 class ProcessDemoPage {
 	public function handleExteriorPages() {
 		if ( isset( $_GET['ninjatable_preview'] ) && $_GET['ninjatable_preview'] ) {
-			if(current_user_can(ninja_table_admin_role())) {
+			if(ninja_table_admin_role()) {
 				$tableId = intval( $_GET['ninjatable_preview'] );
 				$this->loadDefaultPageTemplate();
 				$this->renderPreview( $tableId );
@@ -52,6 +52,7 @@ class ProcessDemoPage {
 	public function pre_get_posts( $query ) {
 		if ( $query->is_main_query() ) {
 			$query->set( 'posts_per_page', 1 );
+			$query->set('ignore_sticky_posts', true);
 		}
 	}
 

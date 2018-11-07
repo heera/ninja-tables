@@ -13,9 +13,15 @@
             <el-table-column :label="$t('Title')">
                 <template slot-scope="scope">
                     <strong>
-                        <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                        <template v-if="shouldBeVisible(scope.row)">
+                            <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                                {{ scope.row.post_title }}
+                            </router-link>
+                        </template>
+
+                        <template v-else>
                             {{ scope.row.post_title }}
-                        </router-link>
+                        </template>
                     
                         <span v-show="scope.row.post_status != 'publish'">
                             ({{ scope.row.post_status }})
@@ -23,17 +29,17 @@
                     </strong>
 
                     <div class="row-actions">
-                        <span class="row-edit">
+                        <span class="row-edit" v-if="shouldBeVisible(scope.row)">
                             <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
                                 {{ $t('Edit') }}
                             </router-link> |
                         </span>
 
-                        <span class="row-preview">
+                        <span class="row-preview" v-if="shouldBeVisible(scope.row)">
                             <a :href="scope.row.preview_url" target="_blank">{{ $t('Preview') }}</a> |
                         </span>
 
-                        <span class="row-duplicate">
+                        <span class="row-duplicate" v-if="shouldBeVisible(scope.row)">
                             <a href="#" @click.prevent="duplicate(scope.row.ID)">{{ $t('Duplicate') }}</a> |
                         </span>
 
@@ -41,6 +47,12 @@
                             <a @click.prevent="confirmDeleteTable(scope.row.ID)" href="#">{{ $t('Delete') }}</a>
                         </span>
                     </div>
+                </template>
+            </el-table-column>
+            
+            <el-table-column :label="$t('Data Source')">
+                <template slot-scope="scope">
+                    <strong>{{ dataSourceType(scope.row) }}</strong>
                 </template>
             </el-table-column>
 
@@ -70,11 +82,17 @@
                     :total="paginate.total">
             </el-pagination>
         </div>
-        
-        <div v-if="!loading && !is_installed && items.length > 1">
+
+        <div v-if="!loading && !is_installed && items.length > 2 && !hasPro">
             <a style="display: block;width: 800px;margin: 40px auto 0px;max-width: 100%;" target="_blank" href="https://wordpress.org/plugins/fluentform">
                 <img style="max-width: 100%" :src="img_url_path+'fluent_banner.png'"/>
             </a>
+        </div>
+        <div style="margin-top: 100px;" class="text-center" v-else-if="items.length > 3 && !hasPro">
+            <hr />
+            <h3>Love Ninja Tables? Upgrade to Pro and get more exciting features and Performance</h3>
+
+            <a class="button button-primary" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade">Upgrade To Pro</a>
         </div>
     </div>
 </template>
@@ -108,8 +126,9 @@
                     last_page: 1,
                     per_page: 10
                 },
+                hasPro: !!window.ninja_table_admin.hasPro,
+                img_url_path: window.ninja_table_admin.img_url,
                 is_installed: window.ninja_table_admin.isInstalled,
-                img_url_path: window.ninja_table_admin.img_url
             }
         },
         methods: {
@@ -130,22 +149,22 @@
                         this.paginate.current_page = response.current_page;
                         this.paginate.last_page = response.last_page;
                         this.pageLoading = false;
+                        if(response.total) {
+                            this.$emit('total_table', response.total);
+                        }
                     })
                     .fail((error) => {
                         vueNotification.error('Something went wrong, please try again.');
                     });
             },
-
             goToPage(value) {
                 this.paginate.current_page = value;
                 this.fetchTables();
             },
-
             handleSizeChange(val) {
                 this.paginate.per_page = val;
                 this.fetchTables();
             },
-            
             confirmDeleteTable(tableId) {
 
                 this.$confirm('Are you sure, You want to delete this table?', 'Warning', {
@@ -161,7 +180,6 @@
                     });
                 });
             },
-
             deleteTable(tableId) {
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -181,15 +199,9 @@
                         alert(error.responseJSON.data.message);
                     });
             },
-            
-            handleBulkAction() {
-                
-            },
-
             handleSelectionChange(tables) {
                 this.$emit('selection', tables.map(table => table.ID));
             },
-
             duplicate(tableId) {
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -201,14 +213,25 @@
                     .then((response) => {
                         this.$message({
                             type: 'success',
-                            message: response.message
+                            message: response.data.message
                         });
-
-                        this.fetchTables();
+                        this.$router.push({ name: 'data_items', params: { table_id: response.data.table_id } });
                     })
                     .fail((error) => {
                         alert(error.responseJSON.data.message);
                     });
+            },
+            shouldBeVisible(table) {
+                if(table.dataSourceType == 'fluent-form') {
+                    return window.ninja_table_admin.hasFluentForm;
+                }
+
+                return true;
+            },
+            dataSourceType(table) {
+                let dataSource = table.dataSourceType || 'Default';
+                dataSource = dataSource.indexOf('google') > -1 ? 'Google SpreadSheet' : dataSource;
+                return dataSource;
             }
         },
         mounted() {

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <template v-if="columns.length">
-            <add_data_modal v-if="columns.length"
+        <template v-if="columns.length ">
+            <add_data_modal v-if="columns.length && addDataModal"
                             :title="addDataModalTitle"
                             :show="addDataModal"
                             @modal_close="closeDataModal"
@@ -15,7 +15,55 @@
                             :type="dataModalType"
             ></add_data_modal>
 
-            <div class="tablenav top">
+            <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
+                <el-row>
+                    <el-col :md="20">
+                        <el-alert
+                            show-icon
+                            type="info"
+                            title="Table Settings"
+                            :closable="false">
+                                {{ isEditableMessage }}
+                        </el-alert>
+                    </el-col>
+
+                    <el-col :md="4">
+                        <el-button
+                        :loading="syncing"
+                        @click="updateTableSettings">Sync Table Settings</el-button>
+                    </el-col>
+
+                </el-row>
+            </div>
+
+            <div v-if="dataSourceType == 'external'" class="tablenav top">
+                <el-alert
+                    show-icon
+                    type="info"
+                    title="Table Settings"
+                    :closable="false">
+                        {{ isEditableMessage }}
+                        <span
+                            style="color:#0073aa;cursor:pointer;"
+                            @click="isUpdatingTableSettings = !isUpdatingTableSettings">
+                                {{ isUpdatingTableSettings ? 'Hide Settings' : 'Show Settings' }}
+                        </span>
+                </el-alert>
+
+                <div v-show="isUpdatingTableSettings">
+                    <el-input
+                    placeholder="Remote URL..."
+                    v-model="externalDataSourceUrl"
+                    v-on:keyup.enter="updateTableSettings">
+                        <el-button
+                        slot="append"
+                        :loading="syncing"
+                        @click="updateTableSettings">Sync Table Settings</el-button>
+                    </el-input>
+                </div>
+            </div>
+
+            <div v-if="isEditable" class="tablenav top">
                 <div class="alignleft actions bulkactions">
                     <label for="bulk-action-selector-top" class="screen-reader-text">
                         {{ $t('Select bulk action') }}
@@ -35,17 +83,18 @@
                     </label>
 
                     <label>
-                        <input type="checkbox" name="checkbox" v-model="sorting" @click="toggleSorting()">
+                        <input type="checkbox" name="checkbox" v-model="sorting">
                         Sort Manually
                         <template v-if="!has_pro">(Pro Feature)</template>
                     </label>
                 </div>
                 <div class="pull-right">
                     <el-button size="small" type="primary" @click="add()"> {{ $t('Add Data') }}</el-button>
+                    <el-button size="small" type="info" @click="addColumn()"> {{ $t('Add Column') }}</el-button>
                 </div>
             </div>
             <hr/>
-            
+
             <template v-if="columns.length">
                 <el-table
                         class="js-sortable-table"
@@ -53,11 +102,12 @@
                         :data="items"
                         row-key="id"
                         border
-                        :class="{compact: isCompact, sorting: sorting}"
+                        :class="{ compact: isCompact, sorting: sorting}"
                         :style="'width: '+tableWidth"
                         @selection-change="handleSelectionChange"
                 >
                     <el-table-column
+                            v-if="isEditable"
                             type="selection"
                             fixed
                             width="55">
@@ -74,6 +124,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column
+                            v-if="isEditable"
                             fixed="right"
                             label="Actions"
                             class-name="actions"
@@ -92,7 +143,8 @@
                             </a>
 
                             <a @click="duplicateData(scope)">
-                                <el-tooltip placement="top-end" effect="light" content="Duplicate data" :open-delay="500">
+                                <el-tooltip placement="top-end" effect="light" content="Duplicate data"
+                                            :open-delay="500">
                                     <span class="dashicons dashicons-admin-page"></span>
                                 </el-tooltip>
                             </a>
@@ -102,7 +154,7 @@
                 </el-table>
 
                 <div class="tablenav bottom">
-                    <div class="alignleft actions bulkactions">
+                    <div v-if="isEditable" class="alignleft actions bulkactions">
                         <label for="bulk-action-selector-top" class="screen-reader-text">
                             {{ $t('Select bulk action') }}
                         </label>
@@ -117,7 +169,7 @@
                                 @size-change="handleSizeChange"
                                 @current-change="goToPage"
                                 :current-page.sync="paginate.current_page"
-                                :page-sizes="[10, 20, 50, 100]"
+                                :page-sizes="[10, 20, 50, 100, 500, 2000]"
                                 :page-size="paginate.per_page"
                                 layout="total, sizes, prev, pager, next, jumper"
                                 :total="paginate.total">
@@ -131,9 +183,9 @@
         </template>
         <div v-else-if="!loading" type="warning" style="margin-top: 15px; text-align: center" class="instruction_block">
             <h3>{{ $t('To get started please add table columns') }}</h3>
-            <router-link style="text-decoration: none" :to="{ name: 'data_columns', params: { table_id: tableId } }" class="el-button el-button--primary">
-                <span>Add Columns</span>
-            </router-link>
+            <el-button @click="addColumn()" type="primary">
+                Add Column
+            </el-button>
         </div>
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
@@ -141,16 +193,26 @@
         <el-dialog title="Edit Table Column" :visible.sync="showColumnEditor">
             <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
                             :updating="true"
-                            v-if="currentEditingColumn"
+                            v-if="showColumnEditor"
                             :hideDelete="true"
                             @store="storeSettings()"
                             @cancel="showColumnEditor = false"
+            />
+        </el-dialog>
+
+        <el-dialog title="Add Table Column" width="65%" :visible.sync="columnModal">
+            <columns-editor :model="new_column" :has-pro="has_pro"
+                            @add="addNewColumn()"
+                            @cancel="columnModal = !columnModal"
             />
         </el-dialog>
     </div>
 </template>
 <script type="text/babel">
     import Sortable from 'sortablejs';
+
+    import findIndex from 'lodash/findIndex';
+    import snakeCase from 'lodash/snakeCase'
 
     import addDataModal from './_AddDataModal';
     import pagination from '../../common/pagination.vue';
@@ -169,9 +231,19 @@
             SortableUpgradeNotice,
             columnsEditor
         },
-        props: ['config'],
+        props: ['config', 'getColumnSettings'],
         data() {
             return {
+                columnModal: false,
+                new_column: {
+                    name: '',
+                    key: '',
+                    breakpoints: '',
+                    data_type: 'text',
+                    dateFormat: '',
+                    header_html_content: "",
+                    enable_html_content: false
+                },
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
                 isCompact: true,
@@ -182,6 +254,7 @@
                 addDataModal: false,
                 tableId: this.$route.params.table_id,
                 loading: false,
+                syncing: false,
                 bulkAction: -1,
                 selectAll: 0,
                 checkedItems: [],
@@ -196,6 +269,7 @@
                 multipleSelection: [],
                 updateItem: null,
                 editIndex: null,
+
                 // is table row soring enabled flag.
                 sorting: false,
                 sortableInstance: null,
@@ -206,7 +280,11 @@
                 showColumnEditor: false,
                 currentEditingColumn: false,
                 addDataModalTitle: 'Add Row',
-                dataModalType: 'add'
+                dataModalType: 'add',
+                dataSource: 'default',
+                // Used for external data sources
+                isUpdatingTableSettings: false,
+                externalDataSourceUrl: this.config.table.remoteURL,
             }
         },
         watch: {
@@ -226,10 +304,17 @@
 
                     if (!this.hasSortable) {
                         this.sorting = false;
-                        this.sortableUpgradeNotice = true
+                        this.sortableUpgradeNotice = true;
+
+                        return;
                     }
                 }
-            }
+
+                this.toggleSorting(newVal);
+            },
+            'new_column.name': function () {
+                this.new_column.key = snakeCase(this.new_column.name)
+            },
         },
         computed: {
             columns() {
@@ -237,6 +322,18 @@
             },
             columnLength() {
                 return this.columns.length
+            },
+            dataSourceType() {
+                const c = this.config;
+                return (c && 'dataSourceType' in c.table) ? c.table.dataSourceType : 'default';
+            },
+            isEditable() {
+                const c = this.config;
+                return (c && 'isEditable' in c.table) ? c.table.isEditable : true;
+            },
+            isEditableMessage() {
+                const c = this.config;
+                return (c && 'isEditableMessage' in c.table) ? c.table.isEditableMessage : null;
             }
         },
         methods: {
@@ -254,6 +351,7 @@
                 return jQuery.get(ajaxurl, data)
                     .success((res) => {
                         this.items = res.data;
+                        this.dataSource = res.data_source;
                         this.paginate.total = parseInt(res.total);
                         this.paginate.last_page = parseInt(res.last_page)
                     })
@@ -350,7 +448,7 @@
                             message: this.$t('Something is wrong! Please try again'),
                             type: 'error'
                         });
-                        console.log(error, 'error')
+
                     });
             },
             closeDataModal(success) {
@@ -382,7 +480,6 @@
                     this.items.unshift(item);
                 }
 
-                console.log('insertAfterPosition', this.insertAfterPosition);
 
                 if (this.insertAfterPosition) {
                     this.insertAfterPosition += 1;
@@ -396,6 +493,59 @@
                 this.addDataModal = true;
                 this.dataModalType = 'update';
                 this.addDataModalTitle = 'Update Row';
+            },
+
+            addColumn() {
+                this.columnModal = true;
+            },
+
+            validateColumn(column) {
+                if (!column.name) {
+                    this.$message({
+                        showClose: true,
+                        message: this.$t('Name is required'),
+                        type: 'error'
+                    });
+                    return false;
+                }
+                if (!column.key) {
+                    this.$message({
+                        showClose: true,
+                        message: this.$t('Column Key is required'),
+                        type: 'error'
+                    });
+                    return false;
+                }
+                // check uniqueness
+                let uniqueStatus = findIndex(this.columns, (co) => {
+                    return co.key == column.key
+                });
+                if (uniqueStatus === -1) {
+                    return true;
+                }
+                this.$message({
+                    showClose: true,
+                    message: this.$t('Column Key needs to be unique. Please add a suffix / prefix to make it unique'),
+                    type: 'error'
+                });
+                return false;
+            },
+
+            addNewColumn() {
+                if (this.validateColumn(this.new_column)) {
+                    this.config.columns.push(this.new_column);
+                    this.new_column = {
+                        name: '',
+                        key: '',
+                        breakpoints: '',
+                        data_type: 'text',
+                        dateFormat: '',
+                        header_html_content: "",
+                        enable_html_content: false
+                    };
+                    this.columnModal = false;
+                    this.storeSettings();
+                }
             },
 
             /**
@@ -415,43 +565,38 @@
                     }
                 });
             },
-            toggleSorting() {
-                if (this.has_pro) {
-                    if (!this.sorting) {
-                        this.loading = true;
+            toggleSorting(shouldSort) {
+                if (shouldSort) {
+                    this.loading = true;
 
-                        let promise = new Promise((resolve, reject) => {
-                            window.ninjaTableBus.$emit('initManualSorting', {
-                                table_id: this.tableId,
-                                page: this.paginate.current_page,
-                                per_page: this.paginate.per_page,
-                                search: this.searchString,
-                                default_sorting: this.config.settings.default_sorting
-                            }, resolve, reject);
-                        })
+                    let promise = new Promise((resolve, reject) => {
+                        window.ninjaTableBus.$emit('initManualSorting', {
+                            table_id: this.tableId,
+                            page: this.paginate.current_page,
+                            per_page: this.paginate.per_page,
+                            search: this.searchString,
+                            default_sorting: this.config.settings.default_sorting
+                        }, resolve, reject);
+                    });
 
-                        promise
-                            .then(res => {
-                                this.items = res.data;
-                                this.paginate.total = parseInt(res.total);
-                                this.paginate.last_page = parseInt(res.last_page);
+                    promise.then(res => {
+                        this.items = res.data;
+                        this.paginate.total = parseInt(res.total);
+                        this.paginate.last_page = parseInt(res.last_page);
 
-                                // Manually set the sorting type so that we
-                                // don't need to load the settings again.
-                                this.config.settings['sorting_type'] = 'manual_sort';
+                        // Manually set the sorting type so that we
+                        // don't need to load the settings again.
+                        this.config.settings['sorting_type'] = 'manual_sort';
 
-                                this.initSortable();
-                            })
-                            .catch(e => {
-                                console.log(e);
-                            })
-                            .then(() => {
-                                this.loading = false;
-                            });
-                    } else {
-                        if (this.sortableInstance) {
-                            this.sortableInstance.destroy();
-                        }
+                        this.initSortable();
+                    }).catch(e => {
+                        console.log(e);
+                    }).then(() => {
+                        this.loading = false;
+                    });
+                } else {
+                    if (this.sortableInstance) {
+                        this.sortableInstance.destroy();
                     }
                 }
             },
@@ -529,7 +674,6 @@
                     this.showColumnEditor = false;
                     this.currentEditingColumn = false;
                 });
-               
             },
             duplicateData(item) {
                 this.updateItem = Object.assign({}, item.row);
@@ -541,6 +685,40 @@
                 this.addDataModal = true;
                 this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
+            },
+            /**
+             * Used to re-sync table settings with external data source
+             * @return void
+             */
+            updateTableSettings() {
+                this.syncing = true;
+                jQuery.post(ajaxurl, {
+                    tableId: this.config.table.ID,
+                    remote_url: this.externalDataSourceUrl,
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'update-external-data-source'
+                })
+                .then(response => {
+                    if(response.success) {
+                        this.getColumnSettings();
+                        this.getData();
+                        this.$message({
+                            type: 'success',
+                            showClose:true,
+                            message: 'Table column settings updated successfully.'
+                        });
+                        this.externalDataSourceUrl = response.data.remote_url;
+                    }
+                })
+                .fail(({responseJSON}) => {
+                    let first = Object.keys(responseJSON.data.message)[0];
+                    this.$message({
+                        type: 'error',
+                        showClose:true,
+                        message: responseJSON.data.message[first]
+                    });
+                })
+                .always(() => this.syncing = false);
             }
         },
         mounted() {
@@ -575,19 +753,21 @@
     .el-table__header {
         tr th:hover {
             .nt-column-config {
-                display: inline-block !important;
+                opacity: 1;
             }
         }
     }
 
     .nt-column-config {
-        margin-left: 10px;
+        padding-left: 5px;
         cursor: pointer;
-        display: none !important;
+        opacity: 0;
+        display: inline-block;
         &:hover {
             color: #58B7FF;
         }
     }
+
     .instruction_block {
         padding: 30px 20px;
         background: white;

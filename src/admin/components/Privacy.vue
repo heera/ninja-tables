@@ -2,14 +2,17 @@
     <div class="privacy">
         <div class="ninja_header">
             <h2>Permission <span v-show="!hasPro">(Pro Feature)</span></h2>
-            <p>By default, Only Administrator have access to manage the tables. By selecting additional roles bellow, You can give access to manage your Tables to other user roles.</p>
         </div>
-
+        
         <div class="ninja_content">
+            <div class="ninja_block">
+                <p>By default, Only Administrator have access to manage the tables. By selecting additional roles bellow, You can give access to manage your Tables to other user roles.</p>
+            </div>
+            <hr />
             <template v-if="hasPro">
                 <div class="form-group">
                     <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
-                        Check all
+                        {{ $t('Check all') }}
                     </el-checkbox>
                 </div>
 
@@ -27,7 +30,7 @@
             </template>
             
             <template v-else>
-                Activate Ninja Tables Pro Add-on plugin to unlock this feature
+                 {{ $t('Activate Ninja Tables Pro Add-on plugin to unlock this feature') }}
                 <p>
                     <a target="_blank" :href="upgrade">Buy Ninja Tables Pro Add-On</a>
                 </p>

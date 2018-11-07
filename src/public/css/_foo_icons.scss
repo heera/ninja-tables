@@ -24,8 +24,8 @@
     -moz-osx-font-smoothing: grayscale;
     transform: translate(0, 0);
   }
-  
-  [data-icon]:before {
+
+  .fooicon:before {
     font-family: "ninja-tables-fontawesome" !important;
     content: attr(data-icon);
     font-style: normal !important;
