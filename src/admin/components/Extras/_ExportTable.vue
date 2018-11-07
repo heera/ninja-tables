@@ -2,10 +2,9 @@
     <div>
 
         <div class="ninja_header">
-            <h2>{{$t('Export Table')}}</h2>
+            <h2>{{$t('Export Data')}}</h2>
         </div>
-        <div class="ninja_content">
-
+        <div v-if="config.table.isExportable" class="ninja_content">
             <div class="ninja_suggest">
                 <p>You can download the table data as CSV or JSON format, If you download as json then you can import the table to any Ninja Table Installation</p>
             </div>
@@ -20,6 +19,11 @@
                            @click.prevent="doExport()">
                     {{ $t('Export') }}
                 </el-button>
+            </div>
+        </div>
+        <div v-else class="ninja_content">
+            <div class="ninja_suggest">
+                <p>Sorry! You can not export the data as the table data is configured as external source ({{ config.table.dataSourceType }})</p>
             </div>
         </div>
     </div>

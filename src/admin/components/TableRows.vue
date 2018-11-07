@@ -58,7 +58,7 @@
                         <el-button
                         slot="append"
                         :loading="syncing"
-                        @click="updateTableSettings">Sync Table Settings</el-button>
+                        @click="updateTableSettings">Sync Table Columns</el-button>
                     </el-input>
                 </div>
             </div>
@@ -181,6 +181,7 @@
                 <p>{{ $t('Now add some data to the table.') }}</p>
             </div>
         </template>
+
         <div v-else-if="!loading" type="warning" style="margin-top: 15px; text-align: center" class="instruction_block">
             <h3>{{ $t('To get started please add table columns') }}</h3>
             <el-button @click="addColumn()" type="primary">
@@ -659,7 +660,7 @@
                     class: 'el-icon-setting nt-column-config',
                     on: {
                         click(query) {
-                            self.showColumnConfigModal($index - 1)
+                            self.showColumnConfigModal($index)
                         }
                     }
                 });

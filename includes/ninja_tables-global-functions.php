@@ -250,3 +250,34 @@ if (!function_exists('ninja_tables_sanitize_array')) {
         return $array;
     }
 }
+
+
+function ninjaTableGetExternalCachedData($tableId)
+{
+    $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
+    if(!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
+        return false;
+    }
+    $intervalMinutes = intval($tableSettings['caching_interval']);
+    if(!$intervalMinutes) {
+        return false;
+    }
+    $interval = $intervalMinutes * 60;
+    $lastCachedTime = intval(get_post_meta($tableId, '_last_external_cached_time', true));
+
+    if(( time() - $lastCachedTime) < $interval) {
+        return get_post_meta($tableId,'_external_cached_data', true);
+    }
+    return false;
+}
+
+function ninjaTableSetExternalCacheData($tableId, $data)
+{
+    $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
+    if(!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
+       return false;
+    }
+
+    update_post_meta($tableId, '_last_external_cached_time', time());
+    update_post_meta($tableId, '_external_cached_data', $data);
+}

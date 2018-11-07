@@ -173,11 +173,10 @@ class NinjaFooTable
                 'title' => $columnTitle,
                 'breakpoints' => $column['breakpoints'],
                 'type' => $columnType,
-                'sortable' => $globalSorting,
                 'visible' => ($column['breakpoints'] == 'hidden') ? false : true,
                 'classes' => $columnClasses,
                 'filterable' => (isset($column['unfilterable']) && $column['unfilterable'] == 'yes') ? false : true,
-                'sortable' => (isset($column['unsortable']) && $column['unsortable'] == 'yes') ? false : true
+                'sortable' => (isset($column['unsortable']) && $column['unsortable'] == 'yes') ? false : $globalSorting
             );
 
             if ($columnType == 'date') {

@@ -39,7 +39,7 @@ class ProcessDemoPage {
 	private function loadDefaultPageTemplate() {
 		add_filter( 'template_include', function ( $original ) {
 			return locate_template( array( 'page.php', 'single.php', 'index.php' ) );
-		} );
+		}, 999);
 	}
 
 	/**

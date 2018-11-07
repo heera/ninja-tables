@@ -3,7 +3,7 @@
         <div class="ninja_header">
             <h2>{{ $t('Import Table Data') }}</h2>
         </div>
-        <div class="ninja_content">
+        <div v-if="config.table.isImportable" class="ninja_content">
             <div v-if="columns.length">
                 <form action="" id="fileUploadForm" class="">
                     <div class="form-group">
@@ -51,6 +51,12 @@
             </div>
             <div v-else="" class="error">
                 <p>{{ $t('Please set table configuration first.') }}</p>
+            </div>
+        </div>
+
+        <div v-else class="ninja_content">
+            <div class="ninja_suggest">
+                <p>Sorry! You can not import any data as the table data is configured as external source ({{ config.table.dataSourceType }})</p>
             </div>
         </div>
     </div>
