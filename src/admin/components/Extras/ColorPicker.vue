@@ -3,7 +3,9 @@
         <el-color-picker
                 show-alpha
                 @active-change="changeColor"
-                v-model="color"></el-color-picker>
+                v-model="color"
+                :disabled="disabled"
+        ></el-color-picker>
         <label v-if="label">{{label}}</label>
     </div>
 </template>
@@ -11,7 +13,7 @@
 <script type="text/babel">
     export default {
         name: 'ninja_color_picker',
-        props: ['label', 'value'],
+        props: ['label', 'value', 'disabled'],
         data() {
             return {
                 color: '',

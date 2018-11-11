@@ -24,16 +24,16 @@ class CsvProvider
 				$table->isEditable = false;
 				$table->dataSourceType = 'external';
 				$table->remoteURL = get_post_meta($table->ID, '_ninja_tables_data_provider_url', true);
-				$table->isEditableMessage = 'Your table columns were initially created from the external data source url so if you have made changes in that resource (added/removed columns) then you may re-sync the settings to reflect the changes here. Otherwise you\'ll see data according to your current column settings.';
+				$table->isEditableMessage = 'Have you made any changes to the remote file? You can easily get the latest updates in your table here. Simply click the Sync Settings button.';
                 $table->isExpotable = false;
                 $table->isImportable = false;
                 $table->isSortable = false;
                 $table->hasCacheFeature = false;
                 $table->hasExternalCachingInterval = true;
 			}
-			
+
 			return $table;
-			
+
 		} catch (\Exception $e) {
 			return $table;
 		}

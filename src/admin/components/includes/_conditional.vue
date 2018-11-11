@@ -1,37 +1,29 @@
 <template>
 	<div class="column-condition-config">
-		<el-row>
-			<el-col>
-				<el-col :sm="20" :md="20">
-					<el-alert
-						:closable=false
-						title="Note:"
-					    type="info"
-					    show-icon>
-					    You can add conditions for the column here. To add conditions, just click the <b>Add Condition</b> button and then set the rules for the condition when it will be applied.
-					</el-alert>
-		        </el-col>
-
-            	<el-button
-		            size="medium"
-		            type="primary"
-		            @click="addCondition"
-	            >Add Condition</el-button>
-
-	        </el-col>
-		</el-row>
+		<div class="conditional-settings-header">
+			<div class="conditional-settings-title">
+				Customize your table's appearances based on the cell value. Add as many conditions as you like.
+			</div>
+			<el-button size="small" type="primary" @click="addCondition" :disabled="!hasPro">
+				Add Condition
+			</el-button>
+		</div>
 		<hr>
 		<el-row v-for="(condition, index) in column.conditions" :key="index">
 	        <el-col :sm="2" :md="2">
 	            <div class="if-cell-value">If Cell Value</div>
 	        </el-col>
 
-	        <el-col :sm="4" :md="4">
-	            <el-select size="small" v-model="condition.conditionalOperator">
+	        <el-col :sm="5" :md="5">
+	            <el-select v-model="condition.conditionalOperator"
+						   :disabled="!hasPro"
+						   size="small"
+						   style="width: 100%"
+				>
 
 	                <el-option label="Equal" value="equal"></el-option>
 	                <el-option label="Not Equal" value="not-equal"></el-option>
-	                
+
 	                <el-option
 		                v-if="['number', 'date'].indexOf(column.data_type) == -1"
 		                label="Contains"
@@ -77,11 +69,12 @@
 	            </el-select>
 	        </el-col>
 
-	        <el-col :sm="4" :md="4">
+	        <el-col :sm="5" :md="5">
 	            <el-input
 		            size="small"
 		            :placeholder="condition.conditionalOperator == 'between' ? 'Min value' : 'Enter Value'"
 		            v-model="condition.conditionalValue"
+					:disabled="!hasPro"
 	            ></el-input>
 	        </el-col>
 
@@ -97,8 +90,12 @@
 	            <div class="if-cell-value text-center">Then</div>
 	        </el-col>
 
-	        <el-col :sm="4" :md="4">
-	            <el-select size="small" v-model="condition.targetAction">
+	        <el-col :sm="5" :md="5">
+	            <el-select v-model="condition.targetAction"
+						   :disabled="!hasPro"
+						   size="small"
+						   style="width: 100%"
+				>
 	                <el-option label="Set cell content" value="set-cell-content"></el-option>
 	                <el-option label="Set cell color" value="set-cell-color"></el-option>
 	                <el-option label="Reset cell color to default" value="reset-cell-color-to-default"></el-option>
@@ -119,22 +116,25 @@
 		            placeholder="Enter Value"
 		            v-model="condition.targetValue"
 		            v-show="!shouldShowColorPicker(condition)"
+					:disabled="!hasPro"
 	            ></el-input>
-				
+
 	            <div class="conditional_color_block" v-show="shouldShowColorPicker(condition)">
                     <ninja-color-picker
                         size="mini"
                         v-model="condition.targetValueColor"
+						:disabled="!hasPro"
                     ></ninja-color-picker>
                 </div>
 	        </el-col>
 
-	        <el-col :sm="2" :md="2">
+	        <el-col :sm="1" :md="1">
 	            <el-button
 		            size="mini"
 		            type="danger"
 		            icon="el-icon-minus"
 		            @click="removeCondition(index)"
+					:disabled="!hasPro"
 	            ></el-button>
 	        </el-col>
 	    </el-row>
@@ -143,7 +143,7 @@
 	    	<el-alert
 	    		center
 	    		:closable=false
-				title="You didn't add any conditions for this colimn yet!"
+				title="You haven't added any conditions for the column yet!"
 			    type="info"></el-alert>
 	    </el-row>
 	</div>
@@ -153,7 +153,7 @@
 	import NinjaColorPicker from '../Extras/ColorPicker';
 	export default {
 		name: "Conditional",
-		props: ['column'],
+		props: ['column', 'hasPro'],
 		components: {
 			NinjaColorPicker,
 		},
@@ -186,10 +186,10 @@
 		},
 		created() {
 			if (!this.column.conditions) {
-				this.$set(this.column, 'conditions', []);
+				this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
 			}
 		}
-	}	
+	}
 </script>
 
 <style lang="scss">
@@ -221,12 +221,19 @@
 			margin:0;
 			height: 35px;
 		}
-		.el-color-picker {
+		.el-color-picker,
+		.el-color-picker__mask {
 			width: 100% !important;
 		}
 
 		.el-button--mini {
 		    padding: 5px 13px;
+		}
+
+		.conditional-settings-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 		}
 	}
 </style>

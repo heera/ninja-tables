@@ -149,7 +149,7 @@
                         </el-radio-group>
                     </el-form-item>
                 </template>
-                
+
                 <!--Selection Field -->
                 <el-form-item v-else-if="model.data_type == 'selection'">
                     <template slot="label">
@@ -170,9 +170,9 @@
                     <!-- Format input -->
                     <el-form-item>
                         <p v-if="!has_pro"><b>Selection feature is only available on Pro version Please upgrade to pro to unlock this feature</b></p>
-                        <el-input type="textarea" 
+                        <el-input type="textarea"
                                   :disabled="!has_pro"
-                                  v-model="model.selections" 
+                                  v-model="model.selections"
                                   placeholder="Enter Select items one per line"
                                   :autosize="{ minRows: 4, maxRows: 8}"
                         />
@@ -205,7 +205,7 @@
                     </select>
                 </el-form-item>
             </el-tab-pane>
-            
+
             <!-- Advanced Settings -->
             <el-tab-pane label="Advanced Settings" name="advanced">
                 <div class="advanced-settings">
@@ -248,7 +248,7 @@
                                 <i class="el-icon-info el-text-info" />
                             </el-tooltip>
                         </template>
-                        
+
                         <el-input type="number" :disabled="!hasPro" v-model="model.width" />
                     </el-form-item>
 
@@ -271,7 +271,7 @@
                         </template>
 
                         <select v-model="model.textAlign" :disabled="!hasPro">
-                            <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions" 
+                            <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions"
                                     :value="alignmentVal" :key="alignmentVal"
                             >{{ alignmentLabel }}</option>
                         </select>
@@ -281,7 +281,7 @@
                     <el-form-item>
                         <template slot="label">
                             {{ $t("Row Content Text Align") }}
-                            
+
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <h3>Content Text Alignment</h3>
@@ -320,7 +320,7 @@
 
                         <wp_editor v-model="model.header_html_content"></wp_editor>
                     </el-form-item>
-                    
+
                     <el-form-item>
                         <template slot="label">
                             {{ $t("Filterable") }}
@@ -363,9 +363,9 @@
 
             <!-- Conditional Settings -->
             <el-tab-pane label="Conditional Settings" name="conditional">
-                <condition :column="model" />
+                <condition :column="model" :has-pro="hasPro" />
             </el-tab-pane>
-            
+
             <hr style="margin:10px 0">
 
             <!-- Buttons -->
@@ -386,7 +386,7 @@
                         <el-button v-if="!hideDelete" @click.prevent="deleteColumn" type="danger" size="small">
                             {{ $t('Delete') }}
                         </el-button>
-                        
+
                         <el-button @click.prevent="store" type="primary" size="small">
                             {{ $t('Update') }}
                         </el-button>

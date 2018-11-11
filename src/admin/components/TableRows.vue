@@ -16,51 +16,18 @@
             ></add_data_modal>
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
-                <el-row>
-                    <el-col :md="20">
-                        <el-alert
-                            show-icon
-                            type="info"
-                            title="Table Settings"
-                            :closable="false">
-                                {{ isEditableMessage }}
-                        </el-alert>
-                    </el-col>
-
-                    <el-col :md="4">
-                        <el-button
-                        :loading="syncing"
-                        @click="updateTableSettings">Sync Table Settings</el-button>
-                    </el-col>
-
-                </el-row>
+                <fluent-form-nav :is-editable-message="isEditableMessage"
+                                 :loading="syncing"
+                                 @sync="updateTableSettings"
+                />
             </div>
 
             <div v-if="dataSourceType == 'external'" class="tablenav top">
-                <el-alert
-                    show-icon
-                    type="info"
-                    title="Table Settings"
-                    :closable="false">
-                        {{ isEditableMessage }}
-                        <span
-                            style="color:#0073aa;cursor:pointer;"
-                            @click="isUpdatingTableSettings = !isUpdatingTableSettings">
-                                {{ isUpdatingTableSettings ? 'Hide Settings' : 'Show Settings' }}
-                        </span>
-                </el-alert>
-
-                <div v-show="isUpdatingTableSettings">
-                    <el-input
-                    placeholder="Remote URL..."
-                    v-model="externalDataSourceUrl"
-                    v-on:keyup.enter="updateTableSettings">
-                        <el-button
-                        slot="append"
-                        :loading="syncing"
-                        @click="updateTableSettings">Sync Table Columns</el-button>
-                    </el-input>
-                </div>
+                <external-source-nav :is-editable-message="isEditableMessage"
+                                   :loading="syncing"
+                                   v-model="externalDataSourceUrl"
+                                   @sync="updateTableSettings"
+                ></external-source-nav>
             </div>
 
             <div v-if="isEditable" class="tablenav top">
@@ -93,7 +60,7 @@
                     <el-button size="small" type="info" @click="addColumn()"> {{ $t('Add Column') }}</el-button>
                 </div>
             </div>
-            <hr/>
+            <!--<hr/>-->
 
             <template v-if="columns.length">
                 <el-table
@@ -220,7 +187,9 @@
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
-    import columnsEditor from './includes/ColumnsEditor'
+    import columnsEditor from './includes/ColumnsEditor';
+    import FluentFormNav from './TableNav/Fluentform';
+    import ExternalSourceNav from './TableNav/External';
 
     export default {
         name: 'TableDataItems',
@@ -230,7 +199,9 @@
             Alert,
             DeletePopOver,
             SortableUpgradeNotice,
-            columnsEditor
+            columnsEditor,
+            FluentFormNav,
+            ExternalSourceNav
         },
         props: ['config', 'getColumnSettings'],
         data() {

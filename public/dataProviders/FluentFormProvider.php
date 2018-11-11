@@ -21,7 +21,8 @@ class FluentFormProvider
             if ($provider == 'fluent-form') {
                 $table->isEditable = false;
                 $table->dataSourceType = $provider;
-                $table->isEditableMessage = 'If you make any modifications in your "FluentForm" form then you may/should resync the table settings here to reflect the column changes.';
+                $table->isEditableMessage = 'Have you made any changes to your "Fluent From" form fields? You may want to sync the settings to update the table columns here.';
+
                 $table->fluentFormFormId = get_post_meta(
                     $table->ID, '_ninja_tables_data_provider_ff_form_id', true
                 );
@@ -30,9 +31,9 @@ class FluentFormProvider
                 $table->isSortable = false;
                 $table->hasCacheFeature = false;
             }
-            
+
             return $table;
-            
+
         } catch (\Exception $e) {
             return $table;
         }

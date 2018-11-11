@@ -1,79 +1,63 @@
 <template>
     <div>
-        <div class="row clearfix">
-            <h1 class="wp-heading-inline">{{ $t('All Tables') }}</h1>
-            <div style="margin-top:7px" class="pull-right">
-                <label class="form_group search_action" for="search">
-                    <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString"
-                           placeholder="Search" type="text"/>
-                    <i @click="getData" class="el-icon-search"></i>
-                </label>
+        <welcome v-if="!published_tables" @create="modalVisible = !modalVisible" />
 
-                <el-button size="small" type="primary" @click="modalVisible = !modalVisible">
-                    {{ $t( 'Add Table' ) }}
-                </el-button>
+        <template v-else>
+            <div class="row clearfix">
+                <h1 class="wp-heading-inline">
+                    {{ $t('All Tables') }}
+                </h1>
 
-                <router-link :to="{ name: 'tools' }">
-                    <el-button size="small" type="success">{{ $t( 'Import Table' ) }}</el-button>
-                </router-link>
+                <div style="margin-top:7px" class="pull-right">
+                    <label class="form_group search_action" for="search">
+                        <input v-on:keyup.enter="getData" v-model="searchString"
+                               id="search" class="form-control inline"
+                               placeholder="Search" type="text"
+                        />
+
+                        <i @click="getData" class="el-icon-search"></i>
+                    </label>
+
+                    <el-button @click="modalVisible = !modalVisible" size="small" type="primary">
+                        {{ $t( 'Add Table' ) }}
+                    </el-button>
+
+                    <router-link :to="{ name: 'tools' }">
+                        <el-button size="small" type="success">
+                            {{ $t( 'Import Table' ) }}
+                        </el-button>
+                    </router-link>
+                </div>
             </div>
-        </div>
-        <hr/>
 
-        <list-all-tables
-                v-show="published_tables"
-                @total_table="published_tables = true"
-                :searchString="searchString"
-                :searchAction="searchAction"
-                @selection="makeSelection"/>
+            <hr/>
 
-        <div v-if="!published_tables" class="ninja_intro_welcome">
-            <h2>Welcome to Ninja Tables</h2>
-            <p>Thank you for installing Ninja Tables - Best Responsive Table Plugin for WordPress</p>
-            <div class="ninja_actions">
-                <el-button type="success" @click="modalVisible = !modalVisible">Click here to create your first Table</el-button>
-                <router-link :to="{ name: 'tools' }">
-                    <el-button type="info">{{ $t( 'Import From CSV' ) }}</el-button>
-                </router-link>
-            </div>
-            <hr />
+            <list-all-tables
+                    v-show="published_tables"
+                    @total_table="published_tables = true"
+                    :searchString="searchString"
+                    :searchAction="searchAction"
+                    @selection="makeSelection"/>
+        </template>
 
-            <div class="ninja_docs">
-                <h4>Check Ninja Table Documentation:</h4>
-                <ul>
-                    <li>
-                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/configure-tables/?ninja_intro=1">
-                            Demo and Basic Settings
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/setting-up-a-table/?ninja_intro=1">
-                            Setting up a table
-                        </a>
-                    </li>
-                    <li>
-                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/configure-responsive-breakdowns-for-table/?ninja_intro=1">
-                            Make your table looks good in all devices
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <el-dialog 
-                :title="$t('Select your table type and create')"
+        <!--Select your table type and create-->
+        <el-dialog
+                :title="$t('How would you like to create your table?')"
                 :visible.sync="modalVisible"
                 top="50px"
                 width="75%"
                 :append-to-body="true"
+                custom-class="create-table-modal"
         >
-            <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false"></add-table-modal>
+            <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" />
         </el-dialog>
+
         <lead-modal></lead-modal>
     </div>
 </template>
 
 <script type="text/babel">
+    const Welcome = require('./Welcome');
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
     const leadModal = require('./Extras/lead');
@@ -81,6 +65,7 @@
     export default {
         name: 'all_tables',
         components: {
+            Welcome,
             'list-all-tables': ListAllTables,
             'add-table-modal': AddTableModal,
             'lead-modal': leadModal
@@ -122,9 +107,9 @@
                             type: 'warning'
                         }
                     ).then(() => {
-                       
+
                     }).catch(() => {
-                       
+
                     });
                 }
             }
@@ -156,20 +141,12 @@
         padding-top: 0;
         margin-bottom: 0;
     }
-    .ninja_intro_welcome {
-        max-width: 600px;
-        margin: 45px auto 0px;
-        padding: 30px 20px;
-        background: white;
-        text-align: center;
-        h2 {
-            font-size: 30px;
-        }
-        .ninja_actions {
-            margin-bottom: 30px;
-        }
-        .ninja_docs {
-            text-align: left;
+
+    .create-table-modal {
+        z-index: 9999 !important;
+
+        .el-dialog__body {
+            padding: 20px;
         }
     }
 </style>

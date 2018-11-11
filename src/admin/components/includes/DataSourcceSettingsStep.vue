@@ -3,28 +3,42 @@
         <div class="ninja_modal-body">
 
             <template v-if="type == 'google-csv'">
-                <h3>Connect your table with Google Spreadsheet</h3>
-                <p class="ninja_subtitle">In this table type, whenever you update your data on google spreadsheet the data will be updated in your site automatically (within 5 minutes max)</p>
+                <h3>
+                    Construct Table from Google Sheets
+                </h3>
+                <p class="ninja_subtitle">
+                    Whenever your Google Sheets data changes it will be automatically reflected here. You won't have to do a thing.
+                </p>
             </template>
             <template v-if="type == 'csv'">
-                <h3>Connect your external CSV file as Data Source</h3>
-                <p class="ninja_subtitle">In this table type, Your Table data will be linked with provided CSV URL. When you update the data in the origin csv, Your table data will be updated automatically.</p>
+                <h3>
+                    Construct Table from Remote CSV File
+                </h3>
+                <p class="ninja_subtitle">
+                    Whenever your remote CSV data changes it will be synced here automatically.
+                </p>
             </template>
 
             <div class="form-group">
                 <label for="name">{{ $t('Table Title') }}</label>
-                <input type="text" id="name" class="form-control" v-model="table.post_title">
+                <input v-model="table.post_title"
+                       type="text" id="name" class="form-control"
+                       placeholder="Enter a title to identify your table"
+                >
             </div>
 
             <div class="form-group">
                 <label for="remote_url">{{ $t('Data Source URL') }}</label>
-                <input id="remote_url" type="text" class="form-control" v-model="table.remote_url"/>
+                <input v-model="table.remote_url"
+                       id="remote_url" type="text" class="form-control"
+                       placeholder="Enter your source URL"
+                />
             </div>
         </div>
+
         <div class="modal-footer">
             <el-button
                     type="primary"
-                    size="small"
                     :loading="btnLoading"
                     @click="save">{{ $t('Continue') }}
             </el-button>

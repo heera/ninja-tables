@@ -37,7 +37,7 @@ if (!function_exists('ninja_table_get_table_settings')) {
 	    }
 
         return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings, $tableId);
-    }  
+    }
 }
 
 
@@ -280,4 +280,13 @@ function ninjaTableSetExternalCacheData($tableId, $data)
 
     update_post_meta($tableId, '_last_external_cached_time', time());
     update_post_meta($tableId, '_external_cached_data', $data);
+}
+
+if (!function_exists('getFluentFormMenuIcon')) {
+    function getFluentFormMenuIcon()
+    {
+        $icon = 'data:image/svg+xml;base64,'.base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><defs><style>.cls-1{fill:#fff;}</style></defs><title>dashboard_icon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M15.57,0H4.43A4.43,4.43,0,0,0,0,4.43V15.57A4.43,4.43,0,0,0,4.43,20H15.57A4.43,4.43,0,0,0,20,15.57V4.43A4.43,4.43,0,0,0,15.57,0ZM12.82,14a2.36,2.36,0,0,1-1.66.68H6.5A2.31,2.31,0,0,1,7.18,13a2.36,2.36,0,0,1,1.66-.68l4.66,0A2.34,2.34,0,0,1,12.82,14Zm3.3-3.46a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,10.53Zm0-3.73a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,6.81Z"/></g></g></svg>');
+
+        return apply_filters('fluent_form_menu_icon', $icon);
+    }
 }

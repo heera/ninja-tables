@@ -268,6 +268,7 @@ class NinjaTablesAdmin
             'img_url' => plugin_dir_url(__DIR__) . "assets/img/",
             'fluentform_url' => $fluentUrl,
             'fluent_wp_url' => 'https://wordpress.org/plugins/fluentform/',
+            'fluent_form_icon' => getFluentFormMenuIcon(),
             'dismissed' => $dismissed,
             'show_lead_pop_up' => $leadStatus,
             'current_user_name' => $currentUser->display_name,
@@ -705,7 +706,7 @@ class NinjaTablesAdmin
     public function getTableSettings()
     {
         $tableID = intval($_REQUEST['table_id']);
-        
+
         $table = get_post($tableID);
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
@@ -863,7 +864,7 @@ class NinjaTablesAdmin
             $perPage,
             $skip
         );
-        
+
         wp_send_json(array(
             'total' => $total,
             'per_page' => $perPage,
@@ -1748,7 +1749,7 @@ class NinjaTablesAdmin
                 $headers = League\Csv\Reader::createFromString(
                     $response['body']
                 )->fetchOne();
-                
+
                 $headers = $this->formatHeader($headers);
 
                 foreach ($headers as $key => $column) {

@@ -1,50 +1,82 @@
 <template>
-    <div v-if="hasFluentForm">
-        <div class="form-group">
-           <label for="name">{{ $t('Title') }}</label>
-           <input type="text" id="name" class="form-control" v-model="post_title">
-       </div>
+    <div class="ninja_modal-body">
+        <h3>
+            Construct Table from Fluent Form
+        </h3>
 
-       <div class="form-group">
-            <el-select
-            filterable
-            v-model="form.id"
-            style="width:100%"
-            placeholder="Select a Form"
-            @change="handleFormSelectionChange">
-                <el-option
-                  v-for="form in forms"
-                  :key="form.id"
-                  :label="form.title"
-                  :value="form.id">
-                </el-option>
-            </el-select>
-       </div>
+        <template v-if="hasFluentForm">
+            <p class="ninja_subtitle">
+                Prepare your table from your existing Fluent Forms. It can be used to easily showcase your form submissions.
+            </p>
 
-       <div class="form-group">
-            <el-table
-            :data="fields"
-            style="width:100% !important"
-            @selection-change="handleFieldsSelectionChange">
-                <el-table-column type="selection" style="width:10% !important"></el-table-column>
-                <el-table-column label="Columns" style="width:90% !important">
-                    <template slot-scope="scope">{{ scope.row.name }}</template>
-                </el-table-column>
-            </el-table>
-       </div>
+            <div class="form-group">
+                <label for="name">{{ $t('Table Title') }}</label>
+                <input v-model="post_title"
+                       type="text" id="name" class="form-control"
+                       placeholder="Enter a title to identify your table"
+                >
+            </div>
 
-       <div class="form-group">
-           <el-button
-            type="primary"
-            size="small"
-            :loading="btnLoading"
-            style="margin-top: 12px; float: right;"
-            @click="save">{{ $t('Save') }}</el-button>
-       </div>
-   </div>
+            <div class="form-group">
+                <el-select
+                        filterable
+                        v-model="form.id"
+                        style="width:100%"
+                        placeholder="Select a Form"
+                        @change="handleFormSelectionChange">
+                    <el-option
+                            v-for="form in forms"
+                            :key="form.id"
+                            :label="form.title"
+                            :value="form.id">
+                    </el-option>
+                </el-select>
+            </div>
 
-   <div v-else>
-       Intro about FluentForm...
+            <div class="form-group">
+                <el-table
+                        :data="fields"
+                        style="width:100% !important"
+                        @selection-change="handleFieldsSelectionChange">
+                    <el-table-column type="selection" style="width:10% !important"></el-table-column>
+                    <el-table-column label="Columns" style="width:90% !important">
+                        <template slot-scope="scope">{{ scope.row.name }}</template>
+                    </el-table-column>
+                </el-table>
+            </div>
+
+            <div class="form-group">
+                <el-button
+                        type="primary"
+                        :loading="btnLoading"
+                        style="margin-top: 12px; float: right;"
+                        @click="save">{{ $t('Save') }}</el-button>
+            </div>
+        </template>
+
+        <div v-else class="fluent-form-promo">
+            <p>
+                Fluent Form is a WordPress Contact Form plugin packed with all the premium features you would need to create
+                a responsive, customizable, drag and drop form.
+            </p>
+
+            <p></p>
+
+            <h4>See the form in action:</h4>
+            <br>
+
+            <iframe src="https://www.youtube.com/embed/9_28rPtUZD0"
+                    width="560" height="315" frameborder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen
+            ></iframe>
+
+            <div>
+                <a href="https://wordpress.org/plugins/fluentform/" target="_blank">
+                    <h4>Install Now</h4>
+                </a>
+            </div>
+        </div>
    </div>
 </template>
 
@@ -124,3 +156,11 @@
         },
     };
 </script>
+
+<style lang="scss">
+    .fluent-form-promo {
+        p {
+            font-size: initial;
+        }
+    }
+</style>

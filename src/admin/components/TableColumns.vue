@@ -1,17 +1,18 @@
 <template>
     <div>
-        <div style="margin-top: 15px;">
+        <div class="table-column-settings">
             <el-container>
                 <el-aside width="200px">
                     <el-menu background-color="#545c64"
                              :default-active="active_menu"
                              text-color="#fff"
-                             active-text-color="#ffd04b">
+                             active-text-color="#ffd04b"
+                    >
                         <el-menu-item  @click="active_menu = 'columns'" index="columns">
                             <i class="dashicons dashicons-editor-table"></i>
                             <span>Columns</span>
                         </el-menu-item>
-                        
+
                         <el-menu-item  @click="active_menu = 'rendering_settings'" index="rendering_settings">
                             <i class="dashicons dashicons-album"></i>
                             <span>Rendering Settings</span>
@@ -88,7 +89,7 @@
                             </div>
                         </div>
                     </template>
-                    
+
                     <template v-else-if="active_menu == 'rendering_settings'">
                         <div class="ninja_header">
                             <h2>Table Render Settings</h2>
@@ -176,7 +177,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </template>
 
@@ -216,7 +217,7 @@
                     <template v-else-if="active_menu == 'custom_filters'">
                         <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
                     </template>
-                    
+
                 </el-main>
             </el-container>
         </div>
@@ -406,3 +407,13 @@
         }
     }
 </script>
+
+<style lang="scss">
+    .table-column-settings {
+        margin-top: 15px;
+
+        .el-menu {
+            border-right: initial;
+        }
+    }
+</style>
