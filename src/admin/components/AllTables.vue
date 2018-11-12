@@ -49,7 +49,10 @@
                 :append-to-body="true"
                 custom-class="create-table-modal"
         >
-            <add-table-modal @table_inserted="addTableAction" @modal_close="modalVisible = false" />
+            <add-table-modal @table_inserted="addTableAction" 
+                             @modal_close="modalVisible = false"
+                             :hasPro="hasPro"
+            />
         </el-dialog>
 
         <lead-modal></lead-modal>
@@ -71,6 +74,7 @@
             'lead-modal': leadModal
             //    BulkActions
         },
+        props: ['hasPro'],
         data() {
             return {
                 modalVisible: false,

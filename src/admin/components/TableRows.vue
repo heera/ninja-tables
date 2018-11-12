@@ -203,7 +203,7 @@
             FluentFormNav,
             ExternalSourceNav
         },
-        props: ['config', 'getColumnSettings'],
+        props: ['config', 'getColumnSettings', 'hasPro'],
         data() {
             return {
                 columnModal: false,

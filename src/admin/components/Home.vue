@@ -18,7 +18,7 @@
             <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="nav-tab buy_pro_tab">Buy Pro</a>
         </h2>
         
-        <router-view></router-view>
+        <router-view :has-pro="has_pro"></router-view>
     </div>
 </template>
 

@@ -61,14 +61,16 @@
                 </div>
             </template>
 
-            <data-source-step v-else-if="activeTabName == 'google_spread_sheet'"
-                              type="google-csv"
-                              :tableCreated="fireTableCreated"
+            <external-data-source v-else-if="activeTabName == 'google_spread_sheet'"
+                                  type="google-csv"
+                                  :tableCreated="fireTableCreated"
+                                  :has-pro="hasPro"
             />
 
-            <data-source-step v-else-if="activeTabName == 'csv'"
-                              type="csv"
-                              :tableCreated="fireTableCreated"
+            <external-data-source v-else-if="activeTabName == 'csv'"
+                                  type="csv"
+                                  :tableCreated="fireTableCreated"
+                                  :has-pro="hasPro"
             />
 
             <fluent-form-data-source v-else-if="activeTabName == 'fluent_form'"
@@ -83,13 +85,13 @@
 <script type="text/babel">
     import wp_editor from '../../common/_wp_editor';
     import FluentForm from './includes/FluentForm';
-    import DataSourcceSettingsStep from './includes/DataSourcceSettingsStep';
+    import ExternalDataSource from './includes/ExternalDataSource';
     export default {
         name: 'add_table',
         components: {
             wp_editor: wp_editor,
             'fluent-form-data-source': FluentForm,
-            'data-source-step': DataSourcceSettingsStep,
+            'external-data-source': ExternalDataSource,
         },
         props: {
             table: {
@@ -101,6 +103,9 @@
                         post_content: '',
                     }
                 }
+            },
+            hasPro: {
+                required: true
             }
         },
         data() {
