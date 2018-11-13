@@ -11,6 +11,11 @@
                     <i class="el-icon-setting"></i>
                     <span>Default</span>
                 </el-menu-item>
+                
+                <el-menu-item @click="activeTabName = 'import_table'" index="import_table">
+                    <i class="el-icon-upload2"></i>
+                    <span>Import Table</span>
+                </el-menu-item>
 
                 <el-menu-item @click="activeTabName = 'google_spread_sheet'" index='google_spread_sheet'>
                     <span class="dashicons dashicons-media-spreadsheet"></span>
@@ -60,6 +65,8 @@
                     </el-button>
                 </div>
             </template>
+            
+            <import-table v-if="activeTabName === 'import_table'"></import-table>
 
             <external-data-source v-else-if="activeTabName == 'google_spread_sheet'"
                                   type="google-csv"
@@ -86,12 +93,15 @@
     import wp_editor from '../../common/_wp_editor';
     import FluentForm from './includes/FluentForm';
     import ExternalDataSource from './includes/ExternalDataSource';
+    import ImportTable from './includes/ImportTable';
+    
     export default {
         name: 'add_table',
         components: {
             wp_editor: wp_editor,
             'fluent-form-data-source': FluentForm,
             'external-data-source': ExternalDataSource,
+            ImportTable
         },
         props: {
             table: {
