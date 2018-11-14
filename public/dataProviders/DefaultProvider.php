@@ -20,7 +20,7 @@ class DefaultProvider
             if ($provider == 'default') {
                 $table->isEditable = true;
                 $table->dataSourceType = 'default';
-                $table->isExpotable = true;
+                $table->isExportable = true;
                 $table->isImportable = true;
                 $table->isSortable = true;
                 $table->hasCacheFeature = true;

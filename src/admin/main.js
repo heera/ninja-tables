@@ -18,6 +18,7 @@ import {
     Radio,
     Select,
     Option,
+    OptionGroup,
     Switch,
     CheckboxGroup,
     RadioButton,
@@ -28,12 +29,14 @@ import {
     Alert,
     Row,
     Col,
+    DatePicker
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 // configure language
 locale.use(lang);
 Vue.use(Button);
+Vue.use(DatePicker);
 Vue.use(Table);
 Vue.use(ColorPicker);
 Vue.use(Pagination);
@@ -56,6 +59,7 @@ Vue.use(FormItem);
 Vue.use(Input);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(OptionGroup);
 Vue.use(Checkbox);
 Vue.use(RadioGroup);
 Vue.use(Radio);

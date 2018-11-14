@@ -53,7 +53,11 @@ jQuery(document).ready(function ($) {
                             if (!valueOrElement) {
                                 return '';
                             }
-                            valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
+                            if(typeof (valueOrElement) != 'number') {
+                                valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
+                            } else {
+                                valueOrElement = valueOrElement.toString();
+                            }
 
                             if(valueOrElement && column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");

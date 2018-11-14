@@ -53,11 +53,7 @@
             <div v-else class="section_block text-center">
                 <h3>Custom Filters is pro only features. Please purchase <b>"Ninja Tables Pro"</b> to use this feature
                 </h3>
-
-                <a class="el-button el-button--danger" target="_blank"
-                   href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade_custom_filter">Purchase
-                    Now</a>
-
+                <a class="el-button el-button--danger" target="_blank" href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=custom_filters&utm_term=upgrade">Purchase Now</a>
             </div>
         </div>
 

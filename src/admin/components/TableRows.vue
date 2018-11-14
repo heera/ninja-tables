@@ -81,7 +81,7 @@
                     </el-table-column>
                     <el-table-column
                             v-for="(column, index) in columns"
-                            :label="column.name || column.key"
+                            :label="JSON.stringify(column)"
                             :render-header="addConfigIcon"
                             :width="(columnLength == index + 1 ) ? '' : 150"
                             :key="index">
@@ -621,6 +621,7 @@
             },
             addConfigIcon(h, {column, $index}) {
                 let self = this;
+                let originalColumn = JSON.parse(column.label);
                 let result = h('i', {
                     props: {
                         size: 'mini',
@@ -631,14 +632,16 @@
                     class: 'el-icon-setting nt-column-config',
                     on: {
                         click(query) {
-                            self.showColumnConfigModal($index)
+                            self.showColumnConfigModal(originalColumn)
                         }
                     }
                 });
-                return h('span', null, [column.label, result]);
+
+                let columnTitle = originalColumn.name || originalColumn.key;
+                return h('span', null, [columnTitle, result]);
             },
-            showColumnConfigModal(columnIndex) {
-                this.currentEditingColumn = this.columns[columnIndex];
+            showColumnConfigModal(selectedColumn) {
+                this.currentEditingColumn = this.columns.find(column => column.key === selectedColumn.key);
                 this.showColumnEditor = true;
             },
             storeSettings() {

@@ -23,13 +23,16 @@
     background-color: <?php echo $colors['table_header_color_primary']; ?> !important;
     color: <?php echo $colors['table_color_header_secondary']; ?> !important;
 }
+<?php if($colors['table_color_header_border']) : ?>
 <?php echo $css_prefix; ?>:not(.hide_all_borders) tr.footable-header th {
     border-color: <?php echo $colors['table_color_header_border']; ?> !important;
 }
+<?php endif; ?>
+<?php if($colors['table_color_border']) : ?>
 <?php echo $css_prefix; ?>:not(.hide_all_borders) tbody tr td {
     border-color: <?php echo $colors['table_color_border']; ?> !important;
 }
-
+<?php endif; ?>
 <?php if($colors['alternate_color_status']): ?>
 <?php echo $css_prefix; ?> tbody tr:nth-child(even) {
     background-color: <?php echo $colors['table_alt_color_primary']; ?>;
@@ -58,4 +61,4 @@
 }
 <?php endif; ?>
 <?php echo $custom_css; ?>
-</style> 
+</style>

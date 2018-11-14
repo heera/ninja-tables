@@ -34,12 +34,8 @@ class NinjaFooTable
         }
 
         $tableArray['table_instance_name'] = $tableInstance;
-
         self::enqueue_assets();
-
         self::render($tableArray);
-
-
     }
 
     private static function enqueue_assets()
@@ -76,9 +72,28 @@ class NinjaFooTable
      */
     private static function addCustomColorCSS($tableArray, $extra_css = '')
     {
+        $css_prefix = '#footable_' . $tableArray['table_id'];
+        $customColumnCss = '';
+        if(defined('NINJATABLESPRO')) {
+            $columns = ArrayHelper::get($tableArray, 'columns');
+            foreach ($columns as $index => $column) {
+                $bgColor = ArrayHelper::get($column, 'background_color');
+                $textColor = ArrayHelper::get($column, 'text_color');
+                if($bgColor || $textColor) {
+                    if($bgColor && $textColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; color: '.$textColor.'; }';
+                    } else if($bgColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; }';
+                    } else if($textColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ color: '.$textColor.'; }';
+                    }
+                }
+            }
+        }
+
         $colors = false;
         $custom_css = get_post_meta($tableArray['table_id'], '_ninja_tables_custom_css', true);
-
+        $custom_css .= $customColumnCss;
         if (ArrayHelper::get($tableArray, 'settings.table_color_type') == 'custom_color'
             && defined('NINJATABLESPRO')
         ) {
@@ -117,8 +132,6 @@ class NinjaFooTable
         if (!$colors && !$custom_css) {
             return;
         }
-
-        $css_prefix = '#footable_' . $tableArray['table_id'];
         add_action('wp_footer', function () use ($custom_css, $colors, $css_prefix) {
             include 'views/ninja_footable_css.php';
         });

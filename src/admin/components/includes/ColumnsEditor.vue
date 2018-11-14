@@ -17,7 +17,7 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <el-input v-model="model.name" />
+                    <el-input size="small" v-model="model.name" />
                 </el-form-item>
 
                 <!-- Column Key -->
@@ -37,7 +37,7 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <el-input v-model="model.key" :disabled="updating" />
+                    <el-input size="small" v-model="model.key" :disabled="updating" />
                 </el-form-item>
 
                 <!-- Data Type -->
@@ -100,7 +100,7 @@
 
                     <!-- Format input -->
                     <el-form-item v-else>
-                        <el-input v-model="model.dateFormat" placeholder="Enter moment.js supported format" />
+                        <el-input size="small" v-model="model.dateFormat" placeholder="Enter moment.js supported format" />
                     </el-form-item>
                 </el-form-item>
 
@@ -171,6 +171,7 @@
                     <el-form-item>
                         <p v-if="!has_pro"><b>Selection feature is only available on Pro version Please upgrade to pro to unlock this feature</b></p>
                         <el-input type="textarea"
+                                  size="small"
                                   :disabled="!has_pro"
                                   v-model="model.selections"
                                   placeholder="Enter Select items one per line"
@@ -209,6 +210,24 @@
             <!-- Advanced Settings -->
             <el-tab-pane label="Advanced Settings" name="advanced">
                 <div class="advanced-settings">
+
+                    <div class="ninja_table_inline_upgrade" v-if="!hasPro">
+
+                        <H3>Advanced Column Settings</H3>
+                        <p>
+                            Customize your table's column's width, custom css class, content alignments, column styling with this feature.
+                            Advanced Column Settings is a pro feature and You can use it once you upgrade to Ninja Tables Pro.
+                            Ninja Table Pro has lots of features that will help you to build any type of Tables.
+                        </p>
+
+                        <a href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=advanced_column&utm_term=upgrade"
+                           target="_blank">
+                            <button type="button" class="el-button el-button--danger">
+                                <span>Buy Pro and Enable This Module</span>
+                            </button>
+                        </a>
+                    </div>
+
                     <!-- Extra classes -->
                     <el-form-item>
                         <template slot="label">
@@ -228,7 +247,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-input v-model="model.classes" :disabled="!hasPro" />
+                        <el-input size="small" v-model="model.classes" :disabled="!hasPro" />
                     </el-form-item>
 
                     <!-- Max width -->
@@ -249,7 +268,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-input type="number" :disabled="!hasPro" v-model="model.width" />
+                        <el-input size="small" type="number" :disabled="!hasPro" v-model="model.width" />
                     </el-form-item>
 
                     <!-- Header Text alignment -->
@@ -358,11 +377,54 @@
                         </template>
                         <el-checkbox :disabled="!hasPro" v-model="model.unsortable" true-label="yes" false-label="no" value="yes" label="Disable frontend sorting for this column"></el-checkbox>
                     </el-form-item>
+
+                    <el-form-item>
+                        <template slot="label">
+                            {{ $t("Column Background") }}
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Background color</h3>
+
+                                    <p>
+                                       You can set background color of this particular column that will show on the frontend table.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info" />
+                            </el-tooltip>
+                        </template>
+                        <el-color-picker
+                                :disabled="!hasPro"
+                                v-model="model.background_color"
+                                show-alpha
+                        ></el-color-picker>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <template slot="label">
+                            {{ $t("Column Text Color") }}
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Text Color color</h3>
+
+                                    <p>
+                                        You can set Column Text color of this particular column that will show on the frontend table.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info" />
+                            </el-tooltip>
+                        </template>
+                        <el-color-picker
+                                :disabled="!hasPro"
+                                v-model="model.text_color"
+                                show-alpha
+                        ></el-color-picker>
+                    </el-form-item>
+
                 </div>
             </el-tab-pane>
 
             <!-- Conditional Settings -->
-            <el-tab-pane label="Conditional Settings" name="conditional">
+            <el-tab-pane label="Conditional Formatting" name="conditional">
                 <condition :column="model" :has-pro="hasPro" />
             </el-tab-pane>
 
@@ -511,7 +573,7 @@
                 if (['advanced', 'conditional'].indexOf(tab.name) != -1) {
                     this.hideDelete = true;
                     if (!this.moreSettings) {
-                        this.showProPopUp();
+                       // this.showProPopUp();
                     } else {
                         this.moreSettings = !this.moreSettings;
                     }

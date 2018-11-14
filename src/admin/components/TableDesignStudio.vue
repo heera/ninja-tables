@@ -442,6 +442,7 @@
                 showingDevice: 'desktop',
                 hasSortable: !!window.ninja_table_admin.hasSortable,
                 sortableUpgradeNotice: false,
+                columnCss: ''
             }
         },
         computed: {
@@ -887,7 +888,7 @@
                     ${prefix}:not(.hide_all_borders) tbody tr td {
                        border-color: ${this.tableSettings.table_color_border} !important;
                     }
-                    
+
                      ${(this.tableSettings.alternate_color_status == 'yes') ? `
                          ${prefix} tbody tr:nth-child(even) {
                              background-color: ${this.tableSettings.table_alt_color_primary};
@@ -905,7 +906,7 @@
                          }
                      ` : `
                      `}
-                     
+
                      ${prefix} tfoot .footable-paging {
                        background-color: ${this.tableSettings.table_footer_bg} !important;
                     }
@@ -919,7 +920,6 @@
                 jQuery('#table_designer_css').html(css);
             },
             changeColor(color, element) {
-
                 this.$set(this.tableSettings, element, color);
             },
             checkColorPro() {
@@ -937,7 +937,10 @@
             generateDefaultCss() {
                 let columnContentCss = this.config.table.custom_css;
                 this.config.columns.forEach((column, index) => {
-                    columnContentCss += ` #footable_${this.tableId} td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
+                    if(column.background_color || column.text_color || column.contentAlign) {
+                        columnContentCss += `#footable_parent_${this.tableId} thead tr th.ninja_column_${index}, #footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { background-color: ${column.background_color}; color: ${column.text_color}; }`;
+                        columnContentCss += `#footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
+                    }
                 });
                 jQuery('#ninja_table_designer_common_css').html(columnContentCss);
             }

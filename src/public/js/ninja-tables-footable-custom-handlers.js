@@ -1,11 +1,16 @@
 export default {
 	SetCellColor: function($elements, $table, condition, colIndex, column) {
-		column.cellDefaultcolor = $elements.css('color');
 		$elements.length && $elements.css('color', condition.targetValueColor);
 	},
+    SetCellBgColor: function($elements, $table, condition, colIndex, column) {
+        $elements.length && $elements.css('background-color', condition.targetValueColor);
+    },
 	ResetCellColorToDefault: function($elements, $table, condition, colIndex, column) {
-		$elements.length && $elements.css('color', column.cellDefaultcolor);
+		$elements.length && $elements.css('color', 'initial');
 	},
+    ResetCellBgColorToDefault: function($elements, $table, condition, colIndex, column) {
+        $elements.length && $elements.css('background-color', 'initial');
+    },
 	SetCellContent: function($elements, $table, condition, colIndex, column) {
 		$elements.length && $elements.html(condition.targetValue);
 	},
@@ -16,11 +21,16 @@ export default {
 		$elements.length && $elements.removeClass(condition.targetValue);
 	},
 	SetRowColor: function($elements, $table, condition, colIndex, column) {
-		column.rowDefaultcolor = $elements.closest('tr').css('color');
-		$elements.length && $elements.closest('tr').css('color', condition.targetValueColor);
+		$elements.length && $elements.closest('tr').find('> td').css('color', condition.targetValueColor);
 	},
+    SetRowBgColor: function($elements, $table, condition, colIndex, column) {
+        $elements.length && $elements.closest('tr').find('> td').css('background-color', condition.targetValueColor);
+    },
+    ResetRowBgColor: function($elements, $table, condition, colIndex, column) {
+        $elements.length && $elements.closest('tr').find('> td').css('background-color', 'initial');
+    },
 	ResetRowColorToDefault: function($elements, $table, condition, colIndex, column) {
-		$elements.length && $elements.closest('tr').css('color', column.rowDefaultcolor);
+		$elements.length && $elements.closest('tr').find('> td').css('color', 'initial');
 	},
 	SetRowCssClass: function($elements, $table, condition, colIndex, column) {
 		$elements.length && $elements.closest('tr').addClass(condition.targetValue);
@@ -33,9 +43,19 @@ export default {
 			'tbody tr td:nth-child('+(colIndex+1)+')'
 		).css('color', condition.targetValueColor);
 	},
+    SetColumnBgColor: function($elements, $table, condition, colIndex, column) {
+        $elements.length && $elements.closest('table').find(
+            'tbody tr td:nth-child('+(colIndex+1)+')'
+        ).css('background-color', condition.targetValueColor);
+    },
 	AddColumnCssClass: function($elements, $table, condition, colIndex, column) {
 		$elements.length && $elements.closest('table').find(
 			'tbody tr td:nth-child('+(colIndex+1)+')'
 		).addClass(condition.targetValue);
+	},
+    RemoveColumnCssClass: function($elements, $table, condition, colIndex, column) {
+		$elements.length && $elements.closest('table').find(
+			'tbody tr td:nth-child('+(colIndex+1)+')'
+		).removeClass(condition.targetValue);
 	},
 };
