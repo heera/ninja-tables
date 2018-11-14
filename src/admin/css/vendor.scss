@@ -33,12 +33,12 @@
 @import '~element-ui/lib/theme-chalk/col.css';
 @import '~element-ui/lib/theme-chalk/collapse.css';
 @import '~element-ui/lib/theme-chalk/collapse-item.css';
+@import '~element-ui/lib/theme-chalk/transfer.css';
 @import '~element-ui/lib/theme-chalk/date-picker.css';
 
 .el-text-info {
     color: #58B7FF;
 }
-
 .el-picker-panel.el-date-picker.el-popper {
     z-index: 20159999 !important;
 }

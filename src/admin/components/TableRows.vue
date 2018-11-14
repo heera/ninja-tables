@@ -27,7 +27,14 @@
                                    :loading="syncing"
                                    v-model="externalDataSourceUrl"
                                    @sync="updateTableSettings"
-                ></external-source-nav>
+                />
+            </div>
+
+            <div v-if="dataSourceType == 'wp-posts'" class="tablenav top">
+                <WPPostsNav :is-editable-message="isEditableMessage"
+                                 :config="config"
+                                 :tableCreated="reloadSettingsAndData"
+                />
             </div>
 
             <div v-if="isEditable" class="tablenav top">
@@ -158,20 +165,37 @@
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
 
-        <el-dialog class="no_padding_body" :append-to-body="true" top="50px" title="Edit Table Column" width="70%" :visible.sync="showColumnEditor">
-            <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
-                            :updating="true"
-                            v-if="showColumnEditor"
-                            :hideDelete="true"
-                            @store="storeSettings()"
-                            @cancel="showColumnEditor = false"
+        <el-dialog
+            class="no_padding_body"
+            :append-to-body="true"
+            top="50px"
+            title="Edit Table Column"
+            width="70%"
+            :visible.sync="showColumnEditor"
+        >
+            <columns-editor
+                :model="currentEditingColumn"
+                :has-pro="has_pro"
+                :updating="true"
+                v-if="showColumnEditor"
+                :hideDelete="false"
+                @store="storeSettings()"
+                @delete="deleteColumn()"
+                @cancel="showColumnEditor = false"
             />
         </el-dialog>
 
-        <el-dialog top="50px" :append-to-body="true" title="Add Table Column" width="70%" :visible.sync="columnModal">
-            <columns-editor :model="new_column" :has-pro="has_pro"
-                            @add="addNewColumn()"
-                            @cancel="columnModal = !columnModal"
+        <el-dialog
+        top="50px"
+        :append-to-body="true"
+        title="Add Table Column"
+        width="70%"
+        :visible.sync="columnModal">
+            <columns-editor
+                :model="new_column"
+                :has-pro="has_pro"
+                @add="addNewColumn()"
+                @cancel="columnModal = !columnModal"
             />
         </el-dialog>
     </div>
@@ -190,6 +214,7 @@
     import columnsEditor from './includes/ColumnsEditor';
     import FluentFormNav from './TableNav/Fluentform';
     import ExternalSourceNav from './TableNav/External';
+    import WPPostsNav from './TableNav/WPPostsNav';
 
     export default {
         name: 'TableDataItems',
@@ -201,7 +226,8 @@
             SortableUpgradeNotice,
             columnsEditor,
             FluentFormNav,
-            ExternalSourceNav
+            ExternalSourceNav,
+            WPPostsNav
         },
         props: ['config', 'getColumnSettings', 'hasPro'],
         data() {
@@ -328,7 +354,7 @@
                         this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail((error) => {
-
+                        console.log(error);
                     })
                     .always(() => {
                         this.loading = false;
@@ -675,8 +701,7 @@
                 })
                 .then(response => {
                     if(response.success) {
-                        this.getColumnSettings();
-                        this.getData();
+                        this.reloadSettingsAndData();
                         this.$message({
                             type: 'success',
                             showClose:true,
@@ -694,7 +719,27 @@
                     });
                 })
                 .always(() => this.syncing = false);
-            }
+            },
+            reloadSettingsAndData() {
+                this.getColumnSettings();
+                this.getData();
+            },
+            deleteColumn() {
+                this.showColumnEditor = false;
+                setTimeout(() => {
+                    this.$confirm(this.$t('Are you sure, You want to delete this column?'), 'Warning', {
+                      confirmButtonText: 'Yes',
+                      cancelButtonText: 'No',
+                      type: 'warning',
+                    }).then(() => {
+                        let targetIndex = findIndex(this.config.columns, this.currentEditingColumn);
+                        this.showColumnEditor = false;
+                        this.currentEditingColumn = false;
+                        this.config.columns.splice(targetIndex, 1);
+                        this.$nextTick(() => this.storeSettings());
+                    }).catch(() => this.showColumnEditor = true);
+                }, 200);
+            },
         },
         mounted() {
             this.getData();

@@ -7,7 +7,6 @@ use NinjaTable\TableDrivers\NinjaFooTable;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesTablePressMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -330,6 +329,8 @@ class NinjaTablesAdmin
             'update-external-data-source' => 'updateTableWithExternalDataSource',
             'get-fluentform-forms' => 'getFluentformForms',
             'set-fluent-form-data-source' => 'createTableWithFluentFormDataSource',
+            'get_wp_post_types' => 'getAllPostTypes',
+            'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
         );
 
         $requested_route = $_REQUEST['target_action'];
@@ -1915,5 +1916,114 @@ class NinjaTablesAdmin
         update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
 
         wp_send_json_success(array('table_id' => $tableId, 'form_id' => $_REQUEST['form']['id']));
+    }
+
+    public function getAllAuthors()
+    {
+        $allUsers = get_users('orderby=post_count&order=DESC');
+
+        foreach ($allUsers as $key => $currentUser) {
+            if (in_array('subscriber', $currentUser->roles)) {
+                unset($allUsers[$key]);
+            } else {
+                $allUsers[$key] = $currentUser->data;
+            }
+        }
+
+        return $allUsers;
+    }
+
+    public function getAllPostTypes()
+    {
+        global $wpdb;
+
+        $authors = $this->getAllAuthors();
+        $postStatuses = ninjaTablesGetPostStatuses();
+        $post_fields = $wpdb->get_col("DESC {$wpdb->prefix}posts");
+        $post_types = array_diff(get_post_types(), ['ninja-table']);
+
+        foreach ($post_types as $type) {
+            $taxonomies = get_object_taxonomies($type);
+            $taxonomies = array_combine($taxonomies, $taxonomies);
+
+            foreach ($taxonomies as $taxonomy) {
+                $taxonomies[$taxonomy] = get_terms([
+                    'taxonomy' => $taxonomy,
+                    'hide_empty' => false,
+                ]);
+            }
+
+            $post_types[$type] = array(
+                'taxonomies' => $taxonomies,
+                'fields' => array_map(function($taxonomy) use($type) {
+                    return "{$type}.{$taxonomy}";
+                }, array_keys($taxonomies))
+            );
+        }
+
+        wp_send_json_success(
+            compact('post_fields', 'post_types', 'authors', 'postStatuses'), 200
+        );
+    }
+
+    public function createTableWithWPPostDataSource()
+    {
+        if (!($tableId = $_REQUEST['tableId'])) {
+            // Validate Title
+            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+                $messages['title'] = __('The title field is required.', 'ninja-tables');
+            }
+        }
+
+        // Validate Columns
+        $fields = isset($_REQUEST['data']['columns']) ? $_REQUEST['data']['columns'] : array();
+        if (!($fields = ninja_tables_sanitize_array($fields))) {
+            $messages['columns'] = __('No columns were selected.', 'ninja-tables');
+        }
+
+        // If Validation failed
+        if (array_filter($messages)) {
+            wp_send_json_error(array('message' => $messages), 422);
+            wp_die();
+        }
+
+        $headers = $this->formatHeader($fields);
+
+        foreach ($headers as $key => $column) {
+            $columns[] = array(
+                'name' => $column,
+                'key' => $key,
+                'breakpoints' => null,
+                'data_type' => 'text',
+                'dateFormat' => null,
+                'header_html_content' => null,
+                'enable_html_content' => false,
+                'contentAlign' => null,
+                'textAlign' => null,
+                'original_name' => $column
+            );
+        }
+        
+        if ($tableId) {
+            $message = 'Table updated successfully.';
+            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
+            foreach ($columns as $key => $newColumn) {
+                foreach ($oldColumns as $oldColumn) {
+                    if ($oldColumn['original_name'] == $newColumn['original_name']) {
+                        $columns[$key] = $oldColumn;
+                    }
+                }
+            }
+        } else {
+            $tableId = $this->saveTable();
+            $message = 'Table created successfully.';
+        }
+
+        update_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', $_REQUEST['data']['post_types']);
+        update_post_meta($tableId, '_ninja_table_wpposts_ds_where', $_REQUEST['data']['where']);
+        update_post_meta($tableId, '_ninja_table_columns', $columns);
+        update_post_meta($tableId, '_ninja_tables_data_provider', 'wp-posts');
+
+        wp_send_json_success(array('table_id' => $tableId,'message' => $message), 200);
     }
 }

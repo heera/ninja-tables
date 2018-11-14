@@ -267,7 +267,6 @@
                                 <i class="el-icon-info el-text-info" />
                             </el-tooltip>
                         </template>
-
                         <el-input size="small" type="number" :disabled="!hasPro" v-model="model.width" />
                     </el-form-item>
 

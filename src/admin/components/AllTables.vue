@@ -129,12 +129,12 @@
                     target_action: 'get-dynamic-obj',
                     name: this.name
                 })
-                    .done((res) => {
-                        resolve(JSON.parse(res))
-                    })
-                    .fail((error) => {
-                        console.log(error);
-                    });
+                .done((res) => {
+                    resolve(JSON.parse(res))
+                })
+                .fail((error) => {
+                    console.log(error);
+                });
             };
         }
     }

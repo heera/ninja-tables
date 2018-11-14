@@ -48,9 +48,11 @@
                                 <div class="widget_body">
                                     <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
-                                            <columns-editor :model="new_column" :has-pro="has_pro"
-                                                            @add="addNewColumn()"
-                                                            @cancel="addColumnStatus = !addColumnStatus"
+                                            <columns-editor
+                                                :model="new_column"
+                                                :has-pro="has_pro"
+                                                @add="addNewColumn()"
+                                                @cancel="addColumnStatus = !addColumnStatus"
                                             />
                                         </div>
                                     </div>
@@ -65,9 +67,12 @@
                                                 <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">
-                                                <columns-editor :model="column" :has-pro="has_pro" :updating="true"
-                                                                @delete="deleteColumn(index)"
-                                                                @store="storeSettings()"
+                                                <columns-editor
+                                                    :model="column"
+                                                    :has-pro="has_pro"
+                                                    :updating="true"
+                                                    @delete="deleteColumn(index)"
+                                                    @store="storeSettings()"
                                                 />
                                             </div>
                                         </div>

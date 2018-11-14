@@ -1119,9 +1119,7 @@ ul.ninja_render_features li {
         display: -ms-flexbox;
         display: -webkit-flex;
         display: flex;
-
         width: 100%;
-
         -webkit-box-orient: vertical;
         -moz-box-orient: vertical;
         -ms-flex-orient: vertical;
@@ -1136,7 +1134,6 @@ ul.ninja_render_features li {
         order: 1;
     }
     .section-column-3 {
-
         -webkit-box-ordinal-group: 2;
         -moz-box-ordinal-group: 2;
         -ms-flex-order: 2;

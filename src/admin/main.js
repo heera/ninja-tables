@@ -29,6 +29,7 @@ import {
     Alert,
     Row,
     Col,
+    Transfer,
     DatePicker
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
@@ -73,6 +74,8 @@ Vue.use(Step);
 Vue.use(Alert);
 Vue.use(Row);
 Vue.use(Col);
+Vue.use(Transfer);
+Vue.use(DatePicker);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;

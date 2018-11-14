@@ -136,8 +136,8 @@
                     table_id: this.tableId
                 };
 
-                jQuery.get(ajaxurl, data)
-                    .done(response => {
+                jQuery.getJSON(ajaxurl, data)
+                    .then(response => {
                         this.config = response;
                         this.table = response.table;
                         this.preview_url = response.preview_url;

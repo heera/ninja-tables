@@ -31,6 +31,10 @@
                     <img :src="fluentFormIcon" alt="fluent form icon" class="el-icon-fluent-form">
                     <span>Connect Fluent Form</span>
                 </el-menu-item>
+
+                <el-menu-item @click="activeTabName = 'wp_posts'" index='wp_posts'>
+                    <i class="el-icon-news"></i> <span>WP Posts</span>
+                </el-menu-item>
             </el-menu>
         </el-aside>
 
@@ -83,22 +87,26 @@
             <fluent-form-data-source v-else-if="activeTabName == 'fluent_form'"
                                      :tableCreated="fireTableCreated"
             />
+            <wp-posts-data-source v-else-if="activeTabName == 'wp_posts'"
+                                     :tableCreated="fireTableCreated"
+            />
         </el-main>
     </el-container>
-
 
 </template>
 
 <script type="text/babel">
     import wp_editor from '../../common/_wp_editor';
+    import WPPosts from './includes/WPPosts';
     import FluentForm from './includes/FluentForm';
     import ExternalDataSource from './includes/ExternalDataSource';
     import ImportTable from './includes/ImportTable';
-    
+
     export default {
         name: 'add_table',
         components: {
             wp_editor: wp_editor,
+            'wp-posts-data-source': WPPosts,
             'fluent-form-data-source': FluentForm,
             'external-data-source': ExternalDataSource,
             ImportTable

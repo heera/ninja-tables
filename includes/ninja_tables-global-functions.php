@@ -290,3 +290,20 @@ if (!function_exists('getFluentFormMenuIcon')) {
         return apply_filters('fluent_form_menu_icon', $icon);
     }
 }
+
+
+if (!function_exists('ninjaTablesGetPostStatuses')) {
+    function ninjaTablesGetPostStatuses() {
+        return [
+            ['key' => 'publish', 'label' => 'Publish'],
+            ['key' => 'pending', 'label' => 'Pending'],
+            ['key' => 'draft', 'label' => 'Draft'],
+            ['key' => 'auto-draft', 'label' => 'Auto Draft'],
+            ['key' => 'future', 'label' => 'Future'],
+            ['key' => 'private', 'label' => 'Private'],
+            ['key' => 'inherit', 'label' => 'Inherit'],
+            ['key' => 'trash', 'label' => 'Trash'],
+            ['key' => 'any', 'label' => 'Any'],
+        ];
+    }
+}
