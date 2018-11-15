@@ -39,7 +39,7 @@
                                 <div class="heading">
                                     <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
                                     <h3 v-else class="title">{{ $t('Available Columns') }}</h3>
-                                    <div v-show="!addColumnStatus" class="inline_action">
+                                    <div v-show="!addColumnStatus" class="inline_action" v-if="addable">
                                         <el-button size="small" type="primary" v-show="columns.length" @click="addColumnStatus = !addColumnStatus">
                                             {{ $t('Add Column') }}
                                         </el-button>
@@ -49,6 +49,7 @@
                                     <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
                                             <columns-editor
+                                                :dataSourceType="config.table.dataSourceType"
                                                 :model="new_column"
                                                 :has-pro="has_pro"
                                                 @add="addNewColumn()"
@@ -68,6 +69,7 @@
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">
                                                 <columns-editor
+                                                    :dataSourceType="config.table.dataSourceType"
                                                     :model="column"
                                                     :has-pro="has_pro"
                                                     :updating="true"
@@ -264,7 +266,18 @@
                     data_type: 'text',
                     dateFormat: '',
                     header_html_content: "",
-                    enable_html_content: false
+                    enable_html_content: false,
+                    wp_post: {
+                        field: {
+                            name: null,
+                            value: null
+                        },
+                        field_types: [
+                            {key: 'acf', label:'ACF'},
+                            {key: 'post_meta', label:'Post Meta'},
+                            {key: 'short_code', label:'Short Code'}
+                        ]
+                    }
                 },
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
@@ -370,23 +383,26 @@
                         data_type: 'text',
                         dateFormat: '',
                         header_html_content: "",
-                        enable_html_content: false
+                        enable_html_content: false,
+                        wp_post: {
+                            field: {
+                                name: null,
+                                value: null
+                            },
+                            field_types: [
+                                {key: 'acf', label:'ACF'},
+                                {key: 'post_meta', label:'Post Meta'},
+                                {key: 'short_code', label:'Short Code'}
+                            ]
+                        }
                     };
                     this.addColumnStatus = false;
                     this.storeSettings();
                 }
             },
             deleteColumn(index) {
-                setTimeout(() => {
-                    this.$confirm(this.$t('Are you sure, You want to delete this column?'), 'Warning', {
-                      confirmButtonText: 'Yes',
-                      cancelButtonText: 'No',
-                      type: 'warning',
-                    }).then(() => {
-                        this.config.columns.splice(index, 1);
-                        this.storeSettings();
-                    }).catch(() => {});
-                }, 200);
+                this.config.columns.splice(index, 1);
+                this.storeSettings();
             },
             showProAd(title) {
                 this.addVisible = true;
@@ -415,6 +431,11 @@
                 }
                 this.tableSettings.render_type  = tableType;
             },
+        },
+        computed: {
+            addable() {
+                return ['default', 'wp-posts'].indexOf(this.config.table.dataSourceType) != -1;
+            }
         }
     }
 </script>

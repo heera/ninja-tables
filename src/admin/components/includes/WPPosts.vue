@@ -230,7 +230,7 @@
                     return;
                 }
 
-                this.selected_post_types_fields.forEach((field, i) => {
+                this.selected_post_types_fields.filter(f => !!f).forEach((field, i) => {
                     let parts = field.split('.');
                     if (parts.length > 1 && this.selected_post_types.indexOf(parts[0]) == -1) {
                         this.selected_post_types_fields.splice(i, 1);

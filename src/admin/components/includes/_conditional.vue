@@ -170,12 +170,13 @@
             </el-col>
         </el-row>
 
-        <el-row v-if="!column.conditions.length">
+        <el-row v-if="column.conditions && !column.conditions.length">
             <el-alert
-                    center
-                    :closable=false
-                    title="You haven't added any conditions for the column yet!"
-                    type="info"></el-alert>
+                center
+                :closable=false
+                title="You haven't added any conditions for the column yet!"
+                type="info"
+            ></el-alert>
         </el-row>
     </div>
 </template>

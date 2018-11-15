@@ -82,6 +82,7 @@
     import EditTable from './_AddTable.vue';
     import each from 'lodash/each';
     import size from 'lodash/size';
+    import toArray from 'lodash/values';
 
     export default {
         name: 'table_home',
@@ -138,6 +139,9 @@
 
                 jQuery.getJSON(ajaxurl, data)
                     .then(response => {
+                        if (Object.prototype.toString.call(response.columns) == '[object Object]') {
+                            response.columns = toArray(response.columns);
+                        }
                         this.config = response;
                         this.table = response.table;
                         this.preview_url = response.preview_url;
@@ -145,9 +149,7 @@
                     .fail((error) => {
                         console.log(error);
                     })
-                    .always(() => {
-                        this.doingAjax = false;
-                    });
+                    .always(() => this.doingAjax = false);
             },
             goToTab(key) {
                 this.user_tab = key;

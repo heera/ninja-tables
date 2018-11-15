@@ -50,6 +50,7 @@
             <el-button type="primary" 
                        :loading="btnLoading" 
                        @click="save"
+                       size="small"
                        :disabled="!hasPro"
             >
                 {{ $t('Continue') }}
