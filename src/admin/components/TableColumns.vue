@@ -377,10 +377,16 @@
                 }
             },
             deleteColumn(index) {
-                if (confirm(this.$t('Are you sure, You want to delete this column?'))) {
-                    this.columns.splice(index, 1);
-                    this.storeSettings();
-                }
+                setTimeout(() => {
+                    this.$confirm(this.$t('Are you sure, You want to delete this column?'), 'Warning', {
+                      confirmButtonText: 'Yes',
+                      cancelButtonText: 'No',
+                      type: 'warning',
+                    }).then(() => {
+                        this.config.columns.splice(index, 1);
+                        this.storeSettings();
+                    }).catch(() => {});
+                }, 200);
             },
             showProAd(title) {
                 this.addVisible = true;
