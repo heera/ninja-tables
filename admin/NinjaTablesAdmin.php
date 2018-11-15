@@ -1982,7 +1982,18 @@ class NinjaTablesAdmin
                 'enable_html_content' => false,
                 'contentAlign' => null,
                 'textAlign' => null,
-                'original_name' => $column
+                'original_name' => $column,
+                'wp_post' =>  [
+                    'field' =>  [
+                        'name' =>  null,
+                        'value' =>  null
+                    ],
+                    'field_types' =>  [
+                        ['key' =>  'acf', 'label' => 'ACF'],
+                        ['key' =>  'post_meta', 'label' => 'Post Meta'],
+                        ['key' =>  'short_code', 'label' => 'Short Code']
+                    ]
+                ]
             );
         }
         

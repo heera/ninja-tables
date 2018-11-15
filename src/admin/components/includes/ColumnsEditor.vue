@@ -205,6 +205,8 @@
                         </option>
                     </select>
                 </el-form-item>
+
+                <wp-post-dynamic-column v-if="dataSourceType == 'wp-posts'" :column="model" />
             </el-tab-pane>
 
             <!-- Advanced Settings -->
@@ -433,7 +435,7 @@
             <div class="form_group">
                 <div class="pull-right">
                     <template v-if="!updating">
-                        <el-button @click.prevent="cancel" type="danger" size="small">
+                        <el-button @click.prevent="cancel" type="danger" size="small" v-if="!hideCancel">
                             {{ $t('Cancel') }}
                         </el-button>
 
@@ -444,9 +446,33 @@
                     </template>
 
                     <template v-else>
-                        <el-button v-if="!hideDelete" @click.prevent="deleteColumn" type="danger" size="small">
-                            {{ $t('Delete') }}
-                        </el-button>
+                        <el-popover
+                            v-if="!hideDelete"
+                            placement="top"
+                            width="170"
+                            v-model="showConfirm"
+                            trigger="click"
+                        >
+                            <p>Are you sure to delete this?</p>
+                            <div style="text-align: right; margin: 0">
+                                <el-button
+                                    type="text"
+                                    size="mini"
+                                    @click="showConfirm = false"
+                                >cancel</el-button>
+
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    @click="deleteColumn"
+                                >confirm</el-button>
+                            </div>
+                            <el-button
+                                type="danger"
+                                size="small"
+                                slot="reference"
+                                >{{ $t('Delete') }}</el-button>
+                        </el-popover>
 
                         <el-button @click.prevent="store" type="primary" size="small">
                             {{ $t('Update') }}
@@ -461,11 +487,14 @@
 <script>
     import wpEditor from '../../../common/_wp_editor';
     import conditional from './_conditional';
+    import WPPostDynamicColumn from './WPPostDynamicColumn';
+
     export default {
         name: "ColumnsEditor",
         components: {
             'wp_editor':  wpEditor,
             'condition': conditional,
+            'wp-post-dynamic-column': WPPostDynamicColumn,
         },
         props: {
             "model": {
@@ -487,6 +516,14 @@
             "hideDelete": {
                 type: Boolean,
                 default: false
+            },
+            "hideCancel": {
+                type: Boolean,
+                default: false
+            },
+            "dataSourceType": {
+                type: String,
+                default: 'default'
             }
         },
         data() {
@@ -534,6 +571,7 @@
                     'right': 'Right',
                 },
                 activeTab: 'basic',
+                showConfirm: false,
             };
         },
         watch: {
@@ -612,6 +650,15 @@
         }
         .form_group {
             margin-top: 10px;
+        }
+    }
+
+    .wp_posts_dynamic_field {
+        .el-select,.el-input__inner {
+            width: 170px !important;
+        }
+        .input-with-select .el-input-group__prepend {
+            background-color: #fff;
         }
     }
 </style>

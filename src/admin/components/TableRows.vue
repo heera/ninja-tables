@@ -32,9 +32,13 @@
             </div>
 
             <div v-if="dataSourceType == 'wp-posts'" class="tablenav top">
-                <WPPostsNav :is-editable-message="isEditableMessage"
-                                 :config="config"
-                                 :tableCreated="reloadSettingsAndData"
+                <WPPostsNav
+                    :config="config"
+                    :model="new_column"
+                    :hasPro="has_pro"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
+                    @add="addNewColumn()"
                 />
             </div>
 
@@ -175,11 +179,12 @@
             :visible.sync="showColumnEditor"
         >
             <columns-editor
+                :dataSourceType="config.table.dataSourceType"
                 :model="currentEditingColumn"
-                :has-pro="has_pro"
+                :hasPro="has_pro"
                 :updating="true"
-                v-if="showColumnEditor"
                 :hideDelete="false"
+                v-if="showColumnEditor"
                 @store="storeSettings()"
                 @delete="deleteColumn()"
                 @cancel="showColumnEditor = false"
@@ -194,7 +199,7 @@
         :visible.sync="columnModal">
             <columns-editor
                 :model="new_column"
-                :has-pro="has_pro"
+                :hasPro="has_pro"
                 @add="addNewColumn()"
                 @cancel="columnModal = !columnModal"
             />
@@ -241,7 +246,18 @@
                     data_type: 'text',
                     dateFormat: '',
                     header_html_content: "",
-                    enable_html_content: false
+                    enable_html_content: false,
+                    wp_post: {
+                        field: {
+                            name: null,
+                            value: null
+                        },
+                        field_types: [
+                            {key: 'acf', label:'ACF'},
+                            {key: 'post_meta', label:'Post Meta'},
+                            {key: 'short_code', label:'Short Code'}
+                        ]
+                    }
                 },
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
@@ -540,7 +556,18 @@
                         data_type: 'text',
                         dateFormat: '',
                         header_html_content: "",
-                        enable_html_content: false
+                        enable_html_content: false,
+                        wp_post: {
+                            field: {
+                                name: null,
+                                value: null
+                            },
+                            field_types: [
+                                {key: 'acf', label:'ACF'},
+                                {key: 'post_meta', label:'Post Meta'},
+                                {key: 'short_code', label:'Short Code'}
+                            ]
+                        }
                     };
                     this.columnModal = false;
                     this.storeSettings();
@@ -726,20 +753,11 @@
                 this.getData();
             },
             deleteColumn() {
+                let targetIndex = findIndex(this.config.columns, this.currentEditingColumn);
                 this.showColumnEditor = false;
-                setTimeout(() => {
-                    this.$confirm(this.$t('Are you sure, You want to delete this column?'), 'Warning', {
-                      confirmButtonText: 'Yes',
-                      cancelButtonText: 'No',
-                      type: 'warning',
-                    }).then(() => {
-                        let targetIndex = findIndex(this.config.columns, this.currentEditingColumn);
-                        this.showColumnEditor = false;
-                        this.currentEditingColumn = false;
-                        this.config.columns.splice(targetIndex, 1);
-                        this.$nextTick(() => this.storeSettings());
-                    }).catch(() => this.showColumnEditor = true);
-                }, 200);
+                this.currentEditingColumn = false;
+                this.config.columns.splice(targetIndex, 1);
+                this.$nextTick(() => this.storeSettings());
             },
         },
         mounted() {
