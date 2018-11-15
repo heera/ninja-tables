@@ -1,23 +1,24 @@
 <template>
     <div class="ninja_modal-body">
-        <h3>
+        <h3 v-if="!editing">
             Construct Table from Fluent Form
         </h3>
 
         <template v-if="hasFluentForm">
-            <p class="ninja_subtitle">
+            <p class="ninja_subtitle" v-if="!editing">
                 Prepare your table from your existing Fluent Forms. It can be used to easily showcase your form submissions.
             </p>
 
-            <div class="form-group">
+            <div class="form-group" v-if="!editing">
                 <label for="name">{{ $t('Table Title') }}</label>
-                <input v-model="post_title"
-                       type="text" id="name" class="form-control"
-                       placeholder="Enter a title to identify your table"
+                <input
+                    v-model="post_title"
+                    type="text" id="name" class="form-control"
+                    placeholder="Enter a title to identify your table"
                 >
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="!editing">
                 <el-select
                         filterable
                         v-model="form.id"
@@ -35,22 +36,23 @@
 
             <div class="form-group">
                 <el-table
-                        :data="fields"
-                        style="width:100% !important"
-                        @selection-change="handleFieldsSelectionChange">
-                    <el-table-column type="selection" style="width:10% !important"></el-table-column>
-                    <el-table-column label="Columns" style="width:90% !important">
-                        <template slot-scope="scope">{{ scope.row.name }}</template>
-                    </el-table-column>
+                    ref="rowSelectableTable"
+                    :data="fields"
+                    style="width:100% !important"
+                    @selection-change="handleFieldsSelectionChange"
+                >
+                    <el-table-column type="selection"></el-table-column>
+                    <el-table-column prop="name" label="Columns"></el-table-column>
                 </el-table>
             </div>
 
             <div class="form-group">
                 <el-button
-                        type="primary"
-                        :loading="btnLoading"
-                        style="margin-top: 12px; float: right;"
-                        @click="save">{{ $t('Save') }}</el-button>
+                    size="small"
+                    type="primary"
+                    :loading="btnLoading"
+                    style="margin-top: 12px; float: right;"
+                    @click="save">{{ $t('Save') }}</el-button>
             </div>
         </template>
 
@@ -88,6 +90,12 @@
             tableCreated: {
                 type: Function,
                 required: true
+            },
+            editing: {
+                type: Boolean
+            },
+            config: {
+                type: Object
             }
         },
         data() {
@@ -121,6 +129,20 @@
                             fields: fields
                         });
                     });
+
+                    if (this.editing) {
+                        this.handleFormSelectionChange(
+                            this.form.id = this.config.table.fluentFormFormId
+                        );
+
+                        this.$nextTick(() => {
+                            let selected = this.config.columns.map(c => c.original_name);
+                            this.fields.filter(f => selected.indexOf(f.name) != -1).forEach(row => {
+                                this.$refs.rowSelectableTable.toggleRowSelection(row);
+                            });
+                        });
+
+                    }
                 });
             },
             handleFormSelectionChange(val) {
@@ -135,7 +157,8 @@
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'set-fluent-form-data-source',
                     post_title: this.post_title,
-                    form: this.form
+                    form: this.form,
+                    table_Id: this.config && this.config.table.ID || null
                 })
                 .then(res => {
                     this.tableCreated(res.data.table_id);

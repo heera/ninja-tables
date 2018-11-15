@@ -4,44 +4,35 @@
             <el-collapse-item name="1">
                 <template slot="title">
                     <i class="header-icon el-icon-info el-text-info"></i>
-                    Sync
+                    <strong>Edit:</strong> {{isEditableMessage}} 
                 </template>
 
-                <div v-html="isEditableMessage"></div>
-
-                <el-button :loading="loading"
-                           @click="sync"
-                           class="sync-settings"
-                           type="success"
-                           size="small"
-                           plain
-                >
-                    Sync Settings
-                </el-button>
+                <FluentForm :tableCreated="tableCreated" :editing="true" :config="config" />
             </el-collapse-item>
         </el-collapse>
     </div>
 </template>
 
 <script>
+    import FluentForm from '../includes/FluentForm';
     export default {
-        name: "Fluentform",
+        name: "FluentformNav",
+        components: { FluentForm },
         props: {
             isEditableMessage: {
                 required: true,
             },
-            loading: {
-                required: true
+            tableCreated: {
+                required: true,
+                type: Function
+            },
+            config: {
+                type: Object
             }
         },
         data() {
             return {
-                state: false
-            }
-        },
-        methods: {
-            sync() {
-                this.$emit('sync', true);
+                // ...
             }
         }
     }
@@ -51,7 +42,7 @@
     .fluent-form-nav {
         .el-collapse-item__header,
         .el-collapse-item__wrap {
-            padding: 0 15px;
+            padding: 0 15px 15px 15px;
         }
 
         .sync-settings {

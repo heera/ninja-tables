@@ -16,9 +16,10 @@
             ></add_data_modal>
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
-                <fluent-form-nav :is-editable-message="isEditableMessage"
-                                 :loading="syncing"
-                                 @sync="updateTableSettings"
+                <fluent-form-nav
+                    :config="config"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
                 />
             </div>
 
