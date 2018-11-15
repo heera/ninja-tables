@@ -21,8 +21,7 @@ class FluentFormProvider
             if ($provider == 'fluent-form') {
                 $table->isEditable = false;
                 $table->dataSourceType = $provider;
-                $table->isEditableMessage = 'Have you made any changes to your "Fluent From" form fields? You may want to sync the settings to update the table columns here.';
-
+                $table->isEditableMessage = 'You may edit your table settings here.';
                 $table->fluentFormFormId = get_post_meta(
                     $table->ID, '_ninja_tables_data_provider_ff_form_id', true
                 );
