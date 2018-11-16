@@ -6,36 +6,24 @@ class FluentFormProvider
 {
     public function boot()
     {
-        add_filter('ninja_tables_get_table_settings', array($this, 'getTableSettings'));
-        add_filter('ninja_tables_get_table_data', array($this, 'getTableData'), 10, 4);
+        add_filter('ninja_tables_get_table_fluent-form', array($this, 'getTableSettings'));
+        add_filter('ninja_tables_get_table_data_fluent-form', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 5);
     }
 
     public function getTableSettings($table)
     {
-        try {
-            $provider = sanitize_title(
-                get_post_meta($table->ID, '_ninja_tables_data_provider', true), 'default', 'display'
-            );
-
-            if ($provider == 'fluent-form') {
-                $table->isEditable = false;
-                $table->dataSourceType = $provider;
-                $table->isEditableMessage = 'You may edit your table settings here.';
-                $table->fluentFormFormId = get_post_meta(
-                    $table->ID, '_ninja_tables_data_provider_ff_form_id', true
-                );
-                $table->isExportable = false;
-                $table->isImportable = false;
-                $table->isSortable = false;
-                $table->hasCacheFeature = false;
-            }
-
-            return $table;
-
-        } catch (\Exception $e) {
-            return $table;
-        }
+        $table->isEditable = false;
+        $table->dataSourceType = 'fluent-form';
+        $table->isEditableMessage = 'You may edit your table settings here.';
+        $table->fluentFormFormId = get_post_meta(
+            $table->ID, '_ninja_tables_data_provider_ff_form_id', true
+        );
+        $table->isExportable = false;
+        $table->isImportable = false;
+        $table->isSortable = false;
+        $table->hasCacheFeature = false;
+        return $table;
     }
 
     public function getTableData($data, $tableId, $perPage, $offset)

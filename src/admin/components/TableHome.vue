@@ -38,7 +38,7 @@
                              :to="{ name: 'data_columns', params: { table_id: tableId } }">
                     {{ $t('Table Configuration') }}
                 </router-link>
-                
+
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
                              :to="{ name: 'design_studio', params: { table_id: tableId } }">
                     {{ $t('Table Design') }}
@@ -66,8 +66,8 @@
             <router-view v-if="config" :config="config" :getColumnSettings="getSettings"></router-view>
 
         </fieldset>
-        <el-dialog 
-                title="Update Table Info" 
+        <el-dialog
+                title="Update Table Info"
                 :visible.sync="editTableModalShow"
                 top="50px"
                 :append-to-body="true"
@@ -148,6 +148,10 @@
                     })
                     .fail((error) => {
                         console.log(error);
+                        this.$message.error(error.responseJSON.data.message);
+                        if(error.responseJSON.data.route) {
+                            this.$router.push({ name: error.responseJSON.data.route });
+                        }
                     })
                     .always(() => this.doingAjax = false);
             },
@@ -172,7 +176,7 @@
                     type: 'success'
                 });
             });
-            
+
             // Initialize the table's manual data sorting.
             window.ninjaTableBus.$on('initManualSorting', function (options, resolve, reject) {
                 let data = {
