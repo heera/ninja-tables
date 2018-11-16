@@ -24,6 +24,7 @@
 </thead>
 <tbody>
 <?php
+if($table_rows && count($table_columns)):
 $columnLength = count($table_columns) - 1;
 foreach ($table_rows as $row_index => $table_row) :
     $row = '';
@@ -42,12 +43,12 @@ foreach ($table_rows as $row_index => $table_row) :
 		            continue;
 	            }
             }
-            
+
 	        if ($colSpanCounter > 1) {
 		        $colspan = ' colspan="'.$colSpanCounter.'"';
 		        // if colspan counter is greater than 1 then we are adding the colspan into the dom
 	        }
-	        
+
             $row = '<td'.$colspan.'>'.$column_value.'</td>'.$row;
 	        $colSpanCounter = 1;
 	        // we are reseting the colspan counter value here because the colspan is done for this iteration
@@ -56,4 +57,5 @@ foreach ($table_rows as $row_index => $table_row) :
         ?>
     </tr>
 <?php endforeach; ?>
+<?php endif; ?>
 </tbody>

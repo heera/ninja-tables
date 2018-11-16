@@ -263,17 +263,29 @@ class NinjaTablesAdmin
         if($tableCount && $tableCount->publish > 0) {
             $totalPublishedTable = $tableCount->publish;
         }
+
+        $hasFluentFrom = defined('FLUENTFORM_VERSION');
+        $isFluentFromUpdated = false;
+
+        // check for right version
+        if($hasFluentFrom) {
+            if($fluentVersionCompare = version_compare(FLUENTFORM_VERSION, '1.7.4') >= 1 ) {
+                $isFluentFromUpdated = true;
+            }
+        }
+
         wp_localize_script($this->plugin_name, 'ninja_table_admin', array(
             'img_url' => plugin_dir_url(__DIR__) . "assets/img/",
             'fluentform_url' => $fluentUrl,
             'fluent_wp_url' => 'https://wordpress.org/plugins/fluentform/',
-            'fluent_form_icon' => getFluentFormMenuIcon(),
+            'fluent_form_icon' => getNinjaFluentFormMenuIcon(),
             'dismissed' => $dismissed,
             'show_lead_pop_up' => $leadStatus,
             'current_user_name' => $currentUser->display_name,
             'isInstalled' => $isInstalled,
             'hasPro' => defined('NINJATABLESPRO'),
-            'hasFluentForm' => function_exists('wpFluentForm'),
+            'hasFluentForm' => $hasFluentFrom,
+            'isFluentFormUpdated' => $isFluentFromUpdated,
             'hasAdvancedFilters' => class_exists('NinjaTablesPro\CustomFilters'),
             'hasSortable' => defined('NINJATABLESPRO_SORTABLE'),
             'ace_path_url' => plugin_dir_url(__DIR__) . "assets/libs/ace",
@@ -331,6 +343,7 @@ class NinjaTablesAdmin
             'set-fluent-form-data-source' => 'createTableWithFluentFormDataSource',
             'get_wp_post_types' => 'getAllPostTypes',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
+            'install_fluent_form' => 'installFluentForm'
         );
 
         $requested_route = $_REQUEST['target_action'];
@@ -1819,7 +1832,7 @@ class NinjaTablesAdmin
             $tableId, '_ninja_tables_data_provider', true
         );
 
-        if ($provider == 'google-csv') {
+        if ($provider == 'google-csv' || $provider == 'csv') {
             $this->createTableWithExternalDataSource(true);
         }
     }
@@ -1835,14 +1848,14 @@ class NinjaTablesAdmin
     {
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
-        
+
         if (!$formId) {
             // Validate Title
             if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
                 $messages['title'] = __('The title field is required.', 'ninja-tables');
             }
         }
-        
+
         // Validate Columns
         $fields = isset($_REQUEST['form']['fields']) ? $_REQUEST['form']['fields'] : array();
         if (!($fields = ninja_tables_sanitize_array($fields))) {
@@ -1996,7 +2009,7 @@ class NinjaTablesAdmin
                 ]
             );
         }
-        
+
         if ($tableId) {
             $message = 'Table updated successfully.';
             $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
@@ -2019,4 +2032,62 @@ class NinjaTablesAdmin
 
         wp_send_json_success(array('table_id' => $tableId,'message' => $message), 200);
     }
+
+    public function installFluentForm()
+    {
+        if(!current_user_can('install_plugins')) {
+            wp_send_json_error(array(
+                'message' => __('You do not have permission to install a plugin, Please ask your administrator to install WP Fluent Form')
+            ), 423);
+            return;
+        }
+
+        if(is_multisite()) {
+            wp_send_json_error(array(
+                'message' => __('You are using wp multisite environment so please install WP FluentForm manually')
+            ), 423);
+            return;
+        }
+
+        $result = $this->install_plugin('fluentform', 'fluentform.php');
+        $status = !is_wp_error( $result );
+
+        if($status) {
+            wp_send_json_success(array(
+                'message' => __('WP Fluent Form successfully installed and activated, You are redirecting to WP Fluent Form Now'),
+                'redirect_url' => admin_url('admin.php?page=fluent_forms')
+            ), 200);
+            return;
+        } else {
+            wp_send_json_error(array(
+                'message' => __('There was an error to install the plugin. Please install the plugin manually.')
+            ), 423);
+            return;
+        }
+    }
+
+    public function install_plugin( $slug, $file ) {
+        include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+        include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+
+        $plugin_basename = $slug . '/' . $file;
+
+        // if exists and not activated
+        if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin_basename ) ) {
+            return activate_plugin( $plugin_basename );
+        }
+
+        // seems like the plugin doesn't exists. Download and activate it
+        $upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
+
+        $api      = plugins_api( 'plugin_information', array( 'slug' => $slug, 'fields' => array( 'sections' => false ) ) );
+        $result   = $upgrader->install( $api->download_link );
+
+        if ( is_wp_error( $result ) ) {
+            return $result;
+        }
+
+        return activate_plugin( $plugin_basename );
+    }
+
 }

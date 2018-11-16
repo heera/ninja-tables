@@ -24,7 +24,7 @@ class CsvProvider
 				$table->isEditable = false;
 				$table->dataSourceType = 'external';
 				$table->remoteURL = get_post_meta($table->ID, '_ninja_tables_data_provider_url', true);
-				$table->isEditableMessage = 'Have you made any changes to the remote file? You can easily get the latest updates in your table here. Simply click the Sync Settings button.';
+				$table->isEditableMessage = 'Have you add/remove any column to the remote file? You can easily get the latest updates in your table here. Simply click the Sync Settings button. Please note that, Your row changes will be automatically synced';
                 $table->isExportable = false;
                 $table->isImportable = false;
                 $table->isSortable = false;
