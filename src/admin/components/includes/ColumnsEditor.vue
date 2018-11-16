@@ -652,13 +652,4 @@
             margin-top: 10px;
         }
     }
-
-    .wp_posts_dynamic_field {
-        .el-select,.el-input__inner {
-            width: 170px !important;
-        }
-        .input-with-select .el-input-group__prepend {
-            background-color: #fff;
-        }
-    }
 </style>

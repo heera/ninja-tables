@@ -726,15 +726,15 @@ class NinjaTablesAdmin
 
     public function getTableSettings()
     {
-        $tableID = intval($_REQUEST['table_id']);
-
-        $table = get_post($tableID);
+        $table = get_post($tableID = intval($_REQUEST['table_id']));
+        
         if(!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
                 'route' => 'home'
             ), 423);
         }
+
         $provider = ninja_table_get_data_provider($table->ID);
 
         $table = apply_filters('ninja_tables_get_table_'.$provider, $table);

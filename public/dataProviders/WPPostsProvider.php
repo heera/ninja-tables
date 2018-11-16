@@ -9,7 +9,7 @@ class WPPostsProvider
     public function boot()
     {
         add_filter('ninja_tables_get_table_wp-posts', array($this, 'getTableSettings'));
-        add_filter('ninja_tables_get_table_wp-posts', array($this, 'getTableData'), 10, 4);
+        add_filter('ninja_tables_get_table_data_wp-posts', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_wp-posts', array($this, 'data'), 10, 5);
     }
 
