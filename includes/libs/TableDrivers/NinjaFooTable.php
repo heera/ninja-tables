@@ -318,43 +318,40 @@ class NinjaFooTable
 
     public static function getTableHTML($table, $table_vars)
     {
-
         if ($table_vars['render_type'] == 'ajax_table') {
             return;
         }
         if ($table_vars['render_type'] == 'legacy_table') {
             self::generateLegacyTableHTML($table, $table_vars);
-
             return;
         }
     }
 
     private static function generateLegacyTableHTML($table, $table_vars)
     {
-        $shouldNotCache = $table_vars['settings']['shouldNotCache'] === 'yes';
-
-        $disableCache = apply_filters('ninja_tables_disable_caching', $shouldNotCache, $table->ID);
-
-        $tableHtml = get_post_meta($table->ID, '_ninja_table_cache_html', true);
-
-        if ($tableHtml && !$disableCache) {
-            echo $tableHtml;
-
-            return;
+        $isDisableCache = true;
+        $provider = ninja_table_get_data_provider($table->ID);
+        if($provider == 'default') {
+            $isDisableCache = ninja_tables_shouldNotCache($table->Id);
+            $isDisableCache = apply_filters('ninja_tables_disable_caching', $isDisableCache, $table->ID);
+            $tableHtml = get_post_meta($table->ID, '_ninja_table_cache_html', true);
+            if ($tableHtml && !$isDisableCache) {
+                echo $tableHtml;
+                return;
+            }
         }
         $tableColumns = $table_vars['columns'];
-
         $formatted_data = ninjaTablesGetTablesDataByID($table->ID, $table_vars['settings']['default_sorting']);
         $tableHtml = self::loadView('public/views/table_inner_html', array(
             'table_columns' => $tableColumns,
             'table_rows' => $formatted_data
         ));
 
-        if (!$disableCache) {
+        if (!$isDisableCache) {
             update_post_meta($table->ID, '_ninja_table_cache_html', $tableHtml);
         }
-        echo do_shortcode($tableHtml);
 
+        echo do_shortcode($tableHtml);
         return;
     }
 
@@ -500,5 +497,4 @@ class NinjaFooTable
 
         return $formatted_column;
     }
-
 }

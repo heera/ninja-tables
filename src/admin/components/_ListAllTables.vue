@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table
-            class="ninja-tables" 
+            class="ninja-tables"
             @selection-change="handleSelectionChange"
             v-loading.body="pageLoading"
             :data="items"
@@ -22,7 +22,7 @@
                         <template v-else>
                             {{ scope.row.post_title }}
                         </template>
-                    
+
                         <span v-show="scope.row.post_status != 'publish'">
                             ({{ scope.row.post_status }})
                         </span>
@@ -42,6 +42,9 @@
                         <span class="row-duplicate" v-if="shouldBeVisible(scope.row)">
                             <a href="#" @click.prevent="duplicate(scope.row.ID)">{{ $t('Duplicate') }}</a> |
                         </span>
+                        <span class="row-duplicate" v-if="shouldBeVisible(scope.row) && scope.row.fluentfrom_url">
+                            <a :href="scope.row.fluentfrom_url" >{{ $t('Fluent Form Entries') }}</a> |
+                        </span>
 
                         <span class="row-delete">
                             <a @click.prevent="confirmDeleteTable(scope.row.ID)" href="#">{{ $t('Delete') }}</a>
@@ -49,7 +52,7 @@
                     </div>
                 </template>
             </el-table-column>
-            
+
             <el-table-column :label="$t('Data Source')">
                 <template slot-scope="scope">
                     <strong>{{ dataSourceType(scope.row) }}</strong>
@@ -70,7 +73,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        
+
         <div class="pull-right">
             <el-pagination
                     @size-change="handleSizeChange"

@@ -193,18 +193,19 @@ label.form_group {
 
 .compact {
     .cell {
-        .cell-content {
-            height: 28px;
+        height: 28px;
+        -o-text-overflow: ellipsis !important;
+        -ms-text-overflow: ellipsis !important;
+        text-overflow: ellipsis !important;
+        overflow: hidden;
+        white-space: nowrap;
+        * {
+            text-overflow: ellipsis !important;
             overflow: hidden;
-            white-space: normal;
-            -o-text-overflow: ellipsis;
-            -ms-text-overflow: ellipsis;
-            text-overflow: ellipsis;
-            * {
-                margin: 0px;
-                padding: 0px;
-                font-size: 14px;
-            }
+            white-space: nowrap;
+            margin: 0px;
+            padding: 0px;
+            font-size: 14px;
         }
     }
 }
