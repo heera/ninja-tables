@@ -4,44 +4,41 @@
             <el-collapse-item name="1">
                 <template slot="title">
                     <i class="header-icon el-icon-info el-text-info"></i>
-                    Sync
+                    <strong>Edit:</strong> {{isEditableMessage}}
                 </template>
 
-                <div v-html="isEditableMessage"></div>
-
-                <div style="margin-top: 15px;">
-                    <el-input placeholder="Remote URL..."
-                              size="small"
-                              v-model="url"
-                              v-on:keyup.enter="sync"
-                    >
-                        <el-button :loading="loading"
-                                   @click="sync"
-                                   slot="append"
-                                   size="small"
-                                   type="success"
-                                   plain
-                        >
-                            Sync Settings
-                        </el-button>
-                    </el-input>
-                </div>
+                <external-data-source
+                    :type="config.table.dataSourceType"
+                    :tableCreated="tableCreated"
+                    :columns="config.columns"
+                    :table="config.table"
+                    :hasPro="hasPro"
+                    :editing="true"
+                />
             </el-collapse-item>
         </el-collapse>
     </div>
 </template>
 
 <script>
+    import ExternalDataSource from '../includes/ExternalDataSource';
+
     export default {
         name: "External",
+        components: {
+            'external-data-source': ExternalDataSource,
+        },
         props: {
+            tableCreated: {
+                type: Function
+            },
+            config: {
+                type: Object
+            },
             isEditableMessage: {
                 required: true,
             },
-            loading: {
-                required: true
-            },
-            value: {
+            hasPro: {
                 required: true
             }
         },
@@ -49,16 +46,6 @@
             return {
                 state: false,
                 url: this.value
-            }
-        },
-        watch: {
-            url() {
-                this.$emit('input', this.url);
-            }
-        },
-        methods: {
-            sync() {
-                this.$emit('sync', true);
             }
         }
     }
