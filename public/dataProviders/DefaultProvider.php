@@ -17,13 +17,15 @@ class DefaultProvider
         $table->isExportable = true;
         $table->isImportable = true;
         $table->isSortable = true;
+        $table->isCreatedSortable = true;
         $table->hasCacheFeature = true;
         return $table;
     }
 
-    public function data($data, $tableId, $defaultSorting, $disableCache, $limit)
+    public function data($data, $tableId, $defaultSorting, $limit = false)
     {
-        if (!$disableCache) {
+        // if cached not disabled then return cached data
+        if( ! $disabledCache = ninja_tables_shouldNotCache($tableId)) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
                 return $cachedData;
@@ -55,7 +57,7 @@ class DefaultProvider
         // You should hook this if you need to cache your filter modifications
         $data = apply_filters('ninja_tables_get_raw_table_data', $data, $tableId);
 
-        if (!$disableCache) {
+        if (!$disabledCache) {
             update_post_meta($tableId, '_ninja_table_cache_object', $data);
         }
 

@@ -379,7 +379,7 @@ class NinjaTablesAdmin
 
         foreach ($tables as $table) {
             $table->preview_url = site_url('?ninjatable_preview=' . $table->ID);
-            $dataSourceType = get_post_meta($table->ID, '_ninja_tables_data_provider', true);
+            $dataSourceType = ninja_table_get_data_provider($table->ID);
             $table->dataSourceType = $dataSourceType;
             if($dataSourceType == 'fluent-form') {
                 $fluentFormFormId = get_post_meta($table->ID, '_ninja_tables_data_provider_ff_form_id', true);
@@ -735,9 +735,7 @@ class NinjaTablesAdmin
                 'route' => 'home'
             ), 423);
         }
-        $provider = sanitize_title(
-            get_post_meta($table->ID, '_ninja_tables_data_provider', true), 'default', 'display'
-        );
+        $provider = ninja_table_get_data_provider($table->ID);
 
         $table = apply_filters('ninja_tables_get_table_'.$provider, $table);
 
@@ -859,7 +857,7 @@ class NinjaTablesAdmin
         $tableId = intval($_REQUEST['table_id']);
         $search = esc_attr($_REQUEST['search']);
 
-        $dataSourceType = get_post_meta($tableId, '_ninja_tables_data_provider', true);
+        $dataSourceType = ninja_table_get_data_provider($tableId);
 
         if($dataSourceType == 'default') {
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
@@ -1852,9 +1850,7 @@ class NinjaTablesAdmin
             $tableId = intval($_REQUEST['tableId'])
         );
 
-        $provider = $_REQUEST['type'] = get_post_meta(
-            $tableId, '_ninja_tables_data_provider', true
-        );
+        $provider = $_REQUEST['type'] = ninja_table_get_data_provider($tableId);
 
         if ($provider == 'google-csv' || $provider == 'csv') {
             $this->createTableWithExternalDataSource(true);

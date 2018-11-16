@@ -315,7 +315,7 @@
                         <div class="form_group">
                             <label>Select Sorting Method</label>
                             <el-radio-group size="mini" v-model="tableSettings.sorting_type">
-                                <el-radio-button :disabled="!config.table.isSortable" label="by_created_at">By Created at</el-radio-button>
+                                <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By Created at</el-radio-button>
                                 <el-radio-button label="by_column">By Column</el-radio-button>
                                 <el-radio-button :disabled="!config.table.isSortable" label="manual_sort">Manual Sort</el-radio-button>
                             </el-radio-group>

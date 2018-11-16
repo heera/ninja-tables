@@ -135,10 +135,7 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 
 function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false)
 {
-    $providerName = sanitize_title(
-        get_post_meta($tableId, '_ninja_tables_data_provider', true), 'default', 'display'
-    );
-
+    $providerName = ninja_table_get_data_provider($tableId);
     $providerName = in_array($providerName, array('csv', 'google-csv')) ? 'csv' : $providerName;
 
     return apply_filters(
@@ -146,7 +143,6 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
         array(),
         $tableId,
         $defaultSorting,
-        $disableCache,
         $limit
     );
 }
@@ -305,5 +301,15 @@ if (!function_exists('ninjaTablesGetPostStatuses')) {
             ['key' => 'trash', 'label' => 'Trash'],
             ['key' => 'any', 'label' => 'Any'],
         ];
+    }
+}
+
+if(!function_exists('ninja_table_get_data_provider')) {
+    function ninja_table_get_data_provider($tableId) {
+        $provider  = get_post_meta($tableId, '_ninja_tables_data_provider', true);
+        if(!$provider) {
+            $provider = 'default';
+        }
+        return $provider;
     }
 }

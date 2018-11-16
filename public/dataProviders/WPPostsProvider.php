@@ -24,6 +24,7 @@ class WPPostsProvider
         $table->isExpotable = false;
         $table->isImportable = false;
         $table->isSortable = false;
+        $table->isCreatedSortable = false;
         $table->hasCacheFeature = false;
         return $table;
     }
