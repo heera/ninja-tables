@@ -1738,7 +1738,7 @@ class NinjaTablesAdmin
         $wpdb->query($sql);
         // Keep a flag on the options table that the
         // db is migrated to use for manual sorting.
-        add_option($option, true);
+        update_option($option, true);
     }
 
     // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
@@ -1839,7 +1839,6 @@ class NinjaTablesAdmin
                 ), 400);
             }
         }
-
         wp_die();
     }
 
