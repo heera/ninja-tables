@@ -16,51 +16,30 @@
             ></add_data_modal>
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
-                <el-row>
-                    <el-col :md="20">
-                        <el-alert
-                            show-icon
-                            type="info"
-                            title="Table Settings"
-                            :closable="false">
-                                {{ isEditableMessage }}
-                        </el-alert>
-                    </el-col>
-
-                    <el-col :md="4">
-                        <el-button
-                        :loading="syncing"
-                        @click="updateTableSettings">Sync Table Settings</el-button>
-                    </el-col>
-
-                </el-row>
+                <fluent-form-nav
+                    :config="config"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
+                />
             </div>
 
             <div v-if="dataSourceType == 'external'" class="tablenav top">
-                <el-alert
-                    show-icon
-                    type="info"
-                    title="Table Settings"
-                    :closable="false">
-                        {{ isEditableMessage }}
-                        <span
-                            style="color:#0073aa;cursor:pointer;"
-                            @click="isUpdatingTableSettings = !isUpdatingTableSettings">
-                                {{ isUpdatingTableSettings ? 'Hide Settings' : 'Show Settings' }}
-                        </span>
-                </el-alert>
+                <external-source-nav :is-editable-message="isEditableMessage"
+                                   :loading="syncing"
+                                   v-model="externalDataSourceUrl"
+                                   @sync="updateTableSettings"
+                />
+            </div>
 
-                <div v-show="isUpdatingTableSettings">
-                    <el-input
-                    placeholder="Remote URL..."
-                    v-model="externalDataSourceUrl"
-                    v-on:keyup.enter="updateTableSettings">
-                        <el-button
-                        slot="append"
-                        :loading="syncing"
-                        @click="updateTableSettings">Sync Table Columns</el-button>
-                    </el-input>
-                </div>
+            <div v-if="dataSourceType == 'wp-posts'" class="tablenav top">
+                <WPPostsNav
+                    :config="config"
+                    :model="new_column"
+                    :hasPro="has_pro"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
+                    @add="addNewColumn()"
+                />
             </div>
 
             <div v-if="isEditable" class="tablenav top">
@@ -93,7 +72,7 @@
                     <el-button size="small" type="info" @click="addColumn()"> {{ $t('Add Column') }}</el-button>
                 </div>
             </div>
-            <hr/>
+            <!--<hr/>-->
 
             <template v-if="columns.length">
                 <el-table
@@ -114,7 +93,7 @@
                     </el-table-column>
                     <el-table-column
                             v-for="(column, index) in columns"
-                            :label="column.name || column.key"
+                            :label="JSON.stringify(column)"
                             :render-header="addConfigIcon"
                             :width="(columnLength == index + 1 ) ? '' : 150"
                             :key="index">
@@ -191,20 +170,38 @@
 
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
 
-        <el-dialog title="Edit Table Column" :visible.sync="showColumnEditor">
-            <columns-editor :model="currentEditingColumn" :has-pro="has_pro"
-                            :updating="true"
-                            v-if="showColumnEditor"
-                            :hideDelete="true"
-                            @store="storeSettings()"
-                            @cancel="showColumnEditor = false"
+        <el-dialog
+            class="no_padding_body"
+            :append-to-body="true"
+            top="50px"
+            title="Edit Table Column"
+            width="70%"
+            :visible.sync="showColumnEditor"
+        >
+            <columns-editor
+                :dataSourceType="config.table.dataSourceType"
+                :model="currentEditingColumn"
+                :hasPro="has_pro"
+                :updating="true"
+                :hideDelete="false"
+                v-if="showColumnEditor"
+                @store="storeSettings()"
+                @delete="deleteColumn()"
+                @cancel="showColumnEditor = false"
             />
         </el-dialog>
 
-        <el-dialog title="Add Table Column" width="65%" :visible.sync="columnModal">
-            <columns-editor :model="new_column" :has-pro="has_pro"
-                            @add="addNewColumn()"
-                            @cancel="columnModal = !columnModal"
+        <el-dialog
+        top="50px"
+        :append-to-body="true"
+        title="Add Table Column"
+        width="70%"
+        :visible.sync="columnModal">
+            <columns-editor
+                :model="new_column"
+                :hasPro="has_pro"
+                @add="addNewColumn()"
+                @cancel="columnModal = !columnModal"
             />
         </el-dialog>
     </div>
@@ -220,7 +217,10 @@
     import Alert from './includes/Alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
-    import columnsEditor from './includes/ColumnsEditor'
+    import columnsEditor from './includes/ColumnsEditor';
+    import FluentFormNav from './TableNav/Fluentform';
+    import ExternalSourceNav from './TableNav/External';
+    import WPPostsNav from './TableNav/WPPostsNav';
 
     export default {
         name: 'TableDataItems',
@@ -230,9 +230,12 @@
             Alert,
             DeletePopOver,
             SortableUpgradeNotice,
-            columnsEditor
+            columnsEditor,
+            FluentFormNav,
+            ExternalSourceNav,
+            WPPostsNav
         },
-        props: ['config', 'getColumnSettings'],
+        props: ['config', 'getColumnSettings', 'hasPro'],
         data() {
             return {
                 columnModal: false,
@@ -243,7 +246,18 @@
                     data_type: 'text',
                     dateFormat: '',
                     header_html_content: "",
-                    enable_html_content: false
+                    enable_html_content: false,
+                    wp_post: {
+                        field: {
+                            name: null,
+                            value: null
+                        },
+                        field_types: [
+                            {key: 'acf', label:'ACF'},
+                            {key: 'post_meta', label:'Post Meta'},
+                            {key: 'short_code', label:'Short Code'}
+                        ]
+                    }
                 },
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
@@ -357,7 +371,7 @@
                         this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail((error) => {
-
+                        console.log(error);
                     })
                     .always(() => {
                         this.loading = false;
@@ -542,7 +556,18 @@
                         data_type: 'text',
                         dateFormat: '',
                         header_html_content: "",
-                        enable_html_content: false
+                        enable_html_content: false,
+                        wp_post: {
+                            field: {
+                                name: null,
+                                value: null
+                            },
+                            field_types: [
+                                {key: 'acf', label:'ACF'},
+                                {key: 'post_meta', label:'Post Meta'},
+                                {key: 'short_code', label:'Short Code'}
+                            ]
+                        }
                     };
                     this.columnModal = false;
                     this.storeSettings();
@@ -650,6 +675,7 @@
             },
             addConfigIcon(h, {column, $index}) {
                 let self = this;
+                let originalColumn = JSON.parse(column.label);
                 let result = h('i', {
                     props: {
                         size: 'mini',
@@ -660,14 +686,16 @@
                     class: 'el-icon-setting nt-column-config',
                     on: {
                         click(query) {
-                            self.showColumnConfigModal($index)
+                            self.showColumnConfigModal(originalColumn)
                         }
                     }
                 });
-                return h('span', null, [column.label, result]);
+
+                let columnTitle = originalColumn.name || originalColumn.key;
+                return h('span', null, [columnTitle, result]);
             },
-            showColumnConfigModal(columnIndex) {
-                this.currentEditingColumn = this.columns[columnIndex];
+            showColumnConfigModal(selectedColumn) {
+                this.currentEditingColumn = this.columns.find(column => column.key === selectedColumn.key);
                 this.showColumnEditor = true;
             },
             storeSettings() {
@@ -701,8 +729,7 @@
                 })
                 .then(response => {
                     if(response.success) {
-                        this.getColumnSettings();
-                        this.getData();
+                        this.reloadSettingsAndData();
                         this.$message({
                             type: 'success',
                             showClose:true,
@@ -720,7 +747,18 @@
                     });
                 })
                 .always(() => this.syncing = false);
-            }
+            },
+            reloadSettingsAndData() {
+                this.getColumnSettings();
+                this.getData();
+            },
+            deleteColumn() {
+                let targetIndex = findIndex(this.config.columns, this.currentEditingColumn);
+                this.showColumnEditor = false;
+                this.currentEditingColumn = false;
+                this.config.columns.splice(targetIndex, 1);
+                this.$nextTick(() => this.storeSettings());
+            },
         },
         mounted() {
             this.getData();

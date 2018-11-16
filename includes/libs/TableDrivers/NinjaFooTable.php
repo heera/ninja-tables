@@ -34,12 +34,8 @@ class NinjaFooTable
         }
 
         $tableArray['table_instance_name'] = $tableInstance;
-
         self::enqueue_assets();
-
         self::render($tableArray);
-
-
     }
 
     private static function enqueue_assets()
@@ -76,9 +72,28 @@ class NinjaFooTable
      */
     private static function addCustomColorCSS($tableArray, $extra_css = '')
     {
+        $css_prefix = '#footable_' . $tableArray['table_id'];
+        $customColumnCss = '';
+        if(defined('NINJATABLESPRO')) {
+            $columns = ArrayHelper::get($tableArray, 'columns');
+            foreach ($columns as $index => $column) {
+                $bgColor = ArrayHelper::get($column, 'background_color');
+                $textColor = ArrayHelper::get($column, 'text_color');
+                if($bgColor || $textColor) {
+                    if($bgColor && $textColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; color: '.$textColor.'; }';
+                    } else if($bgColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; }';
+                    } else if($textColor) {
+                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ color: '.$textColor.'; }';
+                    }
+                }
+            }
+        }
+
         $colors = false;
         $custom_css = get_post_meta($tableArray['table_id'], '_ninja_tables_custom_css', true);
-
+        $custom_css .= $customColumnCss;
         if (ArrayHelper::get($tableArray, 'settings.table_color_type') == 'custom_color'
             && defined('NINJATABLESPRO')
         ) {
@@ -117,8 +132,6 @@ class NinjaFooTable
         if (!$colors && !$custom_css) {
             return;
         }
-
-        $css_prefix = '#footable_' . $tableArray['table_id'];
         add_action('wp_footer', function () use ($custom_css, $colors, $css_prefix) {
             include 'views/ninja_footable_css.php';
         });
@@ -305,43 +318,40 @@ class NinjaFooTable
 
     public static function getTableHTML($table, $table_vars)
     {
-
         if ($table_vars['render_type'] == 'ajax_table') {
             return;
         }
         if ($table_vars['render_type'] == 'legacy_table') {
             self::generateLegacyTableHTML($table, $table_vars);
-
             return;
         }
     }
 
     private static function generateLegacyTableHTML($table, $table_vars)
     {
-        $shouldNotCache = $table_vars['settings']['shouldNotCache'] === 'yes';
-
-        $disableCache = apply_filters('ninja_tables_disable_caching', $shouldNotCache, $table->ID);
-
-        $tableHtml = get_post_meta($table->ID, '_ninja_table_cache_html', true);
-
-        if ($tableHtml && !$disableCache) {
-            echo $tableHtml;
-
-            return;
+        $isDisableCache = true;
+        $provider = ninja_table_get_data_provider($table->ID);
+        if($provider == 'default') {
+            $isDisableCache = ninja_tables_shouldNotCache($table->Id);
+            $isDisableCache = apply_filters('ninja_tables_disable_caching', $isDisableCache, $table->ID);
+            $tableHtml = get_post_meta($table->ID, '_ninja_table_cache_html', true);
+            if ($tableHtml && !$isDisableCache) {
+                echo $tableHtml;
+                return;
+            }
         }
         $tableColumns = $table_vars['columns'];
-
         $formatted_data = ninjaTablesGetTablesDataByID($table->ID, $table_vars['settings']['default_sorting']);
         $tableHtml = self::loadView('public/views/table_inner_html', array(
             'table_columns' => $tableColumns,
             'table_rows' => $formatted_data
         ));
 
-        if (!$disableCache) {
+        if (!$isDisableCache) {
             update_post_meta($table->ID, '_ninja_table_cache_html', $tableHtml);
         }
-        echo do_shortcode($tableHtml);
 
+        echo do_shortcode($tableHtml);
         return;
     }
 
@@ -487,5 +497,4 @@ class NinjaFooTable
 
         return $formatted_column;
     }
-
 }

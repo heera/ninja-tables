@@ -1,17 +1,18 @@
 <template>
     <div>
-        <div style="margin-top: 15px;">
+        <div class="table-column-settings">
             <el-container>
                 <el-aside width="200px">
                     <el-menu background-color="#545c64"
                              :default-active="active_menu"
                              text-color="#fff"
-                             active-text-color="#ffd04b">
+                             active-text-color="#ffd04b"
+                    >
                         <el-menu-item  @click="active_menu = 'columns'" index="columns">
                             <i class="dashicons dashicons-editor-table"></i>
                             <span>Columns</span>
                         </el-menu-item>
-                        
+
                         <el-menu-item  @click="active_menu = 'rendering_settings'" index="rendering_settings">
                             <i class="dashicons dashicons-album"></i>
                             <span>Rendering Settings</span>
@@ -38,7 +39,7 @@
                                 <div class="heading">
                                     <h3 v-if="addColumnStatus || !columns.length" class="title">{{ $t('Add Table Column') }}</h3>
                                     <h3 v-else class="title">{{ $t('Available Columns') }}</h3>
-                                    <div v-show="!addColumnStatus" class="inline_action">
+                                    <div v-show="!addColumnStatus" class="inline_action" v-if="addable">
                                         <el-button size="small" type="primary" v-show="columns.length" @click="addColumnStatus = !addColumnStatus">
                                             {{ $t('Add Column') }}
                                         </el-button>
@@ -47,9 +48,12 @@
                                 <div class="widget_body">
                                     <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
-                                            <columns-editor :model="new_column" :has-pro="has_pro"
-                                                            @add="addNewColumn()"
-                                                            @cancel="addColumnStatus = !addColumnStatus"
+                                            <columns-editor
+                                                :dataSourceType="config.table.dataSourceType"
+                                                :model="new_column"
+                                                :has-pro="has_pro"
+                                                @add="addNewColumn()"
+                                                @cancel="addColumnStatus = !addColumnStatus"
                                             />
                                         </div>
                                     </div>
@@ -64,9 +68,13 @@
                                                 <span class="dashicons dashicons-edit edit_icon" @click="openDrawer(index)" />
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">
-                                                <columns-editor :model="column" :has-pro="has_pro" :updating="true"
-                                                                @delete="deleteColumn(index)"
-                                                                @store="storeSettings()"
+                                                <columns-editor
+                                                    :dataSourceType="config.table.dataSourceType"
+                                                    :model="column"
+                                                    :has-pro="has_pro"
+                                                    :updating="true"
+                                                    @delete="deleteColumn(index)"
+                                                    @store="storeSettings()"
                                                 />
                                             </div>
                                         </div>
@@ -88,7 +96,7 @@
                             </div>
                         </div>
                     </template>
-                    
+
                     <template v-else-if="active_menu == 'rendering_settings'">
                         <div class="ninja_header">
                             <h2>Table Render Settings</h2>
@@ -176,7 +184,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </template>
 
@@ -216,7 +224,7 @@
                     <template v-else-if="active_menu == 'custom_filters'">
                         <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
                     </template>
-                    
+
                 </el-main>
             </el-container>
         </div>
@@ -258,7 +266,18 @@
                     data_type: 'text',
                     dateFormat: '',
                     header_html_content: "",
-                    enable_html_content: false
+                    enable_html_content: false,
+                    wp_post: {
+                        field: {
+                            name: null,
+                            value: null
+                        },
+                        field_types: [
+                            {key: 'acf', label:'ACF'},
+                            {key: 'post_meta', label:'Post Meta'},
+                            {key: 'short_code', label:'Short Code'}
+                        ]
+                    }
                 },
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
@@ -364,17 +383,26 @@
                         data_type: 'text',
                         dateFormat: '',
                         header_html_content: "",
-                        enable_html_content: false
+                        enable_html_content: false,
+                        wp_post: {
+                            field: {
+                                name: null,
+                                value: null
+                            },
+                            field_types: [
+                                {key: 'acf', label:'ACF'},
+                                {key: 'post_meta', label:'Post Meta'},
+                                {key: 'short_code', label:'Short Code'}
+                            ]
+                        }
                     };
                     this.addColumnStatus = false;
                     this.storeSettings();
                 }
             },
             deleteColumn(index) {
-                if (confirm(this.$t('Are you sure, You want to delete this column?'))) {
-                    this.columns.splice(index, 1);
-                    this.storeSettings();
-                }
+                this.config.columns.splice(index, 1);
+                this.storeSettings();
             },
             showProAd(title) {
                 this.addVisible = true;
@@ -403,6 +431,21 @@
                 }
                 this.tableSettings.render_type  = tableType;
             },
+        },
+        computed: {
+            addable() {
+                return ['default', 'wp-posts'].indexOf(this.config.table.dataSourceType) != -1;
+            }
         }
     }
 </script>
+
+<style lang="scss">
+    .table-column-settings {
+        margin-top: 15px;
+
+        .el-menu {
+            border-right: initial;
+        }
+    }
+</style>

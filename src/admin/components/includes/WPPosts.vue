@@ -1,0 +1,297 @@
+<template>
+    <div class="ninja_tables_wpposts">
+
+        <template v-if="hasPLainLayout">
+            <el-row>
+                <el-col :md="12" class="table-rows">
+                    <el-transfer
+                        :data="post_types"
+                        v-model="selected_post_types"
+                        :titles="['All Types', 'Selected Types']"
+                        style="text-align: left; display: block"
+                        @change="handlePostTypeChange">
+                    </el-transfer>
+                </el-col>
+                <el-col :md="12" class="table-rows">
+                    <el-transfer
+                        :data="post_types_fields"
+                        v-model="selected_post_types_fields"
+                        :titles="['All Properties', 'Selected Properties']"
+                        style="text-align: left; display: block">
+                    </el-transfer>
+                </el-col>
+            </el-row>
+
+            <el-row>
+                <el-collapse v-model="conditions_section">
+                    <el-collapse-item title="Conditions" name="1">
+                        <wp-post-conditions
+                        :authors="authors"
+                        :postStatuses="postStatuses"
+                        :conditions="conditions"
+                        :allPostTypes="all_types"
+                        :fields="query_able_post_types_fields"/>
+                    </el-collapse-item>
+                </el-collapse>
+            </el-row>
+
+            <el-row>
+                <el-button
+                type="primary"
+                size="small"
+                :loading="saving"
+                style="float:right;margin-top:12px;"
+                @click="save">Update</el-button>
+            </el-row>
+        </template>
+
+        <template v-if="!hasPLainLayout">
+            <el-steps :active="active_step" align-center>
+                <el-step title="Step 1"></el-step>
+                <el-step title="Step 2"></el-step>
+            </el-steps>
+
+            <template v-if="active_step == 0">
+                <el-row style="margin-top:20px;">
+                    <el-input placeholder="Title" v-model="title"></el-input>
+                </el-row>
+
+                <el-row style="margin-top:20px;">
+                    <div style="text-align:center">
+                        <el-transfer
+                            :data="post_types"
+                            v-model="selected_post_types"
+                            :titles="['All Types', 'Selected Types']"
+                            style="text-align: left; display: block"
+                            @change="handlePostTypeChange">
+                        </el-transfer>
+                    </div>
+                </el-row>
+            </template>
+
+            <template v-if="active_step == 1">
+                <el-row style="margin-top:20px;">
+                    <div style="text-align: center">
+                        <el-transfer
+                            :data="post_types_fields"
+                            v-model="selected_post_types_fields"
+                            :titles="['All Properties', 'Selected Properties']"
+                            style="text-align: left; display: block">
+                        </el-transfer>
+                    </div>
+                </el-row>
+
+                <el-row style="margin-top:20px;">
+                    <div>
+                        <el-collapse v-model="conditions_section">
+                            <el-collapse-item title="Conditions" name="1">
+                                <wp-post-conditions
+                                :authors="authors"
+                                :postStatuses="postStatuses"
+                                :conditions="conditions"
+                                :allPostTypes="all_types"
+                                :fields="query_able_post_types_fields"/>
+                            </el-collapse-item>
+                        </el-collapse>
+                    </div>
+                </el-row>
+            </template>
+
+            <el-row>
+                <el-col :md="12">
+                    <el-button style="margin-top: 12px;" size="small" @click="nextStep">
+                        {{ active_step > 0 ? 'Prev' : 'Next' }}
+                    </el-button>
+                </el-col>
+
+                <el-col :md="12">
+                    <el-button
+                    v-if="active_step > 0"
+                    type="primary"
+                    size="small"
+                    :loading="saving"
+                    style="float:right;margin-top:12px;"
+                    @click="save">Save</el-button>
+                </el-col>
+            </el-row>
+        </template>
+    </div>
+</template>
+
+<script>
+    import WPPostConditions from './WPPostConditions';
+
+    export default {
+        name: 'WP-Posts',
+        props: {
+            config: {
+                type: Object
+            },
+            tableCreated: {
+                type: Function
+            },
+            hasPLainLayout: {
+                type: Boolean,
+                default: false
+            }
+        },
+        components: {
+            'wp-post-conditions': WPPostConditions
+        },
+        data() {
+            return {
+                saving: false,
+                title: null,
+                tableId: null,
+                authors: [],
+                postStatuses: [],
+                all_types: [],
+                all_fields: [],
+                post_types: [],
+                selected_post_types: [],
+                post_types_fields: [],
+                selected_post_types_fields: [],
+                conditions_section: null,
+                conditions: [],
+                active_step: 0,
+                queryable_fields: [
+                    'ID',
+                    'post_author',
+                    'comment_count',
+                    'post_date',
+                    'post_modified',
+                    'post_status',
+                ],
+            };
+        },
+        created() {
+            jQuery.getJSON(ajaxurl, {
+                action: 'ninja_tables_ajax_actions',
+                target_action: 'get_wp_post_types',
+            }).then(res => {
+                this.authors = res.data.authors;
+                this.all_types = res.data.post_types;
+                this.postStatuses = res.data.postStatuses;
+
+                jQuery.each(this.all_types, (type) => {
+                    this.post_types.push({ key: type, label: type });
+                });
+
+                this.all_fields = res.data.post_fields.map(field => {
+                    return { key: field, label: field };
+                });
+
+                // For editing
+                if (this.config) {
+                    this.tableId = this.config.table.ID;
+                    this.conditions = this.config.table.whereConditions || [];
+                    this.selected_post_types = this.config.table.post_types;
+                    this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
+                    this.handlePostTypeChange();
+                }
+            });
+        },
+        methods: {
+            nextStep() {
+                let message = '';
+                if (!this.title) {
+                    message += ' The title field is required.';
+                }
+                if (!this.selected_post_types.length) {
+                    message += ' At least select one post type.';
+                }
+
+                if ((message = jQuery.trim(message))) {
+                    this.active_step = 0;
+                    this.$message({showClose: true, message: message, type: 'error'});
+                    return;
+                }
+
+                if (this.active_step++ >= 1) {
+                    this.active_step = 0;
+                }
+            },
+            handlePostTypeChange(value, direction, movedKeys) {
+                let selectedPostFields = [];
+                this.selected_post_types.forEach(type => {
+                    this.all_types[type].fields.forEach(field => {
+                        selectedPostFields.push({ key: field, label: field });
+                    });
+                });
+
+                this.post_types_fields = this.all_fields.concat(selectedPostFields);
+
+                this._updateSelectedFields();
+            },
+            _updateSelectedFields() {
+                if (!this.selected_post_types.length) {
+                    this.post_types_fields = [];
+                    this.selected_post_types_fields = [];
+                    return;
+                }
+
+                this.selected_post_types_fields.filter(f => !!f).forEach((field, i) => {
+                    let parts = field.split('.');
+                    if (parts.length > 1 && this.selected_post_types.indexOf(parts[0]) == -1) {
+                        this.selected_post_types_fields.splice(i, 1);
+                    }
+                });
+            },
+            save() {
+                this.saving = true;
+                jQuery.post(ajaxurl, {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'save_wp_post_data_source',
+                    post_title: this.title,
+                    tableId: this.tableId,
+                    data: {
+                        post_types: this.selected_post_types,
+                        columns: this.selected_post_types_fields,
+                        where: this.conditions,
+                    }
+                })
+                .then(res => {
+                    this.$message({
+                        showClose: true,
+                        message: res.data.message,
+                        type: 'success'
+                    });
+                    this.tableCreated(res.data.table_id);
+                })
+                .fail(error => {
+                    let message = '';
+                    let messages = error.responseJSON.data.message;
+                    for (let key in messages) {
+                        message += ' ' + messages[key];
+                    }
+                    this.$message({showClose: true, message: message, type: 'error'});
+                })
+                .always(res => this.saving = false);
+            }
+        },
+        computed: {
+            query_able_post_types_fields() {
+                return this.post_types_fields.filter(field => {
+                    return (
+                        this.queryable_fields.indexOf(field.key) != -1 || field.key.indexOf('.') != -1
+                    );
+                });
+            }
+        },
+    };
+</script>
+
+<style>
+    .ninja_tables_wpposts .el-checkbox-group {
+        overflow: scroll !important;
+    }
+    .ninja_tables_wpposts .el-transfer-panel {
+        width: 306px !important;
+    }
+    .ninja_tables_wpposts .table-rows .el-transfer-panel {
+        width: 250px !important;
+    }
+    .ninja_tables_wpposts .el-transfer-panel__item {
+        display: block !important;
+    }
+</style>

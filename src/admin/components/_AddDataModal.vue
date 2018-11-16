@@ -1,6 +1,6 @@
 <template>
-    <el-dialog 
-            :title="title" 
+    <el-dialog
+            :title="title"
             :visible.sync="show"
             top="50px"
             :append-to-body="true"
@@ -20,8 +20,7 @@
                            v-model="newColumn[column.key]">
                 </div>
                 <div v-else-if="column.data_type == 'date'">
-                    <input :placeholder="column.dateFormat" type="text" :id="slugify(column.key)" class="form-control"
-                           v-model="newColumn[column.key]">
+                    <ninja-date-picker :column="column" :new_column="newColumn"></ninja-date-picker>
                 </div>
                 <div v-else-if="column.data_type == 'selection'">
                     <el-select
@@ -77,6 +76,7 @@
     import each from 'lodash/each';
 
     import wp_editor from '../../common/_wp_editor';
+    import NinjaDatePicker from './Extras/_NinjaDatePicker'
 
     export default {
         name: 'add_data',
@@ -220,7 +220,8 @@
             this.initNewColumnObj();
         },
         components: {
-            wp_editor: wp_editor
+            wp_editor: wp_editor,
+            NinjaDatePicker
         }
     }
 </script>

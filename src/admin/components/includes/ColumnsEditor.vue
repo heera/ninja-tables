@@ -1,7 +1,6 @@
 <template>
     <el-form ref="form" :model="model" label-width="200px" class="form-wrapper">
-        <el-tabs type="border-card" v-model="activeTab" @tab-click="onTabClick">
-            
+        <el-tabs v-model="activeTab" @tab-click="onTabClick">
             <!-- Basic Settings -->
             <el-tab-pane label="Basic Settings" name="basic">
                 <!-- Column Name -->
@@ -18,7 +17,7 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <el-input v-model="model.name" />
+                    <el-input size="small" v-model="model.name" />
                 </el-form-item>
 
                 <!-- Column Key -->
@@ -38,7 +37,7 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <el-input v-model="model.key" :disabled="updating" />
+                    <el-input size="small" v-model="model.key" :disabled="updating" />
                 </el-form-item>
 
                 <!-- Data Type -->
@@ -101,7 +100,7 @@
 
                     <!-- Format input -->
                     <el-form-item v-else>
-                        <el-input v-model="model.dateFormat" placeholder="Enter moment.js supported format" />
+                        <el-input size="small" v-model="model.dateFormat" placeholder="Enter moment.js supported format" />
                     </el-form-item>
                 </el-form-item>
 
@@ -150,7 +149,7 @@
                         </el-radio-group>
                     </el-form-item>
                 </template>
-                
+
                 <!--Selection Field -->
                 <el-form-item v-else-if="model.data_type == 'selection'">
                     <template slot="label">
@@ -171,9 +170,10 @@
                     <!-- Format input -->
                     <el-form-item>
                         <p v-if="!has_pro"><b>Selection feature is only available on Pro version Please upgrade to pro to unlock this feature</b></p>
-                        <el-input type="textarea" 
+                        <el-input type="textarea"
+                                  size="small"
                                   :disabled="!has_pro"
-                                  v-model="model.selections" 
+                                  v-model="model.selections"
                                   placeholder="Enter Select items one per line"
                                   :autosize="{ minRows: 4, maxRows: 8}"
                         />
@@ -205,11 +205,31 @@
                         </option>
                     </select>
                 </el-form-item>
+
+                <wp-post-dynamic-column v-if="dataSourceType == 'wp-posts'" :column="model" />
             </el-tab-pane>
-            
+
             <!-- Advanced Settings -->
             <el-tab-pane label="Advanced Settings" name="advanced">
                 <div class="advanced-settings">
+
+                    <div class="ninja_table_inline_upgrade" v-if="!hasPro">
+
+                        <H3>Advanced Column Settings</H3>
+                        <p>
+                            Customize your table's column's width, custom css class, content alignments, column styling with this feature.
+                            Advanced Column Settings is a pro feature and You can use it once you upgrade to Ninja Tables Pro.
+                            Ninja Table Pro has lots of features that will help you to build any type of Tables.
+                        </p>
+
+                        <a href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=advanced_column&utm_term=upgrade"
+                           target="_blank">
+                            <button type="button" class="el-button el-button--danger">
+                                <span>Buy Pro and Enable This Module</span>
+                            </button>
+                        </a>
+                    </div>
+
                     <!-- Extra classes -->
                     <el-form-item>
                         <template slot="label">
@@ -229,7 +249,7 @@
                             </el-tooltip>
                         </template>
 
-                        <el-input v-model="model.classes" :disabled="!hasPro" />
+                        <el-input size="small" v-model="model.classes" :disabled="!hasPro" />
                     </el-form-item>
 
                     <!-- Max width -->
@@ -249,8 +269,7 @@
                                 <i class="el-icon-info el-text-info" />
                             </el-tooltip>
                         </template>
-                        
-                        <el-input type="number" :disabled="!hasPro" v-model="model.width" />
+                        <el-input size="small" type="number" :disabled="!hasPro" v-model="model.width" />
                     </el-form-item>
 
                     <!-- Header Text alignment -->
@@ -272,7 +291,7 @@
                         </template>
 
                         <select v-model="model.textAlign" :disabled="!hasPro">
-                            <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions" 
+                            <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions"
                                     :value="alignmentVal" :key="alignmentVal"
                             >{{ alignmentLabel }}</option>
                         </select>
@@ -282,7 +301,7 @@
                     <el-form-item>
                         <template slot="label">
                             {{ $t("Row Content Text Align") }}
-                            
+
                             <el-tooltip class="item" placement="bottom-start" effect="light">
                                 <div slot="content">
                                     <h3>Content Text Alignment</h3>
@@ -321,7 +340,7 @@
 
                         <wp_editor v-model="model.header_html_content"></wp_editor>
                     </el-form-item>
-                    
+
                     <el-form-item>
                         <template slot="label">
                             {{ $t("Filterable") }}
@@ -359,21 +378,64 @@
                         </template>
                         <el-checkbox :disabled="!hasPro" v-model="model.unsortable" true-label="yes" false-label="no" value="yes" label="Disable frontend sorting for this column"></el-checkbox>
                     </el-form-item>
+
+                    <el-form-item>
+                        <template slot="label">
+                            {{ $t("Column Background") }}
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Background color</h3>
+
+                                    <p>
+                                       You can set background color of this particular column that will show on the frontend table.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info" />
+                            </el-tooltip>
+                        </template>
+                        <el-color-picker
+                                :disabled="!hasPro"
+                                v-model="model.background_color"
+                                show-alpha
+                        ></el-color-picker>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <template slot="label">
+                            {{ $t("Column Text Color") }}
+                            <el-tooltip class="item" placement="bottom-start" effect="light">
+                                <div slot="content">
+                                    <h3>Text Color color</h3>
+
+                                    <p>
+                                        You can set Column Text color of this particular column that will show on the frontend table.
+                                    </p>
+                                </div>
+                                <i class="el-icon-info el-text-info" />
+                            </el-tooltip>
+                        </template>
+                        <el-color-picker
+                                :disabled="!hasPro"
+                                v-model="model.text_color"
+                                show-alpha
+                        ></el-color-picker>
+                    </el-form-item>
+
                 </div>
             </el-tab-pane>
 
             <!-- Conditional Settings -->
-            <el-tab-pane label="Conditional Settings" name="conditional">
-                <condition :column="model" />
+            <el-tab-pane label="Conditional Formatting" name="conditional">
+                <condition :column="model" :has-pro="hasPro" />
             </el-tab-pane>
-            
+
             <hr style="margin:10px 0">
 
             <!-- Buttons -->
             <div class="form_group">
                 <div class="pull-right">
                     <template v-if="!updating">
-                        <el-button @click.prevent="cancel" type="danger" size="small">
+                        <el-button @click.prevent="cancel" type="danger" size="small" v-if="!hideCancel">
                             {{ $t('Cancel') }}
                         </el-button>
 
@@ -384,10 +446,34 @@
                     </template>
 
                     <template v-else>
-                        <el-button v-if="!hideDelete" @click.prevent="deleteColumn" type="danger" size="small">
-                            {{ $t('Delete') }}
-                        </el-button>
-                        
+                        <el-popover
+                            v-if="!hideDelete"
+                            placement="top"
+                            width="170"
+                            v-model="showConfirm"
+                            trigger="click"
+                        >
+                            <p>Are you sure to delete this?</p>
+                            <div style="text-align: right; margin: 0">
+                                <el-button
+                                    type="text"
+                                    size="mini"
+                                    @click="showConfirm = false"
+                                >cancel</el-button>
+
+                                <el-button
+                                    type="primary"
+                                    size="mini"
+                                    @click="deleteColumn"
+                                >confirm</el-button>
+                            </div>
+                            <el-button
+                                type="danger"
+                                size="small"
+                                slot="reference"
+                                >{{ $t('Delete') }}</el-button>
+                        </el-popover>
+
                         <el-button @click.prevent="store" type="primary" size="small">
                             {{ $t('Update') }}
                         </el-button>
@@ -401,11 +487,14 @@
 <script>
     import wpEditor from '../../../common/_wp_editor';
     import conditional from './_conditional';
+    import WPPostDynamicColumn from './WPPostDynamicColumn';
+
     export default {
         name: "ColumnsEditor",
         components: {
             'wp_editor':  wpEditor,
             'condition': conditional,
+            'wp-post-dynamic-column': WPPostDynamicColumn,
         },
         props: {
             "model": {
@@ -427,6 +516,14 @@
             "hideDelete": {
                 type: Boolean,
                 default: false
+            },
+            "hideCancel": {
+                type: Boolean,
+                default: false
+            },
+            "dataSourceType": {
+                type: String,
+                default: 'default'
             }
         },
         data() {
@@ -474,6 +571,7 @@
                     'right': 'Right',
                 },
                 activeTab: 'basic',
+                showConfirm: false,
             };
         },
         watch: {
@@ -512,7 +610,7 @@
                 if (['advanced', 'conditional'].indexOf(tab.name) != -1) {
                     this.hideDelete = true;
                     if (!this.moreSettings) {
-                        this.showProPopUp();
+                       // this.showProPopUp();
                     } else {
                         this.moreSettings = !this.moreSettings;
                     }
@@ -552,6 +650,15 @@
         }
         .form_group {
             margin-top: 10px;
+        }
+    }
+
+    .wp_posts_dynamic_field {
+        .el-select,.el-input__inner {
+            width: 170px !important;
+        }
+        .input-with-select .el-input-group__prepend {
+            background-color: #fff;
         }
     }
 </style>

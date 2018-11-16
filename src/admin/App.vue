@@ -1,7 +1,7 @@
 <template>
     <div class="wrap">
         <router-view></router-view>
-        
+
         <div class="pro_feature_dialog">
             <el-dialog
                     title="NinjaTable Pro Features"
@@ -31,7 +31,7 @@
 </template>
 
 <script type="text/babel">
-    
+
     export default {
         name: 'TableApp',
         data() {
@@ -48,9 +48,15 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .el-message {
         z-index: 999999 !important;
         top: 5px;
+    }
+
+    .pro_feature_dialog {
+        .el-dialog__wrapper {
+            z-index: 10000 !important;
+        }
     }
 </style>

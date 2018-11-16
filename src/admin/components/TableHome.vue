@@ -38,7 +38,7 @@
                              :to="{ name: 'data_columns', params: { table_id: tableId } }">
                     {{ $t('Table Configuration') }}
                 </router-link>
-                
+
                 <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
                              :to="{ name: 'design_studio', params: { table_id: tableId } }">
                     {{ $t('Table Design') }}
@@ -66,8 +66,8 @@
             <router-view v-if="config" :config="config" :getColumnSettings="getSettings"></router-view>
 
         </fieldset>
-        <el-dialog 
-                title="Update Table Info" 
+        <el-dialog
+                title="Update Table Info"
                 :visible.sync="editTableModalShow"
                 top="50px"
                 :append-to-body="true"
@@ -82,6 +82,7 @@
     import EditTable from './_AddTable.vue';
     import each from 'lodash/each';
     import size from 'lodash/size';
+    import toArray from 'lodash/values';
 
     export default {
         name: 'table_home',
@@ -136,18 +137,23 @@
                     table_id: this.tableId
                 };
 
-                jQuery.get(ajaxurl, data)
-                    .done(response => {
+                jQuery.getJSON(ajaxurl, data)
+                    .then(response => {
+                        if (Object.prototype.toString.call(response.columns) == '[object Object]') {
+                            response.columns = toArray(response.columns);
+                        }
                         this.config = response;
                         this.table = response.table;
                         this.preview_url = response.preview_url;
                     })
                     .fail((error) => {
                         console.log(error);
+                        this.$message.error(error.responseJSON.data.message);
+                        if(error.responseJSON.data.route) {
+                            this.$router.push({ name: error.responseJSON.data.route });
+                        }
                     })
-                    .always(() => {
-                        this.doingAjax = false;
-                    });
+                    .always(() => this.doingAjax = false);
             },
             goToTab(key) {
                 this.user_tab = key;
@@ -170,7 +176,7 @@
                     type: 'success'
                 });
             });
-            
+
             // Initialize the table's manual data sorting.
             window.ninjaTableBus.$on('initManualSorting', function (options, resolve, reject) {
                 let data = {

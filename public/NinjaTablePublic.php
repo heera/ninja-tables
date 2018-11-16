@@ -14,6 +14,7 @@ use NinjaTables\Classes\ArrayHelper;
 use NinjaTable\FrontEnd\DataProviders\CsvProvider;
 use NinjaTable\FrontEnd\DataProviders\DefaultProvider;
 use NinjaTable\FrontEnd\DataProviders\FluentFormProvider;
+use NinjaTable\FrontEnd\DataProviders\WPPostsProvider;
 
 /**
  * The public-facing functionality of the plugin.
@@ -58,13 +59,13 @@ class NinjaTablePublic {
 		$this->version = $version;
 		$this->registerDataProviders();
 	}
-	
+
 	public function register_ajax_routes()
 	{
 		$validRoutes = array(
 			'get-all-data'    => 'getAllData',
 		);
-		
+
 		$requestedRoute = esc_attr($_REQUEST['target_action']);
 
 		if (isset($validRoutes[$requestedRoute])) {
@@ -75,71 +76,56 @@ class NinjaTablePublic {
 
 	public function getAllData()
 	{
-		$tableId = intval($_REQUEST['table_id']);
-		$defaultSorting = sanitize_text_field($_REQUEST['default_sorting']);
-
-        $shouldNotCache = ninja_tables_shouldNotCache($tableId);
+		$tableId = intval( ArrayHelper::get($_REQUEST, 'table_id') );
+		$defaultSorting = sanitize_text_field( ArrayHelper::get($_REQUEST, 'default_sorting') );
 		$tableSettings = ninja_table_get_table_settings($tableId, 'public');
-
 		$is_ajax_table = true;
 		if( ArrayHelper::get($tableSettings, 'render_type') == 'legacy_table' ) {
 			$is_ajax_table = false;
 		}
-		
 		$is_ajax_table = apply_filters('ninja_table_is_public_ajax_table', $is_ajax_table, $tableId);
-		
+
 		if( !$tableSettings || !$is_ajax_table ) {
 			wp_send_json_success([], 200);
 		}
-		
-		// cache the data
-		$disableCache = apply_filters('ninja_tables_disable_caching', $shouldNotCache, $tableId);
 
-		$formatted_data = false;
-		if(!$disableCache) {
-			$formatted_data = get_post_meta($tableId, '_ninja_table_cache_object', true);
-		}
+		$formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting);
 
-		if(!$formatted_data) {
-			$formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, $disableCache);
-		}
-		
 		$formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
-		
 		wp_send_json($formatted_data, 200);
 		wp_die();
 	}
-    
+
 	public function register_table_render_functions()
 	{
-		// register the shortcode 
+		// register the shortcode
 		$shortCodeBase = apply_filters('ninja_tables_shortcode_base', 'ninja_tables');
 		add_shortcode( $shortCodeBase, array($this, 'render_ninja_table_shortcode'));
 	}
-	
+
 	public function render_ninja_table_shortcode($atts, $content = '')
 	{
-		
+
 		$shortCodeDefaults = array(
 			'id' => false,
 			'filter' => false
 		);
 
 		$shortCodeDefaults = apply_filters('ninja_tables_shortcode_defaults', $shortCodeDefaults);
-		
+
 		$shortCodeData = shortcode_atts($shortCodeDefaults, $atts);
-		
+
 		extract($shortCodeData);
-		
+
 		$table_id = $id;
-		
+
 		if(!$table_id) {
 		    return;
         }
 
 		$table = get_post($table_id);
-		
-		if(!$table) {
+
+		if(!$table || $table->post_type != 'ninja-table') {
 			return;
 		}
 		$tableSettings = ninja_table_get_table_settings($table_id, 'public');
@@ -147,13 +133,13 @@ class NinjaTablePublic {
 		$tableSettings = apply_filters(
 			'ninja_tables_rendering_table_settings', $tableSettings, $shortCodeData, $table
 		);
-		
+
 		$tableColumns = ninja_table_get_table_columns($table_id, 'public');
-		
+
 		if( !$tableSettings || !$tableColumns ) {
 		    return;
         }
-        
+
         if(isset($tableSettings['columns_only']) && is_array($tableSettings['columns_only'])) {
 			$showingColumns = $tableSettings['columns_only'];
 	        $formattedColumns = array();
@@ -164,7 +150,7 @@ class NinjaTablePublic {
 			}
 	        $tableColumns = $formattedColumns;
         }
-        
+
 		$tableArray = array(
 		    'table_id' => $table_id,
 			'columns' => $tableColumns,
@@ -173,14 +159,14 @@ class NinjaTablePublic {
 			'content' => $content,
 			'shortCodeData' => $shortCodeData
 		);
-		
+
 		$tableArray = apply_filters('ninja_table_js_config', $tableArray, $filter);
-		
+
 		ob_start();
 		do_action('ninja_tables-render-table-'.$tableSettings['library'], $tableArray);
 		return ob_get_clean();
 	}
-	
+
 	public function enqueueNinjaTableScript()
 	{
 		global $post;
@@ -204,5 +190,6 @@ class NinjaTablePublic {
 		(new FluentFormProvider)->boot();
 		(new DefaultProvider)->boot();
 		(new CsvProvider)->boot();
+		(new WPPostsProvider)->boot();
 	}
 }
