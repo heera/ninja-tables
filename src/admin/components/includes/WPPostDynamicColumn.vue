@@ -45,3 +45,18 @@
         }
     };
 </script>
+
+<style lang="scss">
+    .wp_posts_dynamic_field {
+        .el-select,.el-input__inner {
+            width: 170px !important;
+        }
+        .input-with-select .el-input-group__prepend {
+            background-color: #fff;
+        }
+        .el-input-group__prepend .el-select {
+            display: inline-block;
+            margin: -10px -21px;
+        }
+    }
+</style>
