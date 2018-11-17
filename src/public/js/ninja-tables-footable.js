@@ -83,6 +83,15 @@ jQuery(document).ready(function ($) {
                     );
                 });
 
+                $table.on('click', '.ninja_table_do_column_filter', function(e) {
+                    e.preventDefault();
+                    const link = $(this);
+                    const filtering = FooTable.get($table).use(FooTable.Filtering);
+                    const query = new FooTable.Query('"'+link.text()+'"', 'AND', false, false);
+                    filtering.addFilter('nt_link_filter', query, [link.data('target_column')]);
+                    filtering.filter();
+                });
+
                 if (tableConfig.render_type === 'legacy_table') {
                     that.initLegacyTable($table, tableConfig);
                     return;

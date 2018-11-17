@@ -29,6 +29,7 @@ class WPPostsProvider
 
         // Validate Columns
         $fields = isset($_REQUEST['data']['columns']) ? $_REQUEST['data']['columns'] : array();
+        $fields = array_filter($fields);
         if (!($fields = ninja_tables_sanitize_array($fields))) {
             $messages['columns'] = __('No columns were selected.', 'ninja-tables');
         }
@@ -39,10 +40,23 @@ class WPPostsProvider
             wp_die();
         }
 
+        if ($tableId) {
+            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
+            
+            $oldColumnOriginalNames = array_filter(array_map(function($col) {
+                return $col['original_name'];
+            }, $oldColumns));
+
+            $oldColumns = array_filter($oldColumns, function($col) use($fields) {
+                return in_array($col['original_name'], $fields);
+            });
+
+            $fields = array_diff($fields, $oldColumnOriginalNames);
+        }
+
         $headers = ninja_table_format_header($fields);
 
         $columns = array();
-
         foreach ($headers as $key => $column) {
             $dataType = $this->getType($column);
             $sourceType = $this->getSourceType($column);
@@ -61,6 +75,7 @@ class WPPostsProvider
                 'source_type' => $sourceType,
                 'original_name' => $column
             );
+
             if ($sourceType == 'post_data') {
                 $columnData['permalinked'] = ($column == 'post_title' || $column == 'ID' || $column == 'post_author') ? 'yes' : 'no';
                 if ($column == 'post_author') {
@@ -71,11 +86,17 @@ class WPPostsProvider
                 $columnData['filter_permalinked'] = 'yes';
                 $columnData['taxonomy_separator'] = ', ';
             }
+
             $columns[] = $columnData;
         }
 
-        $tableId = $this->saveTable();
-        $message = 'Table created successfully.';
+        if ($tableId) {
+            $columns = array_merge($oldColumns, $columns);
+            $message = 'Table updated successfully.';
+        } else {
+            $tableId = $this->saveTable();
+            $message = 'Table created successfully.';
+        }
 
         update_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', $_REQUEST['data']['post_types']);
         update_post_meta($tableId, '_ninja_table_wpposts_ds_where', $_REQUEST['data']['where']);
