@@ -30,7 +30,6 @@
                                    :hasPro="has_pro"
                                    v-model="externalDataSourceUrl"
                                    :tableCreated="reloadSettingsAndData"
-                                   @sync="updateTableSettings"
                 />
             </div>
 
@@ -695,39 +694,6 @@
                 this.addDataModal = true;
                 this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
-            },
-            /**
-             * Used to re-sync table settings with external data source
-             * @return void
-             */
-            updateTableSettings() {
-                this.syncing = true;
-                jQuery.post(ajaxurl, {
-                    tableId: this.config.table.ID,
-                    remote_url: this.externalDataSourceUrl,
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'update-external-data-source'
-                })
-                .then(response => {
-                    if(response.success) {
-                        this.reloadSettingsAndData();
-                        this.$message({
-                            type: 'success',
-                            showClose:true,
-                            message: 'Table column settings updated successfully.'
-                        });
-                        this.externalDataSourceUrl = response.data.remote_url;
-                    }
-                })
-                .fail(({responseJSON}) => {
-                    let first = Object.keys(responseJSON.data.message)[0];
-                    this.$message({
-                        type: 'error',
-                        showClose:true,
-                        message: responseJSON.data.message[first]
-                    });
-                })
-                .always(() => this.syncing = false);
             },
             reloadSettingsAndData() {
                 this.getColumnSettings();

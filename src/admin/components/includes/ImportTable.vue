@@ -57,9 +57,11 @@
         </div>
 
         <div class="modal-footer">
-            <el-button type="primary"
-                       :loading="btnLoading"
-                       @click="importTable"
+            <el-button
+                size="small"
+                type="primary"
+                :loading="btnLoading"
+                @click="importTable"
             >
                 {{ $t('Import') }}
             </el-button>

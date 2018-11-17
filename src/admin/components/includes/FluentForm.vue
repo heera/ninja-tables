@@ -52,7 +52,7 @@
                         type="primary"
                         :loading="btnLoading"
                         style="margin-top: 12px; float: right;"
-                        @click="save">{{ $t('Continue') }}</el-button>
+                        @click="save">{{ editing ? $t('Update') : $t('Save') }}</el-button>
             </div>
         </template>
 

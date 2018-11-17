@@ -338,7 +338,6 @@ class NinjaTablesAdmin
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
-            // 'update-external-data-source' => 'updateTableWithExternalDataSource',
             'get-fluentform-forms' => 'getFluentformForms',
             'set-fluent-form-data-source' => 'createTableWithFluentFormDataSource',
             'get_wp_post_types' => 'getAllPostTypes',
@@ -1509,20 +1508,6 @@ class NinjaTablesAdmin
             wp_send_json_success(array('ID' => $tableId, 'remote_url' => $url));
         }
     }
-
-    // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
-    // public function updateTableWithExternalDataSource()
-    // {
-    //     $table = get_post(
-    //         $tableId = intval($_REQUEST['tableId'])
-    //     );
-
-    //     $provider = $_REQUEST['type'] = ninja_table_get_data_provider($tableId);
-
-    //     if ($provider == 'google-csv' || $provider == 'csv') {
-    //         $this->createTableWithExternalDataSource(true);
-    //     }
-    // }
 
     public function getFluentformForms()
     {

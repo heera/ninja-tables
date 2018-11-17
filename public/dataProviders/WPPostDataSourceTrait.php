@@ -214,6 +214,8 @@ trait WPPostDataSourceTrait
 
         if (isset($trans[$column])) {
             return $trans[$column];
+        } else if (($pos = strpos($column, '.')) !== false) {
+            return ucfirst(substr($column, $pos + 1));
         }
         return $column;
     }
@@ -312,13 +314,14 @@ trait WPPostDataSourceTrait
             $atts = '';
             if ($column['permalinked'] == 'yes') {
                 if ($column['filter_permalinked'] == 'yes') {
-                    $atts = ' class="ninja_table_permalink ninja_table_do_column_filter" ';
+                    $atts = ' data-target_column='.$column['key'].' class="ninja_table_permalink ninja_table_do_column_filter" ';
                 } else if ($column['permalink_target'] == '_blank') {
                     $atts = ' class="ninja_table_tax_permalink" target="_blank" ';
                 } else {
                     $atts = ' class="ninja_table_tax_permalink" ';
                 }
             }
+            
             $terms = array_map(function ($term) use ($atts) {
                 if ($atts) {
                     $link = get_term_link($term);
@@ -348,7 +351,7 @@ trait WPPostDataSourceTrait
 
         if ($atts && $authorName) {
             $authlink = get_author_posts_url($post->post_author);
-            return '<a href="' . $authlink . '" ' . $atts . '>' . $authorName . '</a>';
+            return '<a data-target_column='.$column['key'].' href="' . $authlink . '" ' . $atts . '>' . $authorName . '</a>';
         }
         return $authorName;
     }
