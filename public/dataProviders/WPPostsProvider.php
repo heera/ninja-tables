@@ -61,10 +61,14 @@ class WPPostsProvider
                 'source_type' => $sourceType,
                 'original_name' => $column
             );
-            if($sourceType == 'post_data') {
-                $columnData['link_to_post'] = ( $column == 'post_title' || $column == 'ID' ) ? true : false;
-            } else if($sourceType == 'tax_data') {
-                $columnData['link_to_taxonomy'] = true;
+            if ($sourceType == 'post_data') {
+                $columnData['permalinked'] = ($column == 'post_title' || $column == 'ID' || $column == 'post_author') ? 'yes' : 'no';
+                if ($column == 'post_author') {
+                    $columnData['filter_permalinked'] = 'yes';
+                }
+            } else if ($sourceType == 'tax_data') {
+                $columnData['permalinked'] = 'yes';
+                $columnData['filter_permalinked'] = 'yes';
                 $columnData['taxonomy_separator'] = ', ';
             }
             $columns[] = $columnData;
@@ -78,7 +82,7 @@ class WPPostsProvider
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'wp-posts');
 
-        wp_send_json_success(array('table_id' => $tableId,'message' => $message), 200);
+        wp_send_json_success(array('table_id' => $tableId, 'message' => $message), 200);
     }
 
     public function getTableSettings($table)
@@ -121,21 +125,44 @@ class WPPostsProvider
 
     public function getPosts($tableId)
     {
-        $columns = array_map(function ($column) {
-            return $column['original_name'];
-        }, get_post_meta($tableId, '_ninja_table_columns', true));
+        $columns = get_post_meta($tableId, '_ninja_table_columns', true);
+        $formatted_columns = array();
+        foreach ($columns as $column) {
+            $type = ArrayHelper::get($column, 'source_type');
+            $originalName = $this->get($column, 'original_name');
+            $columnKey = $this->get($column, 'key');
+            $dataType = $this->get($column, 'wp_post_custom_data_type');
+            $dataValue = $this->get($column, 'wp_post_custom_data_value');
 
-
+            $formatted_columns[$columnKey] = array(
+                'type' => ($originalName == 'post_author') ? 'author_data' : $type,
+                'original_name' => $originalName,
+                'key' => $columnKey,
+                'permalinked' => $this->get($column, 'permalinked'),
+                'permalink_target' => $this->get($column, 'permalink_target'),
+                'filter_permalinked' => $this->get($column, 'filter_permalinked'),
+                'taxonomy_separator' => $this->get($column, 'taxonomy_separator'),
+                'wp_post_custom_data_type' => $dataType,
+                'wp_post_custom_data_value' => $dataValue
+            );
+        }
 
         $where = get_post_meta($tableId, '_ninja_table_wpposts_ds_where', true);
 
         $post_types = get_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', true);
 
         return $this->buildWPQuery(
-            compact('columns', 'where', 'post_types')
+            compact('formatted_columns', 'where', 'post_types')
         );
     }
 
+    protected function get($array, $key)
+    {
+        if (isset($array[$key])) {
+            return $array[$key];
+        }
+        return false;
+    }
 
     protected function saveTable($postId = null)
     {
