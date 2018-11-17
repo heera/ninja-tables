@@ -15,7 +15,7 @@ trait WPPostDataSourceTrait
         $postTypes = isset($data['post_types']) ? $data['post_types'] : array();
 
         $args = array('post_type' => $postTypes, 'posts_per_page' => -1);
-        
+
         $args = $this->buildQueryArgsForPostFields($args, $whereClauses);
 
         $args = $this->buildQueryArgsForTaxonomies($args, $whereClauses);
@@ -35,8 +35,8 @@ trait WPPostDataSourceTrait
                     $post[str_replace('.', '_', $column)] = implode(', ', $terms);
                 } else if ($column == 'post_author') {
                     $authlink = get_author_posts_url($post['post_author']);
-                    $authorName = get_the_author_meta('user_nicename' , $post['post_author']); 
-                    $post['post_author'] = "<a href='{$authlink}'>{$authorName}</a>"; 
+                    $authorName = get_the_author_meta('user_nicename' , $post['post_author']);
+                    $post['post_author'] = "<a href='{$authlink}'>{$authorName}</a>";
                 }
             }
             return $post;
@@ -85,7 +85,7 @@ trait WPPostDataSourceTrait
     public function WPNinjaTablesPostWhereIDFilter($where)
     {
         global $wpdb;
-        
+
         remove_filter(current_filter(), [$this, __FUNCTION__]);
 
         foreach ($this->__queryable_postColumns__ as $column) {
@@ -100,7 +100,7 @@ trait WPPostDataSourceTrait
     public function WPNinjaTablesPostWherePostDateFilter($where)
     {
         global $wpdb;
-        
+
         remove_filter(current_filter(), [$this, __FUNCTION__]);
 
         foreach ($this->__queryable_postColumns__ as $column) {
@@ -115,7 +115,7 @@ trait WPPostDataSourceTrait
     public function WPNinjaTablesPostWherePostModifiedFilter($where)
     {
         global $wpdb;
-        
+
         remove_filter(current_filter(), [$this, __FUNCTION__]);
 
         foreach ($this->__queryable_postColumns__ as $column) {
@@ -130,7 +130,7 @@ trait WPPostDataSourceTrait
     public function WPNinjaTablesPostWhereCommentCountFilter($where)
     {
         global $wpdb;
-        
+
         remove_filter(current_filter(), [$this, __FUNCTION__]);
 
         foreach ($this->__queryable_postColumns__ as $column) {
@@ -169,5 +169,58 @@ trait WPPostDataSourceTrait
         }
 
         return $args;
+    }
+
+    public function getType($column)
+    {
+        $numericColumnsMap = array(
+            'ID',
+            'comment_count',
+            'menu_order',
+            'post_parent'
+        );
+        $dateColumnsMap = array(
+            'post_date',
+            'post_date_gmt',
+            'post_modified',
+            'post_modified_gmt'
+        );
+
+        if(in_array($column, $numericColumnsMap)) {
+            return 'number';
+        }
+
+        if(in_array($column, $dateColumnsMap)) {
+            return 'date';
+        }
+
+        return 'text';
+    }
+
+    public function getHumanName($column)
+    {
+        $trans = array(
+            'post_author' => __('Author', 'ninja-tables'),
+            'post_date' => __('Create Date', 'ninja-tables'),
+            'post_content' => __('Content', 'ninja-tables'),
+            'post_title' => __('Title', 'ninja-tables'),
+            'post_excerpt' => __('Excerpt', 'ninja-tables'),
+            'post_status' => __('Status', 'ninja-tables'),
+            'comment_status' => __('Comment Status', 'ninja-tables'),
+            'post_type' => __('Post Type', 'ninja-tables'),
+            'comment_count' => __('Total Comments', 'ninja-tables')
+        );
+
+        if(isset($trans[$column])) {
+            return $trans[$column];
+        }
+        return $column;
+    }
+
+    public function getSourceType($column) {
+        if(strpos($column, '.')) {
+            return 'tax_data';
+        }
+        return 'post_data';
     }
 }

@@ -240,8 +240,7 @@
             save() {
                 this.saving = true;
                 jQuery.post(ajaxurl, {
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'save_wp_post_data_source',
+                    action: 'ninja_table_wp-posts_create_table',
                     post_title: this.title,
                     tableId: this.tableId,
                     data: {

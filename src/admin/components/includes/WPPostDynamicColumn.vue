@@ -1,5 +1,7 @@
 <template>
-    <div class="wp_posts_dynamic_field">
+    <div v-if="column.source_type == 'custom'" class="wp_posts_dynamic_field">
+        <h4>{{ $t('Dynamic Post Data Settings') }}</h4>
+        <hr />
         <el-form-item>
             <template slot="label">
                 {{ $t("Dynamic Field") }}

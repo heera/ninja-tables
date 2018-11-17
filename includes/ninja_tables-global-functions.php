@@ -20,7 +20,7 @@ if (!function_exists('ninja_table_get_table_columns')) {
         if (!$tableColumns || !is_array($tableColumns)) {
             $tableColumns = array();
         }
-        return apply_filters('ninja_get_table_columns_'.$scope, $tableColumns, $tableId);
+        return apply_filters('ninja_get_table_columns_' . $scope, $tableColumns, $tableId);
     }
 }
 
@@ -32,11 +32,11 @@ if (!function_exists('ninja_table_get_table_settings')) {
         if (!$tableSettings) {
             $tableSettings = getDefaultNinjaTableSettings();
             $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
-        } else if(empty($tableSettings['css_classes'])) {
-	        $tableSettings['css_classes'] = array();
-	    }
+        } else if (empty($tableSettings['css_classes'])) {
+            $tableSettings['css_classes'] = array();
+        }
 
-        return apply_filters('ninja_get_table_settings_'.$scope, $tableSettings, $tableId);
+        return apply_filters('ninja_get_table_settings_' . $scope, $tableSettings, $tableId);
     }
 }
 
@@ -47,24 +47,24 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
         $renderType = defined('NINJATABLESPRO') ? 'legacy_table' : 'ajax_table';
 
         $defaults = array(
-            "perPage"         => 20,
-            "show_all"        => false,
-            "library"         => 'footable',
-            "css_lib"         => 'bootstrap3',
-            "enable_ajax"     => false,
-            "css_classes"     => array(
-            	'table-striped',
-	            'table-bordered',
-	            'table-hover',
-	            'vertical_centered'
+            "perPage" => 20,
+            "show_all" => false,
+            "library" => 'footable',
+            "css_lib" => 'bootstrap3',
+            "enable_ajax" => false,
+            "css_classes" => array(
+                'table-striped',
+                'table-bordered',
+                'table-hover',
+                'vertical_centered'
             ),
-            "enable_search"   => true,
-            "column_sorting"  => true,
+            "enable_search" => true,
+            "column_sorting" => true,
             "default_sorting" => 'new_first',
-            "table_color"     => 'ninja_no_color_table',
-            "render_type"     => $renderType,
-	        "table_color_type" => 'pre_defined_color',
-	        "expand_type" => 'default',
+            "table_color" => 'ninja_no_color_table',
+            "render_type" => $renderType,
+            "table_color_type" => 'pre_defined_color',
+            "expand_type" => 'default',
         );
 
         return apply_filters('get_default_ninja_table_settings', $defaults);
@@ -74,11 +74,11 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
 if (!function_exists('ninja_table_admin_role')) {
     function ninja_table_admin_role()
     {
-        if(current_user_can('administrator')) {
+        if (current_user_can('administrator')) {
             return 'administrator';
         }
         $roles = apply_filters('ninja_table_admin_role', array('administrator'));
-        if(is_string($roles)) {
+        if (is_string($roles)) {
             $roles = array($roles);
         }
         foreach ($roles as $role) {
@@ -115,7 +115,7 @@ if (!function_exists('ninja_table_renameDuplicateValues')) {
             if ($scale[$item] == 1) {
                 $result[] = $item;
             } else {
-                $result[] = $item.'-'.$scale[$item];
+                $result[] = $item . '-' . $scale[$item];
             }
 
             $scale[$item]++;
@@ -139,7 +139,7 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
     $providerName = in_array($providerName, array('csv', 'google-csv')) ? 'csv' : $providerName;
 
     return apply_filters(
-        'ninja_tables_fetching_table_rows_'.$providerName,
+        'ninja_tables_fetching_table_rows_' . $providerName,
         array(),
         $tableId,
         $defaultSorting,
@@ -157,16 +157,16 @@ function ninjaTablesAllowedHtmlTags($tags)
 {
     $tags['a']['download'] = true;
     $tags['iframe'] = array(
-        'src'             => true,
-        'srcdoc'          => true,
-        'width'           => true,
-        'height'          => true,
-        'scrolling'       => true,
-        'frameborder'     => true,
-        'allow'           => true,
-        'style'           => true,
+        'src' => true,
+        'srcdoc' => true,
+        'width' => true,
+        'height' => true,
+        'scrolling' => true,
+        'frameborder' => true,
+        'allow' => true,
+        'style' => true,
         'allowfullscreen' => true,
-        'name'            => true
+        'name' => true
     );
 
     return $tags;
@@ -209,32 +209,34 @@ function ninja_tables_shouldNotCache($tableId)
 function ninja_table_get_icon_url()
 {
     return 'data:image/svg+xml;base64,'
-        .base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.98 249.25"><defs><style>.cls-1{fill:#fff;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:7px;}.cls-2{stroke:#9fa3a8;}.cls-3{stroke:#38444f;}</style></defs><title>Asset 7</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M312.48,249.25H9.5a9.51,9.51,0,0,1-9.5-9.5V9.5A9.51,9.51,0,0,1,9.5,0h303A9.51,9.51,0,0,1,322,9.5V239.75A9.51,9.51,0,0,1,312.48,249.25ZM9.5,7A2.53,2.53,0,0,0,7,9.5V239.75a2.53,2.53,0,0,0,2.5,2.5h303a2.53,2.53,0,0,0,2.5-2.5V9.5a2.53,2.53,0,0,0-2.5-2.5Z"/><rect class="cls-1" x="74.99" y="44.37" width="8.75" height="202.71"/><path class="cls-2" d="M129.37,234.08"/><path class="cls-2" d="M129.37,44.37"/><path class="cls-3" d="M189.37,234.08"/><path class="cls-3" d="M189.37,44.37"/><path class="cls-3" d="M249.37,234.08"/><path class="cls-3" d="M249.37,44.37"/><path class="cls-1" d="M6.16.51H315.82a6,6,0,0,1,6,6V50.32a.63.63,0,0,1-.63.63H.79a.63.63,0,0,1-.63-.63V6.51A6,6,0,0,1,6.16.51Z"/><rect class="cls-1" x="4.88" y="142.84" width="312.61" height="15.1"/><rect class="cls-1" x="22.47" y="89.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="89.99" width="165.67" height="16.97"/><rect class="cls-1" x="22.47" y="189.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="189.99" width="165.67" height="16.97"/></g></g></svg>');
+        . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.98 249.25"><defs><style>.cls-1{fill:#fff;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:7px;}.cls-2{stroke:#9fa3a8;}.cls-3{stroke:#38444f;}</style></defs><title>Asset 7</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M312.48,249.25H9.5a9.51,9.51,0,0,1-9.5-9.5V9.5A9.51,9.51,0,0,1,9.5,0h303A9.51,9.51,0,0,1,322,9.5V239.75A9.51,9.51,0,0,1,312.48,249.25ZM9.5,7A2.53,2.53,0,0,0,7,9.5V239.75a2.53,2.53,0,0,0,2.5,2.5h303a2.53,2.53,0,0,0,2.5-2.5V9.5a2.53,2.53,0,0,0-2.5-2.5Z"/><rect class="cls-1" x="74.99" y="44.37" width="8.75" height="202.71"/><path class="cls-2" d="M129.37,234.08"/><path class="cls-2" d="M129.37,44.37"/><path class="cls-3" d="M189.37,234.08"/><path class="cls-3" d="M189.37,44.37"/><path class="cls-3" d="M249.37,234.08"/><path class="cls-3" d="M249.37,44.37"/><path class="cls-1" d="M6.16.51H315.82a6,6,0,0,1,6,6V50.32a.63.63,0,0,1-.63.63H.79a.63.63,0,0,1-.63-.63V6.51A6,6,0,0,1,6.16.51Z"/><rect class="cls-1" x="4.88" y="142.84" width="312.61" height="15.1"/><rect class="cls-1" x="22.47" y="89.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="89.99" width="165.67" height="16.97"/><rect class="cls-1" x="22.47" y="189.99" width="28.27" height="16.97"/><rect class="cls-1" x="111.61" y="189.99" width="165.67" height="16.97"/></g></g></svg>');
 }
 
 if (!function_exists('ninja_tables_is_valid_url')) {
     define('URL_FORMAT',
-    '/^(https?):\/\/'.                                         // protocol
-    '(([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+'.         // username
-    '(:([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+)?'.      // password
-    '@)?(?#'.                                                  // auth requires @
-    ')((([a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*'.                      // domain segments AND
-    '[a-z][a-z0-9-]*[a-z0-9]'.                                 // top level domain  OR
-    '|((\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])\.){3}'.
-    '(\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])'.                 // IP address
-    ')(:\d+)?'.                                                // port
-    ')(((\/+([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*'. // path
-    '(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)'.      // query string
-    '?)?)?'.                                                   // path and query string optional
-    '(#([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?'.      // fragment
-    '$/i');
-    function ninja_tables_is_valid_url($url) {
-      return preg_match(URL_FORMAT, $url);
+        '/^(https?):\/\/' .                                         // protocol
+        '(([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+' .         // username
+        '(:([a-z0-9$_\.\+!\*\'\(\),;\?&=-]|%[0-9a-f]{2})+)?' .      // password
+        '@)?(?#' .                                                  // auth requires @
+        ')((([a-z0-9]\.|[a-z0-9][a-z0-9-]*[a-z0-9]\.)*' .                      // domain segments AND
+        '[a-z][a-z0-9-]*[a-z0-9]' .                                 // top level domain  OR
+        '|((\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])\.){3}' .
+        '(\d|[1-9]\d|1\d{2}|2[0-4][0-9]|25[0-5])' .                 // IP address
+        ')(:\d+)?' .                                                // port
+        ')(((\/+([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)*' . // path
+        '(\?([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)' .      // query string
+        '?)?)?' .                                                   // path and query string optional
+        '(#([a-z0-9$_\.\+!\*\'\(\),;:@&=-]|%[0-9a-f]{2})*)?' .      // fragment
+        '$/i');
+    function ninja_tables_is_valid_url($url)
+    {
+        return preg_match(URL_FORMAT, $url);
     }
 }
 
 if (!function_exists('ninja_tables_sanitize_array')) {
-    function ninja_tables_sanitize_array(array $array) {
+    function ninja_tables_sanitize_array(array $array)
+    {
         foreach ($array as $key => $value) {
             if (is_array($value)) {
                 $array[$key] = ninja_tables_sanitize_array($value);
@@ -251,18 +253,18 @@ if (!function_exists('ninja_tables_sanitize_array')) {
 function ninjaTableGetExternalCachedData($tableId)
 {
     $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
-    if(!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
+    if (!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
         return false;
     }
     $intervalMinutes = intval($tableSettings['caching_interval']);
-    if(!$intervalMinutes) {
+    if (!$intervalMinutes) {
         return false;
     }
     $interval = $intervalMinutes * 60;
     $lastCachedTime = intval(get_post_meta($tableId, '_last_external_cached_time', true));
 
-    if(( time() - $lastCachedTime) < $interval) {
-        return get_post_meta($tableId,'_external_cached_data', true);
+    if ((time() - $lastCachedTime) < $interval) {
+        return get_post_meta($tableId, '_external_cached_data', true);
     }
     return false;
 }
@@ -270,8 +272,8 @@ function ninjaTableGetExternalCachedData($tableId)
 function ninjaTableSetExternalCacheData($tableId, $data)
 {
     $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
-    if(!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
-       return false;
+    if (!isset($tableSettings['caching_interval']) && $tableSettings['caching_interval']) {
+        return false;
     }
 
     update_post_meta($tableId, '_last_external_cached_time', time());
@@ -281,7 +283,7 @@ function ninjaTableSetExternalCacheData($tableId, $data)
 if (!function_exists('getNinjaFluentFormMenuIcon')) {
     function getNinjaFluentFormMenuIcon()
     {
-        $icon = 'data:image/svg+xml;base64,'.base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><defs><style>.cls-1{fill:#fff;}</style></defs><title>dashboard_icon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M15.57,0H4.43A4.43,4.43,0,0,0,0,4.43V15.57A4.43,4.43,0,0,0,4.43,20H15.57A4.43,4.43,0,0,0,20,15.57V4.43A4.43,4.43,0,0,0,15.57,0ZM12.82,14a2.36,2.36,0,0,1-1.66.68H6.5A2.31,2.31,0,0,1,7.18,13a2.36,2.36,0,0,1,1.66-.68l4.66,0A2.34,2.34,0,0,1,12.82,14Zm3.3-3.46a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,10.53Zm0-3.73a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,6.81Z"/></g></g></svg>');
+        $icon = 'data:image/svg+xml;base64,' . base64_encode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><defs><style>.cls-1{fill:#fff;}</style></defs><title>dashboard_icon</title><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path class="cls-1" d="M15.57,0H4.43A4.43,4.43,0,0,0,0,4.43V15.57A4.43,4.43,0,0,0,4.43,20H15.57A4.43,4.43,0,0,0,20,15.57V4.43A4.43,4.43,0,0,0,15.57,0ZM12.82,14a2.36,2.36,0,0,1-1.66.68H6.5A2.31,2.31,0,0,1,7.18,13a2.36,2.36,0,0,1,1.66-.68l4.66,0A2.34,2.34,0,0,1,12.82,14Zm3.3-3.46a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,10.53Zm0-3.73a2.36,2.36,0,0,1-1.66.68H3.21a2.25,2.25,0,0,1,.68-1.64,2.36,2.36,0,0,1,1.66-.68H16.79A2.25,2.25,0,0,1,16.12,6.81Z"/></g></g></svg>');
 
         return apply_filters('fluent_form_menu_icon', $icon);
     }
@@ -289,7 +291,8 @@ if (!function_exists('getNinjaFluentFormMenuIcon')) {
 
 
 if (!function_exists('ninjaTablesGetPostStatuses')) {
-    function ninjaTablesGetPostStatuses() {
+    function ninjaTablesGetPostStatuses()
+    {
         return [
             ['key' => 'publish', 'label' => 'Publish'],
             ['key' => 'pending', 'label' => 'Pending'],
@@ -304,12 +307,34 @@ if (!function_exists('ninjaTablesGetPostStatuses')) {
     }
 }
 
-if(!function_exists('ninja_table_get_data_provider')) {
-    function ninja_table_get_data_provider($tableId) {
-        $provider  = get_post_meta($tableId, '_ninja_tables_data_provider', true);
-        if(!$provider) {
+if (!function_exists('ninja_table_get_data_provider')) {
+    function ninja_table_get_data_provider($tableId)
+    {
+        $provider = get_post_meta($tableId, '_ninja_tables_data_provider', true);
+        if (!$provider) {
             $provider = 'default';
         }
         return $provider;
+    }
+}
+
+if (!function_exists('ninja_table_format_header')) {
+    function ninja_table_format_header($header)
+    {
+        $data = array();
+        $column_counter = 1;
+        foreach ($header as $item) {
+            $item = trim(strip_tags($item));
+            $key = !preg_match('/[^ -~]/', $item) ? $this->url_slug($item) : null;
+            $key = sanitize_title($key, 'ninja_column_' . $column_counter, 'display');
+            $counter = 1;
+            while (isset($data[$key])) {
+                $key .= '_' . $counter;
+                $counter++;
+            }
+            $data[$key] = $item;
+            $column_counter++;
+        }
+        return $data;
     }
 }

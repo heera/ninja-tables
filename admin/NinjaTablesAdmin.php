@@ -421,11 +421,11 @@ class NinjaTablesAdmin
     protected function saveTable($postId = null)
     {
         $attributes = array(
-            'post_title' => sanitize_text_field($_REQUEST['post_title']),
-            'post_content' => wp_kses_post($_REQUEST['post_content']),
-            'post_type' => $this->cpt_name,
-            'post_status' => 'publish'
-        );
+        'post_title' => sanitize_text_field($_REQUEST['post_title']),
+        'post_content' => wp_kses_post($_REQUEST['post_content']),
+        'post_type' => $this->cpt_name,
+        'post_status' => 'publish'
+    );
 
         if (!$postId) {
             $postId = wp_insert_post($attributes);
@@ -526,32 +526,7 @@ class NinjaTablesAdmin
 
     private function formatHeader($header)
     {
-        $data = array();
-
-        $column_counter = 1;
-
-        foreach ($header as $item) {
-            $item = trim(strip_tags($item));
-
-            // We'll slugify only if item is printable characters.
-            // Otherwise we'll generate custom key for the item.
-            // Printable chars as in ASCII printable chars.
-            // Ref: http://www.catonmat.net/blog/my-favorite-regex/
-            $key = !preg_match('/[^ -~]/', $item) ? $this->url_slug($item) : null;
-
-            $key = sanitize_title($key, 'ninja_column_' . $column_counter);
-
-            $counter = 1;
-            while (isset($data[$key])) {
-                $key .= '_' . $counter;
-                $counter++;
-            }
-            $data[$key] = $item;
-
-            $column_counter++;
-        }
-
-        return $data;
+        return ninja_table_format_header($header);
     }
 
     private function uploadTableCsv()
@@ -727,7 +702,7 @@ class NinjaTablesAdmin
     public function getTableSettings()
     {
         $table = get_post($tableID = intval($_REQUEST['table_id']));
-        
+
         if(!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
@@ -1996,78 +1971,6 @@ class NinjaTablesAdmin
         wp_send_json_success(
             compact('post_fields', 'post_types', 'authors', 'postStatuses'), 200
         );
-    }
-
-    public function createTableWithWPPostDataSource()
-    {
-        if (!($tableId = $_REQUEST['tableId'])) {
-            // Validate Title
-            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
-                $messages['title'] = __('The title field is required.', 'ninja-tables');
-            }
-        }
-
-        // Validate Columns
-        $fields = isset($_REQUEST['data']['columns']) ? $_REQUEST['data']['columns'] : array();
-        if (!($fields = ninja_tables_sanitize_array($fields))) {
-            $messages['columns'] = __('No columns were selected.', 'ninja-tables');
-        }
-
-        // If Validation failed
-        if (array_filter($messages)) {
-            wp_send_json_error(array('message' => $messages), 422);
-            wp_die();
-        }
-
-        $headers = $this->formatHeader($fields);
-
-        foreach ($headers as $key => $column) {
-            $columns[] = array(
-                'name' => $column,
-                'key' => $key,
-                'breakpoints' => null,
-                'data_type' => 'text',
-                'dateFormat' => null,
-                'header_html_content' => null,
-                'enable_html_content' => false,
-                'contentAlign' => null,
-                'textAlign' => null,
-                'original_name' => $column,
-                'wp_post' =>  [
-                    'field' =>  [
-                        'name' =>  null,
-                        'value' =>  null
-                    ],
-                    'field_types' =>  [
-                        ['key' =>  'acf', 'label' => 'ACF'],
-                        ['key' =>  'post_meta', 'label' => 'Post Meta'],
-                        ['key' =>  'short_code', 'label' => 'Short Code']
-                    ]
-                ]
-            );
-        }
-
-        if ($tableId) {
-            $message = 'Table updated successfully.';
-            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
-            foreach ($columns as $key => $newColumn) {
-                foreach ($oldColumns as $oldColumn) {
-                    if ($oldColumn['original_name'] == $newColumn['original_name']) {
-                        $columns[$key] = $oldColumn;
-                    }
-                }
-            }
-        } else {
-            $tableId = $this->saveTable();
-            $message = 'Table created successfully.';
-        }
-
-        update_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', $_REQUEST['data']['post_types']);
-        update_post_meta($tableId, '_ninja_table_wpposts_ds_where', $_REQUEST['data']['where']);
-        update_post_meta($tableId, '_ninja_table_columns', $columns);
-        update_post_meta($tableId, '_ninja_tables_data_provider', 'wp-posts');
-
-        wp_send_json_success(array('table_id' => $tableId,'message' => $message), 200);
     }
 
     public function installFluentForm()
