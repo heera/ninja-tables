@@ -682,6 +682,9 @@
                 window.ninjaTableBus.$emit('updateTableColumns', () => {
                     this.showColumnEditor = false;
                     this.currentEditingColumn = false;
+                    if(this.dataSource == 'wp-posts') {
+                        this.getData();
+                    }
                 });
             },
             duplicateData(item) {
