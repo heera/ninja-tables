@@ -23,10 +23,13 @@
                 />
             </div>
 
-            <div v-if="dataSourceType == 'external'" class="tablenav top">
+            <div v-if="dataSourceType.indexOf('csv') != -1" class="tablenav top">
                 <external-source-nav :is-editable-message="isEditableMessage"
                                    :loading="syncing"
+                                   :config="config"
+                                   :hasPro="has_pro"
                                    v-model="externalDataSourceUrl"
+                                   :tableCreated="reloadSettingsAndData"
                                    @sync="updateTableSettings"
                 />
             </div>

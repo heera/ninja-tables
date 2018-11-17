@@ -338,7 +338,7 @@ class NinjaTablesAdmin
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
-            'update-external-data-source' => 'updateTableWithExternalDataSource',
+            // 'update-external-data-source' => 'updateTableWithExternalDataSource',
             'get-fluentform-forms' => 'getFluentformForms',
             'set-fluent-form-data-source' => 'createTableWithFluentFormDataSource',
             'get_wp_post_types' => 'getAllPostTypes',
@@ -1717,15 +1717,18 @@ class NinjaTablesAdmin
     }
 
     // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
-    public function createTableWithExternalDataSource($shouldUpdate = false)
+    public function createTableWithExternalDataSource()
     {
+        $tableId = isset($_REQUEST['ID']) ? $_REQUEST['ID'] : null;
+        $url = isset($_REQUEST['remoteURL']) ? $_REQUEST['remoteURL'] : $_REQUEST['remote_url'];
+
         // Validate Title
-        if(!$shouldUpdate && empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+        if(!$tableId && empty($title = sanitize_text_field($_REQUEST['post_title']))) {
             $messages['title'] = __('The title field is required.', 'ninja-tables');
         }
 
         // Validate URL
-        if(empty($url = esc_url_raw($_REQUEST['remote_url'])) || !ninja_tables_is_valid_url($url)) {
+        if(empty(esc_url_raw($url)) || !ninja_tables_is_valid_url($url)) {
             $messages['url'] = __('The url field is empty or invalid.', 'ninja-tables');
         }
 
@@ -1742,94 +1745,109 @@ class NinjaTablesAdmin
             $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $path . '/pub?output=csv';
         }
 
-        // Make sure no error occured from wp_remote_get
-        $response = wp_remote_get($url);
-        if (is_wp_error($response)) {
-            wp_send_json_error(array(
-                'message' => array(
-                    'error' => __($response->get_error_message(), 'ninja-tables'),
-                )
-            ), 400);
-            wp_die();
-        }
-
         // For csv data type (google or other)
         if (in_array($type, array('csv', 'google-csv'))) {
-            $headers = $response['headers'];
-            if(strpos($headers['content-type'], 'csv') !== false) {
-                $headers = League\Csv\Reader::createFromString(
-                    $response['body']
-                )->fetchOne();
-
-                $headers = $this->formatHeader($headers);
-
-                foreach ($headers as $key => $column) {
-                    $columns[] = array(
-                        'name' => $column,
-                        'key' => $key,
-                        'breakpoints' => null,
-                        'data_type' => 'text',
-                        'dateFormat' => null,
-                        'header_html_content' => null,
-                        'enable_html_content' => false,
-                        'contentAlign' => null,
-                        'textAlign' => null,
-                        'original_name' => $column
-                    );
+            if (!empty($_REQUEST['get_headers_only'])) {
+                // Make sure no error occured from wp_remote_get
+                $response = wp_remote_get($url);
+                if (is_wp_error($response)) {
+                    wp_send_json_error(array(
+                        'message' => array(
+                            'error' => __($response->get_error_message(), 'ninja-tables'),
+                        )
+                    ), 400);
+                    wp_die();
                 }
 
-                if ($shouldUpdate) {
-                    $tableId = intval($_REQUEST['tableId']);
-                    $oldColumns = get_post_meta(
-                        $tableId, '_ninja_table_columns', true
-                    );
-                    foreach ($columns as $key => $newColumn) {
-                        foreach ($oldColumns as $oldColumn) {
-                            if ($oldColumn['original_name'] == $newColumn['original_name']) {
-                                $columns[$key] = $oldColumn;
-                            }
+                $headers = $response['headers'];
+
+                if(strpos($headers['content-type'], 'csv') !== false) {
+                    $headers = League\Csv\Reader::createFromString(
+                        $response['body']
+                    )->fetchOne();
+                    wp_send_json_success($this->formatHeader($headers));
+                } else {
+                    wp_send_json_error(array(
+                        'message' => array(
+                            'error' => __(
+                                'Expected CSV but received invalid data type from the given url.',
+                                'ninja-tables'
+                            ),
+                        )
+                    ), 400);
+                }
+                wp_die();
+            }
+            
+            $fields = array_map(function($field) {
+                return $field['name'];
+            }, $_REQUEST['fields']);
+
+            // Validate Fields
+            if (empty($_REQUEST['fields'])) {
+                $messages['fields'] = __('No fields were selected.', 'ninja-tables');
+                if (array_filter($messages)) {
+                    wp_send_json_error(array('message' => $messages), 422);
+                    wp_die();
+                }
+            }
+
+            $headers = $this->formatHeader($fields);
+
+            foreach ($headers as $key => $column) {
+                $columns[] = array(
+                    'name' => $column,
+                    'key' => $key,
+                    'breakpoints' => null,
+                    'data_type' => 'text',
+                    'dateFormat' => null,
+                    'header_html_content' => null,
+                    'enable_html_content' => false,
+                    'contentAlign' => null,
+                    'textAlign' => null,
+                    'original_name' => $column
+                );
+            }
+
+            if ($tableId) {
+                $oldColumns = get_post_meta(
+                    $tableId, '_ninja_table_columns', true
+                );
+                foreach ($columns as $key => $newColumn) {
+                    foreach ($oldColumns as $oldColumn) {
+                        if ($oldColumn['original_name'] == $newColumn['original_name']) {
+                            $columns[$key] = $oldColumn;
                         }
                     }
-
-                    // Reset/Reorder array indices
-                    $columns = array_values($columns);
-                } else {
-                    $tableId = $this->saveTable();
                 }
 
-                update_post_meta($tableId, '_ninja_table_columns', $columns);
-                update_post_meta($tableId, '_ninja_tables_data_provider', $type);
-                update_post_meta($tableId, '_ninja_tables_data_provider_url', $url);
-
-                wp_send_json_success(array('table_id' => $tableId, 'remote_url' => $url));
-
+                // Reset/Reorder array indices
+                $columns = array_values($columns);
             } else {
-                wp_send_json_error(array(
-                    'message' => array(
-                        'error' => __(
-                            'Expected CSV but received invalid data type from the given url.',
-                            'ninja-tables'
-                        ),
-                    )
-                ), 400);
+                $tableId = $this->saveTable();
             }
+
+            update_post_meta($tableId, '_ninja_table_columns', $columns);
+            update_post_meta($tableId, '_ninja_tables_data_provider', $type);
+            update_post_meta($tableId, '_ninja_tables_data_provider_url', $url);
+
+            wp_send_json_success(array('ID' => $tableId, 'remote_url' => $url));
         }
-        wp_die();
     }
 
     // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
-    public function updateTableWithExternalDataSource()
-    {
-        $table = get_post(
-            $tableId = intval($_REQUEST['tableId'])
-        );
+    // public function updateTableWithExternalDataSource()
+    // {
+    //     $table = get_post(
+    //         $tableId = intval($_REQUEST['tableId'])
+    //     );
 
-        $provider = $_REQUEST['type'] = ninja_table_get_data_provider($tableId);
+    //     $provider = $_REQUEST['type'] = ninja_table_get_data_provider($tableId);
 
-        if ($provider == 'google-csv' || $provider == 'csv') {
-            $this->createTableWithExternalDataSource(true);
-        }
-    }
+    //     if ($provider == 'google-csv' || $provider == 'csv') {
+    //         $this->createTableWithExternalDataSource(true);
+    //     }
+    // }
 
     public function getFluentformForms()
     {
