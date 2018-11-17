@@ -955,6 +955,11 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
+
+            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            jQuery(window).on('resize', function(){
+                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            });
             this.generateDefaultCss();
         }
     }
@@ -973,5 +978,10 @@
         max-width: 768px;
         padding: 0px 20px;
         margin: 0 auto;
+    }
+    .design_preview .footable_parent {
+        .footable-header th {
+           // word-break: break-all;
+        }
     }
 </style>
