@@ -342,6 +342,8 @@ class NinjaFooTable
         }
         $tableColumns = $table_vars['columns'];
         $formatted_data = ninjaTablesGetTablesDataByID($table->ID, $table_vars['settings']['default_sorting']);
+
+
         $tableHtml = self::loadView('public/views/table_inner_html', array(
             'table_columns' => $tableColumns,
             'table_rows' => $formatted_data

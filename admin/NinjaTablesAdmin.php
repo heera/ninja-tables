@@ -421,11 +421,11 @@ class NinjaTablesAdmin
     protected function saveTable($postId = null)
     {
         $attributes = array(
-            'post_title' => sanitize_text_field($_REQUEST['post_title']),
-            'post_content' => wp_kses_post($_REQUEST['post_content']),
-            'post_type' => $this->cpt_name,
-            'post_status' => 'publish'
-        );
+        'post_title' => sanitize_text_field($_REQUEST['post_title']),
+        'post_content' => wp_kses_post($_REQUEST['post_content']),
+        'post_type' => $this->cpt_name,
+        'post_status' => 'publish'
+    );
 
         if (!$postId) {
             $postId = wp_insert_post($attributes);
@@ -526,32 +526,7 @@ class NinjaTablesAdmin
 
     private function formatHeader($header)
     {
-        $data = array();
-
-        $column_counter = 1;
-
-        foreach ($header as $item) {
-            $item = trim(strip_tags($item));
-
-            // We'll slugify only if item is printable characters.
-            // Otherwise we'll generate custom key for the item.
-            // Printable chars as in ASCII printable chars.
-            // Ref: http://www.catonmat.net/blog/my-favorite-regex/
-            $key = !preg_match('/[^ -~]/', $item) ? $this->url_slug($item) : null;
-
-            $key = sanitize_title($key, 'ninja_column_' . $column_counter);
-
-            $counter = 1;
-            while (isset($data[$key])) {
-                $key .= '_' . $counter;
-                $counter++;
-            }
-            $data[$key] = $item;
-
-            $column_counter++;
-        }
-
-        return $data;
+        return ninja_table_format_header($header);
     }
 
     private function uploadTableCsv()
@@ -727,7 +702,7 @@ class NinjaTablesAdmin
     public function getTableSettings()
     {
         $table = get_post($tableID = intval($_REQUEST['table_id']));
-        
+
         if(!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
@@ -760,11 +735,15 @@ class NinjaTablesAdmin
             if ($rawColumns && is_array($rawColumns)) {
                 foreach ($rawColumns as $column) {
                     foreach ($column as $column_index => $column_value) {
-                        if ($column_index == 'header_html_content' || $column_index == 'selections') {
+                        if ($column_index == 'header_html_content' || $column_index == 'selections' || $column_index == 'wp_post_custom_data_value') {
                             $column[$column_index] = wp_kses_post($column_value);
                         } else {
                             if (is_array($column_value)) {
                                 $column[$column_index] = ninja_tables_sanitize_array($column_value);
+                            } else if(is_int($column_value)) {
+                                $column[$column_index] = intval($column_value);
+                            } else if(is_bool($column_value)) {
+                                $column[$column_index] = $column_value;
                             } else {
                                 $column[$column_index] = sanitize_text_field($column_value);
                             }
@@ -772,6 +751,8 @@ class NinjaTablesAdmin
                     }
                     $tableColumns[] = $column;
                 }
+                $tableColumns = apply_filters('ninja_table_update_columns_'.ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
+                do_action('ninja_table_before_update_columns_'.ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
                 update_post_meta($tableId, '_ninja_table_columns', $tableColumns);
             }
         }
@@ -1262,337 +1243,6 @@ class NinjaTablesAdmin
         update_option('_ninja_tables_plugin_suggest_dismiss', time());
     }
 
-    private function url_slug($str, $options = array())
-    {
-        // Make sure string is in UTF-8 and strip invalid UTF-8 characters
-        $str = mb_convert_encoding((string)$str, 'UTF-8', mb_list_encodings());
-
-        $defaults = array(
-            'delimiter' => '_',
-            'limit' => null,
-            'lowercase' => true,
-            'replacements' => array(),
-            'transliterate' => true,
-        );
-
-        // Merge options
-        $options = array_merge($defaults, $options);
-
-        $char_map = array(
-            // Latin
-            'À' => 'A',
-            'Á' => 'A',
-            'Â' => 'A',
-            'Ã' => 'A',
-            'Ä' => 'A',
-            'Å' => 'A',
-            'Æ' => 'AE',
-            'Ç' => 'C',
-            'È' => 'E',
-            'É' => 'E',
-            'Ê' => 'E',
-            'Ë' => 'E',
-            'Ì' => 'I',
-            'Í' => 'I',
-            'Î' => 'I',
-            'Ï' => 'I',
-            'Ð' => 'D',
-            'Ñ' => 'N',
-            'Ò' => 'O',
-            'Ó' => 'O',
-            'Ô' => 'O',
-            'Õ' => 'O',
-            'Ö' => 'O',
-            'Ő' => 'O',
-            'Ø' => 'O',
-            'Ù' => 'U',
-            'Ú' => 'U',
-            'Û' => 'U',
-            'Ü' => 'U',
-            'Ű' => 'U',
-            'Ý' => 'Y',
-            'Þ' => 'TH',
-            'ß' => 'ss',
-            'à' => 'a',
-            'á' => 'a',
-            'â' => 'a',
-            'ã' => 'a',
-            'ä' => 'a',
-            'å' => 'a',
-            'æ' => 'ae',
-            'ç' => 'c',
-            'è' => 'e',
-            'é' => 'e',
-            'ê' => 'e',
-            'ë' => 'e',
-            'ì' => 'i',
-            'í' => 'i',
-            'î' => 'i',
-            'ï' => 'i',
-            'ð' => 'd',
-            'ñ' => 'n',
-            'ò' => 'o',
-            'ó' => 'o',
-            'ô' => 'o',
-            'õ' => 'o',
-            'ö' => 'o',
-            'ő' => 'o',
-            'ø' => 'o',
-            'ù' => 'u',
-            'ú' => 'u',
-            'û' => 'u',
-            'ü' => 'u',
-            'ű' => 'u',
-            'ý' => 'y',
-            'þ' => 'th',
-            'ÿ' => 'y',
-            // Latin symbols
-            '©' => '(c)',
-            // Greek
-            'Α' => 'A',
-            'Β' => 'B',
-            'Γ' => 'G',
-            'Δ' => 'D',
-            'Ε' => 'E',
-            'Ζ' => 'Z',
-            'Η' => 'H',
-            'Θ' => '8',
-            'Ι' => 'I',
-            'Κ' => 'K',
-            'Λ' => 'L',
-            'Μ' => 'M',
-            'Ν' => 'N',
-            'Ξ' => '3',
-            'Ο' => 'O',
-            'Π' => 'P',
-            'Ρ' => 'R',
-            'Σ' => 'S',
-            'Τ' => 'T',
-            'Υ' => 'Y',
-            'Φ' => 'F',
-            'Χ' => 'X',
-            'Ψ' => 'PS',
-            'Ω' => 'W',
-            'Ά' => 'A',
-            'Έ' => 'E',
-            'Ί' => 'I',
-            'Ό' => 'O',
-            'Ύ' => 'Y',
-            'Ή' => 'H',
-            'Ώ' => 'W',
-            'Ϊ' => 'I',
-            'Ϋ' => 'Y',
-            'α' => 'a',
-            'β' => 'b',
-            'γ' => 'g',
-            'δ' => 'd',
-            'ε' => 'e',
-            'ζ' => 'z',
-            'η' => 'h',
-            'θ' => '8',
-            'ι' => 'i',
-            'κ' => 'k',
-            'λ' => 'l',
-            'μ' => 'm',
-            'ν' => 'n',
-            'ξ' => '3',
-            'ο' => 'o',
-            'π' => 'p',
-            'ρ' => 'r',
-            'σ' => 's',
-            'τ' => 't',
-            'υ' => 'y',
-            'φ' => 'f',
-            'χ' => 'x',
-            'ψ' => 'ps',
-            'ω' => 'w',
-            'ά' => 'a',
-            'έ' => 'e',
-            'ί' => 'i',
-            'ό' => 'o',
-            'ύ' => 'y',
-            'ή' => 'h',
-            'ώ' => 'w',
-            'ς' => 's',
-            'ϊ' => 'i',
-            'ΰ' => 'y',
-            'ϋ' => 'y',
-            'ΐ' => 'i',
-            // Turkish
-            'Ş' => 'S',
-            'İ' => 'I',
-            'Ç' => 'C',
-            'Ü' => 'U',
-            'Ö' => 'O',
-            'Ğ' => 'G',
-            'ş' => 's',
-            'ı' => 'i',
-            'ç' => 'c',
-            'ü' => 'u',
-            'ö' => 'o',
-            'ğ' => 'g',
-            // Russian
-            'А' => 'A',
-            'Б' => 'B',
-            'В' => 'V',
-            'Г' => 'G',
-            'Д' => 'D',
-            'Е' => 'E',
-            'Ё' => 'Yo',
-            'Ж' => 'Zh',
-            'З' => 'Z',
-            'И' => 'I',
-            'Й' => 'J',
-            'К' => 'K',
-            'Л' => 'L',
-            'М' => 'M',
-            'Н' => 'N',
-            'О' => 'O',
-            'П' => 'P',
-            'Р' => 'R',
-            'С' => 'S',
-            'Т' => 'T',
-            'У' => 'U',
-            'Ф' => 'F',
-            'Х' => 'H',
-            'Ц' => 'C',
-            'Ч' => 'Ch',
-            'Ш' => 'Sh',
-            'Щ' => 'Sh',
-            'Ъ' => '',
-            'Ы' => 'Y',
-            'Ь' => '',
-            'Э' => 'E',
-            'Ю' => 'Yu',
-            'Я' => 'Ya',
-            'а' => 'a',
-            'б' => 'b',
-            'в' => 'v',
-            'г' => 'g',
-            'д' => 'd',
-            'е' => 'e',
-            'ё' => 'yo',
-            'ж' => 'zh',
-            'з' => 'z',
-            'и' => 'i',
-            'й' => 'j',
-            'к' => 'k',
-            'л' => 'l',
-            'м' => 'm',
-            'н' => 'n',
-            'о' => 'o',
-            'п' => 'p',
-            'р' => 'r',
-            'с' => 's',
-            'т' => 't',
-            'у' => 'u',
-            'ф' => 'f',
-            'х' => 'h',
-            'ц' => 'c',
-            'ч' => 'ch',
-            'ш' => 'sh',
-            'щ' => 'sh',
-            'ъ' => '',
-            'ы' => 'y',
-            'ь' => '',
-            'э' => 'e',
-            'ю' => 'yu',
-            'я' => 'ya',
-            // Ukrainian
-            'Є' => 'Ye',
-            'І' => 'I',
-            'Ї' => 'Yi',
-            'Ґ' => 'G',
-            'є' => 'ye',
-            'і' => 'i',
-            'ї' => 'yi',
-            'ґ' => 'g',
-            // Czech
-            'Č' => 'C',
-            'Ď' => 'D',
-            'Ě' => 'E',
-            'Ň' => 'N',
-            'Ř' => 'R',
-            'Š' => 'S',
-            'Ť' => 'T',
-            'Ů' => 'U',
-            'Ž' => 'Z',
-            'č' => 'c',
-            'ď' => 'd',
-            'ě' => 'e',
-            'ň' => 'n',
-            'ř' => 'r',
-            'š' => 's',
-            'ť' => 't',
-            'ů' => 'u',
-            'ž' => 'z',
-            // Polish
-            'Ą' => 'A',
-            'Ć' => 'C',
-            'Ę' => 'e',
-            'Ł' => 'L',
-            'Ń' => 'N',
-            'Ó' => 'o',
-            'Ś' => 'S',
-            'Ź' => 'Z',
-            'Ż' => 'Z',
-            'ą' => 'a',
-            'ć' => 'c',
-            'ę' => 'e',
-            'ł' => 'l',
-            'ń' => 'n',
-            'ó' => 'o',
-            'ś' => 's',
-            'ź' => 'z',
-            'ż' => 'z',
-            // Latvian
-            'Ā' => 'A',
-            'Č' => 'C',
-            'Ē' => 'E',
-            'Ģ' => 'G',
-            'Ī' => 'i',
-            'Ķ' => 'k',
-            'Ļ' => 'L',
-            'Ņ' => 'N',
-            'Š' => 'S',
-            'Ū' => 'u',
-            'Ž' => 'Z',
-            'ā' => 'a',
-            'č' => 'c',
-            'ē' => 'e',
-            'ģ' => 'g',
-            'ī' => 'i',
-            'ķ' => 'k',
-            'ļ' => 'l',
-            'ņ' => 'n',
-            'š' => 's',
-            'ū' => 'u',
-            'ž' => 'z',
-        );
-
-        // Make custom replacements
-        $str = preg_replace(array_keys($options['replacements']), $options['replacements'], $str);
-
-        // Transliterate characters to ASCII
-        if ($options['transliterate']) {
-            $str = str_replace(array_keys($char_map), $char_map, $str);
-        }
-
-        // Replace non-alphanumeric characters with our delimiter
-        $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
-
-        // Remove duplicate delimiters
-        $str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
-
-        // Truncate slug to max. characters
-        $str = mb_substr($str, 0, ($options['limit'] ? $options['limit'] : mb_strlen($str, 'UTF-8')), 'UTF-8');
-
-        // Remove delimiter from ends
-        $str = trim($str, $options['delimiter']);
-
-        return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
-    }
-
     /**
      * Save a flag if the a post/page/cpt have [ninja_tables] shortcode
      *
@@ -1803,7 +1453,7 @@ class NinjaTablesAdmin
                 }
                 wp_die();
             }
-            
+
             $fields = array_map(function($field) {
                 return $field['name'];
             }, $_REQUEST['fields']);
@@ -1996,78 +1646,6 @@ class NinjaTablesAdmin
         wp_send_json_success(
             compact('post_fields', 'post_types', 'authors', 'postStatuses'), 200
         );
-    }
-
-    public function createTableWithWPPostDataSource()
-    {
-        if (!($tableId = $_REQUEST['tableId'])) {
-            // Validate Title
-            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
-                $messages['title'] = __('The title field is required.', 'ninja-tables');
-            }
-        }
-
-        // Validate Columns
-        $fields = isset($_REQUEST['data']['columns']) ? $_REQUEST['data']['columns'] : array();
-        if (!($fields = ninja_tables_sanitize_array($fields))) {
-            $messages['columns'] = __('No columns were selected.', 'ninja-tables');
-        }
-
-        // If Validation failed
-        if (array_filter($messages)) {
-            wp_send_json_error(array('message' => $messages), 422);
-            wp_die();
-        }
-
-        $headers = $this->formatHeader($fields);
-
-        foreach ($headers as $key => $column) {
-            $columns[] = array(
-                'name' => $column,
-                'key' => $key,
-                'breakpoints' => null,
-                'data_type' => 'text',
-                'dateFormat' => null,
-                'header_html_content' => null,
-                'enable_html_content' => false,
-                'contentAlign' => null,
-                'textAlign' => null,
-                'original_name' => $column,
-                'wp_post' =>  [
-                    'field' =>  [
-                        'name' =>  null,
-                        'value' =>  null
-                    ],
-                    'field_types' =>  [
-                        ['key' =>  'acf', 'label' => 'ACF'],
-                        ['key' =>  'post_meta', 'label' => 'Post Meta'],
-                        ['key' =>  'short_code', 'label' => 'Short Code']
-                    ]
-                ]
-            );
-        }
-
-        if ($tableId) {
-            $message = 'Table updated successfully.';
-            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
-            foreach ($columns as $key => $newColumn) {
-                foreach ($oldColumns as $oldColumn) {
-                    if ($oldColumn['original_name'] == $newColumn['original_name']) {
-                        $columns[$key] = $oldColumn;
-                    }
-                }
-            }
-        } else {
-            $tableId = $this->saveTable();
-            $message = 'Table created successfully.';
-        }
-
-        update_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', $_REQUEST['data']['post_types']);
-        update_post_meta($tableId, '_ninja_table_wpposts_ds_where', $_REQUEST['data']['where']);
-        update_post_meta($tableId, '_ninja_table_columns', $columns);
-        update_post_meta($tableId, '_ninja_tables_data_provider', 'wp-posts');
-
-        wp_send_json_success(array('table_id' => $tableId,'message' => $message), 200);
     }
 
     public function installFluentForm()

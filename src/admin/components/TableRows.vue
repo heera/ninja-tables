@@ -34,7 +34,7 @@
                 />
             </div>
 
-            <div v-if="dataSourceType == 'wp-posts'" class="tablenav top">
+            <div v-if="dataSourceType == 'wp-posts' && new_column" class="tablenav top">
                 <WPPostsNav
                     :config="config"
                     :model="new_column"
@@ -242,26 +242,7 @@
         data() {
             return {
                 columnModal: false,
-                new_column: {
-                    name: '',
-                    key: '',
-                    breakpoints: '',
-                    data_type: 'text',
-                    dateFormat: '',
-                    header_html_content: "",
-                    enable_html_content: false,
-                    wp_post: {
-                        field: {
-                            name: null,
-                            value: null
-                        },
-                        field_types: [
-                            {key: 'acf', label:'ACF'},
-                            {key: 'post_meta', label:'Post Meta'},
-                            {key: 'short_code', label:'Short Code'}
-                        ]
-                    }
-                },
+                new_column: {},
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
                 isCompact: true,
@@ -552,29 +533,26 @@
             addNewColumn() {
                 if (this.validateColumn(this.new_column)) {
                     this.config.columns.push(this.new_column);
-                    this.new_column = {
-                        name: '',
-                        key: '',
-                        breakpoints: '',
-                        data_type: 'text',
-                        dateFormat: '',
-                        header_html_content: "",
-                        enable_html_content: false,
-                        wp_post: {
-                            field: {
-                                name: null,
-                                value: null
-                            },
-                            field_types: [
-                                {key: 'acf', label:'ACF'},
-                                {key: 'post_meta', label:'Post Meta'},
-                                {key: 'short_code', label:'Short Code'}
-                            ]
-                        }
-                    };
+                    this.setNewColumn();
                     this.columnModal = false;
                     this.storeSettings();
                 }
+            },
+
+            setNewColumn() {
+                let newColumn = {
+                    name: '',
+                    key: '',
+                    breakpoints: '',
+                    data_type: 'text',
+                    dateFormat: '',
+                    header_html_content: "",
+                    enable_html_content: false,
+                };
+                if(this.dataSourceType === 'wp-posts') {
+                    newColumn.source_type = 'custom';
+                }
+                this.new_column = newColumn;
             },
 
             /**
@@ -766,6 +744,7 @@
         mounted() {
             this.getData();
             this.tableWidth = jQuery('.wrap').width() + 'px';
+            this.setNewColumn();
         }
     }
 </script>
