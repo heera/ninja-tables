@@ -2,6 +2,8 @@
 
 namespace NinjaTable\FrontEnd\DataProviders;
 
+use NinjaTables\Classes\ArrayHelper;
+
 trait WPPostDataSourceTrait
 {
     private $__queryable_postColumns__ = array();
@@ -253,6 +255,9 @@ trait WPPostDataSourceTrait
     {
         $type = $column['wp_post_custom_data_type'];
         $value = $column['wp_post_custom_data_value'];
+        if (!$value) {
+            return '';
+        }
         if ($type == 'acf_field') {
             if ($this->acf_installed || function_exists('get_field')) {
                 $this->acf_installed = true;
@@ -263,19 +268,24 @@ trait WPPostDataSourceTrait
         } else if ($type == 'shortcode') {
             // check for data types
             $codes = $this->getShortCodes($value, $post);
-            if($codes) {
+            if ($codes) {
                 $value = str_replace(array_keys($codes), array_values($codes), $value);
                 return do_shortcode($value);
+            } else {
+                return do_shortcode($value);
             }
+        } else if($type == 'featured_image') {
+            $value = $this->getFeaturedImage($post, $column);
         }
         return $value;
     }
 
-    private function getShortCodes($string, $post) {
+    private function getShortCodes($string, $post)
+    {
         $matches = array();
         $regex = "/\{([^\}]*)\}/";
         preg_match_all($regex, $string, $matches);
-        if(count($matches) != 2) {
+        if (count($matches) != 2) {
             return false;
         }
         $formats = array();
@@ -288,22 +298,24 @@ trait WPPostDataSourceTrait
 
         foreach ($matches[1] as $match) {
             $group = substr($match, 0, strpos($match, '.'));
-            $fieldName = str_replace($group.'.', '',$match);
+            $fieldName = str_replace($group . '.', '', $match);
             $parseValue = '';
-            if($group && $fieldName) {
-                if($group == 'post') {
-                    if(property_exists($post, $fieldName)) {
+            if ($group && $fieldName) {
+                if ($group == 'post') {
+                    if (property_exists($post, $fieldName)) {
                         $parseValue = $post->{$fieldName};
+                    } else if ($fieldName == 'permalink') {
+                        $parseValue = get_the_permalink($post);
+                    } else if ($fieldName == 'featured_image_url') {
+                        $parseValue = get_the_post_thumbnail_url($post);
                     }
-                } else if($group == 'postmeta') {
+                } else if ($group == 'postmeta') {
                     $parseValue = get_post_meta($post->ID, $fieldName, true);
-                } else if($group == 'acf' && function_exists('get_field' )) {
-                    if($fieldName == 'test_3') {
-                        $parseValue = get_field($fieldName, $post->ID);
-                    }
+                } else if ($group == 'acf' && function_exists('get_field')) {
+                    $parseValue = get_field($fieldName, $post->ID);
                 }
             }
-            $formats['{'.$match.'}'] = $parseValue;
+            $formats['{' . $match . '}'] = $parseValue;
         }
         return $formats;
     }
@@ -314,14 +326,14 @@ trait WPPostDataSourceTrait
             $atts = '';
             if ($column['permalinked'] == 'yes') {
                 if ($column['filter_permalinked'] == 'yes') {
-                    $atts = ' data-target_column='.$column['key'].' class="ninja_table_permalink ninja_table_do_column_filter" ';
+                    $atts = ' data-target_column=' . $column['key'] . ' class="ninja_table_permalink ninja_table_do_column_filter" ';
                 } else if ($column['permalink_target'] == '_blank') {
                     $atts = ' class="ninja_table_tax_permalink" target="_blank" ';
                 } else {
                     $atts = ' class="ninja_table_tax_permalink" ';
                 }
             }
-            
+
             $terms = array_map(function ($term) use ($atts) {
                 if ($atts) {
                     $link = get_term_link($term);
@@ -351,8 +363,26 @@ trait WPPostDataSourceTrait
 
         if ($atts && $authorName) {
             $authlink = get_author_posts_url($post->post_author);
-            return '<a data-target_column='.$column['key'].' href="' . $authlink . '" ' . $atts . '>' . $authorName . '</a>';
+            return '<a data-target_column=' . $column['key'] . ' href="' . $authlink . '" ' . $atts . '>' . $authorName . '</a>';
         }
         return $authorName;
+    }
+
+    private function getFeaturedImage($post, $column) {
+        $featuredImageUrl = get_the_post_thumbnail_url($post, ArrayHelper::get($column, 'wp_post_custom_data_value', 'thumbnail'));
+        if(!$featuredImageUrl) {
+            return '';
+        }
+        $postTitle = $post->post_title;
+        $value = '<img alt="'.$postTitle.'" src="'.$featuredImageUrl.'" />';
+        // Check if linkable
+        if ($column['permalinked'] == 'yes') {
+            $atts = '';
+            if ($column['permalink_target'] == '_blank') {
+                $atts = 'target="_blank"';
+            }
+            return '<a ' . $atts . ' title="' . $postTitle . '" class="ninja_table_permalink" href="' . get_the_permalink($post) . '">' . $value . '</a>';
+        }
+        return $value;
     }
 }

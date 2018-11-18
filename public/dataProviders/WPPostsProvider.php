@@ -14,6 +14,7 @@ class WPPostsProvider
         add_filter('ninja_tables_get_table_data_wp-posts', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_wp-posts', array($this, 'data'), 10, 2);
         add_action('wp_ajax_ninja_table_wp-posts_create_table', array($this, 'createTable'));
+        add_action('wp_ajax_ninja_table_wp-posts_get_custom_field_options', array($this, 'getTableDataOptions'));
     }
 
 
@@ -42,12 +43,12 @@ class WPPostsProvider
 
         if ($tableId) {
             $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
-            
-            $oldColumnOriginalNames = array_filter(array_map(function($col) {
+
+            $oldColumnOriginalNames = array_filter(array_map(function ($col) {
                 return $col['original_name'];
             }, $oldColumns));
 
-            $oldColumns = array_filter($oldColumns, function($col) use($fields) {
+            $oldColumns = array_filter($oldColumns, function ($col) use ($fields) {
                 return in_array($col['original_name'], $fields);
             });
 
@@ -201,5 +202,50 @@ class WPPostsProvider
             wp_update_post($attributes);
         }
         return $postId;
+    }
+
+    public function getTableDataOptions()
+    {
+        $data = array(
+            'custom_fields' => array(
+                array(
+                    "key" => 'acf_field',
+                    "label" => 'Advanced Custom Fields (ACF)',
+                    "instruction" => 'You can populate any ACF fields. Please provide the selector name of the ACF field then your table column values will be populated',
+                    "learn_more_url" => 'https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/acf-field/',
+                    "learn_more_text" => 'Learn more about ACF Field integration',
+                    "value_type" => 'text',
+                    "placeholder" => 'Type ACF field selector',
+                    "disabled" => !function_exists('get_field')
+                ),
+                array(
+                    "key" => 'post_meta',
+                    "label" => 'Post Meta',
+                    "placeholder" => 'Type Post Meta key',
+                    "instruction" => 'You can populate any Post Meta. Please provide the name of the meta key then your table column values will be populated for corresponding row',
+                    "learn_more_url" => 'https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/custom-column-on-wp-posts-table/',
+                    "learn_more_text" => 'Learn more about Post Meta integration',
+                    "value_type" => 'text'
+                ),
+                array(
+                    "key" => 'shortcode',
+                    "label" => 'Shortcode / Computed Value or HTML',
+                    "placeholder" => 'Provide any valid HTML / Computed fields, Please check instruction / documentation for advance usage',
+                    "instruction" => 'You can add any type of HTML or customized dynamic field / shortcode as the column value. You add dynamic post/post meta/acf field like as below: <ul><li>For Post Field: {post.ID} / {post.post_title} / {post.permalink}</li><li>For Post Meta: {postmeta.POSTMETA_KEY_NAME}</li><li>For ACF Field: {acf.acf_field_name}</li><li>For Dynamic Shortcode: [yourshortcode YourParam="{post.ID}"]</li></ul>',
+                    "learn_more_url" => 'https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/shortcode-computed-value-or-html-in-wp-posts-table/',
+                    "learn_more_text" => 'Please read the documentation for more details and advanced usage',
+                    "value_type" => 'textarea'
+                ),
+                array(
+                    "key" => 'featured_image',
+                    "label" => 'Featured Image',
+                    "instruction" => 'Show Featured image with post link / without link',
+                    "value_type" => 'options',
+                    "placeholder" => 'Select Image Size',
+                    "options" => get_intermediate_image_sizes()
+                ),
+            )
+        );
+        wp_send_json_success($data);
     }
 }

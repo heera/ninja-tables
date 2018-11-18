@@ -10,6 +10,14 @@
 
             <!-- <el-table-column type="selection" fixed width="55" /> -->
 
+            <el-table-column :label="$t('ID')" width="90">
+                <template slot-scope="scope">
+                    <router-link :to="{ name: 'data_items', params: { table_id: scope.row.ID } }">
+                        {{ scope.row.ID }}
+                    </router-link>
+                </template>
+            </el-table-column>
+
             <el-table-column :label="$t('Title')">
                 <template slot-scope="scope">
                     <strong>
