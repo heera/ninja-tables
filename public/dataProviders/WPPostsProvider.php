@@ -128,7 +128,7 @@ class WPPostsProvider
         $newData = array();
         foreach ($this->getPosts($tableId) as $key => $post) {
             $newData[] = array(
-                'id' => $post['ID'],
+                'id' => $key,
                 'values' => $post,
                 'position' => $key,
             );
