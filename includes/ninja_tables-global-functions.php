@@ -322,11 +322,23 @@ if (!function_exists('ninja_table_get_data_provider')) {
 if (!function_exists('ninja_table_format_header')) {
     function ninja_table_format_header($header)
     {
+        $acceptedChars = array(
+            'a','b','c','d','e','f','g','h','i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q',
+            'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        );
+
         $data = array();
         $column_counter = 1;
         foreach ($header as $item) {
             $item = trim(strip_tags($item));
-            $key = !preg_match('/[^ -~]/', $item) ? ninja_table_url_slug($item) : null;
+            $string = strtolower($item);
+            $chars = str_split($string);
+            $key = '';
+            foreach ($chars as $char) {
+                if(in_array($char, $acceptedChars)) {
+                    $key .= $char;
+                }
+            }
             $key = sanitize_title($key, 'ninja_column_' . $column_counter, 'display');
             $counter = 1;
             while (isset($data[$key])) {
