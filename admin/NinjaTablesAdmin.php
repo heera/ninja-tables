@@ -1416,9 +1416,11 @@ class NinjaTablesAdmin
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
 
+        $messages = array();
+
         if (!$formId) {
             // Validate Title
-            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+            if (empty( $_REQUEST['post_title'] ) ) {
                 $messages['title'] = __('The title field is required.', 'ninja-tables');
             }
         }
@@ -1441,7 +1443,7 @@ class NinjaTablesAdmin
         }
 
         $headers = $this->formatHeader($headers);
-
+        $columns = array();
         foreach ($headers as $key => $column) {
             $columns[] = array(
                 'name' => $column,
