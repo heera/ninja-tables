@@ -4,7 +4,7 @@
             <div class="conditional-settings-title">
                 Customize your table's appearances based on the cell value. Add as many conditions as you like.
             </div>
-            <el-button size="small" type="primary" @click="addCondition" :disabled="!hasPro">
+            <el-button size="small" type="info" @click="addCondition" :disabled="!hasPro">
                 Add Condition
             </el-button>
         </div>
@@ -170,7 +170,7 @@
             </el-col>
         </el-row>
 
-        <el-row v-if="column.conditions && !column.conditions.length">
+        <el-row v-if="!column.conditions || !column.conditions.length">
             <el-alert
                 center
                 :closable=false
@@ -219,7 +219,7 @@
                 ].indexOf(condition.targetAction) != -1;
             },
         },
-        created() {
+        mounted() {
             if (!this.column.conditions) {
                 this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
             }

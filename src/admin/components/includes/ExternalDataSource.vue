@@ -16,7 +16,7 @@
                         Whenever your Google Sheets data changes it will be automatically reflected here. You won't have to do a thing.
                     </p>
                 </template>
-                
+
                 <template v-if="type == 'csv'">
                     <h3>
                         Construct Table from Remote CSV File
@@ -29,22 +29,22 @@
                 <div class="form-group">
                     <label for="name">{{ $t('Table Title') }}</label>
                     <input v-model="table.post_title"
-                           type="text" 
-                           id="name" 
+                           type="text"
+                           id="name"
                            class="form-control"
                            placeholder="Enter a title to identify your table"
-                           :disabled="!hasPro"
+                           :disabled="!activated_features.external_data_source"
                     >
                 </div>
 
                 <div class="form-group">
                     <label for="remote_url">{{ $t('Data Source URL') }}</label>
                     <input v-model="table.remote_url"
-                           id="remote_url" 
-                           type="text" 
+                           id="remote_url"
+                           type="text"
                            class="form-control"
                            placeholder="Enter your source URL"
-                           :disabled="!hasPro"
+                           :disabled="!activated_features.external_data_source"
                     />
                 </div>
             </template>
@@ -74,9 +74,12 @@
                 <el-table-column prop="name" label="Select Entry Fields"></el-table-column>
             </el-table>
         </template>
-    
+
         <template v-if="!hasPro" >
             <premium-notice />
+        </template>
+        <template v-else-if="!activated_features.external_data_source">
+            <UpgradeNotice />
         </template>
 
         <div class="modal-footer">
@@ -89,11 +92,10 @@
 
                 <el-col :md="12" v-if="active_step > 0">
                     <el-button
-                        type="primary" 
-                        :loading="saving" 
+                        type="primary"
+                        :loading="saving"
                         @click="save"
-                        size="small"
-                       :disabled="!hasPro"
+                       :disabled="!activated_features.external_data_source"
                     >{{ $t('Save') }}</el-button>
                 </el-col>
             </el-row>
@@ -102,7 +104,6 @@
         <div style="margin-top: 15px;" v-if="editing">
             <el-input
                 placeholder="Remote URL..."
-                size="small"
                 v-model="table.remoteURL"
                 v-on:keyup.enter="fatchRemoteData"
             >
@@ -129,10 +130,13 @@
 
 <script>
     import PremiumNotice from '../includes/PremiumNotice';
+    import UpgradeNotice from '../includes/UpgradeNotice';
+
     export default {
         name: 'Remote-Data-Source',
         components: {
-            PremiumNotice
+            PremiumNotice,
+            UpgradeNotice
         },
         props: {
             columns: {
@@ -161,6 +165,12 @@
             editing: {
                 type: Boolean,
                 default: false
+            },
+            activated_features: {
+                type: Object,
+                default: function () {
+                    return {}
+                }
             }
         },
         data() {
@@ -197,10 +207,9 @@
                 // if (this.fields.length) return;
                 this.fetching = true;
                 jQuery.getJSON(ajaxurl, {
+                    action: 'ninja_table_external_data_source_create',
                     ...this.table,
                     type: this.type,
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'set-external-data-source',
                     get_headers_only: true
                 })
                 .then(res => {
@@ -231,8 +240,7 @@
                 jQuery.post(ajaxurl, {
                     ...this.table,
                     type: this.type,
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'set-external-data-source',
+                    action: 'ninja_table_external_data_source_create'
                 })
                 .then(({data}) => this.tableCreated(data.ID))
                 .fail(error => {

@@ -1,5 +1,5 @@
 <template>
-    <div class="wp_posts_dynamic_field">
+    <div v-loading="loading" class="wp_posts_dynamic_field">
         <h4>{{ $t('Dynamic Post Data Settings') }}</h4>
         <hr />
         <template v-if="column.source_type == 'custom'">
@@ -17,6 +17,7 @@
                     </el-tooltip>
                 </template>
                 <el-select
+                        style="width: 90%"
                         v-model="column.wp_post_custom_data_type"
                         placeholder="Select Field"
                         size="small"
@@ -24,8 +25,10 @@
                     <el-option
                             v-for="type in post_data_types"
                             :value="type.key"
+                            :disabled="type.disabled"
+                            :label="type.label"
                             :key="type.key"
-                    >{{ type.label }}</el-option>
+                    ></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item>
@@ -39,15 +42,42 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
+                <template v-if="selectedFiledValueType == 'options'">
+                    <el-select
+                            style="width: 90%"
+                            v-model="column.wp_post_custom_data_value"
+                            :placeholder="selectedField.placeholder"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="type in selectedField.options"
+                                :value="type"
+                                :label="type"
+                                :key="type"
+                        ></el-option>
+                    </el-select>
+                </template>
+
                 <el-input
-                        placeholder="Enter Value"
+                        v-else
+                        :type="selectedFiledValueType"
+                        :placeholder="selectedField.placeholder"
                         size="small"
                         v-model="column.wp_post_custom_data_value"
                 >
                 </el-input>
+
+                <div class="ninja_instruction" v-if="selectedField && selectedField.instruction">
+                    <p v-html="selectedField.instruction"></p>
+                    <p v-if="selectedField.learn_more_url">
+                        <a target="_blank" :href="selectedField.learn_more_url">
+                            {{selectedField.learn_more_text}}
+                        </a>
+                    </p>
+                </div>
             </el-form-item>
         </template>
-        <template v-else-if="column.source_type == 'post_data'">
+        <template v-if="column.source_type == 'post_data' || (column.source_type == 'custom' && column.wp_post_custom_data_type == 'featured_image')">
             <el-form-item>
                 <template slot="label">
                     {{ $t("Link") }}
@@ -174,24 +204,53 @@
         props: ['column'],
         data() {
             return {
-                post_data_types: [
-                    {
-                        key: 'acf_field',
-                        label: 'ACF Field',
-                        instruction: ''
-                    },
-                    {
-                        key: 'post_meta',
-                        label: 'Post Meta',
-                        instruction: ''
-                    },
-                    {
-                        key: 'shortcode',
-                        label: 'Shortcode',
-                        instruction: ''
-                    }
-                ]
+                loading: false,
+                post_data_types: []
             };
+        },
+        computed: {
+            selectedField() {
+                let found = this.post_data_types.find((element) => {
+                    return element.key == this.column.wp_post_custom_data_type;
+                });
+                if(found) {
+                    return found;
+                }
+                return {};
+            },
+            selectedFiledValueType() {
+                if(this.selectedField && this.selectedField.value_type) {
+                    return this.selectedField.value_type;
+                }
+                return 'text';
+            }
+        },
+        methods: {
+            setFieldOptions() {
+                this.loading = true;
+                if(window.ninja_wp_posts_custom_fields) {
+                    this.post_data_types = window.ninja_wp_posts_custom_fields;
+                    this.loading = false;
+                    return;
+                }
+
+                jQuery.get(ajaxurl, {
+                    action: 'ninja_table_wp-posts_get_custom_field_options'
+                })
+                    .then(response => {
+                        window.ninja_wp_posts_custom_fields = response.data.custom_fields;
+                        this.post_data_types = response.data.custom_fields
+                    })
+                    .fail(error => {
+                        console.log(error);
+                    })
+                    .always(() => {
+                        this.loading = false;
+                    })
+            }
+        },
+        mounted() {
+            this.setFieldOptions();
         }
     };
 </script>

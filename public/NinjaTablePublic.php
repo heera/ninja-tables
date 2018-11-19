@@ -187,9 +187,9 @@ class NinjaTablePublic {
 
 	protected function registerDataProviders()
 	{
-		(new FluentFormProvider)->boot();
-		(new DefaultProvider)->boot();
-		(new CsvProvider)->boot();
-		(new WPPostsProvider)->boot();
+        $defaultProvider = new DefaultProvider();
+        $defaultProvider->boot();
+		$fluentFromProvider = new FluentFormProvider();
+		$fluentFromProvider->boot();
 	}
 }

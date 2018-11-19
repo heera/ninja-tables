@@ -57,7 +57,7 @@
                                             />
                                         </div>
                                     </div>
-                                    <draggable v-model="columns" :options="{handle:'.handle', animation: 150}">
+                                    <draggable @end="storeSettings" v-model="columns" :options="{handle:'.handle', animation: 150}">
                                         <div class="column drawer"
                                              v-for="(column, index) in columns"
                                              :key="column.key"
@@ -98,127 +98,15 @@
                     </template>
 
                     <template v-else-if="active_menu == 'rendering_settings'">
-                        <div class="ninja_header">
-                            <h2>Table Render Settings</h2>
-                            <div class="ninja_actions_action">
-                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
-                            </div>
-                        </div>
-                        <div class="ninja_style_wrapper">
-                            <div class="ninja_section_block_body">
-                                <div class="section_block_item">
-                                    <p>Please the select the settings for your table render method. Using Legacy table you can use
-                                        shortcodes in your cells and it will render the full table from php side. Table styles will be
-                                        same for both tables. Most of the cases you will need Ajax Table which is recommended
-                                        settings.</p>
-                                    <div class="card_block">
-                                        <div @click="changeTableType('ajax_table')"
-                                             :class="(tableSettings.render_type == 'ajax_table') ? 'selected_type' : ''"
-                                             class="section_card">
-                                            <div v-show="tableSettings.render_type == 'ajax_table'" class="selected_ribbon">Selected
-                                            </div>
-                                            <h4>Ajax Table</h4>
-                                            <p>
-                                                Use this settings if you have lots of data and don't need cell merge features. It will
-                                                load your data over ajax. Please note that, shortcodes in table will not work here.
-                                            </p>
-                                        </div>
-                                        <div @click="changeTableType('legacy_table')"
-                                             :class="(tableSettings.render_type == 'legacy_table') ? 'selected_type' : ''"
-                                             class="section_card">
-                                            <div v-show="tableSettings.render_type == 'legacy_table'" class="selected_ribbon">Selected
-                                            </div>
-                                            <h4>Advanced Table (Legacy)</h4>
-                                            <div>
-                                                <p>
-                                                    Use this table if you have small amount of data and need the following features
-                                                </p>
-                                                <ul class="ninja_render_features">
-                                                    <li><span class="dashicons dashicons-yes"></span> Colspan ( Cell-Merge )</li>
-                                                    <li><span class="dashicons dashicons-yes"></span> Server Side Dom-Generation</li>
-                                                    <li><span class="dashicons dashicons-yes"></span> Render shortcode into table cells
-                                                    </li>
-                                                    <li><span class="dashicons dashicons-yes"></span> Better for SEO</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="config.table.hasCacheFeature" class="section_block_item">
-                                    <h3>
-                                        Disable Caching
-                                        <el-tooltip placement="right" effect="light">
-                                            <div slot="content">
-                                                To optimize and load faster, we cache the table <br>
-                                                contents. It's not recommended to disable <br>
-                                                caching unless you know what you are doing
-                                            </div>
-                                            <i class="el-icon-info el-text-info"></i>
-                                        </el-tooltip>
-                                    </h3>
-                                    <div class="caching-block">
-                                        <div class="form-group">
-                                            <span style="margin-right: 5px;">Disable Caching</span>
-                                            <el-switch v-model="tableSettings.shouldNotCache" active-value="yes" inactive-value="no"/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="config.table.hasExternalCachingInterval" class="section_block_item">
-                                    <h3>
-                                        Caching Interval
-                                        <el-tooltip placement="right" effect="light">
-                                            <div slot="content">
-                                                To optimize and load faster, You can cache the table data for certain minutes <br/>
-                                                so the data will load from cached data. Please Provide the value in minutes.
-                                            </div>
-                                            <i class="el-icon-info el-text-info"></i>
-                                        </el-tooltip>
-                                    </h3>
-                                    <div class="caching-block">
-                                        <div style="max-width: 400px" class="form-group">
-                                            <span style="margin-right: 5px;">Caching Interval (In Minutes)</span>
-                                            <el-input type="number" size="small" v-model="tableSettings.caching_interval"></el-input>
-                                            <p>Keep Blank or 0 to disable caching for table data</p>
-                                            <p v-if="tableSettings.caching_interval > 60">Current Caching Interval: <b>{{ (tableSettings.caching_interval / 60).toFixed(2) }} hours</b></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                        <ninja-rendering-settings
+                                @storeSettings="storeSettings"
+                                :tableSettings="tableSettings"
+                                :config="config"
+                        />
                     </template>
 
                     <template v-else-if="active_menu == 'language_settings'">
-                        <div class="ninja_header">
-                            <h2>Language Settings</h2>
-                            <div class="ninja_actions_action">
-                                <el-button size="small" type="primary" @click="storeSettings()"> {{ $t('Update Configuration') }}</el-button>
-                            </div>
-                        </div>
-                        <div class="ninja_style_wrapper">
-                            <div class="section_block">
-                                <div class="language_block">
-                                    <div class="form_group">
-                                        <label for="no_result_text">Empty Results Text:</label>
-                                        <input v-model="tableSettings.no_result_text" id="no_result_text" type="text" class="form_control"
-                                               autocomplete="off">
-                                        <small>The text to display if the table contains no rows.</small>
-                                    </div>
-                                    <div class="form_group">
-                                        <label for="search_box_placeholder">Search Box Placeholder Text</label>
-                                        <input v-model="tableSettings.search_placeholder" id="search_box_placeholder" type="text"
-                                               class="form_control" autocomplete="off">
-                                        <small>Search Box Placeholder</small>
-                                    </div>
-                                    <div class="form_group">
-                                        <label for="search_box_in">Search Dropdown Heading</label>
-                                        <input v-model="tableSettings.search_in_text" id="search_box_in" type="text" class="form_control"
-                                               autocomplete="off">
-                                        <small>Search Dropdown Box Title</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <ninja-language-settings @storeSettings="storeSettings" :tableSettings="tableSettings"></ninja-language-settings>
                     </template>
 
                     <template v-else-if="active_menu == 'custom_filters'">
@@ -238,6 +126,8 @@
     import snakeCase from 'lodash/snakeCase'
     import ColumnsEditor from './includes/ColumnsEditor';
     import NinjaCustomFilters from './includes/CustomFilter';
+    import NinjaLanguageSettings from './includes/_LanguageSettings'
+    import NinjaRenderingSettings from './includes/_RenderingSettings'
 
     import { tableLibs } from '../data/data'
 
@@ -246,7 +136,9 @@
         components: {
             draggable,
             ColumnsEditor,
-            NinjaCustomFilters
+            NinjaCustomFilters,
+            NinjaLanguageSettings,
+            NinjaRenderingSettings
         },
         props: ['config'],
         data() {
@@ -259,26 +151,7 @@
                 tableLibs: tableLibs(),
                 doingAjax: false,
                 addColumnStatus: false,
-                new_column: {
-                    name: '',
-                    key: '',
-                    breakpoints: '',
-                    data_type: 'text',
-                    dateFormat: '',
-                    header_html_content: "",
-                    enable_html_content: false,
-                    wp_post: {
-                        field: {
-                            name: null,
-                            value: null
-                        },
-                        field_types: [
-                            {key: 'acf', label:'ACF'},
-                            {key: 'post_meta', label:'Post Meta'},
-                            {key: 'short_code', label:'Short Code'}
-                        ]
-                    }
-                },
+                new_column: false,
                 breakPointsOptions: {
                     'xs': this.$t('Initial Hidden Mobile'),
                     'xs sm': this.$t('Initial Hidden Mobile and Tab'),
@@ -376,26 +249,7 @@
             addNewColumn() {
                 if (this.validateColumn(this.new_column)) {
                     this.columns.push(this.new_column);
-                    this.new_column = {
-                        name: '',
-                        key: '',
-                        breakpoints: '',
-                        data_type: 'text',
-                        dateFormat: '',
-                        header_html_content: "",
-                        enable_html_content: false,
-                        wp_post: {
-                            field: {
-                                name: null,
-                                value: null
-                            },
-                            field_types: [
-                                {key: 'acf', label:'ACF'},
-                                {key: 'post_meta', label:'Post Meta'},
-                                {key: 'short_code', label:'Short Code'}
-                            ]
-                        }
-                    };
+                    this.setNewColumn();
                     this.addColumnStatus = false;
                     this.storeSettings();
                 }
@@ -423,19 +277,34 @@
                     this.showProAd();
                 }
             },
-            changeTableType(tableType) {
-                if(!this.hasPro && tableType == 'legacy_table') {
-                    window.ninjaTableBus.$emit('show_pro_popup', 1);
-                    this.tableSettings.render_type = 'ajax_table';
-                    return;
+            setNewColumn() {
+                let newColumn = {
+                    name: '',
+                    key: '',
+                    breakpoints: '',
+                    data_type: 'text',
+                    dateFormat: '',
+                    header_html_content: "",
+                    enable_html_content: false,
+                };
+                if(this.dataSourceType() === 'wp-posts') {
+                    newColumn.source_type = 'custom';
                 }
-                this.tableSettings.render_type  = tableType;
+                this.new_column = newColumn;
             },
+            dataSourceType() {
+                let dataSource = this.config.table.dataSourceType || 'Default';
+                dataSource = dataSource.indexOf('google') > -1 ? 'Google SpreadSheet' : dataSource;
+                return dataSource;
+            }
         },
         computed: {
             addable() {
                 return ['default', 'wp-posts'].indexOf(this.config.table.dataSourceType) != -1;
             }
+        },
+        mounted() {
+            this.setNewColumn();
         }
     }
 </script>

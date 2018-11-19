@@ -35,7 +35,6 @@ if (!function_exists('ninja_table_get_table_settings')) {
         } else if (empty($tableSettings['css_classes'])) {
             $tableSettings['css_classes'] = array();
         }
-
         return apply_filters('ninja_get_table_settings_' . $scope, $tableSettings, $tableId);
     }
 }
@@ -151,6 +150,8 @@ function ninjaTablesClearTableDataCache($tableId)
 {
     update_post_meta($tableId, '_ninja_table_cache_object', false);
     update_post_meta($tableId, '_ninja_table_cache_html', false);
+    update_post_meta($tableId, '_external_cached_data', false);
+    update_post_meta($tableId, '_last_external_cached_time', false);
 }
 
 function ninjaTablesAllowedHtmlTags($tags)

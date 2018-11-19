@@ -2,6 +2,23 @@
   &.footable.table > thead > tr > th {
     padding: 0.92857143em 0.78571429em;
   }
+
+  &.ninja_search_left {
+    tr.footable-filtering .form-inline {
+      text-align: left;
+    }
+  }
+  &.ninja_search_right {
+    tr.footable-filtering .form-inline {
+      text-align: right;
+    }
+  }
+  &.ninja_search_center {
+    tr.footable-filtering .form-inline {
+      text-align: center;
+    }
+  }
+
   td.ninja_temp_cell {
     display: none !important;
   }
@@ -140,6 +157,10 @@
       margin: 0;
       padding: 0;
     }
+  }
+
+  img {
+    max-width: 100%;
   }
 
 }

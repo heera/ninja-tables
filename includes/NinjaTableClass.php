@@ -93,7 +93,7 @@ class NinjaTableClass {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-		
+
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
@@ -111,7 +111,7 @@ class NinjaTableClass {
 		 * The class responsible for all global functions.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ninja_tables-global-functions.php';
-		
+
 		/**
 		 * Include Libs
 		 */
@@ -121,8 +121,8 @@ class NinjaTableClass {
 		 * Extorior Page
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ProcessDemoPage.php';
-		
-		
+
+
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
@@ -141,24 +141,10 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/DefaultProvider.php';
 
 		/**
-		 * The class is responsible for providing external data (CSV/Google Spreadsheet Data Source).
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/CsvProvider.php';
-
-		/**
 		 * The class is responsible for providing external data (FluentForm Data Source).
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/FluentFormProvider.php';
 
-		/**
-		 * The class is responsible for providing external data (WPPosts Data Source).
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/WPPostDataSourceTrait.php';
-
-		/**
-		 * The class is responsible for providing external data (WPPosts Data Source).
-		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/dataProviders/WPPostsProvider.php';
 
 		/**
 		 * Load Tables Migration Class
@@ -167,18 +153,17 @@ class NinjaTableClass {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesUltimateTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesSupsysticTableMigration.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Migrations/NinjaTablesTablePressMigration.php';
-		
-		
-		
+
+
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/I18nStrings.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/ArrayHelper.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/TableDrivers/NinjaFooTable.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/libs/Lead/LeadFlow.php';
-		
+
 		/*
 		 * Load Table Importers
 		 */
-		
+
 
 		$this->loader = new NinjaTablesLoader();
 	}
@@ -212,15 +197,15 @@ class NinjaTableClass {
 		$this->loader->add_action( 'init', $plugin_admin, 'register_post_type' );
 		$this->loader->add_action( 'init', $leadActions, 'boot' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_menu' );
-		
+
 		$this->loader->add_action('save_post', $plugin_admin, 'saveNinjaTableFlagOnShortCode');
-		
+
         $this->loader->add_action('wp_ajax_ninja_tables_ajax_actions',
             $plugin_admin,
             'ajax_routes'
         );
         $this->loader->add_action('init', $plugin_admin, 'add_tabales_to_editor');
-        
+
         $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
 
 		add_action('admin_enqueue_scripts', function()
@@ -261,19 +246,19 @@ class NinjaTableClass {
 		$this->loader->add_action('init', $plugin_public, 'register_table_render_functions');
 
 		$this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueueNinjaTableScript', 100);
-		
+
 		$this->loader->add_action(
 			'wp_ajax_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
-		
+
 		$this->loader->add_action(
 			'wp_ajax_nopriv_wp_ajax_ninja_tables_public_action',
 			$plugin_public,
 			'register_ajax_routes'
 		);
-		
+
 		// run foo table
 		$this->loader->add_action(
 			'ninja_tables-render-table-footable',

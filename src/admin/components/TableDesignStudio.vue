@@ -313,6 +313,18 @@
                         </div>
 
                         <div class="form_group">
+                            <label>{{ $t('Search Bar Position') }}</label>
+                            <el-radio-group
+                                    :disabled="!has_pro"
+                                    size="mini" v-model="tableSettings.search_position">
+                                <el-radio-button label="left">Left</el-radio-button>
+                                <el-radio-button label="center">Center</el-radio-button>
+                                <el-radio-button label="right">Right</el-radio-button>
+                                <el-radio-button label="">Default</el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <div class="form_group">
                             <label>Select Sorting Method</label>
                             <el-radio-group size="mini" v-model="tableSettings.sorting_type">
                                 <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By Created at</el-radio-button>
@@ -482,6 +494,10 @@
                     classes.push('hide_all_borders');
                 }
                 classes.push('ninja_table_pro');
+
+                if(this.tableSettings.search_position) {
+                    classes.push('ninja_search_'+this.tableSettings.search_position);
+                }
 
                 let table_css_classes = [];
                 if (this.tableSettings.css_classes) {
@@ -955,6 +971,11 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
+
+            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            jQuery(window).on('resize', function(){
+                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            });
             this.generateDefaultCss();
         }
     }
@@ -973,5 +994,10 @@
         max-width: 768px;
         padding: 0px 20px;
         margin: 0 auto;
+    }
+    .design_preview .footable_parent {
+        .footable-header th {
+           // word-break: break-all;
+        }
     }
 </style>

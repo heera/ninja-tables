@@ -7,6 +7,7 @@
         <template v-if="isFluentFormUpdated">
             <p class="ninja_subtitle" v-if="!editing">
                 Prepare your table from your existing WP Fluent Forms submissions. It can be used to easily showcase your form submissions.
+                <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/wp-fluent-form-integration/">Click here to learn more about WP Fluent From Integration</a>
             </p>
 
             <div class="form-group" v-if="!editing">
@@ -57,7 +58,20 @@
         </template>
 
         <template v-else-if="hasFluentForm">
-            <p>To use this feature your WP Fluent Form need to be updated. Please update WP Fluent From from plugins screen</p>
+            <el-alert title=""
+                      type="warning"
+                      :closable="false"
+                      show-icon
+                      class="premium-notice"
+            >
+                <p>To use this feature your WP Fluent Form need to be updated. Please update WP Fluent From from plugins screen</p>
+            </el-alert>
+
+            <h4>See the form in action:</h4>
+            <br />
+            <div style="position: relative;padding-bottom: 56.25%;padding-top: 25px;height: 0;">
+                <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" width="700" height="394" src="https://www.youtube.com/embed/XxBrmuhu6yQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
         </template>
 
         <div v-else class="fluent-form-promo">
@@ -72,7 +86,7 @@
             <h4>See the form in action:</h4>
             <br />
             <div style="position: relative;padding-bottom: 56.25%;padding-top: 25px;height: 0;">
-                <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" width="700" height="394" src="https://www.youtube.com/embed/nY5sfzfyDnI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;" width="700" height="394" src="https://www.youtube.com/embed/XxBrmuhu6yQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
    </div>
