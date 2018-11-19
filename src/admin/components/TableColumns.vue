@@ -57,7 +57,7 @@
                                             />
                                         </div>
                                     </div>
-                                    <draggable v-model="columns" :options="{handle:'.handle', animation: 150}">
+                                    <draggable @end="storeSettings" v-model="columns" :options="{handle:'.handle', animation: 150}">
                                         <div class="column drawer"
                                              v-for="(column, index) in columns"
                                              :key="column.key"

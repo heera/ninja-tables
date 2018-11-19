@@ -4,8 +4,8 @@ Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
 Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
-Tested up to: 4.9.7
-Stable tag: 2.4.1
+Tested up to: 4.9.8
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,7 +46,7 @@ Here are few styling options you can choose or mix different styles for a table:
 Ninja Tables works on everything from a single page. The backend is built on VueJS and VueRouter as SPA so the experience will be smooth. From creating a table to configuring settings or add entries, importing from CSV, re-arranging columns everything feels real time. No delay - because your time is precious! The frontend table rendering is even faster with minimal js and css load, The frontend data load using ajax so it can handle thousands of table rows without affecting your page load time.
 
 == Whole New Design Studio! ==
-We are very excited to introduce design studio for table design. Now you can configure the settings visually and real-time you can see the changes on your table. Without writing a single line of CSS you can set any color to table components. Also, You can see how your tables will look in different devices sizes. Give a try and let us know what do you think about the new updates. 
+We are very excited to introduce design studio for table design. Now you can configure the settings visually and real-time you can see the changes on your table. Without writing a single line of CSS you can set any color to table components. Also, You can see how your tables will look in different devices sizes. Give a try and let us know what do you think about the new updates.
 
 == Easy Configuration Option ==
 Design Table columns and configure responsive breakpoints is faster with our user-friendly column builder that lets you re-arrange the columns easily. Also, You can specify the data type for each column like single line text, text area or HTML area where you will get WYSIWYG HTML editor.
@@ -61,10 +61,10 @@ You can export your table in CSV or JSON format and save them in a safe place or
 If You already have tables build with TablePress Plugin then You can easily transfer the tables with one single click per table. We made the process very easy so You can enjoy the modern table experience and build your tables in no time.
 
 == Import From ULTIMATE TABLES Plugin ==
-If you use ULTIMATE TABLES plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer ULTIMATE TABLES from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Ultimate Tables" that will show all the Ultimate Tables. With a single click you can transfer any table to Ninja Tables. 
+If you use ULTIMATE TABLES plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer ULTIMATE TABLES from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Ultimate Tables" that will show all the Ultimate Tables. With a single click you can transfer any table to Ninja Tables.
 
 == Import From Data Tables Generator by Supsystic Plugin ==
-If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Data Tables Generator by Supsystic from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Data Tables Generator by Supsystic" that will show all the Supsystic Tables. With a single click you can transfer any table to Ninja Tables. 
+If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Data Tables Generator by Supsystic from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Data Tables Generator by Supsystic" that will show all the Supsystic Tables. With a single click you can transfer any table to Ninja Tables.
 
 == Create WordPress Data Tables in a minute ==
 With Ninja Tables, You can create Data Tables with thousands of rows easily. No Coding required. With our powerful drag and drop features, You can do it easily. It will take less than few minutes.
@@ -114,7 +114,7 @@ We always hear our users. We have a dedicated support team. We try to integrate 
 [WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 
-So, give this plugin a try and check the awesome powerful features and table styles, Let us know what you loved and what else you need more. 
+So, give this plugin a try and check the awesome powerful features and table styles, Let us know what you loved and what else you need more.
 
 
 
@@ -166,7 +166,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 
 1. Table Preview with Features
 2. Add / Edit Table Data
-3. Backend - Table Column Configuration 
+3. Backend - Table Column Configuration
 4. Table Design Studio - Use any color in your mind
 5. Backend - Import / Export Table Data
 6. Import or Export Table from CSV,JSON or from TablePress
@@ -193,12 +193,12 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 * Estimated Work hour for this release: 120 Human hours
 * Estimated Coffee consumed: 103 (Thanks to Chanchal)
 
-= 2.3.4 ( Date: August 11, 2018 ) = 
+= 2.3.4 ( Date: August 11, 2018 ) =
 * Fix Sorting Issue
 * Added Design Suggesion on Table Design Tab
 * Fix Table Demo Preview for Non-Admin Users
 
-= 2.3.3 ( Date: August 09, 2018 ) = 
+= 2.3.3 ( Date: August 09, 2018 ) =
 * Fix bug for date type columns
 
 = 2.3.0 ( Date: August 02, 2018 )
@@ -212,7 +212,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 * Added Design studio for table to colorize tables visually. Now you can change settings and see instance preview
 * Re-Arrange Table Config Components to make things easier.
 * Added Duplicate Row Features ( We know you wanted this )
-* You can change column configuration from table rows tab now 
+* You can change column configuration from table rows tab now
 * Added feature to import table from "Ultimate Tables"
 * Added feature to import table from "Data Tables Generator by Supsystic"
 * Added Permission for User Role based. You can assign custom role now.
@@ -220,12 +220,12 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 
 
 
-= 2.1.1 ( Date: April 28, 2018 ) = 
+= 2.1.1 ( Date: April 28, 2018 ) =
 * Fix Table sorting for HTML Elements
 * Added more customization Options on Advanced Settings
 * Added Select-Options for data
 
-= 2.1.0 ( Date: April 24, 2018 ) = 
+= 2.1.0 ( Date: April 24, 2018 ) =
 * Fix Table sorting issues
 * Better Table Rendering
 
@@ -242,7 +242,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 * Added Legacy Table Support
 
 = 2.0.4 (Date: 04-12-2018 ) =
-* Date Field Support 
+* Date Field Support
 * Iframe support on table cell
 * HTML sorting support
 * Improved CSV upload

@@ -29,7 +29,7 @@ class FluentFormProvider
         return $table;
     }
 
-    public function getTableData($data, $tableId, $perPage, $offset)
+    public function getTableData($data, $tableId, $perPage = -1, $offset = 0)
     {
         if (function_exists('wpFluentForm')) {
             $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
@@ -56,6 +56,8 @@ class FluentFormProvider
                 $entries['submissions']['paginate']['total']
             );
         }
+
+        return $data;
     }
 
     public function data($data, $tableId)
