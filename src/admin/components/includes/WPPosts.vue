@@ -257,7 +257,7 @@
                         post_types: this.selected_post_types,
                         columns: this.selected_post_types_fields,
                         where: this.conditions,
-                        query_extra: this.config.table.query_extra
+                        query_extra: (this.config && this.config.table) ? this.config.table.query_extra : false
                     }
                 })
                 .then(res => {

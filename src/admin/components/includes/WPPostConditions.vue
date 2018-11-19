@@ -185,8 +185,7 @@
                     'post_title',
                     'post_status',
                     'menu_order',
-                    'comment_count',
-                    'post_date'
+                    'comment_count'
                 ]
             };
         },
