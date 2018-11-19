@@ -27,6 +27,7 @@
                     <el-collapse-item title="Conditions" name="1">
                         <wp-post-conditions
                         :authors="authors"
+                        :config="config"
                         :postStatuses="postStatuses"
                         :conditions="conditions"
                         :allPostTypes="all_types"
@@ -46,6 +47,21 @@
         </template>
 
         <template v-if="!hasPLainLayout">
+
+            <h3>
+                Construct Table from Posts / CPTs
+            </h3>
+            <p class="ninja_subtitle">
+                Displays website content in a searchable, sortable with Ninja Tables. It supports custom posts, pages, & custom post types. <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/">Learn more about this module</a>
+            </p>
+
+            <template v-if="!hasPro" >
+                <premium-notice />
+            </template>
+            <template v-else-if="!activated_features.wp_posts_table">
+                <upgrade-notice />
+            </template>
+
             <el-steps :active="active_step" align-center>
                 <el-step title="Step 1"></el-step>
                 <el-step title="Step 2"></el-step>
@@ -99,7 +115,7 @@
 
             <el-row>
                 <el-col :md="12">
-                    <el-button style="margin-top: 12px;" size="small" @click="nextStep">
+                    <el-button type="primary" style="margin-top: 12px;" @click="nextStep">
                         {{ active_step > 0 ? 'Prev' : 'Next' }}
                     </el-button>
                 </el-col>
@@ -107,8 +123,8 @@
                 <el-col :md="12">
                     <el-button
                     v-if="active_step > 0"
-                    type="primary"
-                    size="small"
+                    type="success"
+                    :disabled="!activated_features.wp_posts_table"
                     :loading="saving"
                     style="float:right;margin-top:12px;"
                     @click="save">Save</el-button>
@@ -120,6 +136,8 @@
 
 <script>
     import WPPostConditions from './WPPostConditions';
+    import PremiumNotice from '../includes/PremiumNotice';
+    import UpgradeNotice from '../includes/UpgradeNotice';
 
     export default {
         name: 'WP-Posts',
@@ -133,10 +151,18 @@
             hasPLainLayout: {
                 type: Boolean,
                 default: false
+            },
+            activated_features: {
+                type: Object,
+                default: function () {
+                    return {}
+                }
             }
         },
         components: {
-            'wp-post-conditions': WPPostConditions
+            'wp-post-conditions': WPPostConditions,
+            PremiumNotice,
+            UpgradeNotice
         },
         data() {
             return {
@@ -154,6 +180,8 @@
                 conditions_section: null,
                 conditions: [],
                 active_step: 0,
+                query_extra: {},
+                hasPro: !!window.ninja_table_admin.hasPro,
                 queryable_fields: [
                     'ID',
                     'post_author',
@@ -164,32 +192,14 @@
                 ],
             };
         },
-        created() {
-            jQuery.getJSON(ajaxurl, {
-                action: 'ninja_tables_ajax_actions',
-                target_action: 'get_wp_post_types',
-            }).then(res => {
-                this.authors = res.data.authors;
-                this.all_types = res.data.post_types;
-                this.postStatuses = res.data.postStatuses;
-
-                jQuery.each(this.all_types, (type) => {
-                    this.post_types.push({ key: type, label: type });
+        computed: {
+            query_able_post_types_fields() {
+                return this.post_types_fields.filter(field => {
+                    return (
+                        this.queryable_fields.indexOf(field.key) != -1 || field.key.indexOf('.') != -1
+                    );
                 });
-
-                this.all_fields = res.data.post_fields.map(field => {
-                    return { key: field, label: field };
-                });
-
-                // For editing
-                if (this.config) {
-                    this.tableId = this.config.table.ID;
-                    this.conditions = this.config.table.whereConditions || [];
-                    this.selected_post_types = this.config.table.post_types;
-                    this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
-                    this.handlePostTypeChange();
-                }
-            });
+            }
         },
         methods: {
             nextStep() {
@@ -247,6 +257,7 @@
                         post_types: this.selected_post_types,
                         columns: this.selected_post_types_fields,
                         where: this.conditions,
+                        query_extra: this.config.table.query_extra
                     }
                 })
                 .then(res => {
@@ -268,14 +279,32 @@
                 .always(res => this.saving = false);
             }
         },
-        computed: {
-            query_able_post_types_fields() {
-                return this.post_types_fields.filter(field => {
-                    return (
-                        this.queryable_fields.indexOf(field.key) != -1 || field.key.indexOf('.') != -1
-                    );
+        created() {
+            jQuery.getJSON(ajaxurl, {
+                action: 'ninja_tables_ajax_actions',
+                target_action: 'get_wp_post_types',
+            }).then(res => {
+                this.authors = res.data.authors;
+                this.all_types = res.data.post_types;
+                this.postStatuses = res.data.postStatuses;
+
+                jQuery.each(this.all_types, (type) => {
+                    this.post_types.push({ key: type, label: type });
                 });
-            }
+
+                this.all_fields = res.data.post_fields.map(field => {
+                    return { key: field, label: field };
+                });
+
+                // For editing
+                if (this.config) {
+                    this.tableId = this.config.table.ID;
+                    this.conditions = this.config.table.whereConditions || [];
+                    this.selected_post_types = this.config.table.post_types;
+                    this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
+                    this.handlePostTypeChange();
+                }
+            });
         },
     };
 </script>

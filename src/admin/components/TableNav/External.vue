@@ -14,6 +14,7 @@
                     :table="config.table"
                     :hasPro="hasPro"
                     :editing="true"
+                    :activated_features="activated_features"
                 />
             </el-collapse-item>
         </el-collapse>
@@ -45,7 +46,8 @@
         data() {
             return {
                 state: false,
-                url: this.value
+                url: this.value,
+                activated_features: window.ninja_table_admin.activated_features,
             }
         }
     }

@@ -313,6 +313,18 @@
                         </div>
 
                         <div class="form_group">
+                            <label>{{ $t('Search Bar Position') }}</label>
+                            <el-radio-group
+                                    :disabled="!has_pro"
+                                    size="mini" v-model="tableSettings.search_position">
+                                <el-radio-button label="left">Left</el-radio-button>
+                                <el-radio-button label="center">Center</el-radio-button>
+                                <el-radio-button label="right">Right</el-radio-button>
+                                <el-radio-button label="">Default</el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <div class="form_group">
                             <label>Select Sorting Method</label>
                             <el-radio-group size="mini" v-model="tableSettings.sorting_type">
                                 <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By Created at</el-radio-button>
@@ -482,6 +494,10 @@
                     classes.push('hide_all_borders');
                 }
                 classes.push('ninja_table_pro');
+
+                if(this.tableSettings.search_position) {
+                    classes.push('ninja_search_'+this.tableSettings.search_position);
+                }
 
                 let table_css_classes = [];
                 if (this.tableSettings.css_classes) {

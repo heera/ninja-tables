@@ -11,10 +11,19 @@
                     <i class="el-icon-setting"></i>
                     <span>Default</span>
                 </el-menu-item>
-                
+
                 <el-menu-item @click="activeTabName = 'import_table'" index="import_table">
                     <i class="el-icon-upload2"></i>
                     <span>Import Table</span>
+                </el-menu-item>
+
+                <el-menu-item @click="activeTabName = 'fluent_form'" index='fluent_form'>
+                    <img :src="fluentFormIcon" alt="fluent form icon" class="el-icon-fluent-form">
+                    <span>Connect Fluent Form</span>
+                </el-menu-item>
+
+                <el-menu-item @click="activeTabName = 'wp_posts'" index='wp_posts'>
+                    <i class="el-icon-news"></i> <span>WP Posts</span>
                 </el-menu-item>
 
                 <el-menu-item @click="activeTabName = 'google_spread_sheet'" index='google_spread_sheet'>
@@ -27,14 +36,6 @@
                     <span>Connect External CSV</span>
                 </el-menu-item>
 
-                <el-menu-item @click="activeTabName = 'fluent_form'" index='fluent_form'>
-                    <img :src="fluentFormIcon" alt="fluent form icon" class="el-icon-fluent-form">
-                    <span>Connect Fluent Form</span>
-                </el-menu-item>
-
-                <el-menu-item @click="activeTabName = 'wp_posts'" index='wp_posts'>
-                    <i class="el-icon-news"></i> <span>WP Posts</span>
-                </el-menu-item>
             </el-menu>
         </el-aside>
 
@@ -69,26 +70,31 @@
                     </el-button>
                 </div>
             </template>
-            
+
             <import-table v-if="activeTabName === 'import_table'"></import-table>
 
             <external-data-source v-else-if="activeTabName == 'google_spread_sheet'"
                                   type="google-csv"
                                   :tableCreated="fireTableCreated"
                                   :has-pro="hasPro"
+                                  :activated_features="activated_features"
             />
 
             <external-data-source v-else-if="activeTabName == 'csv'"
                                   type="csv"
                                   :tableCreated="fireTableCreated"
                                   :has-pro="hasPro"
+                                  :activated_features="activated_features"
             />
 
-            <fluent-form-data-source v-else-if="activeTabName == 'fluent_form'"
-                                     :tableCreated="fireTableCreated"
+            <fluent-form-data-source
+                    v-else-if="activeTabName == 'fluent_form'"
+                    :tableCreated="fireTableCreated"
             />
-            <wp-posts-data-source v-else-if="activeTabName == 'wp_posts'"
-                                     :tableCreated="fireTableCreated"
+            <wp-posts-data-source
+                    v-else-if="activeTabName == 'wp_posts'"
+                    :tableCreated="fireTableCreated"
+                    :activated_features="activated_features"
             />
         </el-main>
     </el-container>
@@ -130,6 +136,7 @@
             return {
                 activeTabName: 'default',
                 btnLoading: false,
+                activated_features: window.ninja_table_admin.activated_features,
                 editorOption: {
                     modules: {
                         toolbar: [

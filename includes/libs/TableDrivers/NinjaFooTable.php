@@ -381,6 +381,10 @@ class NinjaFooTable
             $tableCassClasses[] = ArrayHelper::get($settings, 'table_color');
         }
 
+        if ( $searchBarPosition = ArrayHelper::get($settings, 'search_position') ) {
+            $tableCassClasses[] = 'ninja_search_'.$searchBarPosition;
+        }
+
         $definedClasses = ArrayHelper::get($settings, 'css_classes', array());
         $classArray = array_merge($tableCassClasses, $definedClasses);
         $uniqueCssArray = array_unique($classArray);

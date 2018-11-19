@@ -1291,7 +1291,7 @@ ul.ninja_render_features li {
         background: white;
         padding: 10px 20px;
         flex: 2;
-        max-height: 800px;
+        min-height: 800px;
         overflow: scroll;
     }
 }

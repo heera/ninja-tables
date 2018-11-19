@@ -7,6 +7,7 @@ use NinjaTable\TableDrivers\NinjaFooTable;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesTablePressMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -260,7 +261,7 @@ class NinjaTablesAdmin
         if ($tableCount && $tableCount->publish > 1) {
             $leadStatus = apply_filters('ninja_tables_show_lead', $leadStatus);
         }
-        if($tableCount && $tableCount->publish > 0) {
+        if ($tableCount && $tableCount->publish > 0) {
             $totalPublishedTable = $tableCount->publish;
         }
 
@@ -268,8 +269,8 @@ class NinjaTablesAdmin
         $isFluentFromUpdated = false;
 
         // check for right version
-        if($hasFluentFrom) {
-            if($fluentVersionCompare = version_compare(FLUENTFORM_VERSION, '1.7.4') >= 1 ) {
+        if ($hasFluentFrom) {
+            if ($fluentVersionCompare = version_compare(FLUENTFORM_VERSION, '1.7.4') >= 1) {
                 $isFluentFromUpdated = true;
             }
         }
@@ -293,10 +294,14 @@ class NinjaTablesAdmin
             'hasValidLicense' => get_option('_ninjatables_pro_license_status'),
             'i18n' => \NinjaTables\Classes\I18nStrings::getStrings(),
             'published_tables' => $totalPublishedTable,
-            'preview_required_scripts' => [
+            'preview_required_scripts' => array(
                 plugin_dir_url(__DIR__) . "assets/css/ninjatables-public.css",
                 plugin_dir_url(__DIR__) . "public/libs/footable/js/footable.min.js",
-            ]
+            ),
+            'activated_features' => apply_filters('ninja_table_activated_features', array(
+                'default_tables' => true,
+                'fluentform_tables' => true
+            ))
         ));
 
         // Elementor plugin have a bug where they throw error to parse #url, and I really don't know why they want to parse
@@ -380,10 +385,10 @@ class NinjaTablesAdmin
             $table->preview_url = site_url('?ninjatable_preview=' . $table->ID);
             $dataSourceType = ninja_table_get_data_provider($table->ID);
             $table->dataSourceType = $dataSourceType;
-            if($dataSourceType == 'fluent-form') {
+            if ($dataSourceType == 'fluent-form') {
                 $fluentFormFormId = get_post_meta($table->ID, '_ninja_tables_data_provider_ff_form_id', true);
-                if($fluentFormFormId) {
-                    $table->fluentfrom_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id='.$fluentFormFormId);
+                if ($fluentFormFormId) {
+                    $table->fluentfrom_url = admin_url('admin.php?page=fluent_forms&route=entries&form_id=' . $fluentFormFormId);
                 }
             }
         }
@@ -413,18 +418,18 @@ class NinjaTablesAdmin
 
         wp_send_json(array(
             'table_id' => $this->saveTable($postId = intval($_REQUEST['tableId'])),
-            'message' => __('Table '. ($postId ? 'updated' : 'created') .' successfully.', 'ninja-tables')
+            'message' => __('Table ' . ($postId ? 'updated' : 'created') . ' successfully.', 'ninja-tables')
         ), 200);
     }
 
     protected function saveTable($postId = null)
     {
         $attributes = array(
-        'post_title' => sanitize_text_field($_REQUEST['post_title']),
-        'post_content' => wp_kses_post($_REQUEST['post_content']),
-        'post_type' => $this->cpt_name,
-        'post_status' => 'publish'
-    );
+            'post_title' => sanitize_text_field($_REQUEST['post_title']),
+            'post_content' => wp_kses_post($_REQUEST['post_content']),
+            'post_type' => $this->cpt_name,
+            'post_status' => 'publish'
+        );
 
         if (!$postId) {
             $postId = wp_insert_post($attributes);
@@ -610,14 +615,19 @@ class NinjaTablesAdmin
 
         update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
 
-        if ($rows = $content['rows']) {
-            $header = [];
-
-            foreach ($content['columns'] as $column) {
-                $header[$column['key']] = $column['name'];
+        if(isset($content['data_provider']) && $content['data_provider'] != 'default') {
+            $metas = $content['metas'];
+            foreach ($metas as $meta_key => $meta_value) {
+                update_post_meta($tableId, $meta_key, $meta_value);
             }
-
-            $this->insertDataToTable($tableId, $rows, $header);
+        } else {
+            if ($rows = $content['rows']) {
+                $header = [];
+                foreach ($content['columns'] as $column) {
+                    $header[$column['key']] = $column['name'];
+                }
+                $this->insertDataToTable($tableId, $rows, $header);
+            }
         }
 
         wp_send_json(array(
@@ -702,7 +712,7 @@ class NinjaTablesAdmin
     {
         $table = get_post($tableID = intval($_REQUEST['table_id']));
 
-        if(!$table || $table->post_type != 'ninja-table') {
+        if (!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
                 'route' => 'home'
@@ -711,11 +721,11 @@ class NinjaTablesAdmin
 
         $provider = ninja_table_get_data_provider($table->ID);
 
-        $table = apply_filters('ninja_tables_get_table_'.$provider, $table);
+        $table = apply_filters('ninja_tables_get_table_' . $provider, $table);
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
 
-        wp_send_json( array(
+        wp_send_json(array(
             'preview_url' => site_url('?ninjatable_preview=' . $tableID),
             'columns' => ninja_table_get_table_columns($tableID, 'admin'),
             'settings' => ninja_table_get_table_settings($tableID, 'admin'),
@@ -739,9 +749,9 @@ class NinjaTablesAdmin
                         } else {
                             if (is_array($column_value)) {
                                 $column[$column_index] = ninja_tables_sanitize_array($column_value);
-                            } else if(is_int($column_value)) {
+                            } else if (is_int($column_value)) {
                                 $column[$column_index] = intval($column_value);
-                            } else if(is_bool($column_value)) {
+                            } else if (is_bool($column_value)) {
                                 $column[$column_index] = $column_value;
                             } else {
                                 $column[$column_index] = esc_html($column_value);
@@ -750,8 +760,8 @@ class NinjaTablesAdmin
                     }
                     $tableColumns[] = $column;
                 }
-                $tableColumns = apply_filters('ninja_table_update_columns_'.ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
-                do_action('ninja_table_before_update_columns_'.ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
+                $tableColumns = apply_filters('ninja_table_update_columns_' . ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
+                do_action('ninja_table_before_update_columns_' . ninja_table_get_data_provider($tableId), $tableColumns, $rawColumns, $tableId);
                 update_post_meta($tableId, '_ninja_table_columns', $tableColumns);
             }
         }
@@ -839,7 +849,7 @@ class NinjaTablesAdmin
 
         $dataSourceType = ninja_table_get_data_provider($tableId);
 
-        if($dataSourceType == 'default') {
+        if ($dataSourceType == 'default') {
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
 
             $query = ninja_tables_DbTable()->where('table_id', $tableId);
@@ -866,7 +876,7 @@ class NinjaTablesAdmin
             }
         } else {
             list($response, $total) = apply_filters(
-                'ninja_tables_get_table_data_'.$dataSourceType,
+                'ninja_tables_get_table_data_' . $dataSourceType,
                 array(array(), 0),
                 $tableId,
                 $perPage,
@@ -883,7 +893,7 @@ class NinjaTablesAdmin
             $skip
         );
 
-        wp_send_json( array(
+        wp_send_json(array(
             'total' => $total,
             'per_page' => $perPage,
             'current_page' => $currentPage,
@@ -1068,15 +1078,13 @@ class NinjaTablesAdmin
 
         $tableTitle = get_the_title($tableId);
 
-        $fileName = sanitize_title($tableTitle, date('Y-m-d-H-i-s'), 'preview');
+        $fileName = sanitize_title($tableTitle, 'Export-Table-' . date('Y-m-d-H-i-s'), 'preview');
 
         $tableColumns = ninja_table_get_table_columns($tableId, 'admin');
 
         $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
 
-        list($orderByField, $orderByType) = $this->getTableSortingParams($tableId, $tableSettings);
-
-        $data = ninja_tables_DbTable()->where('table_id', $tableId)->orderBy($orderByField, $orderByType)->get();
+        $data = ninjaTablesGetTablesDataByID($tableId);
 
         if ($format == 'csv') {
 
@@ -1090,28 +1098,29 @@ class NinjaTablesAdmin
 
             foreach ($data as $item) {
                 $temp = array();
-                $item = json_decode($item->value, true);
-
                 foreach ($header as $accessor => $name) {
                     $temp[] = $item[$accessor];
                 }
-
                 array_push($exportData, $temp);
             }
-
             $this->exportAsCSV(array_values($header), $exportData, $fileName . '.csv');
         } elseif ($format == 'json') {
             $table = get_post($tableId);
-
-            $tableItems = array_map(function ($item) {
-                return json_decode($item->value, true);
-            }, $data);
 
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,
                 'settings' => $tableSettings,
-                'rows' => $tableItems
+                'data_provider' => ninja_table_get_data_provider($tableId),
+                'metas' => array(
+                    '_ninja_tables_data_provider' => get_post_meta($tableId, '_ninja_tables_data_provider', true),
+                    '_ninja_wp_posts_query_extra' => get_post_meta($tableId, '_ninja_wp_posts_query_extra', true),
+                    '_ninja_table_wpposts_ds_where' => get_post_meta($tableId, '_ninja_table_wpposts_ds_where', true),
+                    '_ninja_table_wpposts_ds_post_types' => get_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', true),
+                    '_ninja_tables_data_provider_url' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
+                    '_ninja_tables_data_provider_ff_form_id' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true)
+                ),
+                'rows' => $data,
             );
 
             $this->exportAsJSON($exportData, $fileName . '.json');
@@ -1120,20 +1129,20 @@ class NinjaTablesAdmin
 
     private function exportAsCSV($header, $data, $fileName = null)
     {
-        $fileName = $fileName ?: 'export-data-' . date('d-m-Y');
+        $fileName = ($fileName) ? $fileName : 'export-data-' . date('d-m-Y') . '.csv';
 
         $writer = \League\Csv\Writer::createFromFileObject(new SplTempFileObject());
         $writer->setDelimiter(",");
         $writer->setNewline("\r\n");
         $writer->insertOne($header);
         $writer->insertAll($data);
-        $writer->output($fileName . '.csv');
+        $writer->output($fileName);
         die();
     }
 
     private function exportAsJSON($data, $fileName = null)
     {
-        $fileName = $fileName ?: 'export-data-' . date('d-m-Y') . '.json';
+        $fileName = ($fileName) ? $fileName : 'export-data-' . date('d-m-Y') . '.json';
 
         header('Content-disposition: attachment; filename=' . $fileName);
 
@@ -1191,7 +1200,7 @@ class NinjaTablesAdmin
         $formatted = array();
 
         $title = __('Select a Table', 'ninja-tables');
-        if(!$tables) {
+        if (!$tables) {
             $title = __('No Tables found. Please add a table first');
         }
         $formatted[] = array(
@@ -1344,7 +1353,7 @@ class NinjaTablesAdmin
         }
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true, 25);
 
-        if(count($formatted_data) > 25) {
+        if (count($formatted_data) > 25) {
             $formatted_data = array_slice($formatted_data, 0, 25);
         }
 
@@ -1388,125 +1397,6 @@ class NinjaTablesAdmin
         // Keep a flag on the options table that the
         // db is migrated to use for manual sorting.
         update_option($option, true);
-    }
-
-    // TODO: Move the code to CsvProvider (Deps: saveTable, formatHeader)
-    public function createTableWithExternalDataSource()
-    {
-        $tableId = isset($_REQUEST['ID']) ? $_REQUEST['ID'] : null;
-        $url = isset($_REQUEST['remoteURL']) ? $_REQUEST['remoteURL'] : $_REQUEST['remote_url'];
-
-        // Validate Title
-        if(!$tableId && empty($title = sanitize_text_field($_REQUEST['post_title']))) {
-            $messages['title'] = __('The title field is required.', 'ninja-tables');
-        }
-
-        // Validate URL
-        if(empty(esc_url_raw($url)) || !ninja_tables_is_valid_url($url)) {
-            $messages['url'] = __('The url field is empty or invalid.', 'ninja-tables');
-        }
-
-        // If Validation failed
-        if (array_filter($messages)) {
-            wp_send_json_error(array('message' => $messages), 422);
-            wp_die();
-        }
-
-        // Ensure the correct url if requesting goggle spreadsheet
-        if(($type = $_REQUEST['type']) == 'google-csv') {
-            $parsedUrl = parse_url($url);
-            $path = substr($parsedUrl['path'], 0, strrpos($parsedUrl['path'], '/'));
-            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $path . '/pub?output=csv';
-        }
-
-        // For csv data type (google or other)
-        if (in_array($type, array('csv', 'google-csv'))) {
-            if (!empty($_REQUEST['get_headers_only'])) {
-                // Make sure no error occured from wp_remote_get
-                $response = wp_remote_get($url);
-                if (is_wp_error($response)) {
-                    wp_send_json_error(array(
-                        'message' => array(
-                            'error' => __($response->get_error_message(), 'ninja-tables'),
-                        )
-                    ), 400);
-                    wp_die();
-                }
-
-                $headers = $response['headers'];
-
-                if(strpos($headers['content-type'], 'csv') !== false) {
-                    $headers = League\Csv\Reader::createFromString(
-                        $response['body']
-                    )->fetchOne();
-                    wp_send_json_success($this->formatHeader($headers));
-                } else {
-                    wp_send_json_error(array(
-                        'message' => array(
-                            'error' => __(
-                                'Expected CSV but received invalid data type from the given url.',
-                                'ninja-tables'
-                            ),
-                        )
-                    ), 400);
-                }
-                wp_die();
-            }
-
-            $fields = array_map(function($field) {
-                return $field['name'];
-            }, $_REQUEST['fields']);
-
-            // Validate Fields
-            if (empty($_REQUEST['fields'])) {
-                $messages['fields'] = __('No fields were selected.', 'ninja-tables');
-                if (array_filter($messages)) {
-                    wp_send_json_error(array('message' => $messages), 422);
-                    wp_die();
-                }
-            }
-
-            $headers = $this->formatHeader($fields);
-
-            foreach ($headers as $key => $column) {
-                $columns[] = array(
-                    'name' => $column,
-                    'key' => $key,
-                    'breakpoints' => null,
-                    'data_type' => 'text',
-                    'dateFormat' => null,
-                    'header_html_content' => null,
-                    'enable_html_content' => false,
-                    'contentAlign' => null,
-                    'textAlign' => null,
-                    'original_name' => $column
-                );
-            }
-
-            if ($tableId) {
-                $oldColumns = get_post_meta(
-                    $tableId, '_ninja_table_columns', true
-                );
-                foreach ($columns as $key => $newColumn) {
-                    foreach ($oldColumns as $oldColumn) {
-                        if ($oldColumn['original_name'] == $newColumn['original_name']) {
-                            $columns[$key] = $oldColumn;
-                        }
-                    }
-                }
-
-                // Reset/Reorder array indices
-                $columns = array_values($columns);
-            } else {
-                $tableId = $this->saveTable();
-            }
-
-            update_post_meta($tableId, '_ninja_table_columns', $columns);
-            update_post_meta($tableId, '_ninja_tables_data_provider', $type);
-            update_post_meta($tableId, '_ninja_tables_data_provider_url', $url);
-
-            wp_send_json_success(array('ID' => $tableId, 'remote_url' => $url));
-        }
     }
 
     public function getFluentformForms()
@@ -1622,7 +1512,7 @@ class NinjaTablesAdmin
 
             $post_types[$type] = array(
                 'taxonomies' => $taxonomies,
-                'fields' => array_map(function($taxonomy) use($type) {
+                'fields' => array_map(function ($taxonomy) use ($type) {
                     return "{$type}.{$taxonomy}";
                 }, array_keys($taxonomies))
             );
@@ -1635,14 +1525,14 @@ class NinjaTablesAdmin
 
     public function installFluentForm()
     {
-        if(!current_user_can('install_plugins')) {
+        if (!current_user_can('install_plugins')) {
             wp_send_json_error(array(
                 'message' => __('You do not have permission to install a plugin, Please ask your administrator to install WP Fluent Form')
             ), 423);
             return;
         }
 
-        if(is_multisite()) {
+        if (is_multisite()) {
             wp_send_json_error(array(
                 'message' => __('You are using wp multisite environment so please install WP FluentForm manually')
             ), 423);
@@ -1650,9 +1540,9 @@ class NinjaTablesAdmin
         }
 
         $result = $this->install_plugin('fluentform', 'fluentform.php');
-        $status = !is_wp_error( $result );
+        $status = !is_wp_error($result);
 
-        if($status) {
+        if ($status) {
             wp_send_json_success(array(
                 'message' => __('WP Fluent Form successfully installed and activated, You are redirecting to WP Fluent Form Now'),
                 'redirect_url' => admin_url('admin.php?page=fluent_forms')
@@ -1666,28 +1556,29 @@ class NinjaTablesAdmin
         }
     }
 
-    public function install_plugin( $slug, $file ) {
+    public function install_plugin($slug, $file)
+    {
         include_once ABSPATH . 'wp-admin/includes/plugin-install.php';
         include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 
         $plugin_basename = $slug . '/' . $file;
 
         // if exists and not activated
-        if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin_basename ) ) {
-            return activate_plugin( $plugin_basename );
+        if (file_exists(WP_PLUGIN_DIR . '/' . $plugin_basename)) {
+            return activate_plugin($plugin_basename);
         }
 
         // seems like the plugin doesn't exists. Download and activate it
-        $upgrader = new Plugin_Upgrader( new WP_Ajax_Upgrader_Skin() );
+        $upgrader = new Plugin_Upgrader(new WP_Ajax_Upgrader_Skin());
 
-        $api      = plugins_api( 'plugin_information', array( 'slug' => $slug, 'fields' => array( 'sections' => false ) ) );
-        $result   = $upgrader->install( $api->download_link );
+        $api = plugins_api('plugin_information', array('slug' => $slug, 'fields' => array('sections' => false)));
+        $result = $upgrader->install($api->download_link);
 
-        if ( is_wp_error( $result ) ) {
+        if (is_wp_error($result)) {
             return $result;
         }
 
-        return activate_plugin( $plugin_basename );
+        return activate_plugin($plugin_basename);
     }
 
 }
