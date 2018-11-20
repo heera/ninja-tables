@@ -75,21 +75,33 @@ jQuery(document).ready(function ($) {
                 });
 
                 $table.on('ready.ft.table', (e, fooTable) => {
-                    that.onReadyFooTable($table, tableConfig);
+                    try {
+                        that.onReadyFooTable($table, tableConfig);
+                    } catch(error) {
+                        console.warn(error);
+                    }
                 }).on('postdraw.ft.table', (e, fooTable) => {
-                    Event.trigger(
-                        'ninja-tables-apply-conditional-formatting',
-                        [$table, tableConfig]
-                    );
+                    try {
+                        Event.trigger(
+                            'ninja-tables-apply-conditional-formatting',
+                            [$table, tableConfig]
+                        );
+                    } catch(error) {
+                        console.warn(error);
+                    }
                 });
 
                 $table.on('click', '.ninja_table_do_column_filter', function(e) {
                     e.preventDefault();
-                    const link = $(this);
-                    const filtering = FooTable.get($table).use(FooTable.Filtering);
-                    const query = new FooTable.Query('"'+link.text()+'"', 'AND', false, false);
-                    filtering.addFilter('nt_link_filter', query, [link.data('target_column')]);
-                    filtering.filter();
+                    try {
+                        const link = $(this);
+                        const filtering = FooTable.get($table).use(FooTable.Filtering);
+                        const query = new FooTable.Query('"' + link.text() + '"', 'AND', false, false);
+                        filtering.addFilter('nt_link_filter', query, [link.data('target_column')]);
+                        filtering.filter();
+                    } catch (error) {
+                        console.warn(error);
+                    }
                 });
 
                 if (tableConfig.render_type === 'legacy_table') {
@@ -109,7 +121,6 @@ jQuery(document).ready(function ($) {
                 "expandAll": tableConfig.settings.expandAll,
                 "empty": tableConfig.settings.i18n.no_result_text
             };
-
             initConfig.sorting = {
                 "enabled": !!tableConfig.settings.sorting
             };

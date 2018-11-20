@@ -5,7 +5,7 @@ Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, da
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.8
-Stable tag: 3.0.2
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
