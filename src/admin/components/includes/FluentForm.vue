@@ -43,7 +43,7 @@
                         @selection-change="handleFieldsSelectionChange"
                 >
                     <el-table-column type="selection"></el-table-column>
-                    <el-table-column prop="name" label="Select Entry Fields"></el-table-column>
+                    <el-table-column prop="label" label="Select Entry Fields"></el-table-column>
                 </el-table>
             </div>
 
@@ -131,7 +131,13 @@
                     this.forms = [];
                     jQuery.each(res.data, (i, form) => {
                         let fields = JSON.parse(form.form_fields).fields
-                        .map(field => ({name: field.attributes.name}))
+                        .map(field => {
+                            const s = field.settings;
+                            return {
+                                name: field.attributes.name,
+                                label: s.admin_field_label || s.label || field.attributes.name,
+                            };
+                        })
                         .filter(field => !!field.name);
 
                         this.forms.push({
@@ -165,8 +171,7 @@
             save() {
                 this.btnLoading = true;
                 jQuery.post(ajaxurl, {
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'set-fluent-form-data-source',
+                    action: 'ninja_tables_save_fluentform_table',
                     post_title: this.post_title,
                     form: this.form,
                     table_Id: this.config && this.config.table.ID || null

@@ -349,7 +349,6 @@ class NinjaTablesAdmin
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
             'get-fluentform-forms' => 'getFluentformForms',
-            'set-fluent-form-data-source' => 'createTableWithFluentFormDataSource',
             'get_wp_post_types' => 'getAllPostTypes',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm'
@@ -1409,77 +1408,6 @@ class NinjaTablesAdmin
         if (function_exists('wpFluentForm')) {
             wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
         }
-    }
-
-    public function createTableWithFluentFormDataSource()
-    {
-        $tableId = $_REQUEST['table_Id'];
-        $formId = $_REQUEST['form']['id'];
-
-        $messages = array();
-
-        if (!$formId) {
-            // Validate Title
-            if (empty( $_REQUEST['post_title'] ) ) {
-                $messages['title'] = __('The title field is required.', 'ninja-tables');
-            }
-        }
-
-        // Validate Columns
-        $fields = isset($_REQUEST['form']['fields']) ? $_REQUEST['form']['fields'] : array();
-        if (!($fields = ninja_tables_sanitize_array($fields))) {
-            $messages['fields'] = __('No fields were selected.', 'ninja-tables');
-        }
-
-        // If Validation failed
-        if (array_filter($messages)) {
-            wp_send_json_error(array('message' => $messages), 422);
-            wp_die();
-        }
-
-        $headers = array();
-        foreach ($fields as $field) {
-            $headers[] = reset(array_values($field));
-        }
-
-        $headers = $this->formatHeader($headers);
-        $columns = array();
-        foreach ($headers as $key => $column) {
-            $columns[] = array(
-                'name' => $column,
-                'key' => $column,
-                'breakpoints' => null,
-                'data_type' => 'text',
-                'dateFormat' => null,
-                'header_html_content' => null,
-                'enable_html_content' => false,
-                'contentAlign' => null,
-                'textAlign' => null,
-                'original_name' => $column
-            );
-        }
-
-        if ($tableId) {
-            $oldColumns = get_post_meta($tableId, '_ninja_table_columns', true);
-            foreach ($columns as $key => $newColumn) {
-                foreach ($oldColumns as $oldColumn) {
-                    if ($oldColumn['original_name'] == $newColumn['original_name']) {
-                        $columns[$key] = $oldColumn;
-                    }
-                }
-            }
-
-            // Reset/Reorder array indices
-            $columns = array_values($columns);
-        } else {
-            $tableId = $this->saveTable();
-        }
-
-        update_post_meta($tableId, '_ninja_table_columns', $columns);
-        update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
-        update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
-
-        wp_send_json_success(array('table_id' => $tableId, 'form_id' => $_REQUEST['form']['id']));
     }
 
     public function getAllAuthors()
