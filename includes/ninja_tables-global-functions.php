@@ -330,8 +330,8 @@ if (!function_exists('ninja_table_format_header')) {
         $data = array();
         $column_counter = 1;
         foreach ($header as $item) {
-            $item = trim(strip_tags($item));
-            $string = strtolower($item);
+            $string = trim(strip_tags($item));
+            $string = strtolower($string);
             $chars = str_split($string);
             $key = '';
             foreach ($chars as $char) {

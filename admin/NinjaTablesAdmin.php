@@ -1447,7 +1447,7 @@ class NinjaTablesAdmin
         foreach ($headers as $key => $column) {
             $columns[] = array(
                 'name' => $column,
-                'key' => $key,
+                'key' => $column,
                 'breakpoints' => null,
                 'data_type' => 'text',
                 'dateFormat' => null,
