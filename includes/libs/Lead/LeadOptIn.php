@@ -1,20 +1,20 @@
 <?php
 namespace WPManageNinja\Lead;
 
-class LeadOptIn 
+class LeadOptIn
 {
 	private $apiUrl = 'https://wpmanageninja.com/?wpmn_api=product_users';
 	private $options;
 	private $dismissTime = 2592000; // 30 days
-	
+
 	public function __construct($optionArray) {
 		$this->options = $optionArray;
 	}
-	
+
 	/**
 	 * Check If User already consent. If consented then don't show
 	 * Or If user dismissed then check if $this->dismissTime is over.
-	 * If within the time then don't show 
+	 * If within the time then don't show
 	 * Otherwise we can show this message
 	 * @return bool
 	 */
@@ -31,28 +31,28 @@ class LeadOptIn
 		}
 		return true;
 	}
-	
+
 	public function isAccepted()
 	{
 		return $this->optStatus() == 'yes';
 	}
-	
+
 	public function optStatus()
 	{
 		return $this->getValue('lead_optin_status');
 	}
-	
+
 	private function getValue($key) {
 		if (isset($this->options[$key])) {
 			return $this->options[$key];
 		}
 		return false;
 	}
-	
+
 	public function getNotice() {
 		return 'We made a few tweaks to the plugin, <a href="#">Opt in to make <b>"Ninja Tables" Better!</b></a>';
 	}
-	
+
 	public function subscribe() {
 		$currentUser = wp_get_current_user();
 		$data = array(

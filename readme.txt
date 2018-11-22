@@ -1,23 +1,22 @@
-=== Ninja Tables - Best Responsive WP Data Tables Plugin for WordPress ===
+=== Ninja Tables - WP Data Tables Plugin for WordPress ===
 Contributors: techjewel, adreastrian, heera, wpmanageninja
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
 Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.8
-Stable tag: 3.0.0
+Stable tag: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data. #1 Table Plugin, Build Table without writing any code.
+WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data. No.1 Table Plugin, Build Table without writing any code.
 
 == Description ==
 
-[Details Features](https://wpmanageninja.com/ninja-tables/) | [Video](https://www.youtube.com/watch?v=4J12jxYkhaE&index=1&list=PLxU8aPHIfquwBuwpCEZQbSx0Juz6icnsI)  | [Demo](https://wpmanageninja.com/r/docs/ninja-tables/demo/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
+[Details Features](https://wpmanageninja.com/ninja-tables/) | [Youtubude Video Tutorials](https://www.youtube.com/watch?v=-s0Gi39gOhE&t=0s&index=2&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL)  | [Demo](https://wpmanageninja.com/docs/ninja-tables/configure-tables/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
 
-Ninja Tables is the most advanced, and modern Table builder plugin on WordPress. You can easily build any type of HTML tables with its powerful column builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
-
-[youtube https://www.youtube.com/watch?v=-s0Gi39gOhE]
+Ninja Tables is the most advanced, and modern Table builder plugin for WordPress. You can easily build any type of HTML tables with it's powerful builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
+With this Table plugin, You can create WP Data Tables easily out of the box and show thousands of table rows easily. We made the plugin very efficient so it will not slow down your site.
 
 == For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Online Demo Here</a> ==
 
@@ -26,6 +25,12 @@ Quickly create responsive HTML tables to show thousands of data on your site, It
 
 == Live Video Preview ==
 [youtube https://www.youtube.com/watch?v=YVK-4PSAbXw]
+
+
+== (NEW) WP Fluent Form Integration ==
+From version 3.0.0, we have added WP Fluent Form integration where you can show your form entries easily with Ninja Tables.
+WP Fluent Form is a fantastic form builder plugin where you can build forms using drag and drop builder. Lots of users wanted this integration so we did it. Please check the following video:
+[youtube https://www.youtube.com/watch?v=XxBrmuhu6yQ]
 
 == 100+ Table Styles ==
 NinjaTables shipped with 3 most popular CSS library with multiple color schema and table style.
@@ -38,6 +43,8 @@ Here are few styling options you can choose or mix different styles for a table:
 <li>Striped rows </li>
 <li>Compact Table </li>
 <li>RTL Support</li>
+<li>Data Tables</li>
+<li>Foo Tables</li>
 </ul>
 
 **with Unlimited color schema**
@@ -176,6 +183,14 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 3.0.0 ( Date: November 19, 2018 ) =
+This is a major version release but it's completely work with previous versions. Feel free to upgrade this version from any previous version
+* Fix issue for pagination and sorting settings save issue
+* Added WP Fluent Form integration (this is a big feature).
+* Add table UI bug fixed.
+* Added more styling and table design options.
+* We have worked over 1 month (200+ hours | 2 developers) to brigh this version, we hope you will enjoy the features.
 
 = 2.4.1 ( Date: October 08, 2018 ) =
 * Fix Table Search Dropdown UI issue for some theme

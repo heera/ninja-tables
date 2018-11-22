@@ -2,7 +2,13 @@ import Event from './EventBus';
 import Actions from './ninja-tables-footable-custom-handlers';
 
 Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config) {
+	if(!config || !config.columns) {
+		return;
+	}
     jQuery.each(config.columns, function(colIndex, column) {
+    	if(!column || !column.conditions) {
+    		return;
+		}
         jQuery.each(column.conditions, function(i, condition) {
         	if(condition && condition.targetAction) {
                 let action = getActionName(condition);

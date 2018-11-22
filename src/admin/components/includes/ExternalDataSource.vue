@@ -13,7 +13,8 @@
                         Construct Table from Google Sheets
                     </h3>
                     <p class="ninja_subtitle">
-                        Whenever your Google Sheets data changes it will be automatically reflected here. You won't have to do a thing.
+                        Whenever your Google Sheets data changes it will be automatically reflected here. You won't have to do a thing. Please provide the publishable public URL of your google sheet.
+                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/construct-table-from-google-sheets/">View Documentation Here</a>
                     </p>
                 </template>
 
@@ -85,14 +86,13 @@
         <div class="modal-footer">
             <el-row v-if="!editing">
                 <el-col :md="12">
-                    <el-button style="float:left" size="small" @click="nextStep">
+                    <el-button type="primary" style="float:left" size="small" @click="nextStep">
                         {{ active_step > 0 ? 'Prev' : 'Next' }}
                     </el-button>
                 </el-col>
-
                 <el-col :md="12" v-if="active_step > 0">
                     <el-button
-                        type="primary"
+                        type="success"
                         :loading="saving"
                         @click="save"
                        :disabled="!activated_features.external_data_source"

@@ -21,7 +21,7 @@ class FluentFormProvider
         $table->fluentFormFormId = get_post_meta(
             $table->ID, '_ninja_tables_data_provider_ff_form_id', true
         );
-        $table->isExportable = false;
+        $table->isExportable = true;
         $table->isImportable = false;
         $table->isCreatedSortable = true;
         $table->isSortable = false;

@@ -8,6 +8,8 @@
                     {{ $t('All Tables') }}
                 </h1>
 
+                <ninja-review-dialog v-if="review_option" @hideNotification="review_option = false" />
+
                 <div style="margin-top:7px" class="pull-right">
                     <label class="form_group search_action" for="search">
                         <input v-on:keyup.enter="getData" v-model="searchString"
@@ -49,7 +51,7 @@
                 :append-to-body="true"
                 custom-class="create-table-modal"
         >
-            <add-table-modal @table_inserted="addTableAction" 
+            <add-table-modal @table_inserted="addTableAction"
                              @modal_close="modalVisible = false"
                              :hasPro="hasPro"
             />
@@ -64,6 +66,7 @@
     const ListAllTables = require('./_ListAllTables.vue');
     const AddTableModal = require('./_AddTable.vue');
     const leadModal = require('./Extras/lead');
+    const NinjaReviewDialog = require('./Extras/_ReviewDialog');
 
     export default {
         name: 'all_tables',
@@ -71,7 +74,8 @@
             Welcome,
             'list-all-tables': ListAllTables,
             'add-table-modal': AddTableModal,
-            'lead-modal': leadModal
+            'lead-modal': leadModal,
+            NinjaReviewDialog
             //    BulkActions
         },
         props: ['hasPro'],
@@ -81,7 +85,8 @@
                 published_tables : parseInt(window.ninja_table_admin.published_tables),
                 searchAction: 0,
                 searchString: '',
-                selected: []
+                selected: [],
+                review_option: window.ninja_table_admin.show_review_dialog
             }
         },
         methods: {

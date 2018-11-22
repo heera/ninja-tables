@@ -10,17 +10,21 @@ class LeadFlow {
 		if ( is_multisite() || ! current_user_can( ninja_table_admin_role() ) ) {
 			return;
 		}
-		
+
 		$this->options = get_option( '_ninja_table_lead_options', array() );
 		$this->loadDependencies();
 
+		// Lead Filters
 		add_filter('ninja_tables_show_lead', array( $this, 'leadStatus') );
 		add_action( 'wp_ajax_ninja_table_lead_optin', array( $this, 'leadOptinAction' ) );
-		
 		add_action('ninja_table_lead_optin_yes', array($this, 'optinLeadYes'));
-		
-	}
-	
+
+		// Review Filters
+        add_filter('ninja_tables_show_review_optin', array( $this, 'reviewOptionStatus') );
+        add_action( 'wp_ajax_ninja_table_review_consent', array( $this, 'reviewOptinAction' ) );
+
+    }
+
 	public function optinLeadYes($options)
     {
 	    $lead = new LeadOptIn( $this->options );
@@ -35,6 +39,24 @@ class LeadFlow {
 		return $status;
 	}
 
+	public function reviewOptionStatus($status) {
+        $reviewOption = new ReviewOptIn( $this->options );
+        if ( $reviewOption->noticeable() ) {
+            return true;
+        }
+        return $status;
+    }
+
+    public function reviewOptinAction() {
+	    $status = sanitize_text_field($_REQUEST['status']);
+        $reviewOption = new ReviewOptIn( $this->options );
+        $reviewOption->doConsent($status);
+        wp_send_json_success(array(
+                'message' => 'Thank you'
+        ), 200);
+    }
+
+
 	public function addLeadNotice() {
 		$lead = new LeadOptIn( $this->options );
 		if ( $lead->noticeable() ) {
@@ -43,7 +65,16 @@ class LeadFlow {
 			);
 			add_action( 'admin_notices', array( $this, 'showNotices' ) );
 			$this->assetStatus = true;
-		}
+		} else {
+		    $reviewOptIn = new ReviewOptIn($this->options);
+		    if($reviewOptIn->noticeable()) {
+                $this->addNotice(
+                    $reviewOptIn->getNotice()
+                );
+                add_action( 'admin_notices', array( $this, 'showNotices' ) );
+                $reviewOptIn->addAssets();
+            }
+        }
 	}
 
 	public function loadDependencies() {
@@ -165,7 +196,7 @@ class LeadFlow {
 		$this->options['lead_optin_time'] = time();
 		update_option( '_ninja_table_lead_options', $this->options );
 		do_action( 'ninja_table_lead_optin_' . $status, $this->options );
-		
+
 		if($status == 'yes') {
 		    $message = 'Thank you for subscribe to our product update notifications.';
         } else {

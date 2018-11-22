@@ -256,11 +256,15 @@ class NinjaTablesAdmin
         $currentUser = wp_get_current_user();
 
         $leadStatus = false;
+        $reviewOptinStatus = false;
         $tableCount = wp_count_posts($this->cpt_name);
         $totalPublishedTable = 0;
         if ($tableCount && $tableCount->publish > 1) {
             $leadStatus = apply_filters('ninja_tables_show_lead', $leadStatus);
+        } else if($tableCount->publish > 2) {
+            $reviewOptinStatus = apply_filters('ninja_tables_show_review_optin', $reviewOptinStatus);
         }
+
         if ($tableCount && $tableCount->publish > 0) {
             $totalPublishedTable = $tableCount->publish;
         }
@@ -282,6 +286,7 @@ class NinjaTablesAdmin
             'fluent_form_icon' => getNinjaFluentFormMenuIcon(),
             'dismissed' => $dismissed,
             'show_lead_pop_up' => $leadStatus,
+            'show_review_dialog' => $reviewOptinStatus,
             'current_user_name' => $currentUser->display_name,
             'isInstalled' => $isInstalled,
             'hasPro' => defined('NINJATABLESPRO'),
@@ -1411,9 +1416,11 @@ class NinjaTablesAdmin
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
 
+        $messages = array();
+
         if (!$formId) {
             // Validate Title
-            if (empty($title = sanitize_text_field($_REQUEST['post_title']))) {
+            if (empty( $_REQUEST['post_title'] ) ) {
                 $messages['title'] = __('The title field is required.', 'ninja-tables');
             }
         }
@@ -1436,11 +1443,11 @@ class NinjaTablesAdmin
         }
 
         $headers = $this->formatHeader($headers);
-
+        $columns = array();
         foreach ($headers as $key => $column) {
             $columns[] = array(
                 'name' => $column,
-                'key' => $key,
+                'key' => $column,
                 'breakpoints' => null,
                 'data_type' => 'text',
                 'dateFormat' => null,

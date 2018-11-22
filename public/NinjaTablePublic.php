@@ -11,10 +11,8 @@
  */
 
 use NinjaTables\Classes\ArrayHelper;
-use NinjaTable\FrontEnd\DataProviders\CsvProvider;
 use NinjaTable\FrontEnd\DataProviders\DefaultProvider;
 use NinjaTable\FrontEnd\DataProviders\FluentFormProvider;
-use NinjaTable\FrontEnd\DataProviders\WPPostsProvider;
 
 /**
  * The public-facing functionality of the plugin.
