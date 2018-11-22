@@ -48,12 +48,21 @@
             </div>
 
             <div class="form-group">
+                <strong>Options</strong>
+                <hr>
+                <el-input placeholder="Limit" v-model="form.entry_limit" />
+                <el-radio v-model="form.entry_status" label="all">All</el-radio>
+                <el-radio v-model="form.entry_status" label="read">Read</el-radio>
+                <el-radio v-model="form.entry_status" label="unread">Unread</el-radio>
+            </div>
+
+            <div class="form-group">
                 <el-button
-                        size="small"
-                        type="primary"
-                        :loading="btnLoading"
-                        style="margin-top: 12px; float: right;"
-                        @click="save">{{ editing ? $t('Update') : $t('Save') }}</el-button>
+                    size="small"
+                    type="primary"
+                    :loading="btnLoading"
+                    style="margin-top: 12px; float: right;"
+                    @click="save">{{ editing ? $t('Update') : $t('Save') }}</el-button>
             </div>
         </template>
 
@@ -116,7 +125,9 @@
                 post_title: '',
                 form: {
                     id: null,
-                    fields: []
+                    fields: [],
+                    entry_status: 'all',
+                    entry_limit: 1000,
                 },
                 hasFluentForm: !!window.ninja_table_admin.hasFluentForm,
                 isFluentFormUpdated: !!window.ninja_table_admin.isFluentFormUpdated,
@@ -148,6 +159,8 @@
                     });
 
                     if (this.editing) {
+                        this.form.entry_limit = this.config.table.entry_limit;
+                        this.form.entry_status = this.config.table.entry_status;
                         this.handleFormSelectionChange(
                             this.form.id = this.config.table.fluentFormFormId
                         );

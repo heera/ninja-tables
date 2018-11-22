@@ -74,6 +74,12 @@ class FluentFormProvider
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
         update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
+         update_post_meta(
+            $tableId, '_ninja_tables_data_provider_ff_entry_limit', $_REQUEST['form']['entry_limit']
+        );
+        update_post_meta(
+            $tableId, '_ninja_tables_data_provider_ff_entry_status', $_REQUEST['form']['entry_status']
+        );
 
         wp_send_json_success(array('table_id' => $tableId, 'form_id' => $_REQUEST['form']['id']));
     }
@@ -85,6 +91,12 @@ class FluentFormProvider
         $table->isEditableMessage = 'You may edit your table settings here.';
         $table->fluentFormFormId = get_post_meta(
             $table->ID, '_ninja_tables_data_provider_ff_form_id', true
+        );
+        $table->entry_limit = get_post_meta(
+            $table->ID, '_ninja_tables_data_provider_ff_entry_limit', true
+        );
+        $table->entry_status = get_post_meta(
+            $table->ID, '_ninja_tables_data_provider_ff_entry_status', true
         );
         $table->isExportable = true;
         $table->isImportable = false;
@@ -129,10 +141,20 @@ class FluentFormProvider
     {
         if (function_exists('wpFluentForm')) {
             $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
+            $status = get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_status', true);
+            $limit = (int) get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_limit', true);
 
-            $entryLimit = apply_filters('ninja_tables_fluentform_per_page', -1, $tableId, $formId);
-            $orderBy = apply_filters('ninja_tables_fluentform_order_by', $this->getOrderBy($tableId), $tableId, $formId);
-            $entryStatus = apply_filters('ninja_tables_fluentform_entry_status', 'all', $tableId, $formId);
+            $entryStatus = apply_filters(
+                'ninja_tables_fluentform_entry_status', $status, $tableId, $formId
+            );
+
+            $entryLimit = apply_filters(
+                'ninja_tables_fluentform_per_page', ($limit ? $limit : -1), $tableId, $formId
+            );
+
+            $orderBy = apply_filters(
+                'ninja_tables_fluentform_order_by', $this->getOrderBy($tableId), $tableId, $formId
+            );
 
             $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
                 intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
