@@ -139,39 +139,41 @@ class FluentFormProvider
 
     public function data($data, $tableId)
     {
-        if (function_exists('wpFluentForm')) {
-            $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
-            $status = get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_status', true);
-            $limit = (int) get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_limit', true);
-
-            $entryStatus = apply_filters(
-                'ninja_tables_fluentform_entry_status', $status, $tableId, $formId
-            );
-
-            $entryLimit = apply_filters(
-                'ninja_tables_fluentform_per_page', ($limit ? $limit : -1), $tableId, $formId
-            );
-
-            $orderBy = apply_filters(
-                'ninja_tables_fluentform_order_by', $this->getOrderBy($tableId), $tableId, $formId
-            );
-
-            $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
-                intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
-            );
-
-            $columns = array_map(function($column) {
-                return $column['original_name'];
-            }, get_post_meta($tableId, '_ninja_table_columns', true));
-
-            foreach ($entries['submissions']['data'] as $key => $value) {
-                $data[] = array_intersect_key(
-                    $value->user_inputs, array_combine($columns, $columns)
-                );
-            }
-            
+        if (!function_exists('wpFluentForm')) {
             return $data;
         }
+
+        $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
+        $status = get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_status', true);
+        $limit = (int) get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_limit', true);
+
+        $entryStatus = apply_filters(
+            'ninja_tables_fluentform_entry_status', $status, $tableId, $formId
+        );
+
+        $entryLimit = apply_filters(
+            'ninja_tables_fluentform_per_page', ($limit ? $limit : -1), $tableId, $formId
+        );
+
+        $orderBy = apply_filters(
+            'ninja_tables_fluentform_order_by', $this->getOrderBy($tableId), $tableId, $formId
+        );
+
+        $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
+            intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
+        );
+
+        $columns = array_map(function($column) {
+            return $column['original_name'];
+        }, get_post_meta($tableId, '_ninja_table_columns', true));
+
+        foreach ($entries['submissions']['data'] as $key => $value) {
+            $data[] = array_intersect_key(
+                $value->user_inputs, array_combine($columns, $columns)
+            );
+        }
+        
+        return $data;
     }
 
     private function saveOrCreateTable($postId = null)
