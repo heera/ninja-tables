@@ -56,9 +56,9 @@
                             <el-col :md="5"  style="margin-top:10px;">
                                 <strong>
                                     <el-tooltip
-                                        placement="top-end"
+                                        placement="right"
                                         effect="light"
-                                        content="description..."
+                                        content="Maximun records to show in frontend, keep empty to show all."
                                     >
                                         <i class="el-icon-info el-text-info"></i>
                                     </el-tooltip>
@@ -76,9 +76,9 @@
                             <el-col :md="4">
                                 <strong>
                                     <el-tooltip
-                                        placement="top-end"
+                                        placement="right"
                                         effect="light"
-                                        content="description..."
+                                        content="Select what type of entries you want to show from fluent form."
                                     >
                                         <i class="el-icon-info el-text-info"></i>
                                     </el-tooltip>
