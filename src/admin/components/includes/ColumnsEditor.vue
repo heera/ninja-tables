@@ -468,6 +468,7 @@
                                 >confirm</el-button>
                             </div>
                             <el-button
+                                v-if="!hideDelete"
                                 type="danger"
                                 size="small"
                                 slot="reference"
@@ -579,6 +580,9 @@
                 if (this.formatType === "custom") {
                     this.model.dateFormat = "";
                 }
+            },
+            hideDelete(oldValue, newValue) {
+                this.hideDelete = this.activeTab != 'basic';
             }
         },
         mounted() {
@@ -606,12 +610,11 @@
                 this.$emit('store');
             },
             onTabClick(tab, event) {
-                this.hideDelete = false;
-                if (['advanced', 'conditional'].indexOf(tab.name) != -1) {
+                if (tab.name == 'basic') {
+                    this.hideDelete = false;
+                } else {
                     this.hideDelete = true;
-                    if (!this.moreSettings) {
-                       // this.showProPopUp();
-                    } else {
+                    if (this.moreSettings) {
                         this.moreSettings = !this.moreSettings;
                     }
                 }
