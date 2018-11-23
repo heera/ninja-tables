@@ -109,10 +109,10 @@
 
         <template v-else-if="hasFluentForm">
             <el-alert title=""
-                      type="warning"
-                      :closable="false"
-                      show-icon
-                      class="premium-notice"
+              type="warning"
+              :closable="false"
+              show-icon
+              class="premium-notice"
             >
                 <p>To use this feature your WP Fluent Form need to be updated. Please update WP Fluent From from plugins screen</p>
             </el-alert>

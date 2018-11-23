@@ -9,26 +9,48 @@
 
                 <FluentForm :tableCreated="tableCreated" :editing="true" :config="config" />
             </el-collapse-item>
+
+            <el-collapse-item name="2">
+                <template slot="title">
+                    <i class="header-icon el-icon-info el-text-info"></i>
+                    <strong>Add Column:</strong> You may add aditional dynamic columns here.
+                </template>
+
+                <columns-editor
+                    :model="model"
+                    :hasPro="hasPro"
+                    :hideCancel="true"
+                    dataSourceType="fluent-form"
+                    @add="addNewColumn()"
+                />
+            </el-collapse-item>
         </el-collapse>
     </div>
 </template>
 
 <script>
     import FluentForm from '../includes/FluentForm';
+    import columnsEditor from '../includes/ColumnsEditor';
+
     export default {
         name: "FluentformNav",
-        components: { FluentForm },
+        components: { FluentForm, columnsEditor },
         props: {
+            config: {
+                type: Object
+            },
+            tableCreated: {
+                type: Function
+            },
             isEditableMessage: {
                 required: true,
             },
-            tableCreated: {
-                required: true,
-                type: Function
+            model: {
+                type: Object,
             },
-            config: {
-                type: Object
-            }
+            hasPro: {
+                type: Boolean
+            },
         },
         data() {
             return {

@@ -31,6 +31,7 @@
                     ></el-option>
                 </el-select>
             </el-form-item>
+
             <el-form-item>
                 <template slot="label">
                     {{ $t("Field Value") }}
@@ -77,6 +78,7 @@
                 </div>
             </el-form-item>
         </template>
+
         <template v-if="column.source_type == 'post_data' || (column.source_type == 'custom' && column.wp_post_custom_data_type == 'featured_image')">
             <el-form-item>
                 <template slot="label">
@@ -91,9 +93,12 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
+
                 <el-checkbox v-if="column.original_name == 'post_author'" v-model="column.permalinked" true-label="yes" false-label="no" value="yes" label="Link to Author Permalink"></el-checkbox>
+
                 <el-checkbox v-else="column.original_name != 'post_author'" v-model="column.permalinked" true-label="yes" false-label="no" value="yes" label="Link to post permalink"></el-checkbox>
             </el-form-item>
+
             <template v-if="column.permalinked == 'yes'">
                 <el-form-item v-if="column.original_name == 'post_author'">
                     <template slot="label">
@@ -108,8 +113,10 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
+
                     <el-checkbox v-model="column.filter_permalinked" true-label="yes" false-label="no" value="yes" label="Make Taxonomies as Table Filter"></el-checkbox>
                 </el-form-item>
+
                 <el-form-item v-if="column.filter_permalinked != 'yes'">
                     <template slot="label">
                         {{ $t("Open Link To New tab") }}
@@ -123,10 +130,12 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
+
                     <el-checkbox v-model="column.permalink_target" true-label="_blank" false-label="" value="_blank" label="Open link to new tab"></el-checkbox>
                 </el-form-item>
             </template>
         </template>
+
         <template v-else-if="column.source_type == 'tax_data'">
             <el-form-item>
                 <template slot="label">
@@ -141,8 +150,10 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
+
                 <el-checkbox v-model="column.permalinked" true-label="yes" false-label="no" value="yes" label="Link to Taxonomy"></el-checkbox>
             </el-form-item>
+
             <el-form-item>
                 <template slot="label">
                     {{ $t("Taxonomy Separator") }}
@@ -155,13 +166,14 @@
                         <i class="el-icon-info el-text-info" />
                     </el-tooltip>
                 </template>
+
                 <el-input
-                        placeholder="Enter Value"
-                        size="small"
-                        v-model="column.taxonomy_separator"
-                >
-                </el-input>
+                    placeholder="Enter Value"
+                    size="small"
+                    v-model="column.taxonomy_separator"
+                ></el-input>
             </el-form-item>
+
             <template v-if="column.permalinked == 'yes'">
                 <el-form-item>
                     <template slot="label">
@@ -254,9 +266,3 @@
         }
     };
 </script>
-
-<style lang="scss">
-    .wp_posts_dynamic_field {
-
-    }
-</style>

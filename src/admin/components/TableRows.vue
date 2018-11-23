@@ -18,8 +18,11 @@
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
                 <fluent-form-nav
                     :config="config"
+                    :model="new_column"
+                    :hasPro="has_pro"
                     :is-editable-message="isEditableMessage"
                     :tableCreated="reloadSettingsAndData"
+                    @add="addNewColumn()"
                 />
             </div>
 

@@ -30,6 +30,7 @@
 <script>
     import WPPosts from '../includes/WPPosts';
     import columnsEditor from '../includes/ColumnsEditor';
+    
     export default {
         name: "WPPostsNav",
         components: { WPPosts, columnsEditor },
