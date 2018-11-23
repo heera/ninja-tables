@@ -74,14 +74,14 @@ class FluentFormProvider
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
         update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
-         update_post_meta(
+        update_post_meta(
             $tableId, '_ninja_tables_data_provider_ff_entry_limit', $_REQUEST['form']['entry_limit']
         );
         update_post_meta(
             $tableId, '_ninja_tables_data_provider_ff_entry_status', $_REQUEST['form']['entry_status']
         );
 
-        wp_send_json_success(array('table_id' => $tableId, 'form_id' => $_REQUEST['form']['id']));
+        wp_send_json_success(array('table_id' => $tableId, 'form_id' => $formId));
     }
 
     public function getTableSettings($table)

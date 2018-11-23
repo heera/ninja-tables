@@ -12,7 +12,7 @@
             <el-collapse-item name="2">
                 <template slot="title">
                     <i class="header-icon el-icon-info el-text-info"></i>
-                    <strong>Add Column</strong> You may add aditional dynamic columns here.
+                    <strong>Add Column:</strong> You may add aditional dynamic columns here.
                 </template>
 
                 <columns-editor
