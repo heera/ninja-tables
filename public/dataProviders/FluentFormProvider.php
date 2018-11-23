@@ -164,7 +164,6 @@ class FluentFormProvider
                 return $column['original_name'];
             }, get_post_meta($tableId, '_ninja_table_columns', true));
 
-            $data = array();
             foreach ($entries['submissions']['data'] as $key => $value) {
                 $data[] = array_intersect_key(
                     $value->user_inputs, array_combine($columns, $columns)
