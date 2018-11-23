@@ -160,13 +160,18 @@ class FluentFormProvider
                 intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
             );
 
-            $formattedEntries = array();
+            $columns = array_map(function($column) {
+                return $column['original_name'];
+            }, get_post_meta($tableId, '_ninja_table_columns', true));
+
+            $data = array();
             foreach ($entries['submissions']['data'] as $key => $value) {
-                // @todo: We should only return the data those are available on column settings
-                // At least in the public data facing function
-                $formattedEntries[] = $value->user_inputs;
+                $data[] = array_intersect_key(
+                    $value->user_inputs, array_combine($columns, $columns)
+                );
             }
-            return $formattedEntries;
+            
+            return $data;
         }
     }
 
