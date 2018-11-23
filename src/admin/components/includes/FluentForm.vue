@@ -48,14 +48,55 @@
             </div>
 
             <div class="form-group">
-                <strong>Options</strong>
+                <strong>Options (Optional)</strong>
                 <hr>
-                <el-input placeholder="Limit" v-model="form.entry_limit" />
-                <el-radio v-model="form.entry_status" label="all">All</el-radio>
-                <el-radio v-model="form.entry_status" label="read">Read</el-radio>
-                <el-radio v-model="form.entry_status" label="unread">Unread</el-radio>
-            </div>
+                <el-row :gutter="20"  style="margin-top:15px;">
+                    <el-col :md="12">
+                        <el-row>
+                            <el-col :md="5"  style="margin-top:10px;">
+                                <strong>
+                                    <el-tooltip
+                                        placement="top-end"
+                                        effect="light"
+                                        content="description..."
+                                    >
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                    Max Records:
+                                </strong>
+                            </el-col>
+                            <el-col :md="19">
+                                <el-input v-model="form.entry_limit"></el-input>
+                            </el-col>
+                        </el-row>
+                    </el-col>
 
+                    <el-col :md="12" style="margin-top:10px;">
+                        <el-row>
+                            <el-col :md="4">
+                                <strong>
+                                    <el-tooltip
+                                        placement="top-end"
+                                        effect="light"
+                                        content="description..."
+                                    >
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                    Entry Type:
+                                </strong>
+                            </el-col>
+                            <el-col :md="20" style="margin-top:3px;">
+                                <el-radio-group v-model="form.entry_status">
+                                    <el-radio label="all">All</el-radio>
+                                    <el-radio label="read">Read</el-radio>
+                                    <el-radio label="unread">Unread</el-radio>
+                                </el-radio-group>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+            </div>
+            <hr>
             <div class="form-group">
                 <el-button
                     size="small"
