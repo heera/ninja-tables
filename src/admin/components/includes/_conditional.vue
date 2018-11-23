@@ -143,18 +143,18 @@
 
             <el-col :sm="4" :md="4">
                 <el-input
-                        size="small"
-                        placeholder="Enter Value"
-                        v-model="condition.targetValue"
-                        v-show="!shouldShowColorPicker(condition)"
-                        :disabled="!hasPro"
+                    size="small"
+                    placeholder="Enter Value"
+                    v-model="condition.targetValue"
+                    v-show="!shouldShowColorPicker(condition)"
+                    :disabled="!hasPro"
                 ></el-input>
 
                 <div class="conditional_color_block" v-show="shouldShowColorPicker(condition)">
                     <ninja-color-picker
-                            size="mini"
-                            v-model="condition.targetValueColor"
-                            :disabled="!hasPro"
+                        size="mini"
+                        v-model="condition.targetValueColor"
+                        :disabled="!hasPro"
                     ></ninja-color-picker>
                 </div>
             </el-col>
