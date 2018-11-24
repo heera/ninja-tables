@@ -30,29 +30,16 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
 
             cells.each((i, cell) => {
                 let $this = jQuery(cell);
-                let val = $this.html();
-                if (val && column.transformed_value) {
-                    let cellMatches = column.transformed_value.match(/\{cell.value\}/g);
-                    if (cellMatches && !$this.hasClass('ninja_column_transformed')) {
-                        $this.html(
-                            column.transformed_value.replace(/\{cell.value\}/g, val)
-                        );
-                    }
-                    
-                    let row = jQuery(cells[i]).closest('tr');
-                    let matches = column.transformed_value.match(/\{row\.\w+\}/g);
-                    if (matches && !$this.hasClass('ninja_column_transformed')) {
-                        let matched = matches[0];
-                        let columnName = matched.substring(5, matched.length-1);
-                        $this.html(
-                            column.transformed_value.replace(
-                                /\{row\.\w+\}/g,
-                                row.find('td.ninja_clmn_nm_'+columnName).html()
-                            )
-                        );
-                    }
-
-                    $this.addClass('ninja_column_transformed');
+                if (column.transformed_value && !$this.hasClass('ninja_column_transformed')) {
+                    let replaced = column.transformed_value.replace(/\{cell.value\}|\{row\.\w+\}/g, function(match) {
+                        if (match == "{cell.value}") {
+                            return $this.html();
+                        } else {
+                            let columnName = match.substring(5, match.length-1);
+                            return $this.closest('tr').find('td.ninja_clmn_nm_'+columnName).html();
+                        }
+                    });
+                    $this.html(replaced).addClass('ninja_column_transformed');
                 }
             });
         }
