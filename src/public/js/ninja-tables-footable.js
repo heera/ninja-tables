@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
                             if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
                                 valueOrElement = jQuery(valueOrElement).text();
                             }
-                            return moment(valueOrElement, column.formatString).format("X");
+                            return moment(valueOrElement, column.formatString).valueOf();
                         };
                         column.formatter = function (value, options, rowData) {
                             if (value._i) {
