@@ -12,7 +12,13 @@ export default {
         $elements.length && $elements.css('background-color', 'initial');
     },
 	SetCellContent: function($elements, $table, condition, colIndex, column) {
-		$elements.length && $elements.html(condition.targetValue);
+        if ($elements.length) {
+            $elements.each((i, cell) => {
+                let $this = jQuery(cell);
+                let val = $this.html();
+                $this.html(condition.targetValue.replace(/\{value\}/g, val));
+            });
+        }
 	},
 	SetCellCssClass: function($elements, $table, condition, colIndex, column) {
 		$elements.length && $elements.addClass(condition.targetValue);

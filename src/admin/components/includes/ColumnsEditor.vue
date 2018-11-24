@@ -207,7 +207,6 @@
                 </el-form-item>
 
                 <wp-post-dynamic-column v-if="dataSourceType == 'wp-posts'" :column="model" />
-                <fluent-form-dynamic-column v-if="dataSourceType == 'fluent-form'" :column="model" />
             </el-tab-pane>
 
             <!-- Advanced Settings -->
@@ -502,7 +501,6 @@
     import wpEditor from '../../../common/_wp_editor';
     import conditional from './_conditional';
     import WPPostDynamicColumn from './WPPostDynamicColumn';
-    import FluentFormDynamicColumn from './FluentFormDynamicColumn';
 
     export default {
         name: "ColumnsEditor",
@@ -510,7 +508,6 @@
             'wp_editor':  wpEditor,
             'condition': conditional,
             'wp-post-dynamic-column': WPPostDynamicColumn,
-            'fluent-form-dynamic-column': FluentFormDynamicColumn,
         },
         props: {
             "model": {
