@@ -30,8 +30,9 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
                 let $this = jQuery(cell);
                 let val = $this.html();
                 if (val) {
-                    let transformed = column.transformed_value.replace(/\{value\}/, val);
-                    $this.html(transformed);
+                    $this.html(
+                        column.transformed_value.replace(/\{value\}/g, val)
+                    );
                 }
             });
         }
