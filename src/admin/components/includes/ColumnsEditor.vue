@@ -431,14 +431,7 @@
 
             <!-- Transform Value -->
             <el-tab-pane label="Transform Value" name="transformer">
-                You can set new value without any condition here. For example, if you want to set an image
-                from an image URL, then you may use "&ltimg src='{value}' /&gt".
-                <el-input
-                  type="textarea"
-                  autosize
-                  placeholder="Please input"
-                  v-model="model.transformed_value"
-                ></el-input>
+                <content-transformer :column="model" />
             </el-tab-pane>
 
             <hr style="margin:10px 0">
@@ -501,6 +494,7 @@
     import wpEditor from '../../../common/_wp_editor';
     import conditional from './_conditional';
     import WPPostDynamicColumn from './WPPostDynamicColumn';
+    import ContentTransformer from './ContentTransformer';
 
     export default {
         name: "ColumnsEditor",
@@ -508,6 +502,7 @@
             'wp_editor':  wpEditor,
             'condition': conditional,
             'wp-post-dynamic-column': WPPostDynamicColumn,
+            'content-transformer': ContentTransformer,
         },
         props: {
             "model": {

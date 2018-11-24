@@ -163,6 +163,7 @@ class NinjaFooTable
             $columnType = self::getColumnType($column);
             $cssColumnName = 'ninja_column_' . $index;
             $columnClasses = array($cssColumnName);
+            $columnClasses[] = 'ninja_clmn_nm_'.$column['key'];
             if (isset($column['classes'])) {
                 $userClasses = explode(' ', $column['classes']);
                 $columnClasses = array_unique(array_merge($columnClasses, $userClasses));

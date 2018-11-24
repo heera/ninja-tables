@@ -16,7 +16,7 @@ export default {
             $elements.each((i, cell) => {
                 let $this = jQuery(cell);
                 let val = $this.html();
-                $this.html(condition.targetValue.replace(/\{value\}/g, val));
+                $this.html(condition.targetValue.replace(/\{cell.value\}/g, val));
             });
         }
 	},
