@@ -7,10 +7,9 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
 	}
 
     jQuery.each(config.columns, function(colIndex, column) {
-    	if(!column) {
-    		return;
-		}
-        
+    	if(!column) return;
+
+        // Conditional formatting
         jQuery.each(column.conditions, function(i, condition) {
         	if(condition && condition.targetAction) {
                 let action = getActionName(condition);
@@ -23,16 +22,37 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
 			}
         });
 
+        // Content Transforming
         if (column.transformed_value) {
             let curentColumnClassPrefix = 'ninja_column_';
             let cellClass = curentColumnClassPrefix + colIndex;
-            $table.find('tbody .' + cellClass).each((i, cell) => {
+            let cells = $table.find('tbody .' + cellClass);
+
+            cells.each((i, cell) => {
                 let $this = jQuery(cell);
                 let val = $this.html();
-                if (val) {
-                    $this.html(
-                        column.transformed_value.replace(/\{value\}/g, val)
-                    );
+                if (val && column.transformed_value) {
+                    let cellMatches = column.transformed_value.match(/\{cell.value\}/g);
+                    if (cellMatches && !$this.hasClass('ninja_column_transformed')) {
+                        $this.html(
+                            column.transformed_value.replace(/\{cell.value\}/g, val)
+                        );
+                    }
+                    
+                    let row = jQuery(cells[i]).closest('tr');
+                    let matches = column.transformed_value.match(/\{row\.\w+\}/g);
+                    if (matches && !$this.hasClass('ninja_column_transformed')) {
+                        let matched = matches[0];
+                        let columnName = matched.substring(5, matched.length-1);
+                        $this.html(
+                            column.transformed_value.replace(
+                                /\{row\.\w+\}/g,
+                                row.find('td.ninja_clmn_nm_'+columnName).html()
+                            )
+                        );
+                    }
+
+                    $this.addClass('ninja_column_transformed');
                 }
             });
         }
