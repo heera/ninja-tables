@@ -7,7 +7,7 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
 	}
 
     jQuery.each(config.columns, function(colIndex, column) {
-    	if(!column || !column.conditions) {
+    	if(!column) {
     		return;
 		}
         
@@ -22,6 +22,19 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
                 }
 			}
         });
+
+        if (column.transformed_value) {
+            let curentColumnClassPrefix = 'ninja_column_';
+            let cellClass = curentColumnClassPrefix + colIndex;
+            $table.find('tbody .' + cellClass).each((i, cell) => {
+                let $this = jQuery(cell);
+                let val = $this.html();
+                if (val) {
+                    let transformed = column.transformed_value.replace(/\{value\}/, val);
+                    $this.html(transformed);
+                }
+            });
+        }
     });
 });
 
