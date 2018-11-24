@@ -40,7 +40,6 @@ class NinjaFooTable
 
     private static function enqueue_assets()
     {
-
         wp_enqueue_script('footable',
             NINJA_TABLES_PUBLIC_DIR_URL . "libs/footable/js/footable.min.js",
             array('jquery'), '3.1.5', true);
