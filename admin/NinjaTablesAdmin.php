@@ -757,8 +757,6 @@ class NinjaTablesAdmin
                                 $column[$column_index] = intval($column_value);
                             } else if (is_bool($column_value)) {
                                 $column[$column_index] = $column_value;
-                            } else {
-                                // $column[$column_index] = esc_html($column_value);
                             }
                         }
                     }

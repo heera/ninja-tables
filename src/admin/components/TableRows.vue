@@ -22,7 +22,6 @@
                     :hasPro="has_pro"
                     :is-editable-message="isEditableMessage"
                     :tableCreated="reloadSettingsAndData"
-                    @add="addNewColumn()"
                 />
             </div>
 

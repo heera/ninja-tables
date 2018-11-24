@@ -221,7 +221,6 @@
         },
         mounted() {
             if (this.column && !this.column.conditions) {
-                // this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
                 this.$set(this.column, 'conditions', []);
             }
         }
