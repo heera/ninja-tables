@@ -430,7 +430,6 @@ class NinjaFooTable
             if ($type == 'number') {
                 return 'numeric';
             }
-
             return $type;
         }
 

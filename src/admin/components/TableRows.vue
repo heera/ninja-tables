@@ -103,7 +103,7 @@
                             :key="index">
                         <template slot-scope="scope">
                             <div :title="scope.row.values[column.key]" class="cell-content"
-                                 v-html="scope.row.values[column.key]"></div>
+                                 v-html="renderTableCell(scope.row.values[column.key], column, scope.row.values)"></div>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -214,6 +214,7 @@
     import Sortable from 'sortablejs';
 
     import findIndex from 'lodash/findIndex';
+    import each from 'lodash/each';
     import snakeCase from 'lodash/snakeCase'
 
     import addDataModal from './_AddDataModal';
@@ -711,6 +712,31 @@
                 this.config.columns.splice(targetIndex, 1);
                 this.$nextTick(() => this.storeSettings());
             },
+
+            renderTableCell(value, column, row) {
+                let transformededValue = this.getShortcodes(value, column, row);
+                if(transformededValue === null) {
+                    return value;
+                }
+                return transformededValue;
+            },
+
+            getShortcodes(str, column, row) {
+                if(column.transformed_value) {
+                    let transValue = column.transformed_value;
+                    const regEx = /{row.([^\}]*)}/g;
+                    let allMatches = transValue.match(regEx);
+                    if(!allMatches) {
+                        return transValue;
+                    }
+                    each(allMatches, (match) => {
+                        let rowKey = match.substring(5, match.length - 1);
+                        transValue = transValue.replace(match, row[rowKey]);
+                    });
+                    return transValue;
+                }
+                return null;
+            }
         },
         mounted() {
             this.getData();

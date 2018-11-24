@@ -201,7 +201,7 @@
 }
 
 /* Ninja table columns visibility */
-table.ninja_footable col {
+table.ninja_footable col, table.ninja_footable > thead > tr > th {
   &.hidden {
     display: none !important;
   }
