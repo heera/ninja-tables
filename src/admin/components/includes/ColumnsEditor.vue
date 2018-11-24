@@ -430,6 +430,18 @@
                 <condition :column="model" :has-pro="hasPro" />
             </el-tab-pane>
 
+            <!-- Transform Value -->
+            <el-tab-pane label="Transform Value" name="transformer">
+                You can set new value without any condition here. For example, if you want to set an image
+                from an image URL, then you may use "&ltimg src='{value}' /&gt".
+                <el-input
+                  type="textarea"
+                  autosize
+                  placeholder="Please input"
+                  v-model="model.transformed_value"
+                ></el-input>
+            </el-tab-pane>
+
             <hr style="margin:10px 0">
 
             <!-- Buttons -->
@@ -589,6 +601,7 @@
             }
         },
         mounted() {
+            if (!this.model) return;
             this.model.dateFormat = this.model.dateFormat || "";
             this.model.enable_html_content = ['true', true].indexOf(this.model.enable_html_content) !== -1;
             this.model.header_html_content =  this.model.header_html_content || '';

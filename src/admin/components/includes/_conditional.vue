@@ -220,8 +220,9 @@
             },
         },
         mounted() {
-            if (!this.column.conditions) {
-                this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
+            if (this.column && !this.column.conditions) {
+                // this.$set(this.column, 'conditions', [{...this.defaultCondition}]);
+                this.$set(this.column, 'conditions', []);
             }
         }
     }
