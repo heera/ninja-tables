@@ -48,12 +48,10 @@
                         <el-tooltip class="item" placement="bottom-start" effect="light">
                             <div slot="content">
                                 <h3> {{ $t('Data Type') }}</h3>
-
                                 <p>
                                     Choose the data type of the column.
                                 </p>
                             </div>
-
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
@@ -431,7 +429,7 @@
 
             <!-- Transform Value -->
             <el-tab-pane label="Transform Value" name="transformer">
-                <content-transformer :column="model" />
+                <content-transformer :columns="columns" :column="model" />
             </el-tab-pane>
 
             <hr style="margin:10px 0">
@@ -532,6 +530,10 @@
             "dataSourceType": {
                 type: String,
                 default: 'default'
+            },
+            "columns": {
+                type: Array,
+                default: []
             }
         },
         data() {

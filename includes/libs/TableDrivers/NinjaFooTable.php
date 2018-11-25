@@ -172,7 +172,8 @@ class NinjaFooTable
                 $customCss[$cssColumnName]['width'] = $columnWidth . 'px';
             }
             if ($textAlign = ArrayHelper::get($column, 'textAlign')) {
-                $customCss[$cssColumnName]['textAlign'] = $textAlign;
+                $columnContentCss .= '#footable_' . $tableArray['table_id'] . ' th.ninja_column_' . $index
+                    . ' { text-align: ' . $textAlign . '; }';
             }
             $columnTitle = $column['name'];
             if (ArrayHelper::get($column, 'enable_html_content') == 'true') {
