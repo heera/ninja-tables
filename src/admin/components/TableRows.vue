@@ -1,7 +1,7 @@
 <template>
     <div>
         <template v-if="columns.length ">
-            <add_data_modal v-if="columns.length && addDataModal"
+            <add_data_modal v-if="columns.length && addDataModal && isEditable"
                             :title="addDataModalTitle"
                             :show="addDataModal"
                             @modal_close="closeDataModal"
@@ -17,32 +17,32 @@
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
                 <fluent-form-nav
-                    :config="config"
-                    :model="new_column"
-                    :hasPro="has_pro"
-                    :is-editable-message="isEditableMessage"
-                    :tableCreated="reloadSettingsAndData"
+                        :config="config"
+                        :model="new_column"
+                        :hasPro="has_pro"
+                        :is-editable-message="isEditableMessage"
+                        :tableCreated="reloadSettingsAndData"
                 />
             </div>
 
             <div v-if="dataSourceType.indexOf('csv') != -1" class="tablenav top">
                 <external-source-nav :is-editable-message="isEditableMessage"
-                                   :loading="syncing"
-                                   :config="config"
-                                   :hasPro="has_pro"
-                                   v-model="externalDataSourceUrl"
-                                   :tableCreated="reloadSettingsAndData"
+                                     :loading="syncing"
+                                     :config="config"
+                                     :hasPro="has_pro"
+                                     v-model="externalDataSourceUrl"
+                                     :tableCreated="reloadSettingsAndData"
                 />
             </div>
 
             <div v-if="dataSourceType == 'wp-posts' && new_column" class="tablenav top">
                 <WPPostsNav
-                    :config="config"
-                    :model="new_column"
-                    :hasPro="has_pro"
-                    :is-editable-message="isEditableMessage"
-                    :tableCreated="reloadSettingsAndData"
-                    @add="addNewColumn()"
+                        :config="config"
+                        :model="new_column"
+                        :hasPro="has_pro"
+                        :is-editable-message="isEditableMessage"
+                        :tableCreated="reloadSettingsAndData"
+                        @add="addNewColumn()"
                 />
             </div>
 
@@ -175,37 +175,38 @@
         <sortable-upgrade-notice :show="sortableUpgradeNotice" @close="sortableUpgradeNotice = false"/>
 
         <el-dialog
-            class="no_padding_body"
-            :append-to-body="true"
-            top="50px"
-            title="Edit Table Column"
-            width="70%"
-            :visible.sync="showColumnEditor"
+                class="no_padding_body"
+                :append-to-body="true"
+                top="50px"
+                :title="'Edit Table Column : ' +currentEditingColumn.name"
+                width="70%"
+                :visible.sync="showColumnEditor"
         >
             <columns-editor
-                :dataSourceType="config.table.dataSourceType"
-                :model="currentEditingColumn"
-                :hasPro="has_pro"
-                :updating="true"
-                :hideDelete="false"
-                v-if="showColumnEditor"
-                @store="storeSettings()"
-                @delete="deleteColumn()"
-                @cancel="showColumnEditor = false"
+                    :dataSourceType="config.table.dataSourceType"
+                    :model="currentEditingColumn"
+                    :hasPro="has_pro"
+                    :updating="true"
+                    :columns="columns"
+                    :hideDelete="false"
+                    v-if="showColumnEditor && currentEditingColumn"
+                    @store="storeSettings()"
+                    @delete="deleteColumn()"
+                    @cancel="showColumnEditor = false"
             />
         </el-dialog>
 
         <el-dialog
-        top="50px"
-        :append-to-body="true"
-        title="Add Table Column"
-        width="70%"
-        :visible.sync="columnModal">
+                top="50px"
+                :append-to-body="true"
+                title="Add Table Column"
+                width="70%"
+                :visible.sync="columnModal">
             <columns-editor
-                :model="new_column"
-                :hasPro="has_pro"
-                @add="addNewColumn()"
-                @cancel="columnModal = !columnModal"
+                    :model="new_column"
+                    :hasPro="has_pro"
+                    @add="addNewColumn()"
+                    @cancel="columnModal = !columnModal"
             />
         </el-dialog>
     </div>
@@ -219,7 +220,7 @@
 
     import addDataModal from './_AddDataModal';
     import pagination from '../../common/pagination.vue';
-    import Alert from './includes/Alert.vue';
+    import Alert from './includes/alert.vue';
     import DeletePopOver from './includes/DeletePopOver.vue';
     import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
     import columnsEditor from './includes/ColumnsEditor';
@@ -551,7 +552,7 @@
                     header_html_content: "",
                     enable_html_content: false,
                 };
-                if(this.dataSourceType === 'wp-posts') {
+                if (this.dataSourceType === 'wp-posts') {
                     newColumn.source_type = 'custom';
                 }
                 this.new_column = newColumn;
@@ -685,7 +686,7 @@
                 window.ninjaTableBus.$emit('updateTableColumns', () => {
                     this.showColumnEditor = false;
                     this.currentEditingColumn = false;
-                    if(this.dataSource && this.dataSource != 'default') {
+                    if (this.dataSource && this.dataSource != 'default') {
                         this.getData();
                     }
                 });
@@ -714,28 +715,38 @@
             },
 
             renderTableCell(value, column, row) {
-                let transformededValue = this.getShortcodes(value, column, row);
-                if(transformededValue === null) {
+                if (!column.transformed_value) {
                     return value;
                 }
-                return transformededValue;
+                return this.getShortcodes(value, column, row);
             },
 
             getShortcodes(str, column, row) {
-                if(column.transformed_value) {
-                    let transValue = column.transformed_value;
-                    const regEx = /{row.([^\}]*)}/g;
-                    let allMatches = transValue.match(regEx);
-                    if(!allMatches) {
-                        return transValue;
-                    }
-                    each(allMatches, (match) => {
-                        let rowKey = match.substring(5, match.length - 1);
-                        transValue = transValue.replace(match, row[rowKey]);
-                    });
+                let transValue = column.transformed_value;
+                const regEx = /{row.([^\}]*)}/g;
+                let allMatches = transValue.match(regEx);
+                if (!allMatches) {
                     return transValue;
                 }
-                return null;
+                each(allMatches, (match) => {
+                    let rowKey = match.substring(5, match.length - 1);
+
+                    // rowKey may have fallback value
+                    // Example {row.column_key|None Happened} then we have to show None
+                    let defaultValue = '';
+                    let separatorIndex = rowKey.indexOf("|");
+
+                    if(separatorIndex !== -1) {
+                        defaultValue = rowKey.substring(separatorIndex + 1, rowKey.length);
+                        rowKey = rowKey.substring(0, separatorIndex);
+                    }
+                    if(row[rowKey]) {
+                        transValue = transValue.replace(match, row[rowKey]);
+                    } else {
+                        transValue = transValue.replace(match, defaultValue);
+                    }
+                });
+                return transValue;
             }
         },
         mounted() {
