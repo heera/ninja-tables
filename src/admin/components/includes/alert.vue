@@ -6,7 +6,7 @@
 
 <script>
     export default {
-        name: 'Alert',
+        name: 'ninja_alert',
         props: ['type'],
         computed: {
             alertClass() {

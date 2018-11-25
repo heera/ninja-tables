@@ -28,23 +28,11 @@ jQuery(document).ready(function ($) {
                             if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
                                 valueOrElement = jQuery(valueOrElement).text();
                             }
+                            if (!valueOrElement) {
+                                return 0;
+                            }
                             return moment(valueOrElement, column.formatString).valueOf();
                         };
-                        column.formatter = function (value, options, rowData) {
-                            if (value._i) {
-                                return value._i;
-                            }
-                            return value;
-                        }
-                    } else if (column.type == 'html' || column.type == 'text') {
-                        column.sortValue = function (valueOrElement) {
-                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
-                                return jQuery(valueOrElement).text();
-                            } else {
-                                return jQuery('<div>' + valueOrElement + "</div>").text();
-                            }
-                        };
-                        column.type = 'text';
                     } else if (column.type == 'numeric') {
                         column.sortValue = function (valueOrElement) {
                             if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement) || isHTML(valueOrElement)) {
@@ -53,16 +41,16 @@ jQuery(document).ready(function ($) {
                             if (!valueOrElement) {
                                 return '';
                             }
-                            if(typeof (valueOrElement) != 'number') {
+                            if (typeof (valueOrElement) != 'number') {
                                 valueOrElement = valueOrElement.replace(/[^0-9\.,-]+/g, "");
                             } else {
                                 valueOrElement = valueOrElement.toString();
                             }
 
-                            if(valueOrElement && column.thousandSeparator) {
+                            if (valueOrElement && column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
                             }
-                            if(valueOrElement && column.decimalSeparator) {
+                            if (valueOrElement && column.decimalSeparator) {
                                 valueOrElement = valueOrElement.split(column.decimalSeparator).join(".");
                             }
                             let numberValue = Number(valueOrElement);
@@ -71,13 +59,31 @@ jQuery(document).ready(function ($) {
                             }
                             return numberValue;
                         };
+                    } else {
+                        column.sortValue = function (valueOrElement) {
+                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+                                return jQuery(valueOrElement).text();
+                            } else {
+                                return jQuery('<div>' + valueOrElement + "</div>").text();
+                            }
+                        };
+                        if(column.type != 'html') {
+                            column.type = 'text';
+                        }
+                    }
+                    // format the value here
+                    column.formatter = function(value, options, rowData){
+                        if(column.transformed_value) {
+                            return that.getShortcodes(column.transformed_value, column, rowData);
+                        }
+                        return value;
                     }
                 });
 
                 $table.on('ready.ft.table', (e, fooTable) => {
                     try {
                         that.onReadyFooTable($table, tableConfig);
-                    } catch(error) {
+                    } catch (error) {
                         console.warn(error);
                     }
                 }).on('postdraw.ft.table', (e, fooTable) => {
@@ -86,12 +92,12 @@ jQuery(document).ready(function ($) {
                             'ninja-tables-apply-conditional-formatting',
                             [$table, tableConfig]
                         );
-                    } catch(error) {
+                    } catch (error) {
                         console.warn(error);
                     }
                 });
 
-                $table.on('click', '.ninja_table_do_column_filter', function(e) {
+                $table.on('click', '.ninja_table_do_column_filter', function (e) {
                     e.preventDefault();
                     try {
                         const link = $(this);
@@ -231,6 +237,32 @@ jQuery(document).ready(function ($) {
             jQuery.each(cssStyles, (className, values) => {
                 $table.find('.' + className).css(values);
             });
+        },
+        getShortcodes(str, column, row) {
+            let transValue = column.transformed_value;
+            const regEx = /{row.([^\}]*)}/g;
+            let allMatches = transValue.match(regEx);
+            if (!allMatches) {
+                return transValue;
+            }
+            $.each(allMatches, (index, match) => {
+                let rowKey = match.substring(5, match.length - 1);
+
+                let defaultValue = '';
+                let separatorIndex = rowKey.indexOf("|");
+
+                if(separatorIndex !== -1) {
+                    defaultValue = rowKey.substring(separatorIndex + 1, rowKey.length);
+                    rowKey = rowKey.substring(0, separatorIndex);
+                }
+
+                if(row[rowKey]) {
+                    transValue = transValue.replace(match, row[rowKey]);
+                } else {
+                    transValue = transValue.replace(match, defaultValue);
+                }
+            });
+            return transValue;
         }
     };
     ninja_table_app.initTables();
