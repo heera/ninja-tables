@@ -1182,7 +1182,8 @@ class NinjaTablesAdmin
                 title: '<?php _e('Insert Ninja Tables Shortcode', 'ninja-tables') ?>',
                 select_error: '<?php _e('Please select a table'); ?>',
                 insert_text: '<?php _e('Insert Shortcode', 'ninja-tables'); ?>',
-                tables: <?php echo json_encode($tables);?>
+                tables: <?php echo json_encode($tables);?>,
+                logo: <?php echo json_encode(NINJA_TABLES_DIR_URL.'assets/img/ninja-table-editor-button-2x.png');?>
             }
         </script>
         <?php

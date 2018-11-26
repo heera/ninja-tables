@@ -230,6 +230,8 @@ class NinjaTableClass {
             $this->loader->add_action('admin_footer', $showMessageBox, 'addPluginDeactivationMessage');
         }
         $this->loader->add_action('wp_ajax_ninja-tables_deactivate_feedback', $showMessageBox, 'broadcastFeedback');
+
+		$this->loadGutenBlock();
 	}
 
 	/**
@@ -317,5 +319,25 @@ class NinjaTableClass {
 
 	public function addPluginDeactivationMessage() {
 
+    }
+
+    /**
+     * Load block for the gutenberg editor.
+     */
+    private function loadGutenBlock()
+    {
+        add_action('enqueue_block_editor_assets', function () {
+            wp_enqueue_script(
+                'ninja-tables-gutenberg-block',
+                NINJA_TABLES_DIR_URL.'assets/js/ninja-tables-gutenblock.js',
+                array('wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' , 'wp-editor')
+            );
+
+            wp_enqueue_style(
+                'ninja-tables-gutenberg-block',
+                NINJA_TABLES_DIR_URL.'assets/css/ninja-tables-gutenblock.css',
+                array('wp-edit-blocks')
+            );
+        });
     }
 }
