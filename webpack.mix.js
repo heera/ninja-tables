@@ -5,10 +5,12 @@ const assetVersion = '2.3.4';
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');
 
+// mix.react('src/admin/gutenblock.js', `assets/js/ninja-tables-gutenblock.js`);
+// return;
+
 mix.js('src/admin/main.js', `assets/js/ninja-tables-admin.js`)
     .js('src/public/js/ninja-tables-footable.js', `assets/js/ninja-tables-footable.${assetVersion}.js`)
     .js('src/admin/ninja-table-tinymce-button.js', `assets/js/ninja-table-tinymce-button.js`)
-    .react('src/admin/gutenblock.js', `assets/js/ninja-tables-gutenblock.js`)
     .sass('src/public/css/_public.scss', `assets/css/ninjatables-public.css`)
     .sass('src/admin/css/ninja-tables-admin.scss', `assets/css/ninja-tables-admin.css`)
     .sass('src/admin/css/vendor.scss', 'assets/css/ninja-tables-vendor.css')

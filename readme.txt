@@ -5,11 +5,11 @@ Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, da
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.8
-Stable tag: 3.0.3
+Stable tag: 3.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Responsive Data Tables Builder Plugin. Unlimited colors and templates, drag-&-drop live table builder, csv data. No.1 Table Plugin, Build Table without writing any code.
+WP Responsive Data Tables Builder Plugin. Build Table with drag-&-drop live table builder, csv data. No.1 Table Plugin, Build Table without writing any code.
 
 == Description ==
 
@@ -183,6 +183,14 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 3.0.5 ( Date: November 26, 2018 ) =
+* Improve WP Fluent Form integration
+* Fix CSV upload bug
+* Date Sorting bug fix
+* Fix Alignment Issue for table headers
+* Internal Improvements
+* Add Gutenberg Support ( Dedicated Gutenberg Table Block Added )
 
 = 3.0.0 ( Date: November 19, 2018 ) =
 This is a major version release but it's completely work with previous versions. Feel free to upgrade this version from any previous version
