@@ -21,27 +21,6 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
                 }
 			}
         });
-        // Content Transforming
-        // if (column.transformed_value) {
-        //     let curentColumnClassPrefix = 'ninja_column_';
-        //     let cellClass = curentColumnClassPrefix + colIndex;
-        //     let cells = $table.find('tbody .' + cellClass);
-		//
-        //     cells.each((i, cell) => {
-        //         let $this = jQuery(cell);
-        //         if (column.transformed_value && !$this.hasClass('ninja_column_transformed')) {
-        //             let replaced = column.transformed_value.replace(/\{cell.value\}|\{row\.\w+\}/g, function(match) {
-        //                 if (match == "{cell.value}") {
-        //                     return $this.html();
-        //                 } else {
-        //                     let columnName = match.substring(5, match.length-1);
-        //                     return $this.closest('tr').find('td.ninja_clmn_nm_'+columnName).html();
-        //                 }
-        //             });
-        //             $this.html(replaced).addClass('ninja_column_transformed');
-        //         }
-        //     });
-        // }
     });
 });
 

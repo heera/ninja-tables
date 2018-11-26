@@ -49,6 +49,7 @@
                                     <div v-show="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
                                             <columns-editor
+                                                :columns="columns"
                                                 :dataSourceType="config.table.dataSourceType"
                                                 :model="new_column"
                                                 :has-pro="has_pro"
@@ -69,6 +70,7 @@
                                             </div>
                                             <div class="drawer_body" :class="'drawer_body_'+index">
                                                 <columns-editor
+                                                    :columns="columns"
                                                     :dataSourceType="config.table.dataSourceType"
                                                     :model="column"
                                                     :has-pro="has_pro"

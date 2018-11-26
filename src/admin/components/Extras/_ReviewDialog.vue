@@ -4,7 +4,7 @@
         <div class="consent_body">
             <p>Thank You for using Ninja Tables Plugin. We are continuously working on it to improve this plugin. If You can spare a minute, Please help us by leaving a five star rating on wordpress.org</p>
             <a target="_blank" @click="recordActivity('yes')" href="https://wordpress.org/support/plugin/ninja-tables/reviews/#new-post" class="el-button el-button--success el-button--small">Happy To Help</a>
-            <span style="cursor: pointer" @click="recordActivity('no')">Hide Notification</span>
+            <span style="cursor: pointer; font-size: 11px" @click="recordActivity('no')">Hide Notification</span>
         </div>
     </div>
 </template>

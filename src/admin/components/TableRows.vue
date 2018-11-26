@@ -93,7 +93,7 @@
                             v-if="isEditable"
                             type="selection"
                             fixed
-                            width="55">
+                            width="60">
                     </el-table-column>
                     <el-table-column
                             v-for="(column, index) in columns"
