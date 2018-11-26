@@ -8,14 +8,30 @@ class FluentFormProvider
 {
     public function boot()
     {
-        add_action('wp_ajax_ninja_tables_save_fluentform_table', array($this, 'saveTable'), 10, 1);
+        add_action('wp_ajax_ninja_tables_save_fluentform_table', array($this, 'saveTable'));
+        add_action('wp_ajax_ninja_tables_get_fluentforms', array($this, 'getFluentFormForms'));
         add_filter('ninja_tables_get_table_fluent-form', array($this, 'getTableSettings'));
         add_filter('ninja_tables_get_table_data_fluent-form', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 2);
     }
 
+    public function getFluentFormForms()
+    {
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
+        if (function_exists('wpFluentForm')) {
+            wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
+        }
+    }
+
     public function saveTable()
     {
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
         $messages = array();
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
@@ -86,6 +102,7 @@ class FluentFormProvider
 
     public function getTableSettings($table)
     {
+
         $table->isEditable = false;
         $table->dataSourceType = 'fluent-form';
         $table->isEditableMessage = 'You may edit your table settings here.';
@@ -172,12 +189,17 @@ class FluentFormProvider
                 $value->user_inputs, array_combine($columns, $columns)
             );
         }
-        
+
         return $data;
     }
 
     private function saveOrCreateTable($postId = null)
     {
+
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
         $attributes = array(
             'post_title' => sanitize_text_field($_REQUEST['post_title']),
             'post_content' => wp_kses_post($_REQUEST['post_content']),

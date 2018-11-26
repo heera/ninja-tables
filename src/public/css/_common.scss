@@ -230,3 +230,36 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     }
   }
 }
+
+table.ninja_table_pro thead tr.footable-filtering {
+  .ninja_custom_select_radio, .ninja_custom_select_box {
+    text-align: left;
+    margin-bottom: 10px !important;
+    > label {
+      margin-left: 0px !important;
+      input[type=radio] {
+        margin-right: 5px;
+      }
+    }
+    label.ninja_filter_title {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  table.ninja_table_pro thead tr.footable-filtering {
+    .ninja_custom_select_radio, .ninja_custom_select_box {
+      text-align: left;
+      margin-top: 10px !important;
+      > label {
+        display: block;
+        margin-left: 0px !important;
+        input[type=radio] {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+}

@@ -4,9 +4,6 @@
  */
 
 use NinjaTable\TableDrivers\NinjaFooTable;
-use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
-use NinjaTables\Classes\Libs\Migrations\NinjaTablesTablePressMigration;
-use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
 
 /**
  * The admin-specific functionality of the plugin.
@@ -261,7 +258,8 @@ class NinjaTablesAdmin
         $totalPublishedTable = 0;
         if ($tableCount && $tableCount->publish > 1) {
             $leadStatus = apply_filters('ninja_tables_show_lead', $leadStatus);
-        } else if($tableCount->publish > 2) {
+        }
+        if($tableCount->publish > 2 && !$leadStatus) {
             $reviewOptinStatus = apply_filters('ninja_tables_show_review_optin', $reviewOptinStatus);
         }
 
@@ -331,16 +329,12 @@ class NinjaTablesAdmin
             'get-all-tables' => 'getAllTables',
             'store-a-table' => 'storeTable',
             'delete-a-table' => 'deleteTable',
-            'import-table' => 'importTable',
-            'import-table-from-plugin' => 'importTableFromPlugin',
-            'get-tables-from-plugin' => 'getTablesFromPlugin',
             'update-table-settings' => 'updateTableSettings',
             'get-table-settings' => 'getTableSettings',
             'get-table-data' => 'getTableData',
             'store-table-data' => 'storeData',
             'edit-data' => 'editData',
             'delete-data' => 'deleteData',
-            'upload-data' => 'uploadData',
             'duplicate-table' => 'duplicateTable',
             'export-data' => 'exportData',
             'dismiss_fluent_suggest' => 'dismissPluginSuggest',
@@ -354,9 +348,19 @@ class NinjaTablesAdmin
             'install_fluent_form' => 'installFluentForm'
         );
 
+        $importRoutes = array(
+            'import-table' => 'importTable',
+            'upload-data' => 'uploadData',
+            'import-table-from-plugin' => 'importTableFromPlugin',
+            'get-tables-from-plugin' => 'getTablesFromPlugin',
+        );
+
         $requested_route = $_REQUEST['target_action'];
         if (isset($valid_routes[$requested_route])) {
             $this->{$valid_routes[$requested_route]}();
+        } else if(isset($importRoutes[$requested_route])) {
+            $tableImport = new \NinjaTables\Classes\NinjaTableImport();
+            $tableImport->{$importRoutes[$requested_route]}();
         }
 
         wp_die();
@@ -445,25 +449,6 @@ class NinjaTablesAdmin
         return $postId;
     }
 
-    public function importTable()
-    {
-        $format = $_REQUEST['format'];
-
-        if ($format == 'csv') {
-            $this->uploadTableCsv();
-        } elseif ($format == 'json') {
-            $this->uploadTableJson();
-        } elseif ($format == 'ninjaJson') {
-            $this->uploadTableNinjaJson();
-        }
-
-        wp_send_json(array(
-            'message' => __('No appropriate driver found for the import format.',
-                'ninja-tables')
-        ), 423);
-    }
-
-
     public function saveCustomCSS()
     {
         $tableId = intval($_REQUEST['table_id']);
@@ -474,242 +459,6 @@ class NinjaTablesAdmin
         wp_send_json_success(array(
             'message' => 'Custom CSS successfully saved'
         ), 200);
-    }
-
-
-    private function getTablesFromPlugin()
-    {
-        $plugin = sanitize_text_field($_REQUEST['plugin']);
-        $libraryClass = false;
-
-        if ($plugin == 'UltimateTables') {
-            $libraryClass = new NinjaTablesUltimateTableMigration();
-        } elseif ($plugin == 'TablePress') {
-            $libraryClass = new NinjaTablesTablePressMigration();
-        } elseif ($plugin == 'supsystic') {
-            $libraryClass = new NinjaTablesSupsysticTableMigration();
-        } else {
-            return false;
-        }
-        $tables = $libraryClass->getTables();
-
-        wp_send_json(array(
-            'tables' => $tables
-        ), 200);
-    }
-
-
-    private function importTableFromPlugin()
-    {
-        $plugin = esc_attr($_REQUEST['plugin']);
-        $tableId = intval($_REQUEST['tableId']);
-
-        if ($plugin == 'UltimateTables') {
-            $libraryClass = new NinjaTablesUltimateTableMigration();
-        } elseif ($plugin == 'TablePress') {
-            $libraryClass = new NinjaTablesTablePressMigration();
-        } elseif ($plugin == 'supsystic') {
-            $libraryClass = new NinjaTablesSupsysticTableMigration();
-        } else {
-            return false;
-        }
-
-        $tableId = $libraryClass->migrateTable($tableId);
-        if (is_wp_error($tableId)) {
-            wp_send_json_error(array(
-                'message' => $tableId->get_error_message()
-            ), 423);
-        }
-
-        $message = __(
-            'Successfully imported. Please go to all tables and review your newly imported table.',
-            'ninja-tables'
-        );
-
-        wp_send_json_success(array(
-            'message' => $message,
-            'tableId' => $tableId
-        ), 200);
-    }
-
-    private function formatHeader($header)
-    {
-        return ninja_table_format_header($header);
-    }
-
-    private function uploadTableCsv()
-    {
-        $tmpName = $_FILES['file']['tmp_name'];
-
-        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
-
-        $header = array_shift($reader);
-        $reader = array_reverse($reader);
-
-        foreach ($reader as &$item) {
-            // We have to convert everything to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
-        }
-
-        $tableId = $this->createTable();
-
-        $header = $this->formatHeader($header);
-
-        $this->storeTableConfigWhenImporting($tableId, $header);
-
-        $this->insertDataToTable($tableId, $reader, $header);
-
-        wp_send_json(array(
-            'message' => __('Successfully added a table.', 'ninja-tables'),
-            'tableId' => $tableId
-        ));
-    }
-
-    private function uploadTableJson()
-    {
-        $tableId = $this->createTable();
-
-        $tmpName = $_FILES['file']['tmp_name'];
-
-        $content = json_decode(file_get_contents($tmpName), true);
-
-        $header = array_keys(array_pop(array_reverse($content)));
-
-        $formattedHeader = array();
-        foreach ($header as $head) {
-            $formattedHeader[$head] = $head;
-        }
-
-        $this->storeTableConfigWhenImporting($tableId, $formattedHeader);
-
-        $this->insertDataToTable($tableId, $content, $formattedHeader);
-
-        wp_send_json(array(
-            'message' => __('Successfully added a table.', 'ninja-tables'),
-            'tableId' => $tableId
-        ));
-    }
-
-    private function uploadTableNinjaJson()
-    {
-        $tmpName = $_FILES['file']['tmp_name'];
-
-        $content = json_decode(file_get_contents($tmpName), true);
-
-        // validation
-        if (!$content['post'] || !$content['columns'] || !$content['settings']) {
-            wp_send_json(array(
-                'message' => __('You have a faulty JSON file. Please export a new one.',
-                    'ninja-tables')
-            ), 423);
-        }
-
-        $tableAttributes = array(
-            'post_title' => sanitize_title($content['post']['post_title']),
-            'post_content' => wp_kses_post($content['post']['post_content']),
-            'post_type' => $this->cpt_name,
-            'post_status' => 'publish'
-        );
-
-        $tableId = $this->createTable($tableAttributes);
-
-        update_post_meta($tableId, '_ninja_table_columns', $content['columns']);
-
-        update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
-
-        if(isset($content['data_provider']) && $content['data_provider'] != 'default') {
-            $metas = $content['metas'];
-            foreach ($metas as $meta_key => $meta_value) {
-                update_post_meta($tableId, $meta_key, $meta_value);
-            }
-        } else {
-            if ($rows = $content['rows']) {
-                $header = [];
-                foreach ($content['columns'] as $column) {
-                    $header[$column['key']] = $column['name'];
-                }
-                $this->insertDataToTable($tableId, $rows, $header);
-            }
-        }
-
-        wp_send_json(array(
-            'message' => __('Successfully added a table.', 'ninja-tables'),
-            'tableId' => $tableId
-        ));
-    }
-
-    private function createTable($data = null)
-    {
-        return wp_insert_post($data
-            ? $data
-            : array(
-                'post_title' => __('Temporary table name', 'ninja-tables'),
-                'post_content' => __('Temporary table description',
-                    'ninja-tables'),
-                'post_type' => $this->cpt_name,
-                'post_status' => 'publish'
-            ));
-    }
-
-    private function storeTableConfigWhenImporting($tableId, $header)
-    {
-        // ninja_table_columns
-        $ninjaTableColumns = array();
-
-        foreach ($header as $key => $name) {
-            $ninjaTableColumns[] = array(
-                'key' => $key,
-                'name' => $name,
-                'breakpoints' => ''
-            );
-        }
-
-        update_post_meta($tableId, '_ninja_table_columns', $ninjaTableColumns);
-
-        // ninja_table_settings
-        $ninjaTableSettings = ninja_table_get_table_settings($tableId, 'admin');
-
-        update_post_meta($tableId, '_ninja_table_settings', $ninjaTableSettings);
-
-        ninjaTablesClearTableDataCache($tableId);
-    }
-
-    private function insertDataToTable($tableId, $values, $header)
-    {
-        $header = array_keys($header);
-        $time = current_time('mysql');
-        $headerCount = count($header);
-
-        foreach ($values as $item) {
-            if ($headerCount == count($item)) {
-                $itemTemp = array_combine($header, $item);
-            } else {
-                // The item can have less/more entry than the header has.
-                // We have to ensure that the header and values match.
-                $itemTemp = array_combine(
-                    $header,
-                    // We'll get the appropriate values by merging Array1 & Array2
-                    array_merge(
-                    // Array1 = Only the entries that the header has.
-                        array_intersect_key($item, array_fill_keys(array_values($header), null)),
-                        // Array2 = The remaining header entries will be blank.
-                        array_fill_keys(array_diff(array_values($header), array_keys($item)), null)
-                    )
-                );
-            }
-
-            $data = array(
-                'table_id' => $tableId,
-                'attribute' => 'value',
-                'value' => json_encode($itemTemp),
-                'created_at' => $time,
-                'updated_at' => $time
-            );
-
-            ninja_tables_DbTable()->insert($data);
-        }
     }
 
     public function getTableSettings()
@@ -999,77 +748,6 @@ class NinjaTablesAdmin
         wp_send_json(array(
             'message' => __('Successfully deleted data.', 'ninja-tables')
         ), 200);
-    }
-
-    public function uploadData()
-    {
-        $tableId = intval($_REQUEST['table_id']);
-        $tmpName = $_FILES['file']['tmp_name'];
-
-        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
-
-        $csvHeader = array_shift($reader);
-        $csvHeader = array_map('esc_attr', $csvHeader);
-
-        $config = get_post_meta($tableId, '_ninja_table_columns', true);
-        if (!$config) {
-            wp_send_json(array(
-                'message' => __('Please set table configuration.', 'ninja-tables')
-            ), 423);
-        }
-
-        $header = array();
-
-        foreach ($csvHeader as $item) {
-            foreach ($config as $column) {
-                $item = esc_attr($item);
-                if ($item == $column['key'] || $item == $column['name']) {
-                    $header[] = $column['key'];
-                }
-            }
-        }
-
-        if (count($header) != count($config)) {
-            wp_send_json(array(
-                'message' => __('Please use the provided CSV header structure.', 'ninja-tables')
-            ), 423);
-        }
-
-        $data = array();
-        $time = current_time('mysql');
-
-        foreach ($reader as $item) {
-            // If item has any ascii entry we'll convert it to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
-
-            $itemTemp = array_combine($header, $item);
-
-            array_push($data, array(
-                'table_id' => $tableId,
-                'attribute' => 'value',
-                'value' => json_encode($itemTemp),
-                'created_at' => $time,
-                'updated_at' => $time
-            ));
-        }
-
-        $replace = $_REQUEST['replace'] === 'true';
-
-        if ($replace) {
-            ninja_tables_DbTable()->where('table_id', $tableId)->delete();
-        }
-
-        $data = apply_filters('ninja_tables_import_table_data', $data, $tableId);
-
-        ninja_tables_DbTable()->batch_insert($data);
-
-        ninjaTablesClearTableDataCache($tableId);
-
-        wp_send_json(array(
-            'message' => __('Successfully uploaded data.', 'ninja-tables')
-        ));
     }
 
     public function exportData()
@@ -1400,13 +1078,6 @@ class NinjaTablesAdmin
         // Keep a flag on the options table that the
         // db is migrated to use for manual sorting.
         update_option($option, true);
-    }
-
-    public function getFluentformForms()
-    {
-        if (function_exists('wpFluentForm')) {
-            wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
-        }
     }
 
     public function getAllAuthors()

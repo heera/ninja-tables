@@ -9,8 +9,7 @@
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <h3>Field Type</h3>
-
-                            <p>You can use ...</p>
+                            <p>Select The field type you want to populate for each row</p>
                         </div>
 
                         <i class="el-icon-info el-text-info" />
@@ -38,6 +37,7 @@
                     <el-tooltip class="item" placement="bottom-start" effect="light">
                         <div slot="content">
                             <h3>Field Value</h3>
+                            <p>Provide the column value for your corresponding value type select</p>
                         </div>
 
                         <i class="el-icon-info el-text-info" />
@@ -219,6 +219,11 @@
                 loading: false,
                 post_data_types: []
             };
+        },
+        watch: {
+            'column.wp_post_custom_data_type': function () {
+                this.column.wp_post_custom_data_value = '';
+            }
         },
         computed: {
             selectedField() {

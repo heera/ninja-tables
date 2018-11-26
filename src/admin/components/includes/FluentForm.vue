@@ -29,7 +29,7 @@
                     <el-option
                             v-for="form in forms"
                             :key="form.id"
-                            :label="form.title"
+                            :label="form.id +' : '+ form.title"
                             :value="form.id">
                     </el-option>
                 </el-select>
@@ -177,8 +177,8 @@
         methods: {
             fetchForms() {
                 jQuery.getJSON(ajaxurl, {
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'get-fluentform-forms'
+                    action: 'ninja_tables_get_fluentforms',
+                    per_page: 9999
                 }).then(res => {
                     this.forms = [];
                     jQuery.each(res.data, (i, form) => {
@@ -263,7 +263,7 @@
                     });
             }
         },
-        created() {
+        mounted() {
             this.hasFluentForm && this.fetchForms();
         },
     };

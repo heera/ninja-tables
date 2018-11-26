@@ -684,3 +684,42 @@ if(!function_exists('ninja_table_url_slug')) {
         return $options['lowercase'] ? mb_strtolower($str, 'UTF-8') : $str;
     }
 }
+
+
+function ninjaTableInsertDataToTable($tableId, $values, $header)
+{
+    $header = array_keys($header);
+    $time = current_time('mysql');
+    $headerCount = count($header);
+
+    foreach ($values as $item) {
+        if ($headerCount == count($item)) {
+            $itemTemp = array_combine($header, $item);
+        } else {
+            // The item can have less/more entry than the header has.
+            // We have to ensure that the header and values match.
+            $itemTemp = array_combine(
+                $header,
+                // We'll get the appropriate values by merging Array1 & Array2
+                array_merge(
+                // Array1 = Only the entries that the header has.
+                    array_intersect_key($item, array_fill_keys(array_values($header), null)),
+                    // Array2 = The remaining header entries will be blank.
+                    array_fill_keys(array_diff(array_values($header), array_keys($item)), null)
+                )
+            );
+        }
+
+        $data = array(
+            'table_id' => $tableId,
+            'attribute' => 'value',
+            'value' => json_encode($itemTemp),
+            'created_at' => $time,
+            'updated_at' => $time
+        );
+        if(isset($item['position']) && defined('NINJAPROPLUGIN_VERSION')) {
+            $data['position'] = $item['position'];
+        }
+        ninja_tables_DbTable()->insert($data);
+    }
+}
