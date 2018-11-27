@@ -185,7 +185,16 @@
     import NinjaColorPicker from '../Extras/ColorPicker';
     export default {
         name: "Conditional",
-        props: ['column', 'hasPro'],
+        props: {
+            hasPro: {
+                type: Boolean,
+                default: false
+            },
+            column: {
+                type: Object,
+                default: () => ({})
+            }
+        },
         components: {
             NinjaColorPicker,
         },
@@ -203,6 +212,9 @@
         },
         methods: {
             addCondition() {
+                if (!this.column.conditions) {
+                    this.$set(this.column, 'conditions', []);
+                }
                 this.column.conditions.push({...this.defaultCondition});
             },
             removeCondition(index) {

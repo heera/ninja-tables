@@ -17,6 +17,7 @@
 
                 <columns-editor
                     :model="model"
+                    :columns="config.columns"
                     :hasPro="hasPro"
                     :hideCancel="true"
                     dataSourceType="wp-posts"
