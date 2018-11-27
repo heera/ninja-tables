@@ -212,8 +212,17 @@
 
 <script>
     export default {
-        name: "WPPostDYnamicColumn",
-        props: ['column'],
+        name: "WPPostDynamicColumn",
+        props: {
+            column: {
+                type: Object,
+                default: () => ({})
+            },
+            columns: {
+                type: Array,
+                default: () => []
+            }
+        },
         data() {
             return {
                 loading: false,

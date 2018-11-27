@@ -2,47 +2,47 @@
     <div>
         <template v-if="columns.length ">
             <add_data_modal v-if="columns.length && addDataModal && isEditable"
-                            :title="addDataModalTitle"
-                            :show="addDataModal"
-                            @modal_close="closeDataModal"
-                            @updateItem="updateItemOnTable"
-                            @createItem="addItemOnTable"
-                            :table_id="tableId"
-                            :columns="columns"
-                            :item="updateItem"
-                            :manual-sort="config.settings.sorting_type === 'manual_sort'"
-                            :insert-after-position="insertAfterPosition"
-                            :type="dataModalType"
+                :title="addDataModalTitle"
+                :show="addDataModal"
+                @modal_close="closeDataModal"
+                @updateItem="updateItemOnTable"
+                @createItem="addItemOnTable"
+                :table_id="tableId"
+                :columns="columns"
+                :item="updateItem"
+                :manual-sort="config.settings.sorting_type === 'manual_sort'"
+                :insert-after-position="insertAfterPosition"
+                :type="dataModalType"
             ></add_data_modal>
 
             <div v-if="dataSourceType == 'fluent-form'" class="tablenav top">
                 <fluent-form-nav
-                        :config="config"
-                        :model="new_column"
-                        :hasPro="has_pro"
-                        :is-editable-message="isEditableMessage"
-                        :tableCreated="reloadSettingsAndData"
+                    :config="config"
+                    :model="new_column"
+                    :hasPro="has_pro"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
                 />
             </div>
 
             <div v-if="dataSourceType.indexOf('csv') != -1" class="tablenav top">
                 <external-source-nav :is-editable-message="isEditableMessage"
-                                     :loading="syncing"
-                                     :config="config"
-                                     :hasPro="has_pro"
-                                     v-model="externalDataSourceUrl"
-                                     :tableCreated="reloadSettingsAndData"
+                     :loading="syncing"
+                     :config="config"
+                     :hasPro="has_pro"
+                     v-model="externalDataSourceUrl"
+                     :tableCreated="reloadSettingsAndData"
                 />
             </div>
 
             <div v-if="dataSourceType == 'wp-posts' && new_column" class="tablenav top">
                 <WPPostsNav
-                        :config="config"
-                        :model="new_column"
-                        :hasPro="has_pro"
-                        :is-editable-message="isEditableMessage"
-                        :tableCreated="reloadSettingsAndData"
-                        @add="addNewColumn()"
+                    :config="config"
+                    :model="new_column"
+                    :hasPro="has_pro"
+                    :is-editable-message="isEditableMessage"
+                    :tableCreated="reloadSettingsAndData"
+                    @add="addNewColumn()"
                 />
             </div>
 

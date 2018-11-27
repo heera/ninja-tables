@@ -204,7 +204,11 @@
                     </select>
                 </el-form-item>
 
-                <wp-post-dynamic-column v-if="dataSourceType == 'wp-posts'" :column="model" />
+                <wp-post-dynamic-column
+                    v-if="dataSourceType == 'wp-posts'"
+                    :columns="columns"
+                    :column="model"
+                />
             </el-tab-pane>
 
             <!-- Advanced Settings -->
@@ -503,37 +507,37 @@
             'content-transformer': ContentTransformer,
         },
         props: {
-            "model": {
+            model: {
                 type: Object,
-                default: {}
+                default: () => ({})
             },
-            "hasPro": {
+            hasPro: {
                 type: Boolean,
                 default: false
             },
-            "updating": {
+            updating: {
                 type: Boolean,
                 default: false
             },
-            "moreSettings": {
+            moreSettings: {
                 type: Boolean,
                 default: false
             },
-            "hideDelete": {
+            hideDelete: {
                 type: Boolean,
                 default: false
             },
-            "hideCancel": {
+            hideCancel: {
                 type: Boolean,
                 default: false
             },
-            "dataSourceType": {
+            dataSourceType: {
                 type: String,
                 default: 'default'
             },
-            "columns": {
+            columns: {
                 type: Array,
-                default: []
+                default: () => []
             }
         },
         data() {

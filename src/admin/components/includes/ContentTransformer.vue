@@ -34,9 +34,19 @@
 <script>
     import ninja_alert from './alert';
     import NinjaPremiumNotice from './PremiumNotice';
+    
     export default {
         name: 'ContentTransformer',
-        props: ['column', 'columns'],
+        props: {
+            column: {
+                type: Object,
+                default: () => ({})
+            },
+            columns: {
+                type: Array,
+                default: () => []
+            }
+        },
         components: {
             ninja_alert,
             NinjaPremiumNotice
