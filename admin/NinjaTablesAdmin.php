@@ -348,7 +348,6 @@ class NinjaTablesAdmin
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
-            'get-fluentform-forms' => 'getFluentformForms',
             'get_wp_post_types' => 'getAllPostTypes',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm'
@@ -1399,13 +1398,6 @@ class NinjaTablesAdmin
         // Keep a flag on the options table that the
         // db is migrated to use for manual sorting.
         update_option($option, true);
-    }
-
-    public function getFluentformForms()
-    {
-        if (function_exists('wpFluentForm')) {
-            wpFluentForm('FluentForm\App\Modules\Form\Form')->index();
-        }
     }
 
     public function getAllAuthors()

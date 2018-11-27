@@ -8,10 +8,39 @@ class FluentFormProvider
 {
     public function boot()
     {
+        add_action('wp_ajax_ninja_tables_get-fluentform-forms', array($this, 'getFluentformForms'));
+        add_action('wp_ajax_ninja-tables_get-fluentform-fields', array($this, 'getFluentformFields'));
+
         add_action('wp_ajax_ninja_tables_save_fluentform_table', array($this, 'saveTable'), 10, 1);
         add_filter('ninja_tables_get_table_fluent-form', array($this, 'getTableSettings'));
         add_filter('ninja_tables_get_table_data_fluent-form', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 2);
+    }
+
+    // TODO: Refactoring required.
+    // Must use exposed API from fluentform.
+    public function getFluentformForms()
+    {
+        if (function_exists('wpFluentForm')) {
+            $forms = wpFluent()->table('fluentform_forms')->select(array('id', 'title'))->get();
+            wp_send_json_success($forms, 200);
+            wp_die();
+        }
+    }
+
+    // TODO: Refactoring required.
+    // Must use exposed API from fluentform.
+    public function getFluentformFields()
+    {
+        $form = wpFluentForm('FluentForm\App\Modules\Form\Form');
+        $formFieldParser = wpFluentForm('FluentForm\App\Modules\Form\FormFieldsParser');
+
+        $inputs = $formFieldParser->getEntryInputs($form->fetchForm($_REQUEST['form_Id']));
+        foreach ($formFieldParser->getAdminLabels($form, $inputs) as $key => $value) {
+            $labels[] = array('name' => $key, 'label' => $value);
+        }
+        
+        wp_send_json_success($labels, 200);
     }
 
     public function saveTable()
@@ -20,9 +49,9 @@ class FluentFormProvider
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
 
-        if (!$formId) {
+        if (!$tableId) {
             // Validate Title
-            if (empty( $_REQUEST['post_title'] ) ) {
+            if (empty($_REQUEST['post_title'])) {
                 $messages['title'] = __('The title field is required.', 'ninja-tables');
             }
         }
