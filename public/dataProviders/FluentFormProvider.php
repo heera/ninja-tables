@@ -10,8 +10,8 @@ class FluentFormProvider
     {
         add_action('wp_ajax_ninja_tables_get-fluentform-forms', array($this, 'getFluentformForms'));
         add_action('wp_ajax_ninja-tables_get-fluentform-fields', array($this, 'getFluentformFields'));
-
         add_action('wp_ajax_ninja_tables_save_fluentform_table', array($this, 'saveTable'), 10, 1);
+
         add_filter('ninja_tables_get_table_fluent-form', array($this, 'getTableSettings'));
         add_filter('ninja_tables_get_table_data_fluent-form', array($this, 'getTableData'), 10, 4);
         add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 2);
@@ -21,6 +21,10 @@ class FluentFormProvider
     // Must use exposed API from fluentform.
     public function getFluentformForms()
     {
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+        
         if (function_exists('wpFluentForm')) {
             $forms = wpFluent()->table('fluentform_forms')->select(array('id', 'title'))->get();
             wp_send_json_success($forms, 200);
@@ -45,6 +49,10 @@ class FluentFormProvider
 
     public function saveTable()
     {
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
         $messages = array();
         $tableId = $_REQUEST['table_Id'];
         $formId = $_REQUEST['form']['id'];
@@ -103,9 +111,11 @@ class FluentFormProvider
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
         update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
+        
         update_post_meta(
             $tableId, '_ninja_tables_data_provider_ff_entry_limit', $_REQUEST['form']['entry_limit']
         );
+
         update_post_meta(
             $tableId, '_ninja_tables_data_provider_ff_entry_status', $_REQUEST['form']['entry_status']
         );
@@ -115,6 +125,7 @@ class FluentFormProvider
 
     public function getTableSettings($table)
     {
+
         $table->isEditable = false;
         $table->dataSourceType = 'fluent-form';
         $table->isEditableMessage = 'You may edit your table settings here.';
@@ -201,12 +212,17 @@ class FluentFormProvider
                 $value->user_inputs, array_combine($columns, $columns)
             );
         }
-        
+
         return $data;
     }
 
     private function saveOrCreateTable($postId = null)
     {
+
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
         $attributes = array(
             'post_title' => sanitize_text_field($_REQUEST['post_title']),
             'post_content' => wp_kses_post($_REQUEST['post_content']),

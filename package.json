@@ -24,6 +24,7 @@
 		"vuedraggable": "^2.16.0"
 	},
 	"devDependencies": {
+		"babel-preset-react": "^6.24.1",
 		"cross-env": "^5.0.5",
 		"laravel-mix": "^2.0.0",
 		"vue2-ace-editor": "0.0.10"

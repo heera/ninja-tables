@@ -16,9 +16,17 @@ export default {
             $elements.each((i, cell) => {
                 let $this = jQuery(cell);
                 if (condition.targetValue && !$this.hasClass('ninja_column_conditionally_transformed')) {
-                    let replaced = condition.targetValue.replace(/\{cell.value\}|\{row\.\w+\}/g, function(match) {
-                        let columnName = match.substring(5, match.length-1);
-                        return $this.closest('tr').find('td.ninja_clmn_nm_'+columnName).html();
+                	let targetValue = condition.targetValue;
+                	let replaced = targetValue.replace(/{row.([^\}]*)}/g, function(match) {
+                        let rowKey = match.substring(5, match.length - 1);
+                        let defaultValue = '';
+                        let separatorIndex = rowKey.indexOf("|");
+
+                        if(separatorIndex !== -1) {
+                            defaultValue = rowKey.substring(separatorIndex + 1, rowKey.length);
+                            rowKey = rowKey.substring(0, separatorIndex);
+                        }
+                        return $this.closest('tr').find('td.ninja_clmn_nm_'+rowKey).html() || defaultValue;
                     });
                     $this.html(replaced).addClass('ninja_column_conditionally_transformed');
                 }

@@ -71,31 +71,40 @@
                 </div>
             </template>
 
-            <import-table v-if="activeTabName === 'import_table'"></import-table>
+            <template v-else-if="activeTabName === 'import_table'">
+                <import-table></import-table>
+            </template>
 
-            <external-data-source v-else-if="activeTabName == 'google_spread_sheet'"
-                                  type="google-csv"
-                                  :tableCreated="fireTableCreated"
-                                  :has-pro="hasPro"
-                                  :activated_features="activated_features"
-            />
+            <template v-else-if="activeTabName == 'google_spread_sheet'">
+                <external-data-source
+                        type="google-csv"
+                        :tableCreated="fireTableCreated"
+                        :has-pro="hasPro"
+                        :activated_features="activated_features"
+                />
+            </template>
 
-            <external-data-source v-else-if="activeTabName == 'csv'"
-                                  type="csv"
-                                  :tableCreated="fireTableCreated"
-                                  :has-pro="hasPro"
-                                  :activated_features="activated_features"
-            />
+            <template v-else-if="activeTabName == 'csv'">
+                <external-data-source
+                        type="csv"
+                        :tableCreated="fireTableCreated"
+                        :has-pro="hasPro"
+                        :activated_features="activated_features"
+                />
+            </template>
 
-            <fluent-form-data-source
-                    v-else-if="activeTabName == 'fluent_form'"
-                    :tableCreated="fireTableCreated"
-            />
-            <wp-posts-data-source
-                    v-else-if="activeTabName == 'wp_posts'"
-                    :tableCreated="fireTableCreated"
-                    :activated_features="activated_features"
-            />
+            <template v-else-if="activeTabName == 'fluent_form'">
+                <fluent-form-data-source
+                        :tableCreated="fireTableCreated"
+                />
+            </template>
+
+            <template v-else-if="activeTabName == 'wp_posts'">
+                <wp-posts-data-source
+                        :tableCreated="fireTableCreated"
+                        :activated_features="activated_features"
+                />
+            </template>
         </el-main>
     </el-container>
 
@@ -142,11 +151,11 @@
                         toolbar: [
                             ['bold', 'italic', 'underline', 'strike', 'link'],         // toggled buttons
                             ['blockquote', 'code-block'],
-                            [{ 'header': 1 }, { 'header': 2 }],               // custom button values
-                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                            [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
-                            [{ 'align': [] }],
-                            [{ 'direction': 'rtl' }]
+                            [{'header': 1}, {'header': 2}],               // custom button values
+                            [{'list': 'ordered'}, {'list': 'bullet'}],
+                            [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
+                            [{'align': []}],
+                            [{'direction': 'rtl'}]
                         ]
                     }
                 },
@@ -160,7 +169,7 @@
                     jQuery(tab.$el).find('input:first').focus();
                 }, 0);
             },
-            addTable: function() {
+            addTable: function () {
                 this.btnLoading = true;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -170,21 +179,21 @@
                     tableId: this.table.ID
                 };
                 jQuery.post(ajaxurl, data)
-                    .then( (response) => {
+                    .then((response) => {
                         this.$message({
                             showClose: true,
                             message: response.message,
                             type: 'success'
                         });
 
-                        if(this.table.ID) {
+                        if (this.table.ID) {
                             this.closeModal();
                         } else {
                             this.fireTableCreated(response.table_id);
                         }
                     })
-                    .fail( (error) => {
-                        if(error.responseJSON.data.message) {
+                    .fail((error) => {
+                        if (error.responseJSON.data.message) {
                             this.$message({
                                 showClose: true,
                                 message: error.responseJSON.data.message,
@@ -205,14 +214,14 @@
             closeModal() {
                 this.$emit('modal_close');
             },
-            onEditorChange({ editor, html, text }) {
+            onEditorChange({editor, html, text}) {
                 this.table.post_content = html
             },
             fireTableCreated(table_id) {
                 this.$emit('table_inserted', table_id);
             },
             checkScreenSize() {
-                if(window.innerWidth < 1000) {
+                if (window.innerWidth < 1000) {
                     this.isCollapse = true;
                 } else {
                     this.isCollapse = false;
@@ -221,7 +230,7 @@
         },
         mounted() {
             this.checkScreenSize();
-            jQuery( window ).resize(() => {
+            jQuery(window).resize(() => {
                 this.checkScreenSize();
             });
         }

@@ -190,8 +190,13 @@ class NinjaFooTable
                 'visible' => ($column['breakpoints'] == 'hidden') ? false : true,
                 'classes' => $columnClasses,
                 'filterable' => (isset($column['unfilterable']) && $column['unfilterable'] == 'yes') ? false : true,
-                'sortable' => (isset($column['unsortable']) && $column['unsortable'] == 'yes') ? false : $globalSorting
+                'sortable' => (isset($column['unsortable']) && $column['unsortable'] == 'yes') ? false : $globalSorting,
             );
+
+            // We will remove it after few versions
+            if(defined('NINJAPROPLUGIN_VERSION') && isset($column['transformed_value'])) {
+                $formatted_column['transformed_value'] = $column['transformed_value'];
+            }
 
             if ($columnType == 'date') {
                 wp_enqueue_script(

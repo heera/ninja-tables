@@ -29,7 +29,7 @@
                     <el-option
                             v-for="form in forms"
                             :key="form.id"
-                            :label="form.title"
+                            :label="form.id +' : '+ form.title"
                             :value="form.id">
                     </el-option>
                 </el-select>
@@ -190,6 +190,7 @@
                 })
                 .then(res => {
                     this.fields = res.data
+                    
                     if (this.editing) {
                         this.form.entry_limit = this.config.table.entry_limit;
                         this.form.entry_status = this.config.table.entry_status;
@@ -245,7 +246,7 @@
                     });
             }
         },
-        created() {
+        mounted() {
             if (this.hasFluentForm) {
                 !this.editing ? this.fetchForms() : this.handleFormSelectionChange(
                     this.form.id = this.config.table.fluentFormFormId

@@ -54,6 +54,10 @@
     }
 }
 
-.el-popper[x-placement^=top] {
+.el-popper[x-placement^=top], .el-tooltip__popper {
     z-index: 99999 !important;
+}
+
+.el-table-column--selection .cell * {
+    overflow: visible !important;
 }
