@@ -37,10 +37,11 @@
 
             <div v-if="form.id" class="form-group">
                 <el-table
-                        ref="rowSelectableTable"
-                        :data="fields"
-                        style="width:100% !important"
-                        @selection-change="handleFieldsSelectionChange"
+                    :data="fields"
+                    empty-text="Loading..."
+                    ref="rowSelectableTable"
+                    style="width:100% !important"
+                    @selection-change="handleFieldsSelectionChange"
                 >
                     <el-table-column type="selection"></el-table-column>
                     <el-table-column prop="label" label="Select Entry Fields"></el-table-column>
@@ -177,47 +178,31 @@
         methods: {
             fetchForms() {
                 jQuery.getJSON(ajaxurl, {
-                    action: 'ninja_tables_get_fluentforms',
-                    per_page: 9999
-                }).then(res => {
-                    this.forms = [];
-                    jQuery.each(res.data, (i, form) => {
-                        let fields = JSON.parse(form.form_fields).fields
-                        .map(field => {
-                            const s = field.settings;
-                            return {
-                                name: field.attributes.name,
-                                label: s.admin_field_label || s.label || field.attributes.name,
-                            };
-                        })
-                        .filter(field => !!field.name);
-
-                        this.forms.push({
-                            id: form.id,
-                            title: form.title,
-                            fields: fields
-                        });
-                    });
-
+                    action: 'ninja_tables_get-fluentform-forms'
+                })
+                .then(res => this.forms = res.data)
+                .fail(error => console.log(error));
+            },
+            handleFormSelectionChange(formId) {
+                jQuery.getJSON(ajaxurl, {
+                    form_Id: formId,
+                    action: 'ninja-tables_get-fluentform-fields'
+                })
+                .then(res => {
+                    this.fields = res.data
+                    
                     if (this.editing) {
                         this.form.entry_limit = this.config.table.entry_limit;
                         this.form.entry_status = this.config.table.entry_status;
-                        this.handleFormSelectionChange(
-                            this.form.id = this.config.table.fluentFormFormId
-                        );
-
                         this.$nextTick(() => {
                             let selected = this.config.columns.map(c => c.original_name);
                             this.fields.filter(f => selected.indexOf(f.name) != -1).forEach(row => {
                                 this.$refs.rowSelectableTable.toggleRowSelection(row);
                             });
                         });
-
                     }
-                });
-            },
-            handleFormSelectionChange(val) {
-                this.fields = this.forms.find(form => form.id == val).fields;
+                })
+                .fail(error => console.log(error));
             },
             handleFieldsSelectionChange(val) {
                 this.form.fields = val;
@@ -230,9 +215,7 @@
                     form: this.form,
                     table_Id: this.config && this.config.table.ID || null
                 })
-                .then(res => {
-                    this.tableCreated(res.data.table_id);
-                })
+                .then(res => this.tableCreated(res.data.table_id))
                 .fail(error => {
                     let message = '';
                     let messages = error.responseJSON.data.message;
@@ -264,8 +247,12 @@
             }
         },
         mounted() {
-            this.hasFluentForm && this.fetchForms();
-        },
+            if (this.hasFluentForm) {
+                !this.editing ? this.fetchForms() : this.handleFormSelectionChange(
+                    this.form.id = this.config.table.fluentFormFormId
+                );
+            }
+        }
     };
 </script>
 

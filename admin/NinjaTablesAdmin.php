@@ -342,7 +342,6 @@ class NinjaTablesAdmin
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
-            'get-fluentform-forms' => 'getFluentformForms',
             'get_wp_post_types' => 'getAllPostTypes',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm'
