@@ -5,7 +5,7 @@ Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, da
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
 Tested up to: 4.9.8
-Stable tag: 3.0.5
+Stable tag: 3.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,10 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 3.0.6 ( Date: November 28, 2018 ) =
+* Fix WP FluentForm Integration
+* Improve Other Improvements
 
 = 3.0.5 ( Date: November 26, 2018 ) =
 * Improve WP Fluent Form integration

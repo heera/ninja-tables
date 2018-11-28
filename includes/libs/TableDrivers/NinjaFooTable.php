@@ -92,7 +92,7 @@ class NinjaFooTable
 
         $colors = false;
         $custom_css = get_post_meta($tableArray['table_id'], '_ninja_tables_custom_css', true);
-        $custom_css .= $customColumnCss;
+
         if (ArrayHelper::get($tableArray, 'settings.table_color_type') == 'custom_color'
             && defined('NINJATABLESPRO')
         ) {
@@ -126,7 +126,7 @@ class NinjaFooTable
             );
         }
 
-        $custom_css .= $extra_css;
+        $custom_css .= $extra_css.$customColumnCss;
 
         if (!$colors && !$custom_css) {
             return;
@@ -138,6 +138,8 @@ class NinjaFooTable
 
     private static function render($tableArray)
     {
+
+
         extract($tableArray);
         if (!count($columns)) {
             return;
