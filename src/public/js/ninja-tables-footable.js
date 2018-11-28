@@ -74,9 +74,9 @@ jQuery(document).ready(function ($) {
                     // format the value here
                     column.formatter = function(value, options, rowData){
                         if(column.transformed_value) {
-                            return that.getShortcodes(column.transformed_value, column, rowData);
+                            value = that.getShortcodes(column.transformed_value, column, rowData);
                         }
-                        return value;
+                        return rowData[column.name] = rowData[column.name] || value;
                     }
                 });
 
