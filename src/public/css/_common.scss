@@ -3,6 +3,10 @@
     padding: 0.92857143em 0.78571429em;
   }
 
+  .form-inline {
+    display: block !important;
+  }
+
   &.ninja_search_left {
     tr.footable-filtering .form-inline {
       text-align: left;
@@ -234,7 +238,6 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
 table.ninja_table_pro thead tr.footable-filtering {
   .ninja_custom_select_radio, .ninja_custom_select_box {
     text-align: left;
-    margin-bottom: 10px !important;
     > label {
       margin-left: 0px !important;
       input[type=radio] {
@@ -250,6 +253,9 @@ table.ninja_table_pro thead tr.footable-filtering {
 
 @media (max-width: 767px) {
   table.ninja_table_pro thead tr.footable-filtering {
+    .form-group {
+      margin-bottom: 10px !important;
+    }
     .ninja_custom_select_radio, .ninja_custom_select_box {
       text-align: left;
       margin-top: 10px !important;
