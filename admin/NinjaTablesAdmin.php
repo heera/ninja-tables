@@ -324,9 +324,7 @@ class NinjaTablesAdmin
         if (!ninja_table_admin_role()) {
             return;
         }
-
-        sleep(2);
-
+        
         $valid_routes = array(
             'get-all-tables' => 'getAllTables',
             'store-a-table' => 'storeTable',
@@ -345,6 +343,7 @@ class NinjaTablesAdmin
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
             'get_wp_post_types' => 'getAllPostTypes',
+            'get_wp_post_authors' => 'getWPPostTypesAuthor',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm'
         );
@@ -1140,6 +1139,21 @@ class NinjaTablesAdmin
         wp_send_json_success(
             compact('post_fields', 'post_types', 'postStatuses'), 200
         );
+    }
+
+    public function getWPPostTypesAuthor() {
+        $authors = array();
+        if(isset($_REQUEST['post_types'])) {
+            $postTypes = ninja_tables_sanitize_array($_REQUEST['post_types']);
+            if($postTypes) {
+                global $wpdb;
+                $postTypes = implode("','", $postTypes);
+                $authors = $wpdb->get_results("SELECT {$wpdb->prefix}users.ID, {$wpdb->prefix}users.display_name FROM {$wpdb->prefix}posts INNER JOIN {$wpdb->prefix}users ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author WHERE {$wpdb->prefix}posts.post_type IN ('".$postTypes."') GROUP BY {$wpdb->prefix}posts.post_author");
+            }
+        }
+       wp_send_json_success(array(
+            'authors' => $authors
+        ));
     }
 
     public function installFluentForm()

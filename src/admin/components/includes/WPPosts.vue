@@ -26,8 +26,8 @@
                 <el-collapse v-model="conditions_section">
                     <el-collapse-item title="Conditions" name="1">
                         <wp-post-conditions
-                        :authors="authors"
                         :config="config"
+                        :selected_post_types="selected_post_types"
                         :postStatuses="postStatuses"
                         :conditions="conditions"
                         :allPostTypes="all_types"
@@ -99,11 +99,12 @@
 
                 <el-row style="margin-top:20px;">
                     <div>
-                        <el-collapse v-model="conditions_section">
-                            <el-collapse-item title="Conditions" name="1">
+                        <el-collapse accordion value="conditions" v-model="conditions_section">
+                            <el-collapse-item name="conditions" title="Conditions">
                                 <wp-post-conditions
-                                :authors="authors"
+                                v-if="conditions_section"
                                 :postStatuses="postStatuses"
+                                :selected_post_types="selected_post_types"
                                 :conditions="conditions"
                                 :allPostTypes="all_types"
                                 :fields="query_able_post_types_fields"/>
@@ -169,7 +170,6 @@
                 saving: false,
                 title: null,
                 tableId: null,
-                authors: [],
                 postStatuses: [],
                 all_types: [],
                 all_fields: [],
