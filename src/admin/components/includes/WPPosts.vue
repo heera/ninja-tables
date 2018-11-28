@@ -277,34 +277,40 @@
                     this.$message({showClose: true, message: message, type: 'error'});
                 })
                 .always(res => this.saving = false);
+            },
+            getPostTypes() {
+                jQuery.getJSON(ajaxurl, {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'get_wp_post_types',
+                }).then(res => {
+                    this.all_types = res.data.post_types;
+                    this.postStatuses = res.data.postStatuses;
+
+                    jQuery.each(this.all_types, (type, post_type) => {
+                        let status = '';
+                        if(post_type.status === 'private') {
+                            status = ' (private)';
+                        }
+                        this.post_types.push({ key: type, label: type + status });
+                    });
+
+                    this.all_fields = res.data.post_fields.map(field => {
+                        return { key: field, label: field };
+                    });
+
+                    // For editing
+                    if (this.config) {
+                        this.tableId = this.config.table.ID;
+                        this.conditions = this.config.table.whereConditions || [];
+                        this.selected_post_types = this.config.table.post_types;
+                        this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
+                        this.handlePostTypeChange();
+                    }
+                });
             }
         },
-        created() {
-            jQuery.getJSON(ajaxurl, {
-                action: 'ninja_tables_ajax_actions',
-                target_action: 'get_wp_post_types',
-            }).then(res => {
-                this.authors = res.data.authors;
-                this.all_types = res.data.post_types;
-                this.postStatuses = res.data.postStatuses;
-
-                jQuery.each(this.all_types, (type) => {
-                    this.post_types.push({ key: type, label: type });
-                });
-
-                this.all_fields = res.data.post_fields.map(field => {
-                    return { key: field, label: field };
-                });
-
-                // For editing
-                if (this.config) {
-                    this.tableId = this.config.table.ID;
-                    this.conditions = this.config.table.whereConditions || [];
-                    this.selected_post_types = this.config.table.post_types;
-                    this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
-                    this.handlePostTypeChange();
-                }
-            });
+        mounted() {
+            this.getPostTypes();
         },
     };
 </script>

@@ -259,7 +259,7 @@ class NinjaTablesAdmin
         if ($tableCount && $tableCount->publish > 1) {
             $leadStatus = apply_filters('ninja_tables_show_lead', $leadStatus);
         }
-        if($tableCount->publish > 2 && !$leadStatus) {
+        if ($tableCount->publish > 2 && !$leadStatus) {
             $reviewOptinStatus = apply_filters('ninja_tables_show_review_optin', $reviewOptinStatus);
         }
 
@@ -325,6 +325,8 @@ class NinjaTablesAdmin
             return;
         }
 
+        sleep(2);
+
         $valid_routes = array(
             'get-all-tables' => 'getAllTables',
             'store-a-table' => 'storeTable',
@@ -357,7 +359,7 @@ class NinjaTablesAdmin
         $requested_route = $_REQUEST['target_action'];
         if (isset($valid_routes[$requested_route])) {
             $this->{$valid_routes[$requested_route]}();
-        } else if(isset($importRoutes[$requested_route])) {
+        } else if (isset($importRoutes[$requested_route])) {
             $tableImport = new \NinjaTables\Classes\NinjaTableImport();
             $tableImport->{$importRoutes[$requested_route]}();
         }
@@ -860,7 +862,7 @@ class NinjaTablesAdmin
                 select_error: '<?php _e('Please select a table'); ?>',
                 insert_text: '<?php _e('Insert Shortcode', 'ninja-tables'); ?>',
                 tables: <?php echo json_encode($tables);?>,
-                logo: <?php echo json_encode(NINJA_TABLES_DIR_URL.'assets/img/ninja-table-editor-button-2x.png');?>
+                logo: <?php echo json_encode(NINJA_TABLES_DIR_URL . 'assets/img/ninja-table-editor-button-2x.png');?>
             }
         </script>
         <?php
@@ -1079,31 +1081,35 @@ class NinjaTablesAdmin
         update_option($option, true);
     }
 
-    public function getAllAuthors()
-    {
-        $allUsers = get_users('orderby=post_count&order=DESC');
-
-        foreach ($allUsers as $key => $currentUser) {
-            if (in_array('subscriber', $currentUser->roles)) {
-                unset($allUsers[$key]);
-            } else {
-                $allUsers[$key] = $currentUser->data;
-            }
-        }
-
-        return $allUsers;
-    }
-
     public function getAllPostTypes()
     {
         global $wpdb;
 
-        $authors = $this->getAllAuthors();
         $postStatuses = ninjaTablesGetPostStatuses();
         $post_fields = $wpdb->get_col("DESC {$wpdb->prefix}posts");
-        $post_types = array_diff(get_post_types(), ['ninja-table']);
 
-        foreach ($post_types as $type) {
+        $publicPostTypes = get_post_types(array(
+            'public' => true
+        ));
+
+        $excludedTypes = apply_filters('ninja_table_excluded_post_types', array(
+            'ninja-table',
+            'revision',
+            'nav_menu_item',
+            'oembed_cache',
+            'user_request',
+            'acf-field-group',
+            'acf-field'
+        ));
+
+        $all_post_types = array_diff(get_post_types(), $excludedTypes);
+
+        $post_types = array(
+            'public' => array(),
+            'private' => array()
+        );
+
+        foreach ($all_post_types as $type) {
             $taxonomies = get_object_taxonomies($type);
             $taxonomies = array_combine($taxonomies, $taxonomies);
 
@@ -1114,7 +1120,10 @@ class NinjaTablesAdmin
                 ]);
             }
 
-            $post_types[$type] = array(
+            $status = isset($publicPostTypes[$type]) ? 'public' : 'private';
+
+            $post_types[$status][$type] = array(
+                'status' => $status,
                 'taxonomies' => $taxonomies,
                 'fields' => array_map(function ($taxonomy) use ($type) {
                     return "{$type}.{$taxonomy}";
@@ -1122,8 +1131,14 @@ class NinjaTablesAdmin
             );
         }
 
+        if($post_types['private']) {
+            $post_types = array_merge($post_types['public'], $post_types['private']);
+        } else {
+            $post_types = $post_types['public'];
+        }
+
         wp_send_json_success(
-            compact('post_fields', 'post_types', 'authors', 'postStatuses'), 200
+            compact('post_fields', 'post_types', 'postStatuses'), 200
         );
     }
 

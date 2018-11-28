@@ -61,3 +61,17 @@
 .el-table-column--selection .cell * {
     overflow: visible !important;
 }
+
+
+.doingAJaxLoading.el-loading-parent--relative {
+    z-index: 9999999999;
+    text-align: center;
+    position: fixed !important;
+    background: none !important;
+    top: 20px;
+    left: 50%;
+    right: 50%;
+    .el-loading-mask {
+        background: rgba(0, 0, 0, 0);
+    }
+}

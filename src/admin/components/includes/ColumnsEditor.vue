@@ -482,7 +482,7 @@
                                 >{{ $t('Delete') }}</el-button>
                         </el-popover>
 
-                        <el-button @click.prevent="store" type="primary" size="small">
+                        <el-button v-loading="doingAjax" @click.prevent="store" type="primary" size="small">
                             {{ $t('Update') }}
                         </el-button>
                     </template>
@@ -586,6 +586,7 @@
                 },
                 activeTab: 'basic',
                 showConfirm: false,
+                doingAjax: false
             };
         },
         watch: {
@@ -596,18 +597,6 @@
             },
             hideDelete(oldValue, newValue) {
                 this.hideDelete = this.activeTab != 'basic';
-            }
-        },
-        mounted() {
-            if (!this.model) return;
-            this.model.dateFormat = this.model.dateFormat || "";
-            this.model.enable_html_content = ['true', true].indexOf(this.model.enable_html_content) !== -1;
-            this.model.header_html_content =  this.model.header_html_content || '';
-            if(!this.model.contentAlign) {
-                this.$set(this.model, 'contentAlign', '');
-            }
-            if(!this.model.textAlign) {
-                this.$set(this.model, 'textAlign', '');
             }
         },
         methods: {
@@ -638,6 +627,24 @@
                     window.ninjaTableBus.$emit('show_pro_popup', 1);
                 }
             }
+        },
+
+        mounted() {
+            if (!this.model) return;
+            this.model.dateFormat = this.model.dateFormat || "";
+            this.model.enable_html_content = ['true', true].indexOf(this.model.enable_html_content) !== -1;
+            this.model.header_html_content =  this.model.header_html_content || '';
+            if(!this.model.contentAlign) {
+                this.$set(this.model, 'contentAlign', '');
+            }
+            if(!this.model.textAlign) {
+                this.$set(this.model, 'textAlign', '');
+            }
+
+            window.ninjaTableBus.$on('tableDoingAjax', (status) => {
+                this.doingAjax = status;
+            });
+
         },
     };
 </script>
