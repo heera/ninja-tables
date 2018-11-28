@@ -72,8 +72,7 @@ jQuery(document).ready(function ($) {
                     // format the value here
                     column.formatter = function(value, options, rowData){
                         if(column.transformed_value) {
-                            value =  that.getShortcodes(column.transformed_value, column, rowData);
-                            return rowData[column.name] = rowData[column.name] || value;
+                            value = that.getShortcodes(column.transformed_value, column, rowData);
                         }
                         return value;
                     }
