@@ -151,7 +151,7 @@
 <script>
     export default {
         name: 'WPPostConditions',
-        props: ['config','fields', 'conditions', 'authors', 'allPostTypes', 'postStatuses'],
+        props: ['config','fields', 'conditions', 'allPostTypes', 'postStatuses', 'selected_post_types'],
         data() {
             return {
                 default_condition: {
@@ -186,8 +186,14 @@
                     'post_status',
                     'menu_order',
                     'comment_count'
-                ]
+                ],
+                authors: []
             };
+        },
+        watch: {
+            selected_post_types() {
+                this.getPostAuthors();
+            }
         },
         methods: {
             addCondition(event) {
@@ -252,8 +258,20 @@
             },
             isSelectable(c) {
                 return c.is_selectable == 'true';
+            },
+            getPostAuthors() {
+                jQuery.getJSON(ajaxurl, {
+                    action: 'ninja_tables_ajax_actions',
+                    target_action: 'get_wp_post_authors',
+                    post_types: this.selected_post_types
+                }).then(res => {
+                    this.authors = res.data.authors;
+                });
             }
         },
+        mounted() {
+            this.getPostAuthors();
+        }
     };
 </script>
 

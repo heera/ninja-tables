@@ -67,16 +67,14 @@ jQuery(document).ready(function ($) {
                                 return jQuery('<div>' + valueOrElement + "</div>").text();
                             }
                         };
-                        if(column.type != 'html') {
-                            column.type = 'text';
-                        }
+                        column.type = 'text';
                     }
                     // format the value here
                     column.formatter = function(value, options, rowData){
                         if(column.transformed_value) {
-                            value = that.getShortcodes(column.transformed_value, column, rowData);
+                            return that.getShortcodes(column.transformed_value, column, rowData);
                         }
-                        return rowData[column.name] = rowData[column.name] || value;
+                        return value;
                     }
                 });
 
@@ -109,24 +107,27 @@ jQuery(document).ready(function ($) {
                         console.warn(error);
                     }
                 });
-
-                if (tableConfig.render_type === 'legacy_table') {
-                    that.initLegacyTable($table, tableConfig);
-                    return;
-                }
-
-                that.initResponsiveTable($table, tableConfig);
+                let initConfig = that.getNinjaTableConfig(tableConfig);
+                let $tableInstance = $table.footable(initConfig);
+                window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
+                jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
+                jQuery("td:contains('#colspan#')").remove();
             });
         },
-        initResponsiveTable: function initFooTable($table, tableConfig) {
+        getNinjaTableConfig(tableConfig) {
+            // Prepare Table Init Configuration
             let initConfig = {
                 "cascade": true,
                 "columns": tableConfig.columns,
-                "rows": $.get(window.ninja_footables.ajax_url + '?action=wp_ajax_ninja_tables_public_action&table_id=' + tableConfig.table_id + '&target_action=get-all-data&default_sorting=' + tableConfig.settings.default_sorting),
                 "expandFirst": tableConfig.settings.expandFirst,
                 "expandAll": tableConfig.settings.expandAll,
                 "empty": tableConfig.settings.i18n.no_result_text
             };
+
+            if(tableConfig.render_type !== 'legacy_table') {
+                initConfig.rows = $.get(window.ninja_footables.ajax_url + '?action=wp_ajax_ninja_tables_public_action&table_id=' + tableConfig.table_id + '&target_action=get-all-data&default_sorting=' + tableConfig.settings.default_sorting);
+            }
+
             initConfig.sorting = {
                 "enabled": !!tableConfig.settings.sorting
             };
@@ -168,69 +169,7 @@ jQuery(document).ready(function ($) {
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
 
-            let $tableInstance = $table.footable(initConfig);
-
-            window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
-            jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
-            jQuery("td:contains('#colspan#')").remove();
-        },
-        initLegacyTable: function initFooTable($table, tableConfig) {
-            $table.css('display', 'table');
-            //return;
-            let initConfig = {
-                "columns": tableConfig.columns,
-                "cascade": true,
-                "expandFirst": tableConfig.settings.expandFirst,
-                "expandAll": tableConfig.settings.expandAll,
-                "empty": tableConfig.settings.i18n.no_result_text
-            };
-            initConfig.sorting = {
-                "enabled": !!tableConfig.settings.sorting
-            };
-            let enabledSearch = !!tableConfig.settings.filtering;
-            if (tableConfig.settings.defualt_filter) {
-                enabledSearch = true;
-            }
-
-
-            if (tableConfig.custom_filter_key) {
-                let filterKey = tableConfig.custom_filter_key;
-                initConfig.components = {
-                    filtering: FooTable[filterKey]
-                };
-                enabledSearch = true;
-            }
-
-            initConfig.filtering = {
-                "enabled": enabledSearch,
-                "delay": 1,
-                "dropdownTitle": tableConfig.settings.i18n.search_in,
-                "placeholder": tableConfig.settings.i18n.search,
-                "connectors": false,
-                "ignoreCase": true
-            };
-
-            if (tableConfig.settings.defualt_filter) {
-                initConfig.filtering.filters = [{
-                    "name": "ninja_table_custom_filter",
-                    "query": tableConfig.settings.defualt_filter,
-                    "columns": []
-                }];
-            }
-
-            initConfig.paging = {
-                "enabled": !!tableConfig.settings.paging,
-                "position": "right",
-                "size": tableConfig.settings.paging,
-                "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
-            };
-            jQuery('#footable_parent_' + tableConfig.table_id).find('.footable-loader').remove();
-
-            let $tableInstance = $table.footable(initConfig);
-
-            window.ninjaFooTablesInstance['table_' + tableConfig.table_id] = $tableInstance;
-            jQuery('body').trigger('footable_loaded', [$tableInstance, tableConfig]);
-            $table.find('.ninja_temp_cell').remove();
+            return initConfig;
         },
         onReadyFooTable($table, tableConfig) {
             let cssStyles = tableConfig.custom_css;

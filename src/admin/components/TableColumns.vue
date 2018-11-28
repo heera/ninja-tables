@@ -114,7 +114,6 @@
                     <template v-else-if="active_menu == 'custom_filters'">
                         <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
                     </template>
-
                 </el-main>
             </el-container>
         </div>
@@ -191,6 +190,9 @@
         },
         methods: {
             storeSettings() {
+
+                window.ninjaTableBus.$emit('tableDoingAjax', true);
+
                 this.doingAjax = true;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -212,6 +214,7 @@
                     })
                     .always(() => {
                         this.doingAjax = false;
+                        window.ninjaTableBus.$emit('tableDoingAjax', false);
                     });
             },
             openDrawer(index) {

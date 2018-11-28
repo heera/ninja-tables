@@ -24,7 +24,6 @@ class FluentFormProvider
         if(!current_user_can(ninja_table_admin_role())) {
             return;
         }
-        
         if (function_exists('wpFluentForm')) {
             $forms = wpFluent()->table('fluentform_forms')->select(array('id', 'title'))->get();
             wp_send_json_success($forms, 200);
@@ -36,6 +35,10 @@ class FluentFormProvider
     // Must use exposed API from fluentform.
     public function getFluentformFields()
     {
+        if(!current_user_can(ninja_table_admin_role())) {
+            return;
+        }
+
         $form = wpFluentForm('FluentForm\App\Modules\Form\Form');
         $formFieldParser = wpFluentForm('FluentForm\App\Modules\Form\FormFieldsParser');
 
@@ -43,7 +46,7 @@ class FluentFormProvider
         foreach ($formFieldParser->getAdminLabels($form, $inputs) as $key => $value) {
             $labels[] = array('name' => $key, 'label' => $value);
         }
-        
+
         wp_send_json_success($labels, 200);
     }
 
@@ -111,7 +114,7 @@ class FluentFormProvider
         update_post_meta($tableId, '_ninja_table_columns', $columns);
         update_post_meta($tableId, '_ninja_tables_data_provider', 'fluent-form');
         update_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', $formId);
-        
+
         update_post_meta(
             $tableId, '_ninja_tables_data_provider_ff_entry_limit', $_REQUEST['form']['entry_limit']
         );
@@ -149,6 +152,9 @@ class FluentFormProvider
     public function getTableData($data, $tableId, $perPage = -1, $offset = 0)
     {
         if (function_exists('wpFluentForm')) {
+
+            add_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
+
             $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
             $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
                 intval($formId),
@@ -158,6 +164,9 @@ class FluentFormProvider
                 'all',
                 null
             );
+
+            remove_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
+
 
             $formattedEntries = array();
             foreach ($entries['submissions']['data'] as $key => $value) {
@@ -179,6 +188,8 @@ class FluentFormProvider
 
     public function data($data, $tableId)
     {
+        add_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
+
         if (!function_exists('wpFluentForm')) {
             return $data;
         }
@@ -202,6 +213,8 @@ class FluentFormProvider
         $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
             intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
         );
+
+        remove_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
 
         $columns = array_map(function($column) {
             return $column['original_name'];
@@ -247,5 +260,9 @@ class FluentFormProvider
         } else {
             return 'DESC';
         }
+    }
+
+    public function addEntryPermission() {
+        return true;
     }
 }

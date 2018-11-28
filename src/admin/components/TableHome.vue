@@ -1,5 +1,7 @@
 <template>
     <div>
+        <span v-if="doingAjax" v-loading="doingAjax" class="doingAJaxLoading"></span>
+
         <div class="settings_header">
             <div style="display: inline-block; margin-top: 8px;">
                 <el-button class="ninja_mini" size="mini" @click="editTableModalShow = !editTableModalShow"><i title="Edit" class="el-icon-edit action">{{ $t('Edit') }}</i></el-button> <span
@@ -97,6 +99,8 @@
                 tableId: this.$route.params.table_id,
                 config: null,
                 table: {},
+                doingAjax: false,
+                doingAjaxTest: false,
                 user_tab: this.$route.query.user_tab,
                 editTableModalShow: false,
                 preview_url: '#',
@@ -108,6 +112,7 @@
 
             },
             updateTableColumns(callback) {
+                this.doingAjax = true;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'update-table-settings',
@@ -127,6 +132,7 @@
 
                     })
                     .always(() => {
+                        this.doingAjax = false;
                     });
             },
             getSettings() {
@@ -187,6 +193,10 @@
                 jQuery.post(ajaxurl, data)
                     .success(response => resolve(response))
                     .fail(e => reject(e));
+            });
+
+            window.ninjaTableBus.$on('tableDoingAjax',  (value) => {
+                this.doingAjax = value;
             });
 
             window.ninjaTableBus.$on('updateTableColumns', (callback) => {
