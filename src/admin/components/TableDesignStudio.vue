@@ -637,7 +637,6 @@
                         return;
                     }
                 }
-
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });

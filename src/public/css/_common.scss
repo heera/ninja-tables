@@ -236,35 +236,36 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
 }
 
 table.ninja_table_pro thead tr.footable-filtering {
-  .ninja_custom_select_radio, .ninja_custom_select_box {
+  .ninja-custom-filter {
+    margin-right: 5px !important;
+    margin-bottom: 10px !important;
     text-align: left;
-    > label {
-      margin-left: 0px !important;
-      input[type=radio] {
-        margin-right: 5px;
-      }
-    }
     label.ninja_filter_title {
       font-weight: bold;
       margin-right: 5px;
+    }
+    input[type=radio], input[type=checkbox] {
+      margin-right: 5px;
+      margin-left: 10px;
     }
   }
 }
 
 @media (max-width: 767px) {
   table.ninja_table_pro thead tr.footable-filtering {
-    .form-group {
-      margin-bottom: 10px !important;
-    }
-    .ninja_custom_select_radio, .ninja_custom_select_box {
+    .ninja-custom-filter, .footable-filtering-search {
+      width: 100%;
+      display: block;
       text-align: left;
-      margin-top: 10px !important;
-      > label {
-        display: block;
-        margin-left: 0px !important;
-        input[type=radio] {
-          margin-right: 5px;
-        }
+      margin-right: 0px !important;
+      margin-bottom: 10px !important;
+      label.ninja_filter_title {
+        font-weight: bold;
+        margin-right: 0px;
+      }
+      input[type=radio], input[type=checkbox] {
+        margin-right: 5px;
+        margin-left: 10px;
       }
     }
   }

@@ -65,7 +65,7 @@
                 :visible.sync="editorModal"
                 width="70%"
                 :append-to-body="true">
-            <ninja-filter-editor :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
+            <ninja-filter-editor :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editorModal = false">Cancel</el-button>
                 <el-button type="primary" @click="updateFilter(activeEditor)">Update</el-button>
@@ -77,7 +77,7 @@
                 :visible.sync="addFilterModal"
                 width="70%"
                 :append-to-body="true">
-            <ninja-filter-editor :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
+            <ninja-filter-editor :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addFilterModal = false">Cancel</el-button>
                 <el-button type="primary" @click="addFilter(activeEditor)">Add</el-button>
