@@ -1,23 +1,22 @@
 <template>
-    <div class="ninja_tables_wpposts">
-
+    <div v-loading="loading" class="ninja_tables_wpposts">
         <template v-if="hasPLainLayout">
             <el-row>
                 <el-col :md="12" class="table-rows">
                     <el-transfer
-                        :data="post_types"
-                        v-model="selected_post_types"
-                        :titles="['All Types', 'Selected Types']"
-                        style="text-align: left; display: block"
-                        @change="handlePostTypeChange">
+                            :data="post_types"
+                            v-model="selected_post_types"
+                            :titles="['All Types', 'Selected Types']"
+                            style="text-align: left; display: block"
+                            @change="handlePostTypeChange">
                     </el-transfer>
                 </el-col>
                 <el-col :md="12" class="table-rows">
                     <el-transfer
-                        :data="post_types_fields"
-                        v-model="selected_post_types_fields"
-                        :titles="['All Properties', 'Selected Properties']"
-                        style="text-align: left; display: block">
+                            :data="post_types_fields"
+                            v-model="selected_post_types_fields"
+                            :titles="['All Properties', 'Selected Properties']"
+                            style="text-align: left; display: block">
                     </el-transfer>
                 </el-col>
             </el-row>
@@ -26,40 +25,43 @@
                 <el-collapse v-model="conditions_section">
                     <el-collapse-item title="Conditions" name="1">
                         <wp-post-conditions
-                        :config="config"
-                        :selected_post_types="selected_post_types"
-                        :postStatuses="postStatuses"
-                        :conditions="conditions"
-                        :allPostTypes="all_types"
-                        :fields="query_able_post_types_fields"/>
+                                :config="config"
+                                :selected_post_types="selected_post_types"
+                                :postStatuses="postStatuses"
+                                :conditions="conditions"
+                                :allPostTypes="all_types"
+                                :fields="query_able_post_types_fields"/>
                     </el-collapse-item>
                 </el-collapse>
             </el-row>
 
             <el-row>
                 <el-button
-                type="primary"
-                size="small"
-                :loading="saving"
-                style="float:right;margin-top:12px;"
-                @click="save">Update</el-button>
+                        type="primary"
+                        size="small"
+                        :loading="saving"
+                        style="float:right;margin-top:12px;"
+                        @click="save">Update
+                </el-button>
             </el-row>
         </template>
-
         <template v-if="!hasPLainLayout">
 
             <h3>
                 Construct Table from Posts / CPTs
             </h3>
             <p class="ninja_subtitle">
-                Displays website content in a searchable, sortable with Ninja Tables. It supports custom posts, pages, & custom post types. <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/">Learn more about this module</a>
+                Displays website content in a searchable, sortable with Ninja Tables. It supports custom posts, pages, &
+                custom post types. <a target="_blank"
+                                      href="https://wpmanageninja.com/docs/ninja-tables/wp-posts-table/">Learn more
+                about this module</a>
             </p>
 
-            <template v-if="!hasPro" >
-                <premium-notice />
+            <template v-if="!hasPro">
+                <premium-notice/>
             </template>
             <template v-else-if="!activated_features.wp_posts_table">
-                <upgrade-notice />
+                <upgrade-notice/>
             </template>
 
             <el-steps :active="active_step" align-center>
@@ -75,11 +77,11 @@
                 <el-row style="margin-top:20px;">
                     <div style="text-align:center">
                         <el-transfer
-                            :data="post_types"
-                            v-model="selected_post_types"
-                            :titles="['All Types', 'Selected Types']"
-                            style="text-align: left; display: block"
-                            @change="handlePostTypeChange">
+                                :data="post_types"
+                                v-model="selected_post_types"
+                                :titles="['All Types', 'Selected Types']"
+                                style="text-align: left; display: block"
+                                @change="handlePostTypeChange">
                         </el-transfer>
                     </div>
                 </el-row>
@@ -89,10 +91,10 @@
                 <el-row style="margin-top:20px;">
                     <div style="text-align: center">
                         <el-transfer
-                            :data="post_types_fields"
-                            v-model="selected_post_types_fields"
-                            :titles="['All Properties', 'Selected Properties']"
-                            style="text-align: left; display: block">
+                                :data="post_types_fields"
+                                v-model="selected_post_types_fields"
+                                :titles="['All Properties', 'Selected Properties']"
+                                style="text-align: left; display: block">
                         </el-transfer>
                     </div>
                 </el-row>
@@ -102,12 +104,12 @@
                         <el-collapse accordion value="conditions" v-model="conditions_section">
                             <el-collapse-item name="conditions" title="Conditions">
                                 <wp-post-conditions
-                                v-if="conditions_section"
-                                :postStatuses="postStatuses"
-                                :selected_post_types="selected_post_types"
-                                :conditions="conditions"
-                                :allPostTypes="all_types"
-                                :fields="query_able_post_types_fields"/>
+                                        v-if="conditions_section"
+                                        :postStatuses="postStatuses"
+                                        :selected_post_types="selected_post_types"
+                                        :conditions="conditions"
+                                        :allPostTypes="all_types"
+                                        :fields="query_able_post_types_fields"/>
                             </el-collapse-item>
                         </el-collapse>
                     </div>
@@ -123,12 +125,13 @@
 
                 <el-col :md="12">
                     <el-button
-                    v-if="active_step > 0"
-                    type="success"
-                    :disabled="!activated_features.wp_posts_table"
-                    :loading="saving"
-                    style="float:right;margin-top:12px;"
-                    @click="save">Save</el-button>
+                            v-if="active_step > 0"
+                            type="success"
+                            :disabled="!activated_features.wp_posts_table"
+                            :loading="saving"
+                            style="float:right;margin-top:12px;"
+                            @click="save">Save
+                    </el-button>
                 </el-col>
             </el-row>
         </template>
@@ -167,6 +170,7 @@
         },
         data() {
             return {
+                loading: false,
                 saving: false,
                 title: null,
                 tableId: null,
@@ -225,7 +229,7 @@
                 let selectedPostFields = [];
                 this.selected_post_types.forEach(type => {
                     this.all_types[type].fields.forEach(field => {
-                        selectedPostFields.push({ key: field, label: field });
+                        selectedPostFields.push({key: field, label: field});
                     });
                 });
 
@@ -260,53 +264,61 @@
                         query_extra: (this.config && this.config.table) ? this.config.table.query_extra : false
                     }
                 })
-                .then(res => {
-                    this.$message({
-                        showClose: true,
-                        message: res.data.message,
-                        type: 'success'
-                    });
-                    this.tableCreated(res.data.table_id);
-                })
-                .fail(error => {
-                    let message = '';
-                    let messages = error.responseJSON.data.message;
-                    for (let key in messages) {
-                        message += ' ' + messages[key];
-                    }
-                    this.$message({showClose: true, message: message, type: 'error'});
-                })
-                .always(res => this.saving = false);
+                    .then(res => {
+                        this.$message({
+                            showClose: true,
+                            message: res.data.message,
+                            type: 'success'
+                        });
+                        this.tableCreated(res.data.table_id);
+                    })
+                    .fail(error => {
+                        let message = '';
+                        let messages = error.responseJSON.data.message;
+                        for (let key in messages) {
+                            message += ' ' + messages[key];
+                        }
+                        this.$message({showClose: true, message: message, type: 'error'});
+                    })
+                    .always(res => this.saving = false);
             },
             getPostTypes() {
-                jQuery.getJSON(ajaxurl, {
+                this.loading = true;
+                this.$get({
                     action: 'ninja_tables_ajax_actions',
                     target_action: 'get_wp_post_types',
-                }).then(res => {
-                    this.all_types = res.data.post_types;
-                    this.postStatuses = res.data.postStatuses;
+                })
+                    .then(res => {
+                        this.all_types = res.data.post_types;
+                        this.postStatuses = res.data.postStatuses;
 
-                    jQuery.each(this.all_types, (type, post_type) => {
-                        let status = '';
-                        if(post_type.status === 'private') {
-                            status = ' (private)';
+                        jQuery.each(this.all_types, (type, post_type) => {
+                            let status = '';
+                            if (post_type.status === 'private') {
+                                status = ' (private)';
+                            }
+                            this.post_types.push({key: type, label: type + status});
+                        });
+
+                        this.all_fields = res.data.post_fields.map(field => {
+                            return {key: field, label: field};
+                        });
+
+                        // For editing
+                        if (this.config) {
+                            this.tableId = this.config.table.ID;
+                            this.conditions = this.config.table.whereConditions || [];
+                            this.selected_post_types = this.config.table.post_types;
+                            this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
+                            this.handlePostTypeChange();
                         }
-                        this.post_types.push({ key: type, label: type + status });
+                    })
+                    .fail(error => {
+                        console.log(error);
+                    })
+                    .always(() => {
+                        this.loading = false;
                     });
-
-                    this.all_fields = res.data.post_fields.map(field => {
-                        return { key: field, label: field };
-                    });
-
-                    // For editing
-                    if (this.config) {
-                        this.tableId = this.config.table.ID;
-                        this.conditions = this.config.table.whereConditions || [];
-                        this.selected_post_types = this.config.table.post_types;
-                        this.selected_post_types_fields = this.config.columns.map(c => c.original_name);
-                        this.handlePostTypeChange();
-                    }
-                });
             }
         },
         mounted() {
@@ -319,12 +331,15 @@
     .ninja_tables_wpposts .el-checkbox-group {
         overflow: scroll !important;
     }
+
     .ninja_tables_wpposts .el-transfer-panel {
         width: 306px !important;
     }
+
     .ninja_tables_wpposts .table-rows .el-transfer-panel {
         width: 250px !important;
     }
+
     .ninja_tables_wpposts .el-transfer-panel__item {
         display: block !important;
     }

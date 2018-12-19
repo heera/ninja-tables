@@ -112,9 +112,9 @@
 
 <script type="text/babel">
     import wp_editor from '../../common/_wp_editor';
-    import WPPosts from './includes/WPPosts';
-    import FluentForm from './includes/FluentForm';
-    import ExternalDataSource from './includes/ExternalDataSource';
+    import WPPosts from './DataProviders/WPPosts';
+    import FluentForm from './DataProviders/FluentForm';
+    import ExternalDataSource from './DataProviders/ExternalDataSource';
     import ImportTable from './includes/ImportTable';
 
     export default {
@@ -185,7 +185,7 @@
                             message: response.message,
                             type: 'success'
                         });
-
+                        window.ninjaTableBus.$emit('addedTable');
                         if (this.table.ID) {
                             this.closeModal();
                         } else {

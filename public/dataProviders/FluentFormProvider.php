@@ -14,7 +14,7 @@ class FluentFormProvider
 
         add_filter('ninja_tables_get_table_fluent-form', array($this, 'getTableSettings'));
         add_filter('ninja_tables_get_table_data_fluent-form', array($this, 'getTableData'), 10, 4);
-        add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 2);
+        add_filter('ninja_tables_fetching_table_rows_fluent-form', array($this, 'data'), 10, 5);
     }
 
     // TODO: Refactoring required.
@@ -188,17 +188,24 @@ class FluentFormProvider
         return $data;
     }
 
-    public function data($data, $tableId)
+    public function data( $data, $tableId, $defaultSorting, $limitEntries = false, $skip = false )
     {
-        add_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
-
         if (!function_exists('wpFluentForm')) {
             return $data;
         }
 
+        add_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
+
         $formId = get_post_meta($tableId, '_ninja_tables_data_provider_ff_form_id', true);
         $status = get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_status', true);
-        $limit = (int) get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_limit', true);
+
+        if($limitEntries || $skip) {
+            $limit = intval($limitEntries) + intval($skip);
+        }
+
+        if(!$limit) {
+            $limit = (int) get_post_meta($tableId, '_ninja_tables_data_provider_ff_entry_limit', true);
+        }
 
         $entryStatus = apply_filters(
             'ninja_tables_fluentform_entry_status', $status, $tableId, $formId
@@ -215,6 +222,10 @@ class FluentFormProvider
         $entries = wpFluentForm('FluentForm\App\Modules\Entries\Entries')->_getEntries(
             intval($formId), -1, $entryLimit, $orderBy, $entryStatus, null
         );
+
+        if($skip && isset($entries['submissions']['data'])) {
+            $entries['submissions']['data'] = array_slice($entries['submissions']['data'], $skip, $limitEntries);
+        }
 
         remove_filter('fluentform_verify_user_permission_fluentform_entries_viewer', array($this, 'addEntryPermission'));
 

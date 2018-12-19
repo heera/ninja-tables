@@ -4,9 +4,8 @@
             <el-collapse-item name="1">
                 <template slot="title">
                     <i class="header-icon el-icon-info el-text-info"></i>
-                    <strong>Edit:</strong> {{isEditableMessage}} 
+                    <strong>Edit:</strong> {{isEditableMessage}}
                 </template>
-
                 <FluentForm :tableCreated="tableCreated" :editing="true" :config="config" />
             </el-collapse-item>
         </el-collapse>
@@ -14,7 +13,7 @@
 </template>
 
 <script>
-    import FluentForm from '../includes/FluentForm';
+    import FluentForm from '../DataProviders/FluentForm';
 
     export default {
         name: "FluentformNav",

@@ -53,6 +53,15 @@
                         >here</a>
                     </p>
                 </div>
+
+                <div v-if="errors.length" class="form_group ninja_errors">
+                    <ul>
+                        <li v-for="(error,error_index) in errors" :key="error_index">
+                            {{ error.info }}
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </div>
 
@@ -82,8 +91,9 @@
                         'json': this.$t('JSON - JavaScript Object Notation'),
                         'ninjaJson': this.$t('JSON - Exported From Ninja Tables'),
                     },
-                    format: 'csv'
+                    format: 'csv',
                 },
+                errors: [],
                 btnLoading: false
             }
         },
@@ -93,7 +103,7 @@
             },
             importTable() {
                 this.btnLoading = true;
-
+                this.errors = [];
                 // For now only execute when the import source is `file`
                 if (this.imports.source !== 'file') {
                     this.btnLoading = true;
@@ -121,17 +131,26 @@
                     contentType: false,
                     processData: false,
                     success: (response) => {
-                        alert(response.message);
-
-                        this.$router.push({
-                            name: 'data_items',
-                            params: {table_id: response.tableId}
+                        this.$message({
+                            showClose: true,
+                            message: response.message,
+                            type: 'success'
                         });
+                        if(response.tableId) {
+                            this.$router.push({
+                                name: 'data_items',
+                                params: {table_id: response.tableId}
+                            });
+                        }
                     },
                     error: (error) => {
+                        this.errors = error.responseJSON.data.errors;
+                        this.$message({
+                            showClose: true,
+                            message: error.responseJSON.data.message,
+                            type: 'error'
+                        });
                         this.btnLoading = false;
-
-                        alert(error.responseJSON.message);
                     }
                 });
             }
@@ -145,5 +164,10 @@
         background-color: #f4f4f5;
         color: #909399;
         padding: 8px 16px;
+    }
+
+    .form_group.ninja_errors {
+        background: rgb(255, 215, 215);
+        padding: 10px;
     }
 </style>

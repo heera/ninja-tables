@@ -44,19 +44,14 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
     function getDefaultNinjaTableSettings()
     {
         $renderType = defined('NINJATABLESPRO') ? 'legacy_table' : 'ajax_table';
-
+        $settings = get_option('_ninja_table_default_appearance_settings');
         $defaults = array(
             "perPage" => 20,
             "show_all" => false,
             "library" => 'footable',
-            "css_lib" => 'bootstrap3',
+            "css_lib" => 'semantic_ui',
             "enable_ajax" => false,
-            "css_classes" => array(
-                'table-striped',
-                'table-bordered',
-                'table-hover',
-                'vertical_centered'
-            ),
+            "css_classes" => array(),
             "enable_search" => true,
             "column_sorting" => true,
             "default_sorting" => 'new_first',
@@ -65,8 +60,18 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
             "table_color_type" => 'pre_defined_color',
             "expand_type" => 'default',
         );
-
-        return apply_filters('get_default_ninja_table_settings', $defaults);
+        if(!$settings) {
+            $defaults['css_classes'] = array(
+                'selectable',
+                'striped',
+                'vertical_centered'
+            );
+        }
+        if(!$settings) {
+            $settings = array();
+        }
+        $settings = array_merge($defaults, $settings);
+        return apply_filters('get_default_ninja_table_settings', $settings);
     }
 }
 
@@ -132,7 +137,7 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 }
 
 
-function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false)
+function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false, $skip = false)
 {
     $providerName = ninja_table_get_data_provider($tableId);
     $providerName = in_array($providerName, array('csv', 'google-csv')) ? 'csv' : $providerName;
@@ -142,7 +147,8 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
         array(),
         $tableId,
         $defaultSorting,
-        $limit
+        $limit,
+        $skip
     );
 }
 
@@ -709,7 +715,6 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
                 )
             );
         }
-
         $data = array(
             'table_id' => $tableId,
             'attribute' => 'value',

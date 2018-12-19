@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="widget_body">
-                                    <div v-show="addColumnStatus || !columns.length" class="column">
+                                    <div v-if="addColumnStatus || !columns.length" class="column">
                                         <div class="add_column_wrapper">
                                             <columns-editor
                                                 :columns="columns"
@@ -125,12 +125,12 @@
     import get from 'lodash/get'
     import size from 'lodash/size'
     import snakeCase from 'lodash/snakeCase'
-    import ColumnsEditor from './includes/ColumnsEditor';
-    import NinjaCustomFilters from './includes/CustomFilter';
-    import NinjaLanguageSettings from './includes/_LanguageSettings'
-    import NinjaRenderingSettings from './includes/_RenderingSettings'
+    import ColumnsEditor from './ColumnsEditor';
+    import NinjaCustomFilters from '../TableFilters/CustomFilter';
+    import NinjaLanguageSettings from '../Configarations/_LanguageSettings'
+    import NinjaRenderingSettings from '../Configarations/_RenderingSettings'
 
-    import { tableLibs } from '../data/data'
+    import { tableLibs } from '../../../data/data'
 
     export default {
         name: 'TableConfiguration',
@@ -190,9 +190,7 @@
         },
         methods: {
             storeSettings() {
-
                 window.ninjaTableBus.$emit('tableDoingAjax', true);
-
                 this.doingAjax = true;
                 let data = {
                     action: 'ninja_tables_ajax_actions',
@@ -208,6 +206,7 @@
                             message: res.message,
                             type: 'success'
                         });
+                        this.$set(this.config, 'columns', this.columns);
                     })
                     .fail((error) => {
 

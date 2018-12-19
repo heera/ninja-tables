@@ -2,7 +2,6 @@
     $table_columns = array_reverse($table_columns);
     $header_row = '';
     $counter = 1;
-
 ?>
 <thead>
 <tr>

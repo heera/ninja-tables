@@ -17,7 +17,7 @@
         name: 'ninja_css_editor',
         props: ['config'],
         components: {
-            ace_css_editor: require('../../common/_ace_editor')
+            ace_css_editor: require('../../../common/_ace_editor')
         },
         data() {
             return {
@@ -44,7 +44,7 @@
                         console.log(error);
                     })
                     .always(() => {
-                        
+
                     });
             }
         },
@@ -52,4 +52,4 @@
 
         }
     }
-</script> 
+</script>

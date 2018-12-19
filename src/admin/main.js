@@ -1,10 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-Vue.use(VueRouter);
-
 import {
     Button,
-    Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox, Icon,Tooltip,
+    Table, TableColumn, Dialog, Popover,Loading, Message, MessageBox,
+    Icon,
+    Tooltip,
     Pagination, Collapse, CollapseItem, Container, Aside, Main,
     Menu,
     MenuItem,
@@ -34,56 +32,57 @@ import {
 } from 'element-ui';
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
+window.ninjaTableBus = new window.NINJATABLE.Vue();
 // configure language
 locale.use(lang);
-Vue.use(Button);
-Vue.use(DatePicker);
-Vue.use(Table);
-Vue.use(ColorPicker);
-Vue.use(Pagination);
-Vue.use(TableColumn);
-Vue.use(Popover);
-Vue.use(Menu);
-Vue.use(Header);
-Vue.use(MenuItem);
-Vue.use(Loading);
-Vue.use(Icon);
-Vue.use(Tooltip);
-Vue.use(Container);
-Vue.use(Aside);
-Vue.use(Main);
-Vue.use(Collapse);
-Vue.use(CollapseItem);
-Vue.use(Dialog);
-Vue.use(Form);
-Vue.use(FormItem);
-Vue.use(Input);
-Vue.use(Select);
-Vue.use(Option);
-Vue.use(OptionGroup);
-Vue.use(Checkbox);
-Vue.use(RadioGroup);
-Vue.use(Radio);
-Vue.use(RadioButton);
-Vue.use(Switch);
-Vue.use(CheckboxGroup);
-Vue.use(Tabs);
-Vue.use(TabPane);
-Vue.use(Steps);
-Vue.use(Step);
-Vue.use(Alert);
-Vue.use(Row);
-Vue.use(Col);
-Vue.use(Transfer);
-Vue.use(DatePicker);
+window.NINJATABLE.Vue.use(Button);
+window.NINJATABLE.Vue.use(DatePicker);
+window.NINJATABLE.Vue.use(Table);
+window.NINJATABLE.Vue.use(ColorPicker);
+window.NINJATABLE.Vue.use(Pagination);
+window.NINJATABLE.Vue.use(TableColumn);
+window.NINJATABLE.Vue.use(Popover);
+window.NINJATABLE.Vue.use(Menu);
+window.NINJATABLE.Vue.use(Header);
+window.NINJATABLE.Vue.use(MenuItem);
+window.NINJATABLE.Vue.use(Loading);
+window.NINJATABLE.Vue.use(Icon);
+window.NINJATABLE.Vue.use(Tooltip);
+window.NINJATABLE.Vue.use(Container);
+window.NINJATABLE.Vue.use(Aside);
+window.NINJATABLE.Vue.use(Main);
+window.NINJATABLE.Vue.use(Collapse);
+window.NINJATABLE.Vue.use(CollapseItem);
+window.NINJATABLE.Vue.use(Dialog);
+window.NINJATABLE.Vue.use(Form);
+window.NINJATABLE.Vue.use(FormItem);
+window.NINJATABLE.Vue.use(Input);
+window.NINJATABLE.Vue.use(Select);
+window.NINJATABLE.Vue.use(Option);
+window.NINJATABLE.Vue.use(OptionGroup);
+window.NINJATABLE.Vue.use(Checkbox);
+window.NINJATABLE.Vue.use(RadioGroup);
+window.NINJATABLE.Vue.use(Radio);
+window.NINJATABLE.Vue.use(RadioButton);
+window.NINJATABLE.Vue.use(Switch);
+window.NINJATABLE.Vue.use(CheckboxGroup);
+window.NINJATABLE.Vue.use(Tabs);
+window.NINJATABLE.Vue.use(TabPane);
+window.NINJATABLE.Vue.use(Steps);
+window.NINJATABLE.Vue.use(Step);
+window.NINJATABLE.Vue.use(Alert);
+window.NINJATABLE.Vue.use(Row);
+window.NINJATABLE.Vue.use(Col);
+window.NINJATABLE.Vue.use(Transfer);
+window.NINJATABLE.Vue.use(DatePicker);
 
-Vue.prototype.$message = Message;
-Vue.prototype.$msgbox = MessageBox;
-Vue.prototype.$alert = MessageBox.alert;
-Vue.prototype.$confirm = MessageBox.confirm;
-Vue.prototype.$prompt = MessageBox.prompt;
+window.NINJATABLE.Vue.prototype.$message = Message;
+window.NINJATABLE.Vue.prototype.$msgbox = MessageBox;
+window.NINJATABLE.Vue.prototype.$alert = MessageBox.alert;
+window.NINJATABLE.Vue.prototype.$confirm = MessageBox.confirm;
+window.NINJATABLE.Vue.prototype.$prompt = MessageBox.prompt;
 
-Vue.mixin({
+window.NINJATABLE.Vue.mixin({
     methods: {
         $t(str) {
             let transString = ninja_table_admin.i18n[str];
@@ -91,10 +90,31 @@ Vue.mixin({
                 return transString;
             }
             return str;
-        }
+        },
+        setStoreData(key, value) {
+            if(window.localStorage) {
+                localStorage.setItem("ninjatable_"+key, value);
+            }
+        },
+        getFromStore(key, defaultValue) {
+            if(window.localStorage) {
+                let itemValue = localStorage.getItem('ninjatable_'+key);
+                if(itemValue) {
+                    return itemValue;
+                }
+            }
+            return defaultValue;
+        },
+        applyFilters: window.NINJATABLE.applyFilters,
+        addFilter: window.NINJATABLE.addFilter,
+        addAction: window.NINJATABLE.addFilter,
+        doAction: window.NINJATABLE.doAction,
+        $get: window.NINJATABLE.$get,
+        $post: window.NINJATABLE.$post
     },
     data(){
         return {
+
         }
     },
     filters: {
@@ -107,19 +127,18 @@ Vue.mixin({
 import {routes} from './routes'
 import Application from './App.vue'
 
-const router = new VueRouter({
-    routes,
+
+const router = new window.NINJATABLE.Router({
+    routes: window.NINJATABLE.applyFilters('ninja_table_global_routes', routes),
     linkActiveClass: 'active'
 });
 
 
-function ignoreerror()
+function ignoreNinjaerror()
 {
     return true
 }
-window.onerror=ignoreerror();
-
-window.ninjaTableBus = new Vue();
+window.onerror = ignoreNinjaerror();
 
 Application.router = router;
-window.ninjaApp = new Vue(Application).$mount('#data-tables-app');
+window.ninjaApp = new window.NINJATABLE.Vue(Application).$mount('#data-tables-app');

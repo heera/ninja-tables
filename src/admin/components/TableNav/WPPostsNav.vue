@@ -29,9 +29,9 @@
 </template>
 
 <script>
-    import WPPosts from '../includes/WPPosts';
-    import columnsEditor from '../includes/ColumnsEditor';
-    
+    import WPPosts from '../DataProviders/WPPosts';
+    import columnsEditor from '../Table/ColumnEditor/ColumnsEditor';
+
     export default {
         name: "WPPostsNav",
         components: { WPPosts, columnsEditor },

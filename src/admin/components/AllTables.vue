@@ -24,7 +24,7 @@
                         {{ $t( 'Add Table' ) }}
                     </el-button>
 
-                    <router-link :to="{ name: 'tools' }">
+                    <router-link :to="{ name: 'import_tables' }">
                         <el-button size="small" type="success">
                             {{ $t( 'Import Table' ) }}
                         </el-button>
@@ -124,23 +124,11 @@
             }
         },
         mounted: function () {
-
-        },
-        beforeMount() {
-            this.$options.components['home-extra'] = (resolve, reject) => {
-                // Pass the component definition to the resolve callback
-                jQuery.get(ajaxurl, {
-                    action: 'ninja_tables_ajax_actions',
-                    target_action: 'get-dynamic-obj',
-                    name: this.name
-                })
-                .done((res) => {
-                    resolve(JSON.parse(res))
-                })
-                .fail((error) => {
-                    console.log(error);
-                });
-            };
+            window.ninjaTableBus.$on('addedTable', () => {
+                if(!this.published_tables) {
+                    window.ninja_table_admin.published_tables = 1;
+                }
+            });
         }
     }
 </script>

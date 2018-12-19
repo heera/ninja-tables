@@ -1,5 +1,6 @@
 {
     "/js/ninja-tables-admin.js": "/js/ninja-tables-admin.js",
+    "/js/ninja-tables-boot.js": "/js/ninja-tables-boot.js",
     "/css/ninjatables-public.css": "/css/ninjatables-public.css",
     "/css/ninja-tables-admin.css": "/css/ninja-tables-admin.css",
     "/css/ninja-tables-vendor.css": "/css/ninja-tables-vendor.css",

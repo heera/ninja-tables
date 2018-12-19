@@ -121,7 +121,7 @@
             get_license_info() {
                 this.checkingLicense = true;
                 this.error_message = '';
-                jQuery.post(ajaxurl, {
+                jQuery.get(ajaxurl, {
                     action: '_ninjatables_pro_license_get_license_info'
                 })
                     .then(response => {

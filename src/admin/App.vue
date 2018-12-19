@@ -1,7 +1,6 @@
 <template>
     <div class="wrap">
         <router-view></router-view>
-
         <div class="pro_feature_dialog">
             <el-dialog
                     title="NinjaTable Pro Features"
@@ -31,7 +30,6 @@
 </template>
 
 <script type="text/babel">
-
     export default {
         name: 'TableApp',
         data() {
@@ -45,7 +43,6 @@
             });
         },
     }
-
 </script>
 
 <style lang="scss">

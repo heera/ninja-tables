@@ -12,10 +12,10 @@
                     </el-radio-button>
                 </el-radio-group>
             </div>
-            <el-button size="small" type="primary" @click="storeSettings()">Update Settings</el-button>
+            <el-button :loading="savingSettings" :disabled="savingSettings" size="small" type="primary" @click="storeSettings()">Update Settings</el-button>
         </div>
         <div class="ninja_design_wrapper">
-            <div style="background: white; padding: 10px 20px;" class="design_preview">
+            <div v-loading="!app_ready" style="background: white; padding: 10px 20px;" class="design_preview">
                 <div class="ninja_upgrade_bar" v-if="showProNotice">
                     {{ $t('Color customization is a PRO feature. Please upgrade to pro apply this feature.') }}
                     <a target="_blank"
@@ -422,13 +422,13 @@
 </template>
 
 <script type="text/babel">
-    import {tableLibs} from '../data/data'
+    import {tableLibs} from '../../data/data'
     import get from 'lodash/get'
     import size from 'lodash/size'
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
-    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
-    import NinjaColorPicker from './Extras/ColorPicker';
+    import SortableUpgradeNotice from '../includes/SortableUpgradeNotice.vue';
+    import NinjaColorPicker from '../Extras/ColorPicker';
 
     export default {
         name: 'table_preview',
@@ -637,7 +637,6 @@
                         return;
                     }
                 }
-
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });

@@ -1,19 +1,19 @@
 <?php
+
 namespace NinjaTables\Classes;
 
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesTablePressMigration;
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesUltimateTableMigration;
+use NinjaTables\Libs\CSVParser\CSVParser;
 
-class NinjaTableImport {
+class NinjaTableImport
+{
 
     private $cpt_name = 'ninja-table';
 
     public function importTable()
     {
-
-
-
         $format = $_REQUEST['format'];
 
         if ($format == 'csv') {
@@ -29,7 +29,6 @@ class NinjaTableImport {
                 'ninja-tables')
         ), 423);
     }
-
 
     public function getTablesFromPlugin()
     {
@@ -51,7 +50,6 @@ class NinjaTableImport {
             'tables' => $tables
         ), 200);
     }
-
 
     public function importTableFromPlugin()
     {
@@ -111,21 +109,50 @@ class NinjaTableImport {
 
     private function uploadTableCsv()
     {
-        $tmpName = $_FILES['file']['tmp_name'];
+        $mimes = array(
+            'text/csv',
+            'text/plain',
+            'application/csv',
+            'text/comma-separated-values',
+            'application/excel',
+            'application/vnd.ms-excel',
+            'application/vnd.msexcel',
+            'text/anytext',
+            'application/octet-stream',
+            'application/txt',
+        );
+        if (!in_array($_FILES['file']['type'], $mimes)) {
+            wp_send_json_error(array(
+                'errors' => array(),
+                'message' => __('Please upload valid CSV', 'ninja_tables')
+            ), 423);
+        }
 
-        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
+        $tmpName = $_FILES['file']['tmp_name'];
+        $fileName = sanitize_text_field($_FILES['file']['name']);
+
+        $data = file_get_contents($tmpName);
+        $csvParser = new CSVParser();
+        $csvParser->load_data($data);
+        $delimiter = $csvParser->find_delimiter();
+        $reader = $csvParser->parse($delimiter);
+
+        if ($csvParser->error) {
+            wp_send_json_error(array(
+                'errors' => array_values(array_slice($csvParser->error_info, 0, 5)),
+                'message' => __('Something is wrong when parsing the csv', 'ninja_tables')
+            ), 423);
+        }
 
         $header = array_shift($reader);
         $reader = array_reverse($reader);
 
-        foreach ($reader as &$item) {
-            // We have to convert everything to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
-        }
-
-        $tableId = $this->createTable();
+        $tableId = $this->createTable(array(
+            'post_title' => $fileName,
+            'post_content' => '',
+            'post_type' => $this->cpt_name,
+            'post_status' => 'publish'
+        ));
 
         $header = ninja_table_format_header($header);
 
@@ -191,7 +218,7 @@ class NinjaTableImport {
 
         update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
 
-        if(isset($content['data_provider']) && $content['data_provider'] != 'default') {
+        if (isset($content['data_provider']) && $content['data_provider'] != 'default') {
             $metas = $content['metas'];
             foreach ($metas as $meta_key => $meta_value) {
                 update_post_meta($tableId, $meta_key, $meta_value);
@@ -229,8 +256,17 @@ class NinjaTableImport {
     {
         $tableId = intval($_REQUEST['table_id']);
         $tmpName = $_FILES['file']['tmp_name'];
+        $csvParser = new CSVParser();
+        $csvParser->load_data(file_get_contents($tmpName));
+        $delimiter = $csvParser->find_delimiter();
+        $reader = $csvParser->parse($delimiter);
 
-        $reader = \League\Csv\Reader::createFromPath($tmpName)->fetchAll();
+        if ($csvParser->error) {
+            wp_send_json_error(array(
+                'errors' => array_values(array_slice($csvParser->error_info, 0, 5)),
+                'messages' => __('CSV File is not valid', 'ninja-tables')
+            ), 423);
+        }
 
         $csvHeader = array_shift($reader);
         $csvHeader = array_map('esc_attr', $csvHeader);
@@ -239,7 +275,7 @@ class NinjaTableImport {
 
         if (!$config) {
             wp_send_json(array(
-                'message' => __('Please set table configuration.', 'ninja-tables')
+                'message' => __('Please set table configuration first', 'ninja-tables')
             ), 423);
         }
 
@@ -256,21 +292,16 @@ class NinjaTableImport {
 
         if (count($header) != count($config)) {
             wp_send_json(array(
-                'message' => __('Please use the provided CSV header structure.', 'ninja-tables')
+                'errors' => array(),
+                'message' => __('Please use the provided CSV header structure. ', 'ninja-tables')
             ), 423);
         }
-
 
         $data = array();
         $time = current_time('mysql');
 
         foreach ($reader as $item) {
-            // If item has any ascii entry we'll convert it to utf-8
-            foreach ($item as &$entry) {
-                $entry = mb_convert_encoding($entry, 'UTF-8');
-            }
             $itemTemp = array_combine($header, $item);
-
             array_push($data, array(
                 'table_id' => $tableId,
                 'attribute' => 'value',

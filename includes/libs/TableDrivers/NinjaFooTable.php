@@ -73,18 +73,18 @@ class NinjaFooTable
     {
         $css_prefix = '#footable_' . $tableArray['table_id'];
         $customColumnCss = '';
-        if(defined('NINJATABLESPRO')) {
+        if (defined('NINJATABLESPRO')) {
             $columns = ArrayHelper::get($tableArray, 'columns');
             foreach ($columns as $index => $column) {
                 $bgColor = ArrayHelper::get($column, 'background_color');
                 $textColor = ArrayHelper::get($column, 'text_color');
-                if($bgColor || $textColor) {
-                    if($bgColor && $textColor) {
-                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; color: '.$textColor.'; }';
-                    } else if($bgColor) {
-                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ background-color: '.$bgColor.'; }';
-                    } else if($textColor) {
-                        $customColumnCss .= $css_prefix.' thead tr th.ninja_column_'.$index.','.$css_prefix.' tbody tr td.ninja_column_'.$index.'{ color: '.$textColor.'; }';
+                if ($bgColor || $textColor) {
+                    if ($bgColor && $textColor) {
+                        $customColumnCss .= $css_prefix . ' thead tr th.ninja_column_' . $index . ',' . $css_prefix . ' tbody tr td.ninja_column_' . $index . '{ background-color: ' . $bgColor . '; color: ' . $textColor . '; }';
+                    } else if ($bgColor) {
+                        $customColumnCss .= $css_prefix . ' thead tr th.ninja_column_' . $index . ',' . $css_prefix . ' tbody tr td.ninja_column_' . $index . '{ background-color: ' . $bgColor . '; }';
+                    } else if ($textColor) {
+                        $customColumnCss .= $css_prefix . ' thead tr th.ninja_column_' . $index . ',' . $css_prefix . ' tbody tr td.ninja_column_' . $index . '{ color: ' . $textColor . '; }';
                     }
                 }
             }
@@ -126,7 +126,7 @@ class NinjaFooTable
             );
         }
 
-        $custom_css .= $extra_css.$customColumnCss;
+        $custom_css .= $extra_css . $customColumnCss;
 
         if (!$colors && !$custom_css) {
             return;
@@ -138,8 +138,6 @@ class NinjaFooTable
 
     private static function render($tableArray)
     {
-
-
         extract($tableArray);
         if (!count($columns)) {
             return;
@@ -164,7 +162,7 @@ class NinjaFooTable
             $columnType = self::getColumnType($column);
             $cssColumnName = 'ninja_column_' . $index;
             $columnClasses = array($cssColumnName);
-            $columnClasses[] = 'ninja_clmn_nm_'.$column['key'];
+            $columnClasses[] = 'ninja_clmn_nm_' . $column['key'];
             if (isset($column['classes'])) {
                 $userClasses = explode(' ', $column['classes']);
                 $columnClasses = array_unique(array_merge($columnClasses, $userClasses));
@@ -196,7 +194,7 @@ class NinjaFooTable
             );
 
             // We will remove it after few versions
-            if(defined('NINJAPROPLUGIN_VERSION') && isset($column['transformed_value'])) {
+            if (defined('NINJAPROPLUGIN_VERSION') && isset($column['transformed_value'])) {
                 $formatted_column['transformed_value'] = $column['transformed_value'];
             }
 
@@ -250,6 +248,7 @@ class NinjaFooTable
             'sorting' => true,
             'default_sorting' => $default_sorting,
             'defualt_filter' => isset($default_filter) ? $default_filter : false,
+            'defualt_filter_column' => ArrayHelper::get($settings, 'filter_column'),
             'expandFirst' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandFirst')
                 ? true : false,
             'expandAll' => (isset($settings['expand_type']) && $settings['expand_type'] == 'expandAll') ? true
@@ -262,7 +261,9 @@ class NinjaFooTable
                 'no_result_text' => (isset($settings['no_result_text']))
                     ? sanitize_text_field($settings['no_result_text']) : __('No Result Found', 'ninja-tables'),
             ),
-            'shouldNotCache' => isset($settings['shouldNotCache']) ? $settings['shouldNotCache'] : false
+            'shouldNotCache' => isset($settings['shouldNotCache']) ? $settings['shouldNotCache'] : false,
+            'skip_rows' => ArrayHelper::get($settings, 'skip_rows', 0),
+            'limit_rows' => ArrayHelper::get($settings, 'limit_rows', 0),
         );
 
         $table_classes = self::getTableCssClass($settings);
@@ -303,10 +304,50 @@ class NinjaFooTable
             $table_classes .= ' ninja_table_pro';
         }
 
+        $advancedFilterSettings = get_post_meta($table_id, '_ninja_custom_filter_styling', true);
+        $advancedFilters = get_post_meta($table_id, '_ninja_table_custom_filters', true);
+        if ($advancedFilterSettings && $advancedFilters) {
+            $defaultStyling = array(
+                'filter_display_type' => 'inline',
+                'filter_columns' => 'columns_2',
+                'filter_column_label' => 'new_line'
+            );
+            $advancedFilterSettings = wp_parse_args($advancedFilterSettings, $defaultStyling);
+            if ($advancedFilterSettings['filter_display_type'] == 'inline') {
+                $table_classes .= ' ninja_table_afd_inline';
+            } else {
+                $table_classes .= ' ninja_table_afd_' . $advancedFilterSettings['filter_display_type'];
+                $table_classes .= ' ninja_table_afcs_' . $advancedFilterSettings['filter_columns'];
+                $table_classes .= ' ninja_table_afcl_' . $advancedFilterSettings['filter_column_label'];
+            }
+            $table_classes .= ' ninja_table_has_custom_filter ninja_has_filter';
+        } else if($configSettings['defualt_filter']) {
+            $table_classes .= ' ninja_has_filter';
+        }
 
+        $tableButtonDefaults = array(
+            'csv' => array(
+                'status' => 'no',
+                'label' => 'CSV',
+                'all_rows' => 'no'
+            ),
+            'print' => array(
+                'status' => 'no',
+                'label' => 'Print',
+                'all_rows' => 'no'
+            )
+        );
+
+        $tableButtons = get_post_meta($table_id, '_ninja_custom_table_buttons', true);
+        if (!$tableButtons) {
+            $tableButtons = array();
+        }
+        $tableButtons = wp_parse_args($tableButtons, $tableButtonDefaults);
 
         $table_vars = array(
             'table_id' => $table_id,
+            'table_buttons' => $tableButtons,
+            'title' => $table->post_title,
             'columns' => $formatted_columns,
             'settings' => $configSettings,
             'render_type' => $renderType,
@@ -338,19 +379,18 @@ class NinjaFooTable
     private static function generateLegacyTableHTML($table, $table_vars)
     {
         $isDisableCache = true;
-        $provider = ninja_table_get_data_provider($table->ID);
-        if($provider == 'default') {
-            $isDisableCache = ninja_tables_shouldNotCache($table->Id);
-            $isDisableCache = apply_filters('ninja_tables_disable_caching', $isDisableCache, $table->ID);
-            $tableHtml = get_post_meta($table->ID, '_ninja_table_cache_html', true);
-            if ($tableHtml && !$isDisableCache) {
-                echo $tableHtml;
-                return;
-            }
-        }
-        $tableColumns = $table_vars['columns'];
-        $formatted_data = ninjaTablesGetTablesDataByID($table->ID, $table_vars['settings']['default_sorting']);
+        $limitRows = ArrayHelper::get($table_vars, 'settings.limit_rows', false);
+        $skipRows = ArrayHelper::get($table_vars, 'settings.skip_rows', false);
 
+        $tableColumns = $table_vars['columns'];
+
+        $formatted_data = ninjaTablesGetTablesDataByID(
+                $table->ID,
+                $table_vars['settings']['default_sorting'],
+                false,
+                $limitRows,
+                $skipRows
+        );
 
         $tableHtml = self::loadView('public/views/table_inner_html', array(
             'table_columns' => $tableColumns,
@@ -389,8 +429,8 @@ class NinjaFooTable
             $tableCassClasses[] = ArrayHelper::get($settings, 'table_color');
         }
 
-        if ( $searchBarPosition = ArrayHelper::get($settings, 'search_position') ) {
-            $tableCassClasses[] = 'ninja_search_'.$searchBarPosition;
+        if ($searchBarPosition = ArrayHelper::get($settings, 'search_position')) {
+            $tableCassClasses[] = 'ninja_search_' . $searchBarPosition;
         }
 
         $definedClasses = ArrayHelper::get($settings, 'css_classes', array());

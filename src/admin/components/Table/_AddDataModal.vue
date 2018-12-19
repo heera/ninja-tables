@@ -75,8 +75,8 @@
 <script type="text/babel">
     import each from 'lodash/each';
 
-    import wp_editor from '../../common/_wp_editor';
-    import NinjaDatePicker from './Extras/_NinjaDatePicker'
+    import wp_editor from '../../../common/_wp_editor';
+    import NinjaDatePicker from '../Extras/_NinjaDatePicker'
 
     export default {
         name: 'add_data',

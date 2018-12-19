@@ -22,7 +22,7 @@
 </template>
 
 <script>
-    import ExternalDataSource from '../includes/ExternalDataSource';
+    import ExternalDataSource from '../DataProviders/ExternalDataSource';
 
     export default {
         name: "External",

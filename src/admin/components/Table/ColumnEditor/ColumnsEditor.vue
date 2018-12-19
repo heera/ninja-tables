@@ -448,6 +448,7 @@
 
                         <el-button
                         @click.prevent="addColumn"
+                        :loading="doingAjax"
                         type="primary"
                         size="small">Add Column</el-button>
                     </template>
@@ -482,7 +483,7 @@
                                 >{{ $t('Delete') }}</el-button>
                         </el-popover>
 
-                        <el-button v-loading="doingAjax" @click.prevent="store" type="primary" size="small">
+                        <el-button :loading="doingAjax" @click.prevent="store" type="primary" size="small">
                             {{ $t('Update') }}
                         </el-button>
                     </template>
@@ -493,9 +494,9 @@
 </template>
 
 <script>
-    import wpEditor from '../../../common/_wp_editor';
+    import wpEditor from '../../../../common/_wp_editor';
     import conditional from './_conditional';
-    import WPPostDynamicColumn from './WPPostDynamicColumn';
+    import WPPostDynamicColumn from '../../DataProviders/WPPostDynamicColumn';
     import ContentTransformer from './ContentTransformer';
 
     export default {

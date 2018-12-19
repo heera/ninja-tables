@@ -228,11 +228,21 @@ class NinjaTablesAdmin
         }
 
         wp_enqueue_script(
+            'ninja_table_boot',
+            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-boot.js",
+            array('jquery'),
+            $this->version,
+            false
+        );
+
+        do_action('ninja_tables_loaded_boot_script');
+
+        wp_enqueue_script(
             $this->plugin_name,
             plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin.js",
             array('jquery'),
             $this->version,
-            false
+            true
         );
 
         $fluentUrl = admin_url('plugin-install.php?s=FluentForm&tab=search&type=term');
@@ -324,7 +334,7 @@ class NinjaTablesAdmin
         if (!ninja_table_admin_role()) {
             return;
         }
-        
+
         $valid_routes = array(
             'get-all-tables' => 'getAllTables',
             'store-a-table' => 'storeTable',
@@ -345,7 +355,9 @@ class NinjaTablesAdmin
             'get_wp_post_types' => 'getAllPostTypes',
             'get_wp_post_authors' => 'getWPPostTypesAuthor',
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
-            'install_fluent_form' => 'installFluentForm'
+            'install_fluent_form' => 'installFluentForm',
+            'get_default_settings' => 'getDefaultSettings',
+            'save_default_settings' => 'saveDefaultSettings'
         );
 
         $importRoutes = array(
@@ -445,6 +457,8 @@ class NinjaTablesAdmin
             $attributes['ID'] = $postId;
             wp_update_post($attributes);
         }
+        update_post_meta($postId, '_last_edited_by', get_current_user_id());
+        update_post_meta($postId, '_last_edited_time', date('Y-m-d H:i:s'));
 
         return $postId;
     }
@@ -544,6 +558,9 @@ class NinjaTablesAdmin
         }
 
         ninjaTablesClearTableDataCache($tableId);
+
+        update_post_meta($tableId, '_last_edited_by', get_current_user_id());
+        update_post_meta($tableId, '_last_edited_time', date('Y-m-d H:i:s'));
 
         wp_send_json(array(
             'message' => __('Successfully updated configuration.', 'ninja-tables'),
@@ -718,6 +735,10 @@ class NinjaTablesAdmin
 
         ninjaTablesClearTableDataCache($tableId);
 
+        update_post_meta($tableId, '_last_edited_by', get_current_user_id());
+        update_post_meta($tableId, '_last_edited_time', date('Y-m-d H:i:s'));
+
+
         wp_send_json(array(
             'message' => __('Successfully saved the data.', 'ninja-tables'),
             'item' => array(
@@ -764,7 +785,7 @@ class NinjaTablesAdmin
 
         $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
 
-        $data = ninjaTablesGetTablesDataByID($tableId);
+        $data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true);
 
         if ($format == 'csv') {
 
@@ -798,11 +819,12 @@ class NinjaTablesAdmin
                     '_ninja_table_wpposts_ds_where' => get_post_meta($tableId, '_ninja_table_wpposts_ds_where', true),
                     '_ninja_table_wpposts_ds_post_types' => get_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', true),
                     '_ninja_tables_data_provider_url' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
-                    '_ninja_tables_data_provider_ff_form_id' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true)
+                    '_ninja_tables_data_provider_ff_form_id' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
+                    '_ninja_table_custom_filters' => get_post_meta($tableId, '_ninja_table_custom_filters', true),
+                    '_ninja_custom_filter_styling' => get_post_meta($tableId, '_ninja_custom_filter_styling', true)
                 ),
                 'rows' => $data,
             );
-
             $this->exportAsJSON($exportData, $fileName . '.json');
         }
     }
@@ -1214,4 +1236,18 @@ class NinjaTablesAdmin
         return activate_plugin($plugin_basename);
     }
 
+    public function getDefaultSettings() {
+        $settings = getDefaultNinjaTableSettings();
+        wp_send_json_success(array(
+            'default_settings' => $settings
+        ), 200);
+    }
+
+    public function saveDefaultSettings() {
+        $settings = wp_unslash($_REQUEST['default_settings']);
+        update_option('_ninja_table_default_appearance_settings', $settings);
+        wp_send_json_success(array(
+            'message' => __('Settings successfully updated', 'ninja_tables')
+        ), 200);
+    }
 }
