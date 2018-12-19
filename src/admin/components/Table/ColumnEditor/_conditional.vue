@@ -182,7 +182,7 @@
 </template>
 
 <script>
-    import NinjaColorPicker from '../Extras/ColorPicker';
+    import NinjaColorPicker from '../../Extras/ColorPicker';
     export default {
         name: "Conditional",
         props: {

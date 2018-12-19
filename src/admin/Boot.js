@@ -1,0 +1,2 @@
+import NINJATABLE from './NINJATABLES';
+window.NINJATABLE = new NINJATABLE();

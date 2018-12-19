@@ -190,7 +190,7 @@
                 })
                 .then(res => {
                     this.fields = res.data
-                    
+
                     if (this.editing) {
                         this.form.entry_limit = this.config.table.entry_limit;
                         this.form.entry_status = this.config.table.entry_status;

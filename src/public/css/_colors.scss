@@ -1,14 +1,18 @@
 table.ninja_table_pro.inverted {
 
+  th, td {
+    background-color: inherit;
+    color: inherit;
+  }
+
   &.table {
     a {
-      
+      color: inherit;
     }
     a.checkbox {
       color: black;
     }
   }
-
   /*-------------------
          Colors
   --------------------*/

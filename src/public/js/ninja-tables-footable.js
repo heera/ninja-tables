@@ -1,6 +1,7 @@
 import Event from './EventBus';
 import './ninja-tables-footable-custom-event';
 import './FooDateFilter';
+import './_buttons'
 
 jQuery(document).ready(function ($) {
     const ninja_table_app = {
@@ -96,15 +97,13 @@ jQuery(document).ready(function ($) {
                     }
                 })
                     .on('after.ft.filtering', function (e, ft, filter) {
-                        if(filter && filter.length) {
+                        if (filter && filter.length) {
                             $table.addClass('ninja_has_filter');
                         } else {
-
                             let frm_elements = $table.find('.ninja-custom-filter input');
                             $.each(frm_elements, (index, frm_element) => {
                                 let field_type = frm_element.type.toLowerCase();
-                                switch (field_type)
-                                {
+                                switch (field_type) {
                                     case "text":
                                     case "password":
                                     case "textarea":
@@ -113,8 +112,7 @@ jQuery(document).ready(function ($) {
                                         break;
                                     case "radio":
                                     case "checkbox":
-                                        if (frm_element.checked)
-                                        {
+                                        if (frm_element.checked) {
                                             frm_element.checked = false;
                                         }
                                         break;
@@ -126,7 +124,6 @@ jQuery(document).ready(function ($) {
                                         break;
                                 }
                             });
-
                             $table.removeClass('ninja_has_filter');
                         }
                     });
@@ -162,7 +159,14 @@ jQuery(document).ready(function ($) {
             };
 
             if (tableConfig.render_type !== 'legacy_table') {
-                initConfig.rows = $.get(window.ninja_footables.ajax_url + '?action=wp_ajax_ninja_tables_public_action&table_id=' + tableConfig.table_id + '&target_action=get-all-data&default_sorting=' + tableConfig.settings.default_sorting);
+                initConfig.rows = $.get(window.ninja_footables.ajax_url, {
+                    action: 'wp_ajax_ninja_tables_public_action',
+                    table_id: tableConfig.table_id,
+                    target_action: 'get-all-data',
+                    default_sorting: tableConfig.settings.default_sorting,
+                    skip_rows: tableConfig.settings.skip_rows,
+                    limit_rows: tableConfig.settings.limit_rows
+                });
             }
 
             initConfig.sorting = {
@@ -192,10 +196,20 @@ jQuery(document).ready(function ($) {
             };
 
             if (tableConfig.settings.defualt_filter) {
+                let filterColumns = tableConfig.settings.defualt_filter_column;
+                let validColumns = [];
+                if(filterColumns && filterColumns.length) {
+                    let allColumns = [];
+                    jQuery.each(tableConfig.columns, (index, column) => {
+                        allColumns.push(column.name);
+                    });
+                    validColumns = allColumns.filter(value => -1 !== filterColumns.indexOf(value));
+                }
                 initConfig.filtering.filters = [{
-                    "name": "ninja_table_custom_filter",
+                    "name": "ninja_table_default_filter",
+                    "hidden": true,
                     "query": tableConfig.settings.defualt_filter,
-                    "columns": []
+                    "columns": validColumns
                 }];
             }
 
@@ -214,16 +228,19 @@ jQuery(document).ready(function ($) {
                 $table.find('.' + className).css(values);
             });
 
-            if (jQuery('.ninja_filter_date_picker').length && Pikaday) {
-                let datePikers = jQuery('.ninja_filter_date_picker');
+            jQuery(document).trigger('ninja_table_ready_init', {
+                '$table': $table,
+                'tableConfig': tableConfig
+            });
+
+            if (jQuery('.ninja_filter_date_picker,.ninja_filter_date_range').length && Pikaday) {
+                let datePikers = jQuery('.ninja_filter_date_picker,.ninja_filter_date_range');
                 jQuery.each(datePikers, function (index, datePiker) {
                     let $piker = jQuery(datePiker);
                     $piker.pikaday({
                         format: $piker.data('date_format')
                     });
                 });
-            } else {
-                console.log('nothing found');
             }
         },
         getShortcodes(str, column, row) {
@@ -251,7 +268,7 @@ jQuery(document).ready(function ($) {
                 }
             });
             return transValue;
-        }
+        },
     };
     ninja_table_app.initTables();
 });

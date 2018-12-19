@@ -1,10 +1,11 @@
-.foo-table  {
+.foo-table {
   &.footable.table > thead > tr > th {
     padding: 0.92857143em 0.78571429em;
   }
 
   .form-inline {
     display: block !important;
+    margin-bottom: 0;
   }
 
   &.ninja_search_left {
@@ -47,7 +48,6 @@
     }
   }
 
-
   .footable-pagination-wrapper .pagination:before {
     content: none !important;
   }
@@ -57,9 +57,9 @@
   }
 
   table.footable-details tr th {
-      white-space: initial;
-      overflow: visible !important;
-      text-overflow: unset !important;
+    white-space: initial;
+    overflow: visible !important;
+    text-overflow: unset !important;
   }
   tr.footable-filtering th {
     overflow: visible !important;
@@ -175,8 +175,7 @@
   table.foo-table {
     &.vertical_centered {
       thead > tr > th,
-      tbody > tr > td
-      {
+      tbody > tr > td {
         vertical-align: middle;
       }
     }
@@ -189,18 +188,6 @@
   background: gray !important;
   table {
     display: none;
-  }
-}
-
-.ninja_custom_select_radio, .ninja_custom_select_checkbox {
-  label {
-    &:nth-child(2) {
-      margin-left: 5px;
-    }
-    margin-right: 10px;
-    &:last-child {
-      margin-right: 5px;
-    }
   }
 }
 
@@ -235,38 +222,166 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
   }
 }
 
-table.ninja_table_pro thead tr.footable-filtering {
-  .ninja-custom-filter {
-    margin-right: 5px !important;
-    margin-bottom: 10px !important;
-    text-align: left;
-    label.ninja_filter_title {
-      font-weight: bold;
-      margin-right: 5px;
+// Styles For Filtering
+.ninja_table_wrapper {
+  table thead .footable-filtering {
+    .ninja_custom_radio, .ninja_custom_select_checkbox {
+      > label {
+        @media (max-width: 767px) {
+          display: block;
+        }
+        display: inline-block;
+        margin-right: 15px;
+        &:last-child {
+          margin-right: 0;
+        }
+        input {
+          margin-right: 10px;
+        }
+      }
+      label.ninja_filter_title {
+        margin-right: 0;
+      }
     }
-    input[type=radio], input[type=checkbox] {
-      margin-right: 5px;
-      margin-left: 10px;
+    .ninja_filter_title {
+      margin-right: 10px;
     }
   }
+  .ninja_table_afd_columns {
+    thead .footable-filtering th .form-inline {
+      display: block;
+      width: 100%;
+      > .form-group {
+        text-align: left;
+        .form-control, .input-group {
+          width: 100%;
+        }
+        > .ninja_filter_title {
+          display: block;
+          font-weight: bold;
+        }
+        .input-group {
+          width: 100%;
+          .input-group-btn {
+            width: 70px !important;
+          }
+        }
+        .ninja_filter_date_range, .ninja_filter_number_range {
+          width: 49%;
+          margin: 0 2% 0 0;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+      .ninja_filter_title {
+        margin-right: 0;
+      }
+      .ninja_filter_date_from, .ninja_filter_number_from {
+        margin-right: 10px;
+      }
+      .ninja_filter_date_from, .ninja_filter_number_from, .ninja_filter_date_to, .ninja_filter_number_to {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .ninja_table_afcs_columns_2 {
+    thead .footable-filtering th .form-inline {
+      > .form-group {
+        margin: 0 0 20px;
+        width: 49%;
+        padding: 0 15px 0 0;
+        float: left;
+        @media (max-width: 767px) {
+          width: 100%;
+          float: none;
+        }
+        &:nth-child(2n + 1) {
+          clear: both;
+        }
+      }
+    }
+  }
+
+  .ninja_table_afcs_columns_3 {
+    thead .footable-filtering th .form-inline {
+      > .form-group {
+        margin: 0 0 20px;
+        width: 33%;
+        padding: 0 15px 0 0;
+        float: left;
+        @media (max-width: 767px) {
+          width: 100%;
+          float: none;
+        }
+        &:nth-child(3n + 1) {
+          clear: both;
+        }
+      }
+    }
+  }
+
+  .ninja_table_afcs_columns_4 {
+    thead .footable-filtering th .form-inline {
+      > .form-group {
+        margin: 0 0 20px 0;
+        width: 24.9%;
+        padding: 0 15px 0 0;
+        float: left;
+        @media (max-width: 767px) {
+          width: 100%;
+          float: none;
+        }
+        &:nth-child(4n + 1) {
+          clear: both;
+        }
+      }
+    }
+  }
+
+  .ninja_reset_button {
+    color: rgb(255, 255, 255);
+    background: rgb(220, 53, 69);
+    border-color: rgb(220, 53, 69);
+    &:hover {
+      color: rgb(255, 255, 255);
+      background-color: rgb(200, 35, 51);
+      border-color: rgb(189, 33, 48);
+    }
+  }
+
+  .ninja_table_afd_inline {
+    thead .footable-filtering th .form-inline {
+      display: block;
+      width: 100%;
+      > .form-group {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .ninja_table_buttons {
+    display: block;
+    overflow: hidden;
+    clear: both;
+    text-align: right;
+    .ninja_button {
+      border-radius: 0;
+      border-right: 1px solid rgb(222, 222, 223);
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
 }
 
-@media (max-width: 767px) {
-  table.ninja_table_pro thead tr.footable-filtering {
-    .ninja-custom-filter, .footable-filtering-search {
+@media print {
+  .ninja_table_print_view {
+    .footable_parent {
+      overflow-x: hidden !important;
       width: 100%;
-      display: block;
-      text-align: left;
-      margin-right: 0px !important;
-      margin-bottom: 10px !important;
-      label.ninja_filter_title {
-        font-weight: bold;
-        margin-right: 0px;
-      }
-      input[type=radio], input[type=checkbox] {
-        margin-right: 5px;
-        margin-left: 10px;
-      }
     }
   }
 }

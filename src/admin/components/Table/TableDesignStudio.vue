@@ -422,13 +422,13 @@
 </template>
 
 <script type="text/babel">
-    import {tableLibs} from '../data/data'
+    import {tableLibs} from '../../data/data'
     import get from 'lodash/get'
     import size from 'lodash/size'
     import forEach from 'lodash/forEach'
     import intersection from 'lodash/intersection';
-    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
-    import NinjaColorPicker from './Extras/ColorPicker';
+    import SortableUpgradeNotice from '../includes/SortableUpgradeNotice.vue';
+    import NinjaColorPicker from '../Extras/ColorPicker';
 
     export default {
         name: 'table_preview',

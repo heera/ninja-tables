@@ -1,7 +1,7 @@
 <template>
 	<div class="tablenav-pages">
 		<span v-if="paginate.total" class="displaying-num">{{ paginate.total }} {{ $t('items') }}</span>
-        
+
 		<span class="pagination-links">
             <template v-if="paginate.current_page == 1">
                 <span class="tablenav-pages-navspan" aria-hidden="true">«</span>
@@ -11,9 +11,9 @@
                  <a class="first-page" href="#" @click.prevent="goToPage(1)"><span class="screen-reader-text">{{ $t('First page') }}</span><span aria-hidden="true">«</span></a>
                 <a class="prev-page" href="#" @click.prevent="goToPage(paginate.current_page - 1)"><span class="screen-reader-text">{{ $t('Previous page')}}</span><span aria-hidden="true">‹</span></a>
             </template>
-            
+
             <span class="screen-reader-text">{{ $t('Current Page') }}</span>
-            <input @keydown.enter.prevent="goToPage(pageNumberInput)" class="current-page" id="current-page-selector" v-model="pageNumberInput" type="text" size="2" aria-describedby="table-paging"> 
+            <input @keydown.enter.prevent="goToPage(pageNumberInput)" class="current-page" id="current-page-selector" v-model="pageNumberInput" type="text" size="2" aria-describedby="table-paging">
             {{ $t('of') }}
             <span class="total-pages">{{ paginate.last_page }}</span>
 
@@ -31,7 +31,7 @@
 
 <script type="text/babel">
 	export default {
-	    name: 'Pagination',
+	    name: 'NinjaPagination',
 		props: ['paginate'],
 		data() {
 	        return {
@@ -50,4 +50,4 @@
 			}
 		}
 	}
-</script> 
+</script>

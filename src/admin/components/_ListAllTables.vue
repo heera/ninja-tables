@@ -110,7 +110,7 @@
 
 <script type="text/babel">
     import Clipboard from 'clipboard';
-    const pagination = require('../../common/pagination.vue');
+    const pagination = require('../../common/NinjaPagination.vue');
     export default {
         name: 'Home',
         components: {
@@ -135,7 +135,7 @@
                     total: 0,
                     current_page: 1,
                     last_page: 1,
-                    per_page: 10
+                    per_page: parseInt(this.getFromStore('tables_per_page', 20))
                 },
                 hasPro: !!window.ninja_table_admin.hasPro,
                 img_url_path: window.ninja_table_admin.img_url,
@@ -174,10 +174,10 @@
             },
             handleSizeChange(val) {
                 this.paginate.per_page = val;
+                this.setStoreData('tables_per_page', val);
                 this.fetchTables();
             },
             confirmDeleteTable(tableId) {
-
                 this.$confirm('Are you sure, You want to delete this table?', 'Warning', {
                     confirmButtonText: 'Yes, Delete',
                     cancelButtonText: 'Cancel',

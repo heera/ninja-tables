@@ -11,40 +11,67 @@
                 here</a>
             </p>
         </div>
-        <div class="ninja_style_wrapper">
+        <div style="margin: 25px 0" v-loading="loading" class="ninja_style_wrapper">
             <div v-if="hasAdvancedFilters" class="section_block">
-                <table v-if="table_filters.length" class="wp-list-table table-bordered widefat fixed striped">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Target Columns</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <draggable
-                            :options="{handle:'.handle'}"
-                            :list="table_filters"
-                            :element="'tbody'"
-                            @change="saveFilters()"
-                    >
-                    <tr v-for="(table_filter, filter_index) in table_filters">
-                        <td><span class="dashicons dashicons-editor-justify handle"></span> {{ table_filter.title }}</td>
-                        <td>{{ table_filter.type }}</td>
-                        <td>
-                            <code v-for="columnKey in table_filter.columns" v-show="columnKeyPairs[columnKey]">
-                                {{ columnKeyPairs[columnKey] }}
-                            </code>
-                        </td>
-                        <td>
-                            <el-button @click="edit(table_filter)" size="mini" type="primary"
-                                       icon="el-icon-edit"></el-button>
-                            <el-button size="mini" @click="deleteFilter(filter_index)" type="danger"
-                                       icon="el-icon-delete"></el-button>
-                        </td>
-                    </tr>
-                    </draggable>
-                </table>
+                <el-button @click="showAddFilter()" size="small" type="success">Add New Filter</el-button>
+                <template v-if="table_filters.length">
+                    <table style="margin: 20px 0" class="wp-list-table table-bordered widefat fixed striped">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Target Columns</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <draggable
+                                :options="{handle:'.handle'}"
+                                :list="table_filters"
+                                :element="'tbody'"
+                                @change="saveFilters()"
+                        >
+                            <tr v-for="(table_filter, filter_index) in table_filters">
+                                <td><span class="dashicons dashicons-editor-justify handle"></span> {{ table_filter.title }}</td>
+                                <td>{{ table_filter.type }}</td>
+                                <td>
+                                    <code v-for="columnKey in table_filter.columns" v-show="columnKeyPairs[columnKey]">
+                                        {{ columnKeyPairs[columnKey] }}
+                                    </code>
+                                </td>
+                                <td>
+                                    <el-button @click="edit(table_filter)" size="mini" type="primary"
+                                               icon="el-icon-edit"></el-button>
+                                    <el-button size="mini" @click="deleteFilter(filter_index)" type="danger"
+                                               icon="el-icon-delete"></el-button>
+                                </td>
+                            </tr>
+                        </draggable>
+                    </table>
+                    <h3>Filter Appearance</h3>
+                    <el-radio-group v-model="filter_styling.filter_display_type">
+                        <el-radio label="inline">Show filter inputs as inline</el-radio>
+                        <el-radio label="columns">Show filter inputs Column</el-radio>
+                    </el-radio-group>
+                    <template v-if="filter_styling.filter_display_type == 'columns'">
+                        <h3>Filter Columns</h3>
+                        <el-radio-group size="mini" v-model="filter_styling.filter_columns">
+                            <el-radio-button label="columns_2">Two Columns</el-radio-button>
+                            <el-radio-button label="columns_3">Three Columns</el-radio-button>
+                            <el-radio-button label="columns_4">Four Columns</el-radio-button>
+                        </el-radio-group>
+                    </template>
+                </template>
+
+                <template v-if="table_buttons && table_buttons.csv && table_buttons.print">
+                    <h3>Export / Print Button Settings</h3>
+                    <el-checkbox true-label="yes" false-label="no" v-model="table_buttons.csv.status">CSV Export Button</el-checkbox>
+                    <el-checkbox true-label="yes" false-label="no" v-model="table_buttons.print.status">Print Button</el-checkbox>
+                </template>
+
+                <div style="margin-top: 20px" class="form_group">
+                    <el-button :loading="saving" size="small" type="success" @click="saveFilters">Update Settings</el-button>
+                </div>
+
             </div>
             <div v-else-if="hasPro" class="section_block">
                 <h3>Custom Filters is introduced in version 2.4.0. Please upgrade <b>Ninja tables pro</b> plugin to use
@@ -56,9 +83,6 @@
                 <a class="el-button el-button--danger" target="_blank" href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=custom_filters&utm_term=upgrade">Purchase Now</a>
             </div>
         </div>
-
-        <el-button v-if="hasAdvancedFilters" @click="showAddFilter()" type="success">Add New Filter</el-button>
-
 
         <el-dialog
                 title="Edit Custom Filter"
@@ -103,12 +127,30 @@
         data() {
             return {
                 loading: false,
+                saving: false,
                 hasPro: !!window.ninja_table_admin.hasPro,
                 hasAdvancedFilters: !!window.ninja_table_admin.hasAdvancedFilters,
                 table_filters: [],
                 activeEditor: false,
                 editorModal: false,
-                addFilterModal: false
+                addFilterModal: false,
+                filter_styling: {
+                    filter_display_type: '',
+                    filter_columns: 'columns_2',
+                    filter_column_label: 'new_line'
+                },
+                table_buttons: {
+                    csv: {
+                        status: 'no',
+                        label: 'CSV',
+                        all_rows: 'no'
+                    },
+                    print: {
+                        status: 'no',
+                        label: 'Print',
+                        all_rows: 'no'
+                    }
+                }
             }
         },
         computed: {
@@ -130,6 +172,8 @@
                 })
                     .then((response) => {
                         this.table_filters = response.data.table_filters;
+                        this.filter_styling = response.data.filter_styling;
+                        this.table_buttons = response.data.table_buttons;
                     })
                     .fail(error => {
 
@@ -152,7 +196,8 @@
                     this.$message.error('Please Provide Filter Options');
                     return false;
                 }
-                if (!filter.columns.length) {
+
+                if ( filter.type != 'reset_filter' && !filter.columns.length) {
                     this.$message.error('Please Select columns that you need to add filter');
                     return false;
                 }
@@ -160,11 +205,13 @@
                 return true;
             },
             saveFilters() {
-                this.loading = true;
+                this.saving = true;
                 jQuery.post(window.ajaxurl, {
                     action: 'ninjatable_update_custom_table_filters',
                     table_id: this.table_id,
-                    ninja_filters: this.table_filters
+                    ninja_filters: this.table_filters,
+                    filter_styling: this.filter_styling,
+                    table_buttons: this.table_buttons
                 })
                     .then((response) => {
                         this.$message.success(response.data.message);
@@ -173,7 +220,7 @@
 
                     })
                     .always(() => {
-                        this.loading = false;
+                        this.saving = false;
                         this.activeEditor = false;
                         this.editorModal = false;
                         this.addFilterModal = false;

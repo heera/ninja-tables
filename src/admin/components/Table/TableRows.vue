@@ -219,20 +219,20 @@
     import snakeCase from 'lodash/snakeCase'
 
     import addDataModal from './_AddDataModal';
-    import pagination from '../../common/pagination.vue';
-    import Alert from './includes/alert.vue';
-    import DeletePopOver from './includes/DeletePopOver.vue';
-    import SortableUpgradeNotice from './includes/SortableUpgradeNotice.vue';
-    import columnsEditor from './includes/ColumnsEditor';
-    import FluentFormNav from './TableNav/Fluentform';
-    import ExternalSourceNav from './TableNav/External';
-    import WPPostsNav from './TableNav/WPPostsNav';
+    import NinjaPagination from '../../../common/NinjaPagination.vue';
+    import Alert from '../includes/alert.vue';
+    import DeletePopOver from '../includes/DeletePopOver.vue';
+    import SortableUpgradeNotice from '../includes/SortableUpgradeNotice.vue';
+    import columnsEditor from './ColumnEditor/ColumnsEditor';
+    import FluentFormNav from '../TableNav/Fluentform';
+    import ExternalSourceNav from '../TableNav/External';
+    import WPPostsNav from '../TableNav/WPPostsNav';
 
     export default {
         name: 'TableDataItems',
         components: {
             add_data_modal: addDataModal,
-            ninja_pagination: pagination,
+            ninja_pagination: NinjaPagination,
             Alert,
             DeletePopOver,
             SortableUpgradeNotice,

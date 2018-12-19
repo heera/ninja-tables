@@ -493,9 +493,9 @@
 </template>
 
 <script>
-    import wpEditor from '../../../common/_wp_editor';
+    import wpEditor from '../../../../common/_wp_editor';
     import conditional from './_conditional';
-    import WPPostDynamicColumn from './WPPostDynamicColumn';
+    import WPPostDynamicColumn from '../../DataProviders/WPPostDynamicColumn';
     import ContentTransformer from './ContentTransformer';
 
     export default {

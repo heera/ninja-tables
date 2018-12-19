@@ -32,9 +32,9 @@
 </template>
 
 <script>
-    import ninja_alert from './alert';
-    import NinjaPremiumNotice from './PremiumNotice';
-    
+    import ninja_alert from '../../includes/alert';
+    import NinjaPremiumNotice from '../../includes/PremiumNotice';
+
     export default {
         name: 'ContentTransformer',
         props: {

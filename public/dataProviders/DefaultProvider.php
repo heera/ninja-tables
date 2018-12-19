@@ -22,10 +22,16 @@ class DefaultProvider
         return $table;
     }
 
-    public function data($data, $tableId, $defaultSorting, $limit = false)
+    public function data($data, $tableId, $defaultSorting, $limit = false, $skip = false)
     {
+        $advancedQuery = false;
+        $disabledCache = false;
+
+        if($skip || $limit) {
+            $advancedQuery = true;
+        }
         // if cached not disabled then return cached data
-        if( ! $disabledCache = ninja_tables_shouldNotCache($tableId)) {
+        if( !$advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId)) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
                 return $cachedData;
@@ -42,8 +48,17 @@ class DefaultProvider
             $query->orderBy('id', 'asc');
         }
 
-        if ($limit) {
+
+        $skip = intval($skip);
+        if ($skip && $skip > 0) {
+            $query->skip($skip);
+        }
+
+        $limit = intval($limit);
+        if ($limit && $limit > 0) {
             $query->limit($limit);
+        } else if($skip && $skip > 0) {
+            $query->limit(99999);
         }
 
         foreach ($query->get() as $item) {
@@ -57,7 +72,7 @@ class DefaultProvider
         // You should hook this if you need to cache your filter modifications
         $data = apply_filters('ninja_tables_get_raw_table_data', $data, $tableId);
 
-        if (!$disabledCache) {
+        if (!$advancedQuery && !$disabledCache) {
             update_post_meta($tableId, '_ninja_table_cache_object', $data);
         }
 

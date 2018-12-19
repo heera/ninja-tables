@@ -18,11 +18,11 @@
             </div>
 
             <span style="margin-right: 20px" class="pull-right">
-                <router-link class="btn" :to="{ name: 'help' }">{{ $t('Documentation') }}</router-link>
+                <router-link class="doc_link" :to="{ name: 'help' }">{{ $t('Documentation') }}</router-link>
                 <a :href="preview_url" target="_blank">
                     <el-button size="mini">{{ $t('Preview') }}</el-button>
                 </a>
-                <a v-if="!has_pro"
+                <a v-if="has_pro"
                    href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade"
                    target="_blank">
                     <el-button type="danger" size="mini">{{ $t('Buy Pro') }}</el-button>
@@ -31,38 +31,10 @@
         </div>
         <fieldset :class="[is_form_saving ? 'disabled' : '']" :disabled="is_form_saving">
             <h2 class="nav-tab-wrapper">
-                <router-link active-class="nav-tab-active" exact :class="[ 'nav-tab' ]"
-                             :to="{ name: 'data_items', params: { table_id: tableId } }">
-                    {{ $t('Table Rows') }}
+                <router-link v-for="tableTab in table_tabs" :key="tableTab.route" active-class="nav-tab-active" exact :class="[ 'nav-tab' ]"
+                             :to="{ name: tableTab.route, params: { table_id: tableId } }">
+                    {{ tableTab.title }}
                 </router-link>
-
-                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
-                             :to="{ name: 'data_columns', params: { table_id: tableId } }">
-                    {{ $t('Table Configuration') }}
-                </router-link>
-
-                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
-                             :to="{ name: 'design_studio', params: { table_id: tableId } }">
-                    {{ $t('Table Design') }}
-                </router-link>
-                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
-                             :to="{ name: 'additional_css', params: { table_id: tableId } }">
-                    {{ $t('Custom CSS') }}
-                </router-link>
-
-                <router-link active-class="nav-tab-active" :class="[ 'nav-tab' ]"
-                             :to="{ name: 'import-export', params: { table_id: tableId } }">
-                    {{ $t('Import - Export') }}
-                </router-link>
-
-                <template v-if="size(customTabs)">
-                    <router-link v-for="(customTab, tabKey) in customTabs" :key="tabKey" active-class="nav-tab-active"
-                                 :class="[ 'nav-tab' ]"
-                                 :to="{ name: 'custom_tab', params: { table_id: tableId }, query: { user_tab: tabKey } }"
-                                 exact>
-                        {{ customTab }}
-                    </router-link>
-                </template>
             </h2>
 
             <router-view v-if="config" :config="config" :getColumnSettings="getSettings"></router-view>
@@ -74,14 +46,14 @@
                 top="50px"
                 :append-to-body="true"
         >
-            <edit_table :table="table" @modal_close="editTableModalShow = !editTableModalShow"></edit_table>
+            <edit_table v-if="editTableModalShow" :table="table" @modal_close="editTableModalShow = !editTableModalShow"></edit_table>
         </el-dialog>
     </div>
 </template>
 
 <script type="text/babel">
     import Clipboard from 'clipboard';
-    import EditTable from './_AddTable.vue';
+    import EditTable from './EditTableModal';
     import each from 'lodash/each';
     import size from 'lodash/size';
     import toArray from 'lodash/values';
@@ -93,7 +65,7 @@
         },
         data() {
             return {
-                customTabs: {},
+                table_tabs: [],
                 is_data_saving: false,
                 is_form_saving: false,
                 tableId: this.$route.params.table_id,
@@ -108,9 +80,6 @@
             }
         },
         methods: {
-            save_data() {
-
-            },
             updateTableColumns(callback) {
                 this.doingAjax = true;
                 let data = {
@@ -171,10 +140,34 @@
             },
             size,
             each,
+           initTableTabs() {
+                this.table_tabs = this.applyFilters('ninja_table_table_tabs', [
+                    {
+                        route: 'data_items',
+                        title: 'Table Rows'
+                    },
+                    {
+                        route: 'data_columns',
+                        title: 'Table Configuration'
+                    },
+                    {
+                        route: 'design_studio',
+                        title: 'Table Design'
+                    },
+                    {
+                        route: 'additional_css',
+                        title: 'Custom CSS'
+                    },
+                    {
+                        route: 'import-export',
+                        title: 'Import - Export'
+                    }
+                ]);
+            }
         },
         mounted() {
+            this.initTableTabs();
             this.getSettings();
-
             var clipboard = new Clipboard('.copy');
             clipboard.on('success', (e) => {
                 this.$message({
@@ -202,6 +195,8 @@
             window.ninjaTableBus.$on('updateTableColumns', (callback) => {
                 this.updateTableColumns(callback);
             });
+
+            window.ninjaTableBus.$emit('addedTable');
         }
     }
 </script>

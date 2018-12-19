@@ -1,14 +1,20 @@
 const Home = require('./components/Home.vue');
 const AllTables = require('./components/AllTables.vue');
-const Tools = require('./components/Tools.vue');
-const TableHome = require('./components/TableHome.vue');
-const TableDataItems = require('./components/TableRows.vue');
-const TableColumns = require('./components/TableColumns.vue');
-const ExportImport = require('./components/Extras/ExportImport');
+const Tools = require('./components/Tools/Tools.vue');
+const ImportTable = require('./components/Tools/Import.vue');
+const PermissionSettings = require('./components/Tools/Privacy');
+const DefaultTableAppearance = require('./components/Tools/DefaultAppearance');
+const LicenseSettings = require('./components/Tools/License');
+
+
+const TableHome = require('./components/Table/TableHome.vue');
+const TableDataItems = require('./components/Table/TableRows.vue');
+const TableColumns = require('./components/Table/ColumnEditor/TableColumns.vue');
+const ExportImport = require('./components/Table/Tools/ExportImport');
 const UserComponents = require('./components/extras/UserComponents.vue')
 const Help = require('./components/extras/Help.vue');
-const TableAdditionalCss = require('./components/TableAdditionalCss');
-const TableDesignStudio = require('./components/TableDesignStudio');
+const TableAdditionalCss = require('./components/Table/TableAdditionalCss');
+const TableDesignStudio = require('./components/Table/TableDesignStudio');
 
 export const routes = [
     {
@@ -23,10 +29,31 @@ export const routes = [
             },
             {
                 path: '/tools',
-                name: 'tools',
-                component: Tools
+                component: Tools,
+                children: [
+                    {
+                        path: '/',
+                        name: 'import_tables',
+                        component: ImportTable
+                    },
+                    {
+                        path: 'default_table_appearance',
+                        name: 'default_table_appearance',
+                        component: DefaultTableAppearance
+                    },
+                    {
+                        path: 'permission',
+                        name: 'permission',
+                        component: PermissionSettings
+                    },
+                    {
+                        path: 'licensing',
+                        name: 'licensing',
+                        component: LicenseSettings
+                    }
+                ]
             },
-            { 
+            {
                 path: '/help',
                 name: 'help',
                 component: Help

@@ -14,7 +14,7 @@
             <el-input size="small" v-model="activeEditor.title" />
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item v-if="activeEditor.type != 'reset_filter'">
             <template slot="label">
                 {{ $t('Filter Label') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
@@ -40,17 +40,21 @@
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
-            <el-radio-group v-model="activeEditor.type">
+            <el-radio-group class="spaced" v-model="activeEditor.type">
                 <el-radio label="radio">Radio</el-radio>
                 <el-radio label="select">Select Dropdown</el-radio>
                 <el-radio label="checkbox">Checkbox</el-radio>
                 <el-radio label="date_picker">Date Picker</el-radio>
+                <el-radio label="date_range">Date Range</el-radio>
+                <el-radio label="text_input">Text Input</el-radio>
+                <el-radio label="number_range">Number Range</el-radio>
+                <el-radio label="reset_filter">Reset Filter Button</el-radio>
             </el-radio-group>
         </el-form-item>
 
-        <el-form-item v-if="activeEditor.type == 'radio' || activeEditor.type == 'select' || activeEditor.type == 'date_picker'">
+        <el-form-item v-if="need_placeholder">
             <template slot="label">
-                {{ $t('Default Label ( Placeholder )') }}
+                {{ $t('Placeholder') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
                     <div slot="content">
                         <p>This will show on as default placeholder to reset the label ( Ex: All )</p>
@@ -61,7 +65,7 @@
             <el-input size="small" v-model="activeEditor.placeholder"></el-input>
         </el-form-item>
 
-        <el-form-item v-if="activeEditor.type != 'date_picker'">
+        <el-form-item v-if="has_filter_option">
             <template slot="label">
                 {{ $t('Filter Options') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
@@ -81,15 +85,28 @@
                     {{ $t('Date Filter Operator') }}
                 </template>
                 <el-radio-group v-model="activeEditor.filter_operator">
-                    <el-radio label="less">Less Than</el-radio>
-                    <el-radio label="greater">Greater Than</el-radio>
+                    <el-radio label="less">Less Than Equal</el-radio>
+                    <el-radio label="greater">Greater Than Equal</el-radio>
                     <el-radio label="equal">Equal</el-radio>
                 </el-radio-group>
             </el-form-item>
         </template>
+        <template v-else-if="activeEditor.type == 'date_range' || activeEditor.type == 'number_range'">
+            <el-form-item >
+                <template slot="label">
+                    {{ $t('From Placeholder') }}
+                </template>
+                <el-input size="small" placeholder="From Placeholder" v-model="activeEditor.from_placeholder" />
+            </el-form-item>
+            <el-form-item >
+                <template slot="label">
+                    {{ $t('To Placeholder') }}
+                </template>
+                <el-input size="small" placeholder="To Placeholder" v-model="activeEditor.to_placeholder" />
+            </el-form-item>
+        </template>
 
-
-        <el-form-item>
+        <el-form-item v-if="activeEditor.type != 'reset_filter'">
             <template slot="label">
                 {{ $t('Filter Columns') }}
                 <el-tooltip class="item" placement="bottom-start" effect="light">
@@ -103,6 +120,12 @@
             <el-checkbox-group v-model="activeEditor.columns">
                 <el-checkbox v-for="column in current_columns" :key="column.key" :label="column.key">{{column.name}}</el-checkbox>
             </el-checkbox-group>
+        </el-form-item>
+        <el-form-item v-else>
+            <template slot="label">
+                {{ $t('Button Text') }}
+            </template>
+            <el-input size="mini" v-model="activeEditor.placeholder" />
         </el-form-item>
     </el-form>
 </template>
@@ -118,7 +141,7 @@
         props: ['activeEditor', 'columnKeyPairs', 'columns'],
         computed: {
             current_columns() {
-                if(this.activeEditor.type == 'date_picker') {
+                if(this.activeEditor.type == 'date_picker' || this.activeEditor.type == 'date_range') {
                     let columns = [];
                     each(this.columns, (column) => {
                         if(column.data_type == 'date') {
@@ -126,9 +149,40 @@
                         }
                     });
                     return columns;
+                } else if(this.activeEditor.type == 'number_range') {
+                    let columns = [];
+                    each(this.columns, (column) => {
+                        if(column.data_type == 'number') {
+                            columns.push(column);
+                        }
+                    });
+                    return columns;
                 }
                 return this.columns;
+            },
+            has_filter_option() {
+                return [
+                    'radio',
+                    'select',
+                    'checkbox',
+                ].indexOf(this.activeEditor.type) !== -1;
+            },
+            need_placeholder() {
+                return [
+                    'radio',
+                    'select',
+                    'date_picker',
+                    'text_input'
+                ].indexOf(this.activeEditor.type) !== -1;
             }
         }
     }
 </script>
+
+<style scoped lang="scss">
+    .spaced > .el-radio {
+        margin-left: 0px;
+        margin-right: 30px !important;
+        line-height: 2;
+    }
+</style>

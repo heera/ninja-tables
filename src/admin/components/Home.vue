@@ -1,23 +1,15 @@
 <template>
     <div>
-        <h2 class="nav-tab-wrapper">
+        <div class="ninja_main_nav">
             <span class="plugin-name">{{ $t('Ninja Tables') }}<span v-if="has_pro"> Pro</span></span>
-            
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'home' }">
-                {{ $t('Home') }}
+
+            <router-link v-for="menuItem in topMenus" :key="menuItem.route" active-class="ninja-tab-active" exact :class="['ninja-tab']" :to="{ name: menuItem.route }">
+                {{ menuItem.title }}
             </router-link>
 
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'tools' }">
-                {{ $t('Tools') }}
-            </router-link>
-            
-            <router-link active-class="nav-tab-active" exact :class="['nav-tab']" :to="{ name: 'help' }">
-                {{ $t('Help') }}
-            </router-link>
-            
-            <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="nav-tab buy_pro_tab">Buy Pro</a>
-        </h2>
-        
+            <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="ninja-tab buy_pro_tab">Buy Pro</a>
+        </div>
+
         <router-view :has-pro="has_pro"></router-view>
     </div>
 </template>
@@ -28,7 +20,29 @@
         data() {
             return {
                 has_pro: window.ninja_table_admin.hasPro,
+                topMenus: []
             }
+        },
+        methods: {
+            setTopMenu() {
+                this.topMenus = this.applyFilters('ninja_table_top_menus', [
+                    {
+                        route: 'home',
+                        title: 'All Tables'
+                    },
+                    {
+                        route: 'import_tables',
+                        title: 'Tools and Settings'
+                    },
+                    {
+                        route: 'help',
+                        title: 'Help & Documentation'
+                    }
+                ]);
+            },
+        },
+        mounted() {
+            this.setTopMenu();
         }
     }
 </script>
@@ -37,10 +51,6 @@
     .plugin-name {
         float: left;
         padding: 8px 0;
-    }
-    .buy_pro_tab {
-        background: #e04f5e;
-        color: white;
     }
 </style>
 
