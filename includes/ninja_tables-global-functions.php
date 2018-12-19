@@ -715,7 +715,6 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
                 )
             );
         }
-
         $data = array(
             'table_id' => $tableId,
             'attribute' => 'value',

@@ -808,7 +808,6 @@ class NinjaTablesAdmin
         } elseif ($format == 'json') {
             $table = get_post($tableId);
 
-
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,

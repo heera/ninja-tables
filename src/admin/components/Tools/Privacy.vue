@@ -3,8 +3,8 @@
         <div class="ninja_header">
             <h2>Permission <span v-show="!hasPro">(Pro Feature)</span></h2>
         </div>
-        
-        <div class="ninja_content">
+
+        <div v-loading="fetching" class="ninja_content">
             <div class="ninja_block">
                 <p>By default, Only Administrator have access to manage the tables. By selecting additional roles bellow, You can give access to manage your Tables to other user roles.</p>
             </div>
@@ -28,7 +28,7 @@
                     <el-button @click="store" type="primary" size="small">Save</el-button>
                 </div>
             </template>
-            
+
             <template v-else>
                  {{ $t('Activate Ninja Tables Pro Add-on plugin to unlock this feature') }}
                 <p>
@@ -45,6 +45,7 @@
         data() {
             return {
                 hasPro: false,
+                fetching: false,
                 roles: [],
                 checkAll: false,
                 capability: ["administrator"],
@@ -54,18 +55,20 @@
         },
         methods: {
             get() {
-                let data = {
+                this.fetching = true;
+                this.$get({
                     action: "ninja_tables_ajax_actions",
                     target_action: 'get_access_roles'
-                };
-                
-                jQuery.get(ajaxurl, data)
+                })
                     .then(response => {
                         this.capability = response.capability;
                         this.roles = response.roles;
                         this.handleCheckedCapabilitiesChange(this.capability);
                     })
-                    .fail(e => {});
+                    .fail(e => {})
+                    .always(() => {
+                        this.fetching = false;
+                    })
             },
             store() {
                 let data = {

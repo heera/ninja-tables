@@ -255,13 +255,22 @@
                     data: data,
                     type: 'POST',
                     success: (response) => {
+                        if(!response.tables) {
+                            this.$message.error('No Table Found');
+                        } else {
+                            this.btnsLoading[plugin] = false;
+                        }
                         this.showPluginModal = true;
                         this.otherPluginTables = response.tables;
-                        this.btnsLoading[plugin] = false;
                     },
                     error: (error) => {
                         this.btnsLoading[plugin] = false;
-                        this.$message.error(error.responseJSON.message);
+                        if(error.responseJSON) {
+                            this.$message.error(error.responseJSON.message);
+                        } else {
+                            this.$message.error('No Table Found');
+                        }
+
                     }
                 });
             },

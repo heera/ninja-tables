@@ -6,7 +6,6 @@
                     <i class="header-icon el-icon-info el-text-info"></i>
                     <strong>Edit:</strong> {{isEditableMessage}}
                 </template>
-
                 <FluentForm :tableCreated="tableCreated" :editing="true" :config="config" />
             </el-collapse-item>
         </el-collapse>

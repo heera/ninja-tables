@@ -24,7 +24,7 @@
                         {{ $t( 'Add Table' ) }}
                     </el-button>
 
-                    <router-link :to="{ name: 'tools' }">
+                    <router-link :to="{ name: 'import_tables' }">
                         <el-button size="small" type="success">
                             {{ $t( 'Import Table' ) }}
                         </el-button>

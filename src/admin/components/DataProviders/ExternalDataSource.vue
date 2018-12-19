@@ -13,8 +13,11 @@
                         Construct Table from Google Sheets
                     </h3>
                     <p class="ninja_subtitle">
-                        Whenever your Google Sheets data changes it will be automatically reflected here. You won't have to do a thing. Please provide the publishable public URL of your google sheet.
-                        <a target="_blank" href="https://wpmanageninja.com/docs/ninja-tables/construct-table-from-google-sheets/">View Documentation Here</a>
+                        Whenever your Google Sheets data changes it will be automatically reflected here. You won't have
+                        to do a thing. Please provide the publishable public URL of your google sheet.
+                        <a target="_blank"
+                           href="https://wpmanageninja.com/docs/ninja-tables/construct-table-from-google-sheets/">View
+                            Documentation Here</a>
                     </p>
                 </template>
 
@@ -52,6 +55,7 @@
 
             <template v-else>
                 <el-table
+                        v-loading="fetching"
                         ref="rowSelectableTable"
                         :data="fields"
                         style="width:100% !important"
@@ -76,14 +80,14 @@
             </el-table>
         </template>
 
-        <template v-if="!hasPro" >
-            <premium-notice />
+        <template v-if="!hasPro">
+            <premium-notice/>
         </template>
         <template v-else-if="!activated_features.external_data_source">
-            <UpgradeNotice />
+            <UpgradeNotice/>
         </template>
 
-        <div class="modal-footer">
+        <div style="margin-top: 20px" class="modal-footer">
             <el-row v-if="!editing">
                 <el-col :md="12">
                     <el-button type="primary" style="float:left" size="small" @click="nextStep">
@@ -92,36 +96,41 @@
                 </el-col>
                 <el-col :md="12" v-if="active_step > 0">
                     <el-button
-                        type="success"
-                        :loading="saving"
-                        @click="save"
-                       :disabled="!activated_features.external_data_source"
-                    >{{ $t('Save') }}</el-button>
+                            style="float: right"
+                            type="success"
+                            size="small"
+                            :loading="saving"
+                            @click="save"
+                            :disabled="!activated_features.external_data_source"
+                    >{{ $t('Save') }}
+                    </el-button>
                 </el-col>
             </el-row>
         </div>
 
         <div style="margin-top: 15px;" v-if="editing">
             <el-input
-                placeholder="Remote URL..."
-                v-model="table.remoteURL"
-                v-on:keyup.enter="fatchRemoteData"
+                    placeholder="Remote URL..."
+                    v-model="table.remoteURL"
+                    v-on:keyup.enter="fatchRemoteData"
             >
                 <el-button
-                    :loading="fetching"
-                    @click="fatchRemoteData"
-                    slot="prepend"
-                    size="small"
-                    plain
-                >{{ $t('Fetch Columns') }}</el-button>
+                        :loading="fetching"
+                        @click="fatchRemoteData"
+                        slot="prepend"
+                        size="small"
+                        plain
+                >{{ $t('Fetch Columns') }}
+                </el-button>
 
                 <el-button
-                    :loading="saving"
-                    @click="save"
-                    slot="append"
-                    size="small"
-                    plain
-                >{{ $t('Update Settings') }}</el-button>
+                        :loading="saving"
+                        @click="save"
+                        slot="append"
+                        size="small"
+                        plain
+                >{{ $t('Update Settings') }}
+                </el-button>
 
             </el-input>
         </div>
@@ -212,25 +221,25 @@
                     type: this.type,
                     get_headers_only: true
                 })
-                .then(res => {
-                    let fields = [];
-                    jQuery.each(res.data, v => fields.push({name: v}));
-                    this.fields = fields;
+                    .then(res => {
+                        let fields = [];
+                        jQuery.each(res.data, v => fields.push({name: v}));
+                        this.fields = fields;
 
-                    if (this.editing) {
-                        let selected = this.columns.map(c => c.original_name);
-                        this.$nextTick(() => {
-                            this.fields.filter(f => selected.indexOf(f.name) != -1).forEach(row => {
-                                this.$refs.rowSelectableTable.toggleRowSelection(row);
+                        if (this.editing) {
+                            let selected = this.columns.map(c => c.original_name);
+                            this.$nextTick(() => {
+                                this.fields.filter(f => selected.indexOf(f.name) != -1).forEach(row => {
+                                    this.$refs.rowSelectableTable.toggleRowSelection(row);
+                                });
                             });
-                        });
-                    }
-                })
-                .fail(res => {
-                    let message = res.responseJSON.data.message.error;
-                    this.$message({showClose: true, message: message, type: 'error'});
-                })
-                .always(res => this.fetching = false);
+                        }
+                    })
+                    .fail(res => {
+                        let message = res.responseJSON.data.message.error;
+                        this.$message({showClose: true, message: message, type: 'error'});
+                    })
+                    .always(res => this.fetching = false);
             },
             handleFieldsSelectionChange(val) {
                 this.table.fields = val;
@@ -242,16 +251,16 @@
                     type: this.type,
                     action: 'ninja_table_external_data_source_create'
                 })
-                .then(({data}) => this.tableCreated(data.ID))
-                .fail(error => {
-                    let message = '';
-                    let messages = error.responseJSON.data.message;
-                    for (let key in messages) {
-                        message += ' ' + messages[key];
-                    }
-                    this.$message({showClose: true, message: message, type: 'error'});
-                })
-                .always(() => this.saving = false);
+                    .then(({data}) => this.tableCreated(data.ID))
+                    .fail(error => {
+                        let message = '';
+                        let messages = error.responseJSON.data.message;
+                        for (let key in messages) {
+                            message += ' ' + messages[key];
+                        }
+                        this.$message({showClose: true, message: message, type: 'error'});
+                    })
+                    .always(() => this.saving = false);
             }
         },
         created() {

@@ -7,7 +7,7 @@
                 Create Your First Table
             </el-button>
 
-            <router-link :to="{ name: 'tools' }">
+            <router-link :to="{ name: 'import_tables' }">
                 <el-button type="info">{{ $t( 'Import From CSV' ) }}</el-button>
             </router-link>
         </div>

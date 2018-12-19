@@ -21,10 +21,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <el-button type="primary" size="small" @click="addTable">
-                <span v-if="table.ID">{{ $t('Update') }}</span>
-                <span v-else>{{ $t('Add') }}</span>
-                <i v-if="btnLoading" class="fooicon fooicon-spin fooicon-circle-o-notch"></i>
+            <el-button :loading="btnLoading" type="primary" size="small" @click="addTable">
+                {{ $t('Update') }}
             </el-button>
         </div>
     </div>
