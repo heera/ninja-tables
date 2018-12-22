@@ -311,9 +311,13 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
         width: 49%;
         padding: 0 15px 0 0;
         float: left;
+        &:last-child {
+          padding-right: 0;
+        }
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
         &:nth-child(2n + 1) {
           clear: both;
@@ -326,12 +330,16 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     thead .footable-filtering th .form-inline {
       > .form-group {
         margin: 0 0 20px;
-        width: 33%;
+        width: 33.3%;
         padding: 0 15px 0 0;
         float: left;
+        &:last-child {
+          padding-right: 0;
+        }
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
         &:nth-child(3n + 1) {
           clear: both;
@@ -347,9 +355,13 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
         width: 24.9%;
         padding: 0 15px 0 0;
         float: left;
+        &:last-child {
+          padding-right: 0;
+        }
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
         &:nth-child(4n + 1) {
           clear: both;

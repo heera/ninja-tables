@@ -156,7 +156,7 @@
         data() {
             return {
                 hasPro: !!window.ninja_table_admin.hasPro,
-                active_menu: 'custom_filters',
+                active_menu: 'columns',
                 table_color_primary: '#000',
                 table_color_secondary: '#fff',
                 tableId: this.$route.params.table_id,

@@ -1,20 +1,24 @@
 <template>
     <div class="ninja_table_edit">
         <div class="ninja_modal-body">
-            <template v-if="!table.ID">
-                <h3>Manually Create a Table</h3>
-                <p class="ninja_subtitle">
-                    Manually create your table columns and rows to get complete
-                    control over your data with tons of customizations.
-                </p>
-            </template>
             <div class="form-group">
-                <label for="name">{{ $t('Table Title') }}</label>
-                <input v-model="table.post_title"
-                       type="text" id="name" class="form-control"
-                       placeholder="Enter a title to identify your table"
-                >
+                <label>{{ $t('Table Title') }}</label>
+                <el-input v-model="table.post_title"
+                          type="text"
+                          size="small"
+                          placeholder="Enter a title to identify your table"
+                />
             </div>
+
+            <div class="form-group">
+                <label>{{ $t('Table Caption') }}</label>
+                <el-input size="small" v-model="table.table_caption"
+                          type="text"
+                          placeholder="Enter a table caption if you want to show"
+                />
+            </div>
+
+
             <div class="form-group">
                 <label>{{ $t('Table Description') }}</label>
                 <wp_editor v-model="table.post_content"></wp_editor>
@@ -44,6 +48,7 @@
                         ID: null,
                         post_title: '',
                         post_content: '',
+                        table_caption: ''
                     }
                 }
             }
@@ -66,6 +71,7 @@
                     target_action: 'store-a-table',
                     post_title: this.table.post_title,
                     post_content: this.table.post_content,
+                    table_caption: this.table.table_caption,
                     tableId: this.table.ID
                 };
                 jQuery.post(ajaxurl, data)

@@ -14,6 +14,10 @@
     <table data-ninja_table_instance="<?php echo $table_instance_name; ?>" <?php echo $foo_table_attributes; ?>
            id="footable_<?php echo intval( $table_id ); ?>"
            class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>">
+        <?php if($tableCaption): ?>
+        <caption><?php echo $tableCaption; ?></caption>
+        <?php endif; ?>
+
         <colgroup>
 			<?php foreach ( $formatted_columns as $index => $column ) : ?>
                 <col class="ninja_column_<?php echo $index . ' ' . $column['breakpoints']; ?> "></col>

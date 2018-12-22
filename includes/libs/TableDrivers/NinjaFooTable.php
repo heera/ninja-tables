@@ -305,9 +305,7 @@ class NinjaFooTable
                 'stackable' => $isStackable,
                 'stacks_devices' => $stackDevices
             );
-
             $extraStackClasses = implode(' ', ArrayHelper::get($settings, 'stacks_appearances', array()));
-
             $table_classes .= ' '.$extraStackClasses;
         }
 
@@ -358,6 +356,8 @@ class NinjaFooTable
         $foo_table_attributes = self::getFootableAtrributes($table_id);
 
         static::addCustomColorCSS($tableArray, $columnContentCss);
+
+        $tableCaption = get_post_meta($table_id, '_ninja_table_caption', true);
 
         include 'views/ninja_foo_table.php';
     }

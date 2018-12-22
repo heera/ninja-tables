@@ -33,7 +33,7 @@
                             <h4>Advanced Table (Legacy)</h4>
                             <div>
                                 <p>
-                                    Use this table if you have small amount of data and need the following features
+                                    Recommended settings for advanced features
                                 </p>
                                 <ul class="ninja_render_features">
                                     <li><span class="dashicons dashicons-yes"></span> Colspan ( Cell-Merge )</li>

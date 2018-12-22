@@ -238,7 +238,10 @@ class NinjaTableClass {
         $this->loader->add_action('wp_ajax_ninja-tables_deactivate_feedback', $showMessageBox, 'broadcastFeedback');
 
 		$this->loadGutenBlock();
-	}
+
+        $this->loader->add_filter( 'plugin_action_links_ninja-tables/ninja-tables.php', $plugin_admin, 'add_plugin_action_links');
+
+    }
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality

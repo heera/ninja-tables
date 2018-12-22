@@ -442,8 +442,14 @@ class NinjaTablesAdmin
             ), 423);
         }
 
+        $postId = intval($_REQUEST['tableId']);
+
+        if(isset($_REQUEST['table_caption'])) {
+            update_post_meta($postId, '_ninja_table_caption', sanitize_text_field($_REQUEST['table_caption']));
+        }
+
         wp_send_json(array(
-            'table_id' => $this->saveTable($postId = intval($_REQUEST['tableId'])),
+            'table_id' => $this->saveTable($postId),
             'message' => __('Table ' . ($postId ? 'updated' : 'created') . ' successfully.', 'ninja-tables')
         ), 200);
     }
@@ -589,6 +595,10 @@ class NinjaTablesAdmin
     {
         $tableId = intval($_REQUEST['id']);
         $table = get_post($tableId);
+
+        if($table) {
+            $table->table_caption = get_post_meta($tableId, '_ninja_table_caption', true);
+        }
 
         wp_send_json(array(
             'data' => $table
@@ -1312,5 +1322,16 @@ class NinjaTablesAdmin
         wp_send_json_success(array(
             'message' => __('Settings successfully updated', 'ninja-tables')
         ), 200);
+    }
+
+    public function add_plugin_action_links($links) {
+
+        if(!defined('NINJATABLESPRO')) {
+            $links[] = '<a style="color: green; font-weight: bold;" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">Go Pro</a>';
+        }
+
+        $links[] = '<a href="'.admin_url('admin.php?page=ninja_tables#/').'">' . __( 'All Tables', 'ninja-tables' ) . '</a>';
+
+        return $links;
     }
 }

@@ -4,7 +4,14 @@
             <h2>CSV Export / Print Button Settings for Frontend</h2>
             <p>You can enable/disable print and csv export settings here</p>
         </div>
-        <div v-loading="fetching" class="ninja_style_wrapper">
+
+        <div style="width: 100%; display: block; padding: 20px" v-if="!hasPro" class="section_block text-center">
+            <h3>Export CSV and Table Print is pro only features. Please purchase <b>"Ninja Tables Pro"</b> to use this feature
+            </h3>
+            <a class="el-button el-button--danger" target="_blank" href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=custom_filters&utm_term=upgrade">Purchase Now</a>
+        </div>
+
+        <div v-else v-loading="fetching" class="ninja_style_wrapper">
             <div style="max-width: 800px" class="section_block">
                 <h3>CSV Export Button Settings</h3>
                 <div class="form_group">
@@ -80,7 +87,7 @@
                     </el-radio-group>
                 </div>
 
-                <div class="form_group">
+                <div v-if="hasPro" class="form_group">
                     <el-button :loading="saving" :disabled="saving" size="small" @click="saveSettings()" type="success">Update Settings</el-button>
                 </div>
             </div>
@@ -116,7 +123,8 @@
                     'ninja_buttons_left': 'Left',
                     'ninja_buttons_center': 'Center',
                     'ninja_buttons_right': 'Right'
-                }
+                },
+                hasPro: !!window.ninja_table_admin.hasPro
             }
         },
         methods: {
