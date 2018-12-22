@@ -287,7 +287,7 @@ class CSVParser {
 			} elseif ( ( $curr_char === $delimiter || "\n" === $curr_char || "\r" === $curr_char ) && ! $enclosed ) {
 				// End of cell (by $delimiter), or end of line (by line break, and not enclosed!).
                 $columnContent = ( $was_enclosed ) ? $cell_content : trim( $cell_content );
-				$row[ $column ] = utf8_encode($columnContent);
+				$row[ $column ] = $columnContent;
 				$cell_content = '';
 				$was_enclosed = false;
 				$column++;

@@ -1,7 +1,6 @@
 import Event from './EventBus';
 import './ninja-tables-footable-custom-event';
-import './FooDateFilter';
-import './_buttons'
+import './_stackable';
 
 jQuery(document).ready(function ($) {
     const ninja_table_app = {
@@ -48,7 +47,6 @@ jQuery(document).ready(function ($) {
                             } else {
                                 valueOrElement = valueOrElement.toString();
                             }
-
                             if (valueOrElement && column.thousandSeparator) {
                                 valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
                             }
@@ -62,13 +60,8 @@ jQuery(document).ready(function ($) {
                             return numberValue;
                         };
                     } else {
-                        column.sortValue = function (valueOrElement) {
-                            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
-                                return jQuery(valueOrElement).text();
-                            } else {
-                                return jQuery('<div>' + valueOrElement + "</div>").text();
-                            }
-                        };
+                        column.sortValue = that.textFilterValue;
+                        column.filterValue = that.textFilterValue;
                         column.type = 'text';
                     }
                     // format the value here
@@ -128,6 +121,13 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
+                if (tableConfig.settings.stack_config && tableConfig.settings.stack_config.stackable) {
+                    $(document).trigger('ninja_table_init_stackables', {
+                        '$table' : $table,
+                        'tableConfig': tableConfig
+                    });
+                }
+
                 $table.on('click', '.ninja_table_do_column_filter', function (e) {
                     e.preventDefault();
                     try {
@@ -151,6 +151,7 @@ jQuery(document).ready(function ($) {
         getNinjaTableConfig(tableConfig) {
             // Prepare Table Init Configuration
             let initConfig = {
+                "toggleColumn": tableConfig.settings.togglePosition,
                 "cascade": true,
                 "columns": tableConfig.columns,
                 "expandFirst": tableConfig.settings.expandFirst,
@@ -198,7 +199,7 @@ jQuery(document).ready(function ($) {
             if (tableConfig.settings.defualt_filter) {
                 let filterColumns = tableConfig.settings.defualt_filter_column;
                 let validColumns = [];
-                if(filterColumns && filterColumns.length) {
+                if (filterColumns && filterColumns.length) {
                     let allColumns = [];
                     jQuery.each(tableConfig.columns, (index, column) => {
                         allColumns.push(column.name);
@@ -219,16 +220,21 @@ jQuery(document).ready(function ($) {
                 "size": tableConfig.settings.paging,
                 "container": "#footable_parent_" + tableConfig.table_id + " .paging-ui-container"
             };
-
             return initConfig;
         },
         onReadyFooTable($table, tableConfig) {
             let cssStyles = tableConfig.custom_css;
+
             jQuery.each(cssStyles, (className, values) => {
                 $table.find('.' + className).css(values);
             });
 
             jQuery(document).trigger('ninja_table_ready_init', {
+                '$table': $table,
+                'tableConfig': tableConfig
+            });
+
+            jQuery(document).trigger('ninja_table_ready_init_table_id_' + tableConfig.table_id, {
                 '$table': $table,
                 'tableConfig': tableConfig
             });
@@ -269,6 +275,13 @@ jQuery(document).ready(function ($) {
             });
             return transValue;
         },
+        textFilterValue(valueOrElement) {
+            if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
+                return jQuery(valueOrElement).text();
+            } else {
+                return jQuery('<div>' + valueOrElement + "</div>").text();
+            }
+        }
     };
     ninja_table_app.initTables();
 });

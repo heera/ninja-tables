@@ -1,7 +1,9 @@
-import { applyFilters, addFilter, addAction, doAction } from '@wordpress/hooks';
-import Vue from 'vue';
+import Vue from './elements';
 import Router from 'vue-router';
 Vue.use(Router);
+
+import { applyFilters, addFilter, addAction, doAction } from '@wordpress/hooks';
+
 export default class NINJATABLE {
     constructor() {
         this.applyFilters = applyFilters;

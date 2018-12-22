@@ -156,7 +156,7 @@
                     },
                     {
                         route: 'additional_css',
-                        title: 'Custom CSS'
+                        title: 'Custom CSS/JS'
                     },
                     {
                         route: 'import-export',

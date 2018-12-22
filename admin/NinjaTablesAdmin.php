@@ -224,6 +224,8 @@ class NinjaTablesAdmin
     {
         if (function_exists('wp_enqueue_editor')) {
             wp_enqueue_editor();
+        }
+        if (function_exists('wp_enqueue_media')) {
             wp_enqueue_media();
         }
 
@@ -348,7 +350,8 @@ class NinjaTablesAdmin
             'duplicate-table' => 'duplicateTable',
             'export-data' => 'exportData',
             'dismiss_fluent_suggest' => 'dismissPluginSuggest',
-            'save_custom_css' => 'saveCustomCSS',
+            'save_custom_css_js' => 'saveCustomCSSJS',
+            'get_custom_css_js' => 'getCustomCSSJS',
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
@@ -357,7 +360,9 @@ class NinjaTablesAdmin
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm',
             'get_default_settings' => 'getDefaultSettings',
-            'save_default_settings' => 'saveDefaultSettings'
+            'save_default_settings' => 'saveDefaultSettings',
+            'get_button_settings' => 'getButtonSettings',
+            'update_button_settings' => 'updateButtonSettings'
         );
 
         $importRoutes = array(
@@ -366,6 +371,7 @@ class NinjaTablesAdmin
             'import-table-from-plugin' => 'importTableFromPlugin',
             'get-tables-from-plugin' => 'getTablesFromPlugin',
         );
+
 
         $requested_route = $_REQUEST['target_action'];
         if (isset($valid_routes[$requested_route])) {
@@ -463,29 +469,39 @@ class NinjaTablesAdmin
         return $postId;
     }
 
-    public function saveCustomCSS()
+    public function saveCustomCSSJS()
     {
         $tableId = intval($_REQUEST['table_id']);
         $css = $_REQUEST['custom_css'];
+        $js = $_REQUEST['custom_js'];
         $css = wp_strip_all_tags($css);
+        $js = wp_unslash($js);
         update_post_meta($tableId, '_ninja_tables_custom_css', $css);
+        update_post_meta($tableId, '_ninja_tables_custom_js', $js);
 
         wp_send_json_success(array(
-            'message' => 'Custom CSS successfully saved'
+            'message' => 'Custom CSS and JS successfully saved'
+        ), 200);
+    }
+
+    public function getCustomCSSJS()
+    {
+        $tableId = intval($_REQUEST['table_id']);
+        wp_send_json_success(array(
+            'custom_css' => get_post_meta($tableId, '_ninja_tables_custom_css', true),
+            'custom_js' => get_post_meta($tableId, '_ninja_tables_custom_js', true),
         ), 200);
     }
 
     public function getTableSettings()
     {
         $table = get_post($tableID = intval($_REQUEST['table_id']));
-
         if (!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
                 'route' => 'home'
             ), 423);
         }
-
         $provider = ninja_table_get_data_provider($table->ID);
 
         $table = apply_filters('ninja_tables_get_table_' . $provider, $table);
@@ -1152,7 +1168,7 @@ class NinjaTablesAdmin
             );
         }
 
-        if($post_types['private']) {
+        if ($post_types['private']) {
             $post_types = array_merge($post_types['public'], $post_types['private']);
         } else {
             $post_types = $post_types['public'];
@@ -1163,17 +1179,18 @@ class NinjaTablesAdmin
         );
     }
 
-    public function getWPPostTypesAuthor() {
+    public function getWPPostTypesAuthor()
+    {
         $authors = array();
-        if(isset($_REQUEST['post_types'])) {
+        if (isset($_REQUEST['post_types'])) {
             $postTypes = ninja_tables_sanitize_array($_REQUEST['post_types']);
-            if($postTypes) {
+            if ($postTypes) {
                 global $wpdb;
                 $postTypes = implode("','", $postTypes);
-                $authors = $wpdb->get_results("SELECT {$wpdb->prefix}users.ID, {$wpdb->prefix}users.display_name FROM {$wpdb->prefix}posts INNER JOIN {$wpdb->prefix}users ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author WHERE {$wpdb->prefix}posts.post_type IN ('".$postTypes."') GROUP BY {$wpdb->prefix}posts.post_author");
+                $authors = $wpdb->get_results("SELECT {$wpdb->prefix}users.ID, {$wpdb->prefix}users.display_name FROM {$wpdb->prefix}posts INNER JOIN {$wpdb->prefix}users ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author WHERE {$wpdb->prefix}posts.post_type IN ('" . $postTypes . "') GROUP BY {$wpdb->prefix}posts.post_author");
             }
         }
-       wp_send_json_success(array(
+        wp_send_json_success(array(
             'authors' => $authors
         ));
     }
@@ -1236,18 +1253,64 @@ class NinjaTablesAdmin
         return activate_plugin($plugin_basename);
     }
 
-    public function getDefaultSettings() {
+    public function getDefaultSettings()
+    {
         $settings = getDefaultNinjaTableSettings();
         wp_send_json_success(array(
             'default_settings' => $settings
         ), 200);
     }
 
-    public function saveDefaultSettings() {
+    public function saveDefaultSettings()
+    {
         $settings = wp_unslash($_REQUEST['default_settings']);
         update_option('_ninja_table_default_appearance_settings', $settings);
         wp_send_json_success(array(
             'message' => __('Settings successfully updated', 'ninja_tables')
+        ), 200);
+    }
+
+    public function getButtonSettings()
+    {
+        $tableId = absint($_REQUEST['table_id']);
+        $tableButtonDefaults = array(
+            'csv' => array(
+                'status' => 'no',
+                'label' => 'CSV',
+                'all_rows' => 'no',
+                'bg_color' => 'rgb(0,0,0)',
+                'text_color' => 'rgb(255,255,255)'
+            ),
+            'print' => array(
+                'status' => 'no',
+                'label' => 'Print',
+                'all_rows' => 'no',
+                'bg_color' => 'rgb(0,0,0)',
+                'text_color' => 'rgb(255,255,255)'
+            ),
+            'button_position' => 'after_search_box',
+            'button_alignment' => 'ninja_buttons_right'
+        );
+
+        $tableButtons = get_post_meta($tableId, '_ninja_custom_table_buttons', true);
+        if (!$tableButtons) {
+            $tableButtons = array();
+        }
+
+        $tableButtons = wp_parse_args($tableButtons, $tableButtonDefaults);
+
+        wp_send_json_success(array(
+            'button_settings' => $tableButtons
+        ));
+    }
+
+    public function updateButtonSettings()
+    {
+        $tableId = absint($_REQUEST['table_id']);
+        $buttonSettings = wp_unslash($_REQUEST['button_settings']);
+        update_post_meta($tableId, '_ninja_custom_table_buttons', $buttonSettings);
+        wp_send_json_success(array(
+            'message' => __('Settings successfully updated', 'ninja-tables')
         ), 200);
     }
 }

@@ -12,7 +12,9 @@
                     </el-radio-button>
                 </el-radio-group>
             </div>
-            <el-button :loading="savingSettings" :disabled="savingSettings" size="small" type="primary" @click="storeSettings()">Update Settings</el-button>
+            <el-button :loading="savingSettings" :disabled="savingSettings" size="small" type="primary"
+                       @click="storeSettings()">Update Settings
+            </el-button>
         </div>
         <div class="ninja_design_wrapper">
             <div v-loading="!app_ready" style="background: white; padding: 10px 20px;" class="design_preview">
@@ -103,7 +105,6 @@
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
-
                             <label v-if="tableLibs[tableSettings.library].supports.ajax" for="enable_ajax">
                                 <input v-model="tableSettings.enable_ajax" type="checkbox" value="1" id="enable_ajax"/>
                                 {{ $t('Enable Ajax Loading') }}
@@ -128,6 +129,49 @@
                             <label><input v-model="tableSettings.hide_all_borders" type="checkbox">
                                 Hide All Borders
                             </label>
+                        </div>
+
+                        <div class="form_group label-normalize">
+                            <h3 class="ninja_inner_title">
+                                Stackable Table Configuration
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="With stackable table, You can show your rows as list item. You can target by device width">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </h3>
+
+                            <div class="form_group">
+                                <el-checkbox true-label="yes" false-label="no" v-model="tableSettings.stackable">Enable
+                                    Stackable Table
+                                </el-checkbox>
+                                <template v-if="tableSettings.stackable == 'yes'">
+                                    <h3 style="margin-top: 15px" class="ninja_inner_title">Target Devices
+                                        <el-tooltip placement="top-end" effect="light"
+                                                    content="Select the device by width in where the stackable tables will be enabled">
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <el-checkbox-group
+                                            v-model="tableSettings.stacks_devices">
+                                        <el-checkbox label="xs">Mobile Device</el-checkbox>
+                                        <el-checkbox label="sm">Tablet Device</el-checkbox>
+                                        <el-checkbox label="md">Laptop</el-checkbox>
+                                        <el-checkbox label="lg">Large Devices (imac)</el-checkbox>
+                                    </el-checkbox-group>
+
+                                    <h3 style="margin-top: 15px" class="ninja_inner_title">Stacked Appearance
+                                        <el-tooltip placement="top-end" effect="light"
+                                                    content="You can customize the appearance in stacked view of your table">
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <el-checkbox-group
+                                            v-model="tableSettings.stacks_appearances">
+                                        <el-checkbox label="hide_stacked_th">Hide column headings</el-checkbox>
+                                        <el-checkbox label="ninja_stacked_no_cell_border">Hide internal borders</el-checkbox>
+                                    </el-checkbox-group>
+                                </template>
+                            </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="Table Colors" name="color_customization">
@@ -327,9 +371,12 @@
                         <div class="form_group">
                             <label>Select Sorting Method</label>
                             <el-radio-group size="mini" v-model="tableSettings.sorting_type">
-                                <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By Created at</el-radio-button>
+                                <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By
+                                    Created at
+                                </el-radio-button>
                                 <el-radio-button label="by_column">By Column</el-radio-button>
-                                <el-radio-button :disabled="!config.table.isSortable" label="manual_sort">Manual Sort</el-radio-button>
+                                <el-radio-button :disabled="!config.table.isSortable" label="manual_sort">Manual Sort
+                                </el-radio-button>
                             </el-radio-group>
                             <div v-if="tableSettings.sorting_type == 'by_created_at'" class="">
                                 <span>{{ $t('Sort Type') }}
@@ -359,7 +406,9 @@
                                     checkbox to sort the data using drag and drop feature</p>
                             </div>
 
-                            <el-button v-if="tableSettings.sorting_type"  size="mini" @click="tableSettings.sorting_type = ''">reset</el-button>
+                            <el-button v-if="tableSettings.sorting_type" size="mini"
+                                       @click="tableSettings.sorting_type = ''">reset
+                            </el-button>
 
                         </div>
 
@@ -385,6 +434,26 @@
                                     Expand All
                                     <el-tooltip placement="top-end" effect="light" content="This will automatically expand all rows of the table when displayed on a device that hides
                             any columns.">
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                </el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <div class="form_group">
+                            <label>{{ $t('Position toggle') }}</label>
+                            <el-radio-group size="mini" v-model="tableSettings.togglePosition">
+                                <el-radio-button label="first">
+                                    First Column
+                                    <el-tooltip placement="top-end" effect="light"
+                                                content="If you use responsive breakdown then the '+' icon will show at the first visible column">
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                </el-radio-button>
+                                <el-radio-button label="last">
+                                    Last Column
+                                    <el-tooltip placement="top-end" effect="light"
+                                                content="If you use responsive breakdown then the '+' icon will show at the last visible column">
                                         <i class="el-icon-info el-text-info"></i>
                                     </el-tooltip>
                                 </el-radio-button>
@@ -495,8 +564,8 @@
                 }
                 classes.push('ninja_table_pro');
 
-                if(this.tableSettings.search_position) {
-                    classes.push('ninja_search_'+this.tableSettings.search_position);
+                if (this.tableSettings.search_position) {
+                    classes.push('ninja_search_' + this.tableSettings.search_position);
                 }
 
                 let table_css_classes = [];
@@ -658,6 +727,15 @@
             },
             activeDesign() {
                 this.checkColorPro();
+            },
+            'tableSettings.stackable'() {
+                if( ! Array.isArray(this.tableSettings.stacks_devices) ) {
+                    this.$set(this.tableSettings, 'stacks_devices', []);
+                }
+
+                if( ! Array.isArray(this.tableSettings.stacks_appearances) ) {
+                    this.$set(this.tableSettings, 'stacks_appearances', []);
+                }
             }
         },
         methods: {
@@ -952,7 +1030,7 @@
             generateDefaultCss() {
                 let columnContentCss = this.config.table.custom_css;
                 this.config.columns.forEach((column, index) => {
-                    if(column.background_color || column.text_color || column.contentAlign) {
+                    if (column.background_color || column.text_color || column.contentAlign) {
                         columnContentCss += `#footable_parent_${this.tableId} thead tr th.ninja_column_${index}, #footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { background-color: ${column.background_color}; color: ${column.text_color}; }`;
                         columnContentCss += `#footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
                     }
@@ -971,9 +1049,9 @@
                 }
             }
 
-            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
-            jQuery(window).on('resize', function(){
-                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');
+            jQuery(window).on('resize', function () {
+                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');
             });
             this.generateDefaultCss();
         }
@@ -994,9 +1072,10 @@
         padding: 0px 20px;
         margin: 0 auto;
     }
+
     .design_preview .footable_parent {
         .footable-header th {
-           // word-break: break-all;
+            // word-break: break-all;
         }
     }
 </style>

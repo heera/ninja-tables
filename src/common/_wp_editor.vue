@@ -11,7 +11,7 @@
                       v-model="plain_content">
             </textarea>
         </template>
-        
+
     </div>
 </template>
 
@@ -42,7 +42,7 @@
         computed: {
           ninja_editor_id() {
               return 'ninja_editor_'+this.slugify(this.editor_id);
-            }  
+            }
         },
         watch: {
             plain_content() {
@@ -63,7 +63,7 @@
                         mediaButtons: this.has_pro,
                         mode : "none",
                         tinymce: {
-                            toolbar1: 'bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,forecolor,codeformat,undo,redo',
+                            toolbar1: 'formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,underline,forecolor,codeformat,removeformat,undo,redo',
                             setup(ed) {
                                 ed.on('change', function (ed, l) {
                                     that.changeContentEvent();
@@ -87,7 +87,7 @@
                     .replace(/-+$/, '');            // Trim - from end of text
             },
             reloadEditor() {
-                wp.editor.remove(this.ninja_editor_id);  
+                wp.editor.remove(this.ninja_editor_id);
                 jQuery('#'+ this.ninja_editor_id).val('');
                 this.initEditor();
             },
@@ -103,10 +103,10 @@
             this.initEditor();
         },
         beforeDestroy() {
-          
+
         }
     }
-</script> 
+</script>
 <style lang="scss">
     button.button.ninja_demo_media_button {
         position: absolute;

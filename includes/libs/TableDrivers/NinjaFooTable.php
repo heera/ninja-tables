@@ -244,6 +244,7 @@ class NinjaFooTable
 
         $configSettings = array(
             'filtering' => $enableSearch,
+            'togglePosition' => ArrayHelper::get($settings, 'togglePosition', 'first'),
             'paging' => $pagingSettings,
             'sorting' => true,
             'default_sorting' => $default_sorting,
@@ -296,6 +297,20 @@ class NinjaFooTable
             $table_classes .= ' ninjatable_hide_header_row';
         }
 
+        $isStackable = ArrayHelper::get($settings, 'stackable', 'no');
+        $isStackable = $isStackable == 'yes';
+        if($isStackable && count( ArrayHelper::get($settings, 'stacks_devices', array()) )) {
+            $stackDevices = ArrayHelper::get($settings, 'stacks_devices', array());
+            $configSettings['stack_config'] = array(
+                'stackable' => $isStackable,
+                'stacks_devices' => $stackDevices
+            );
+
+            $extraStackClasses = implode(' ', ArrayHelper::get($settings, 'stacks_appearances', array()));
+
+            $table_classes .= ' '.$extraStackClasses;
+        }
+
         if (!$enableSearch) {
             $table_classes .= ' ninja_table_search_disabled';
         }
@@ -325,37 +340,19 @@ class NinjaFooTable
             $table_classes .= ' ninja_has_filter';
         }
 
-        $tableButtonDefaults = array(
-            'csv' => array(
-                'status' => 'no',
-                'label' => 'CSV',
-                'all_rows' => 'no'
-            ),
-            'print' => array(
-                'status' => 'no',
-                'label' => 'Print',
-                'all_rows' => 'no'
-            )
-        );
-
-        $tableButtons = get_post_meta($table_id, '_ninja_custom_table_buttons', true);
-        if (!$tableButtons) {
-            $tableButtons = array();
-        }
-        $tableButtons = wp_parse_args($tableButtons, $tableButtonDefaults);
-
         $table_vars = array(
             'table_id' => $table_id,
-            'table_buttons' => $tableButtons,
             'title' => $table->post_title,
             'columns' => $formatted_columns,
             'settings' => $configSettings,
             'render_type' => $renderType,
             'custom_css' => $customCss,
-            'instance_name' => $table_instance_name
+            'instance_name' => $table_instance_name,
+            'table_version' => NINJA_TABLES_VERSION
         );
-        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id);
 
+
+        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id);
 
         self::addInlineVars(json_encode($table_vars, true), $table_id, $table_instance_name);
         $foo_table_attributes = self::getFootableAtrributes($table_id);
@@ -547,7 +544,6 @@ class NinjaFooTable
             $formatted_column['sorted'] = true;
             $formatted_column['direction'] = $settings['sorting_column_by'];
         }
-
         return $formatted_column;
     }
 }

@@ -718,7 +718,7 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
         $data = array(
             'table_id' => $tableId,
             'attribute' => 'value',
-            'value' => json_encode($itemTemp),
+            'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
             'created_at' => $time,
             'updated_at' => $time
         );

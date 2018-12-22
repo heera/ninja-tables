@@ -23,6 +23,11 @@
                             <span>Custom Filters</span>
                         </el-menu-item>
 
+                        <el-menu-item  @click="active_menu = 'button_settings'" index="button_settings">
+                            <i class="dashicons dashicons-images-alt"></i>
+                            <span>Buttons (CSV/Print)</span>
+                        </el-menu-item>
+
                         <el-menu-item  @click="active_menu = 'language_settings'" index="language_settings">
                             <i class="dashicons dashicons-translation"></i>
                             <span>Language Settings</span>
@@ -114,6 +119,10 @@
                     <template v-else-if="active_menu == 'custom_filters'">
                         <ninja-custom-filters :columns="columns" :table_id="tableId"></ninja-custom-filters>
                     </template>
+
+                    <template v-else-if="active_menu = 'button_settings'">
+                        <ninja-button-settings :table_id="tableId" />
+                    </template>
                 </el-main>
             </el-container>
         </div>
@@ -129,6 +138,7 @@
     import NinjaCustomFilters from '../TableFilters/CustomFilter';
     import NinjaLanguageSettings from '../Configarations/_LanguageSettings'
     import NinjaRenderingSettings from '../Configarations/_RenderingSettings'
+    import NinjaButtonSettings from '../Configarations/_buttons'
 
     import { tableLibs } from '../../../data/data'
 
@@ -139,13 +149,14 @@
             ColumnsEditor,
             NinjaCustomFilters,
             NinjaLanguageSettings,
-            NinjaRenderingSettings
+            NinjaRenderingSettings,
+            NinjaButtonSettings
         },
         props: ['config'],
         data() {
             return {
                 hasPro: !!window.ninja_table_admin.hasPro,
-                active_menu: 'columns',
+                active_menu: 'custom_filters',
                 table_color_primary: '#000',
                 table_color_secondary: '#fff',
                 tableId: this.$route.params.table_id,

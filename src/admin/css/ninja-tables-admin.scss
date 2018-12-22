@@ -1149,3 +1149,29 @@ h2.nav-tab-wrapper {
   font-size: 14px;
   color: rgb(128, 128, 128);
 }
+
+.form_row_full {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  .form_row_half {
+    width: 48%;
+    box-sizing: border-box;
+    padding-right: 4%;
+    float: left;
+    display: block;
+    >label {
+      display: block;
+    }
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.el-tooltip__popper {
+  h3,p {
+    margin: 0;
+    padding: 0;
+  }
+}

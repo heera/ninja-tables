@@ -213,7 +213,10 @@
                     .replace(/-+$/, '');            // Trim - from end of text
             },
             getFromSelectionStr(str) {
-                return str.split("\n");
+                if(str) {
+                    return str.split("\n");
+                }
+                return [];
             }
         },
         mounted() {

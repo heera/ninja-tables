@@ -167,6 +167,21 @@
     max-width: 100%;
   }
 
+  tbody tr {
+    td, th {
+      background-color: transparent;
+    }
+    &:nth-child(2n) {
+      td, th {
+        background-color: transparent;
+      }
+    }
+    &:nth-child(2n + 1) {
+      td, th {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
 .footable_parent {
@@ -283,6 +298,9 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
       .ninja_filter_date_from, .ninja_filter_number_from, .ninja_filter_date_to, .ninja_filter_number_to {
         margin-bottom: 5px;
       }
+      .form-group.footable-filtering-search {
+        margin-top: 24px !important;
+      }
     }
   }
 
@@ -365,10 +383,25 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     display: block;
     overflow: hidden;
     clear: both;
-    text-align: right;
+    &.ninja_buttons_left {
+      text-align: left;
+    }
+    &.ninja_buttons_center {
+      text-align: center;
+    }
+    &.ninja_buttons_right {
+      text-align: right;
+    }
+    &.after_search_box {
+      margin-top: 10px;
+    }
+    &.before_table {
+      margin-bottom: 10px;
+    }
     .ninja_button {
       border-radius: 0;
-      border-right: 1px solid rgb(222, 222, 223);
+      border-right: 1px solid;
+      padding: 5px 10px;
       &:last-child {
         border-right: none;
       }

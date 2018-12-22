@@ -1,7 +1,7 @@
 <template>
     <div v-loading="loading" element-loading-text="Loading Editor...">
         <div class="ace_container">
-            <div class="ninja_custom_css_editor" id="ninja_custom_css">{{ value }}</div>
+            <div class="ninja_custom_css_editor" id="ninja_custom_js">{{ value }}</div>
         </div>
         <div  class="editor_errors" :class="'ninja_'+mode+'_errors'">
             <span v-show="editorError" style="text-align: right; display: inline-block; color: #ff7171; float: right">{{ editorError }}</span>
@@ -10,7 +10,7 @@
 </template>
 <script type="text/babel">
     export default {
-        name: 'ninja_ace_editor',
+        name: 'ninja_ace_editor_js',
         props: ['value', 'mode', 'editor_id'],
         data() {
             return {
@@ -33,7 +33,7 @@
                 ace.config.set("workerPath", this.ace_path);
                 ace.config.set("modePath", this.ace_path);
                 ace.config.set("themePath", this.ace_path);
-                let editor = ace.edit('ninja_custom_css');
+                let editor = ace.edit('ninja_custom_js');
                 editor.setTheme("ace/theme/monokai");
                 editor.session.setMode("ace/mode/"+this.mode);
                 editor.getSession().on("changeAnnotation", () => {
