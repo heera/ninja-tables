@@ -1,7 +1,7 @@
 const mix = require('laravel-mix');
 const exec = require('child_process').exec;
 const min = '';
-const assetVersion = '2.3.4';
+const assetVersion = '3.1.0';
 mix.setPublicPath('assets');
 mix.setResourceRoot('../');
 
@@ -9,7 +9,7 @@ mix.setResourceRoot('../');
 // return;
 
 mix.js('src/admin/Boot.js', `assets/js/ninja-tables-boot.js`)
-    .js('src/admin/main.js', `assets/js/ninja-tables-admin.js`)
+    .js('src/admin/main.js', `assets/js/ninja-tables-admin.${assetVersion}.js`)
     .js('src/public/js/ninja-tables-footable.js', `assets/js/ninja-tables-footable.${assetVersion}.js`)
     .js('src/admin/ninja-table-tinymce-button.js', `assets/js/ninja-table-tinymce-button.js`)
     .sass('src/public/css/_public.scss', `assets/css/ninjatables-public.css`)

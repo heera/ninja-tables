@@ -49,6 +49,10 @@
                     </table>
                 </div>
                 <div class="ninja_demo_disclaimer">
+                    <hr />
+                    <p v-if="tableSettings.stackable == 'yes'">
+                        <b>For Stackable Tables, Live preview is disabled here. Please check on preview url</b>
+                    </p>
                     <p>
                         <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10
                         items if you enable paginate. Also note that, The table style may differ at the frontend as your
@@ -141,8 +145,8 @@
                             </h3>
 
                             <div class="form_group">
-                                <el-checkbox true-label="yes" false-label="no" v-model="tableSettings.stackable">Enable
-                                    Stackable Table
+                                <el-checkbox true-label="yes" false-label="no" v-model="tableSettings.stackable">
+                                    Enable Stackable Table
                                 </el-checkbox>
                                 <template v-if="tableSettings.stackable == 'yes'">
                                     <h3 style="margin-top: 15px" class="ninja_inner_title">Target Devices
@@ -441,7 +445,7 @@
                         </div>
 
                         <div class="form_group">
-                            <label>{{ $t('Position toggle') }}</label>
+                            <label>{{ $t('Toggle Position') }}</label>
                             <el-radio-group size="mini" v-model="tableSettings.togglePosition">
                                 <el-radio-button label="first">
                                     First Column
@@ -662,23 +666,18 @@
                     this.reInitFootables();
                 }
             },
-            showingDevice() {
-                this.$nextTick(() => {
-                    this.reInitFootables();
-                });
+            tableSettings: {
+                handler(val) {
+                    this.$nextTick(() => {
+                        this.generateColorCss();
+                    });
+                },
+                deep: true
             },
             tableClasses: {
                 handler(val) {
                     this.$nextTick(() => {
                         this.reInitFootables();
-                    });
-                },
-                deep: true
-            },
-            tableSettings: {
-                handler(val) {
-                    this.$nextTick(() => {
-                        this.generateColorCss();
                     });
                 },
                 deep: true
@@ -694,6 +693,11 @@
                 });
             },
             'tableSettings.show_all'() {
+                this.$nextTick(() => {
+                    this.reInitFootables();
+                });
+            },
+            'tableSettings.togglePosition'() {
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });
@@ -732,7 +736,6 @@
                 if( ! Array.isArray(this.tableSettings.stacks_devices) ) {
                     this.$set(this.tableSettings, 'stacks_devices', []);
                 }
-
                 if( ! Array.isArray(this.tableSettings.stacks_appearances) ) {
                     this.$set(this.tableSettings, 'stacks_appearances', []);
                 }
@@ -787,7 +790,6 @@
                         this.savingSettings = false;
                     });
             },
-
             filterTableSettings(settings) {
                 let validStyles = [];
                 forEach(this.availableStyles, (style) => {
@@ -797,7 +799,6 @@
 
                 return settings;
             },
-
             reInitFootables() {
                 if (!this.app_ready) {
                     return;
@@ -813,61 +814,19 @@
                 jQuery('#footable_' + this.tableId).append(this.tableInnerHtml);
                 this.initFootables();
             },
-
             initFootables() {
-                if (this.footableLoading) {
+                if (this.footableLoading || !this.script_loaded) {
                     return;
                 }
+
+                console.log('init_tables');
+
                 this.footableLoading = true;
-
-                let paginateStatus = true;
-                if (this.tableSettings.show_all == 'true' || this.tableSettings.show_all == '1') {
-                    paginateStatus = false;
-                }
-                let perPage = 10;
-                if (this.tableSettings.perPage < 10) {
-                    perPage = this.tableSettings.perPage;
-                }
-
-                let isParentWidth = false;
-                if (this.showingDevice != 'desktop') {
-                    isParentWidth = true;
-                }
-                let initConfig = {
-                    "columns": this.formattedColumns,
-                    "cascade": false,
-                    "useParentWidth": isParentWidth,
-                    "expandFirst": this.tableSettings.expand_type == 'expandFirst',
-                    "expandAll": this.tableSettings.expand_type == 'expandAll',
-                    sorting: {
-                        enabled: !!this.tableSettings.column_sorting
-                    },
-                    filtering: {
-                        "enabled": !!this.tableSettings.enable_search,
-                        "delay": 1,
-                        "connectors": false,
-                        "ignoreCase": true
-                    },
-                    paging: {
-                        "enabled": paginateStatus,
-                        "size": perPage,
-                        "container": "#footable_parent_" + this.tableId + " .paging-ui-container"
-                    }
-                };
+                let NinjaTableApp = window.ninjaTableApp;
                 let $table = jQuery('#footable_' + this.tableId);
-                $table.footable(initConfig);
-                this.generateColorCss();
+                NinjaTableApp.initTable($table, this.getTableConfig());
                 this.footableLoading = false;
-                jQuery("td:contains('#colspan#')").remove();
-
-                this.config.columns.forEach((column, index) => {
-                    $table.find('th.ninja_column_' + index)
-                        .css('text-align', column.textAlign)
-                        .css('width', column.width + 'px');
-                });
-
             },
-
             dysel(options) {
                 // get options
                 var links = options.links;
@@ -1036,6 +995,36 @@
                     }
                 });
                 jQuery('#ninja_table_designer_common_css').html(columnContentCss);
+            },
+            getTableConfig() {
+                let custom_css = {};
+                this.config.columns.forEach((column, index) => {
+                    console.log(column);
+                    custom_css['ninja_column_'+index] = {
+                        'text-align':column.textAlign,
+                        'width' : column.width+'px'
+                    };
+                });
+                return {
+                    columns: this.formattedColumns,
+                    custom_css: custom_css,
+                    settings: {
+                        default_sorting: 'new_first',
+                        defualt_filter: false,
+                        defualt_filter_column: null,
+                        expandAll:  this.tableSettings.expand_type === "expandAll",
+                        expandFirst: this.tableSettings.expand_type === "expandFirst",
+                        filtering: !!this.tableSettings.enable_search,
+                        i18n: {},
+                        use_parent_width: this.showingDevice !== 'desktop',
+                        sorting: !!this.tableSettings.column_sorting,
+                        togglePosition: this.tableSettings.togglePosition
+                    },
+                    render_type: 'legacy_table',
+                    instance_name: 'ninja_table_instance_0',
+                    table_id: this.table_id,
+                    title: ''
+                };
             }
         },
         mounted() {
@@ -1048,7 +1037,6 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
-
             jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');
             jQuery(window).on('resize', function () {
                 jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');

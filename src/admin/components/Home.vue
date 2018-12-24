@@ -7,7 +7,7 @@
                 {{ menuItem.title }}
             </router-link>
 
-            <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="ninja-tab buy_pro_tab">Buy Pro</a>
+            <a v-if="!has_pro" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank" class="ninja-tab buy_pro_tab">Upgrade To Pro</a>
         </div>
 
         <router-view :has-pro="has_pro"></router-view>

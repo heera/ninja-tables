@@ -241,7 +241,7 @@ class NinjaTablesAdmin
 
         wp_enqueue_script(
             $this->plugin_name,
-            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin.js",
+            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin.".NINJA_TABLES_ASSET_VERSION.".js",
             array('jquery'),
             $this->version,
             true
@@ -312,6 +312,7 @@ class NinjaTablesAdmin
             'preview_required_scripts' => array(
                 plugin_dir_url(__DIR__) . "assets/css/ninjatables-public.css",
                 plugin_dir_url(__DIR__) . "public/libs/footable/js/footable.min.js",
+                plugin_dir_url(__DIR__) . "assets/js/ninja-tables-footable.".NINJA_TABLES_ASSET_VERSION.".js",
             ),
             'activated_features' => apply_filters('ninja_table_activated_features', array(
                 'default_tables' => true,
@@ -1276,7 +1277,7 @@ class NinjaTablesAdmin
         $settings = wp_unslash($_REQUEST['default_settings']);
         update_option('_ninja_table_default_appearance_settings', $settings);
         wp_send_json_success(array(
-            'message' => __('Settings successfully updated', 'ninja_tables')
+            'message' => __('Settings successfully updated', 'ninja-tables')
         ), 200);
     }
 

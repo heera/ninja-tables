@@ -124,7 +124,7 @@ class NinjaTableImport
         if (!in_array($_FILES['file']['type'], $mimes)) {
             wp_send_json_error(array(
                 'errors' => array(),
-                'message' => __('Please upload valid CSV', 'ninja_tables')
+                'message' => __('Please upload valid CSV', 'ninja-tables')
             ), 423);
         }
 
@@ -140,7 +140,7 @@ class NinjaTableImport
         if ($csvParser->error) {
             wp_send_json_error(array(
                 'errors' => array_values(array_slice($csvParser->error_info, 0, 5)),
-                'message' => __('Something is wrong when parsing the csv', 'ninja_tables')
+                'message' => __('Something is wrong when parsing the csv', 'ninja-tables')
             ), 423);
         }
 

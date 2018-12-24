@@ -299,6 +299,7 @@ class NinjaFooTable
 
         $isStackable = ArrayHelper::get($settings, 'stackable', 'no');
         $isStackable = $isStackable == 'yes';
+
         if($isStackable && count( ArrayHelper::get($settings, 'stacks_devices', array()) )) {
             $stackDevices = ArrayHelper::get($settings, 'stacks_devices', array());
             $configSettings['stack_config'] = array(
@@ -348,7 +349,6 @@ class NinjaFooTable
             'instance_name' => $table_instance_name,
             'table_version' => NINJA_TABLES_VERSION
         );
-
 
         $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id);
 

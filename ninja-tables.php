@@ -33,8 +33,8 @@ if (!defined('WPINC')) {
 define('NINJA_TABLES_DIR_URL', plugin_dir_url(__FILE__));
 define('NINJA_TABLES_DIR_PATH', plugin_dir_path(__FILE__));
 define('NINJA_TABLES_PUBLIC_DIR_URL', NINJA_TABLES_DIR_URL.'public/');
-define('NINJA_TABLES_VERSION', '3.0.6');
-define('NINJA_TABLES_ASSET_VERSION', '2.3.4');
+define('NINJA_TABLES_VERSION', '3.1.0');
+define('NINJA_TABLES_ASSET_VERSION', '3.1.0');
 
 $ninja_table_instances = array();
 /**

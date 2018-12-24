@@ -275,6 +275,9 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
           display: block;
           font-weight: bold;
         }
+        &.ninja_reset_wrapper {
+          margin-top: 24px;
+        }
         .input-group {
           width: 100%;
           .input-group-btn {
