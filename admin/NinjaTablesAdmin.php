@@ -312,6 +312,7 @@ class NinjaTablesAdmin
             'preview_required_scripts' => array(
                 plugin_dir_url(__DIR__) . "assets/css/ninjatables-public.css",
                 plugin_dir_url(__DIR__) . "public/libs/footable/js/footable.min.js",
+                plugin_dir_url(__DIR__) . "public/libs/moment/moment.min.js",
                 plugin_dir_url(__DIR__) . "assets/js/ninja-tables-footable.".NINJA_TABLES_ASSET_VERSION.".js",
             ),
             'activated_features' => apply_filters('ninja_table_activated_features', array(

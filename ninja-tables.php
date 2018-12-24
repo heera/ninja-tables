@@ -16,7 +16,7 @@
  * Plugin Name:       Ninja Tables
  * Plugin URI:        https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
  * Description:       The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles.
- * Version:           3.0.6
+ * Version:           3.1.0
  * Author:            WPManageNinja
  * Author URI:        https://wpmanageninja.com/
  * License:           GPL-2.0+

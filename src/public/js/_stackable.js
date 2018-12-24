@@ -16,9 +16,6 @@ jQuery(document).on('ninja_table_init_stackables', function (e, data) {
                 return;
             }
             e.preventDefault();
-
-            console.log('called');
-
             selfArg.__hidden__ = FooTable.arr.map(selfArg.cells, function (cell) {
                 return cell.column.visible ? cell : null;
             });

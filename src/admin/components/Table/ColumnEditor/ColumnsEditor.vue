@@ -56,7 +56,7 @@
                         </el-tooltip>
                     </template>
 
-                    <el-select size="mini" v-model="model.data_type" placeholder="Select Responsive Breakpoint">
+                    <el-select size="mini" v-model="model.data_type" placeholder="Select Data Type of this column">
                         <el-option
                                 v-for="(typeName, typeKey) in dataTypesOptions"
                                 :key="typeKey"

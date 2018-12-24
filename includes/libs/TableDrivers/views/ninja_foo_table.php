@@ -6,7 +6,7 @@
 	<?php endif; ?>
 	<?php if ( isset( $settings['show_description'] ) && $settings['show_description'] ) : ?>
 		<?php do_action( 'ninja_tables_before_table_description', $table ); ?>
-        <div class="table_description footable_description"><?php echo wp_kses_post( $table->post_content ); ?></div>
+        <div class="table_description footable_description"><?php echo do_shortcode(wp_kses_post( $table->post_content )); ?></div>
 		<?php do_action( 'ninja_tables_after_table_description',
 			$table ); ?>
 	<?php endif; ?>
@@ -17,7 +17,6 @@
         <?php if($tableCaption): ?>
         <caption><?php echo $tableCaption; ?></caption>
         <?php endif; ?>
-
         <colgroup>
 			<?php foreach ( $formatted_columns as $index => $column ) : ?>
                 <col class="ninja_column_<?php echo $index . ' ' . $column['breakpoints']; ?> "></col>

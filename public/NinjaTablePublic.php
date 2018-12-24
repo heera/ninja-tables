@@ -112,7 +112,8 @@ class NinjaTablePublic
     {
         $shortCodeDefaults = array(
             'id' => false,
-            'filter' => false
+            'filter' => false,
+            'use_parent_width' => false
         );
 
         $shortCodeDefaults = apply_filters('ninja_tables_shortcode_defaults', $shortCodeDefaults);
@@ -143,6 +144,8 @@ class NinjaTablePublic
         if (!$tableSettings || !$tableColumns) {
             return;
         }
+
+        $tableSettings['use_parent_width'] = $use_parent_width;
 
         if (isset($tableSettings['columns_only']) && is_array($tableSettings['columns_only'])) {
             $showingColumns = $tableSettings['columns_only'];

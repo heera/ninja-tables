@@ -265,6 +265,7 @@ class NinjaFooTable
             'shouldNotCache' => isset($settings['shouldNotCache']) ? $settings['shouldNotCache'] : false,
             'skip_rows' => ArrayHelper::get($settings, 'skip_rows', 0),
             'limit_rows' => ArrayHelper::get($settings, 'limit_rows', 0),
+            'use_parent_width' => ArrayHelper::get($settings, 'use_parent_width', false),
         );
 
         $table_classes = self::getTableCssClass($settings);

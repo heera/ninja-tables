@@ -1,88 +1,84 @@
 === Ninja Tables - WP Data Tables Plugin for WordPress ===
 Contributors: techjewel, adreastrian, heera, wpmanageninja
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data
+Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data, Footable Plugin, Tablular Data, Product Table, stackable table
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
-Tested up to: 4.9.8
-Stable tag: 3.0.6
+Tested up to: 5.0.2
+Stable tag: 3.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WP Responsive Data Tables Builder Plugin. Build Table with drag-&-drop live table builder, csv data. No.1 Table Plugin, Build Table without writing any code.
+No.1 Table Plugin for WordPress with beautiful, fast and amazing responsive table features and fully drag and drop
 
 == Description ==
 
-[Details Features](https://wpmanageninja.com/ninja-tables/) | [Youtubude Video Tutorials](https://www.youtube.com/watch?v=-s0Gi39gOhE&t=0s&index=2&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL)  | [Demo](https://wpmanageninja.com/docs/ninja-tables/configure-tables/) | [User Guide](https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/)
+[Details Features](https://wpmanageninja.com/ninja-tables/) | [Youtubude Video Tutorials](https://www.youtube.com/watch?v=-s0Gi39gOhE&t=0s&index=2&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL)  | [Demo](https://wpmanageninja.com/ninja-tables/use-case/) | [User Guide](https://wpmanageninja.com/docs/ninja-tables)
 
-Ninja Tables is the most advanced, and modern Table builder plugin for WordPress. You can easily build any type of HTML tables with it's powerful builder where you can specify how it will look on different devices. You don't need to know any HTML or CSS at all.
-With this Table plugin, You can create WP Data Tables easily out of the box and show thousands of table rows easily. We made the plugin very efficient so it will not slow down your site.
+Have you ever tried to add tables on your WordPress site? Then, you definitely know how tough it is to do the customized design for your tables. Let alone importing or exporting your large tables or making the table responsive!
 
-== For Online Preview and Detailed Documentation Please <a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/" target="blank">Check Online Demo Here</a> ==
+Meet **Ninja Tables** that comes with all the solutions of the problems you face while creating tables on your posts/pages. **Ninja Tables** will give you an experience of making tables with any possible ways you can ever think of. Whatever you can think of with **Ninja Tables**, you can do it without writing a single line of code!  The best part is, **Ninja Tables** won't make your website a little bit slow even you have thousands of data on your table! You can create and manage tables from the admin panel quickly, effectively and easily.
 
-== The Easiest Responsive Table Plugin on WordPress ==
-Quickly create responsive HTML tables to show thousands of data on your site, It's powerful search and ajax features will help your users to filter data easily. Comes with the best frontend table styles like Footables, Bootstrap 3, Bootstrap 4, Symmetric UI.
+If you want to try our **Ninja Tables** Plugin without installing you can try from this [demo page.](https://wpmanageninja.com/ninja-tables/use-case/) You can watch the usage demo on [YouTube](https://www.youtube.com/watch?v=YVK-4PSAbXw) too.
 
-== Live Video Preview ==
-[youtube https://www.youtube.com/watch?v=YVK-4PSAbXw]
+== Live Preview ==
+[youtube https://www.youtube.com/watch?v=-s0Gi39gOhE&t=0s&index=2&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL]
 
+If you have tried the demo, you can clearly understand how fast and dynamic the tables can be. That's why we call our **Ninja Tables** The Easiest Table Plugin on WordPress that comes with most advanced frontend table styles, for example, Footables, Bootstrap 3, Bootstrap 4, Symmetric UI etc. Ninja Table is perfect for your product list view, make order forms, wholesale WooCommerce products and product catalogues. If you want to add pagination, sorting or filtering on your tables, Ninja Tables is perfect for you. Our Ninja Table is SEO friendly and all the contents of the table can be picked by the search engines.
 
-== (NEW) WP Fluent Form Integration ==
-From version 3.0.0, we have added WP Fluent Form integration where you can show your form entries easily with Ninja Tables.
-WP Fluent Form is a fantastic form builder plugin where you can build forms using drag and drop builder. Lots of users wanted this integration so we did it. Please check the following video:
-[youtube https://www.youtube.com/watch?v=XxBrmuhu6yQ]
+### Ninja Table Features
+If you are worried about table styling I would say brace yourself because we are giving you the freedom to choose styles from 100+ tables styles.
 
-== 100+ Table Styles ==
-NinjaTables shipped with 3 most popular CSS library with multiple color schema and table style.
-Here are few styling options you can choose or mix different styles for a table:
-<ul><li>Single Line Cells</li>
-<li>Fixed Layout </li>
-<li>Hover rows </li>
-<li>Bordered table </li>
-<li>Table Inverse </li>
-<li>Striped rows </li>
-<li>Compact Table </li>
-<li>RTL Support</li>
-<li>Data Tables</li>
-<li>Foo Tables</li>
-</ul>
+We also have 3 most popular CSS libraries with unlimited color schema! The most featured styles of Ninja Tables are as follow.
 
-**with Unlimited color schema**
+- Single Line Cells
+- Fixed Layout
+- Hover rows
+- Bordered table
+- Table Inverse
+- Striped rows
+- Compact Table
+- RTL Support
+- Data Tables
+- Foo Tables
+- Bootstrap 3 Table Styles
+- Bootstrap 4 Table Styles
+- Semantic UI Table Styles
 
-== It’s Blazing Fast! ==
-Ninja Tables works on everything from a single page. The backend is built on VueJS and VueRouter as SPA so the experience will be smooth. From creating a table to configuring settings or add entries, importing from CSV, re-arranging columns everything feels real time. No delay - because your time is precious! The frontend table rendering is even faster with minimal js and css load, The frontend data load using ajax so it can handle thousands of table rows without affecting your page load time.
+### Ninja Table is blazingly fast!
+We care about the developers and the users. We know other plugins receive a high amount of complaints about the speed of rendering of the tables. But Ninja Tables never has the issue of loading or rendering data both on frontend and backend! Ninja Table's backend is built on VueJs and VueRouter as SPA! That is the main reason why Ninja tables users get the smooth experience of creating tables, configuring settings, adding entries, importing from CSVs, rearranging columns etc in like less time than a blink of an eye! The frontend of the tables is even faster! We use minimal JS and CSS to load the table while we do have the AJAX with our tables so our tables can handle thousands of data without affecting the page load! Another improtant part is, the css and js files will be loaded only in the page where you add ninja tables shortcode.
 
-== Whole New Design Studio! ==
-We are very excited to introduce design studio for table design. Now you can configure the settings visually and real-time you can see the changes on your table. Without writing a single line of CSS you can set any color to table components. Also, You can see how your tables will look in different devices sizes. Give a try and let us know what do you think about the new updates.
+### Ninja Tables got an Amazing Editing Environment
 
-== Easy Configuration Option ==
+We have introduced the finest feature you can ever get for editing a table which is a design studio for customizing and styling your tables with the most realtime visual changes you can see while editing and making your tables! With our Design Studio, you can set colors to the table components or do customize anything without even writing a single line of CSS! If you are worried about the responsiveness of your tables, you can visually see how your tables will look like on various devices from the design studio. [Here](https://www.youtube.com/watch?v=GG2sVd6JMtE&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL&index=4) is a quick view of how you can customize your tables with the Design Studio.
+
+### Ninja Tables are responsive
+It is hard to believe that we have made all types of tables responsive! Yes, we did that critical task f making all the tables responsive for mobile devices by placing in-row expandable areas! You can control which columns you want to show what kind of device form our design studio. The amazing part is, the searching, paginations, sorting and all other features also work on the mobile devices! Trust me it is tough for the common users! Here is a demo for you. [youtube https://www.youtube.com/watch?v=HLdl6PANTII&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL&index=3]
+
+In version 3.1.0 we have introduced <b>Stackable Table UI</b> where you can show each row as list view for mobile and table. Please check screenshot-2
+
+### Configure Your Ninja Tables Easily
 Design Table columns and configure responsive breakpoints is faster with our user-friendly column builder that lets you re-arrange the columns easily. Also, You can specify the data type for each column like single line text, text area or HTML area where you will get WYSIWYG HTML editor.
 
-== Mobile Responsive Tables ==
-Rendering tables in all devices are critical. Ninja Tables will solve this problem by placing certain columns in-row expandable area. You can control which columns will show in which devices easily and visually. Also, Ninja Tables have real-time sorting, pagination, searching features and it works on all devices.
+### Exporting and Importing Tables Data
+I know how hard it is to type all the table data if you lose them. Millions of words need to be typed unless you have the export-import support for your tables! Surprisingly we have the best export and import features for our tables. You can export the table data into CVS or JSON format for importing later. If you are a TablePress Plugin / Ultimate Table Plugin / Supsystic Plugin user, you can also import the table data to Ninja Tables in just one single click!
 
-== Export and Import Data ==
-You can export your table in CSV or JSON format and save them in a safe place or you can take your table data and use them in any other program. So, your data will always be portable and safe. In the same way, You can import any table from CSV, JSON data source.
+**Import From TablePress Plugin**
+If you already have tables build with TablePress Plugin then You can easily transfer the tables with one single click per table. We made the process very easy so You can enjoy the modern table experience and build your tables in no time.
 
-== Import From TablePress Plugin ==
-If You already have tables build with TablePress Plugin then You can easily transfer the tables with one single click per table. We made the process very easy so You can enjoy the modern table experience and build your tables in no time.
+**Import From Ultimate Tables Plugin**
+If you use Ultimate Tables plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Ultimate Tables from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select “Ultimate Tables” that will show all the Ultimate Tables. With a single click, you can transfer any table to Ninja Tables.
 
-== Import From ULTIMATE TABLES Plugin ==
-If you use ULTIMATE TABLES plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer ULTIMATE TABLES from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Ultimate Tables" that will show all the Ultimate Tables. With a single click you can transfer any table to Ninja Tables.
+**Import From Data Tables Generator By Supsystic Plugin**
+If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Data Tables Generator by Supsystic from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select “Data Tables Generator by Supsystic” that will show all the Supsystic Tables. With a single click, you can transfer any table to Ninja Tables.
 
-== Import From Data Tables Generator by Supsystic Plugin ==
-If you use Data Tables Generator by Supsystic plugin and want to Ninja Tables then We made this process easier for you. Now You can transfer Data Tables Generator by Supsystic from Ninja Tables -> Import a Table -> Import From Other WP Table Plugin and select "Data Tables Generator by Supsystic" that will show all the Supsystic Tables. With a single click you can transfer any table to Ninja Tables.
+### (What's New on 3.0.0) WP Fluent Form Integration
+If you are familiar with our another extremely useful plugin **[Fluent Form,](https://wordpress.org/plugins/fluentform/)** you will be happy to know that we have recently integrated WP Fluent Form to our **Ninja Tables**! We got lots of support messages about integrating Fluent Forms to Ninja Tables and we did that! You can now build your forms and add them to your tables! Yes, we just have opened the new era of customizing tables in the most amazing way! You may watch the following video to know more about the latest feature.
+[youtube https://www.youtube.com/watch?v=XxBrmuhu6yQ]
 
-== Create WordPress Data Tables in a minute ==
-With Ninja Tables, You can create Data Tables with thousands of rows easily. No Coding required. With our powerful drag and drop features, You can do it easily. It will take less than few minutes.
+### Build Any Type of Table
+You can build any type of table using Ninja Tables. Our Users already build various types of tables using this responsive table plugin.
 
-== <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/" target="blank">Try Pro Add-On</a> ==
-
-== Usage ==
-To show one of your tables in a post, on a page, or in a text widget, just embed the Shortcode [ninja_tables id="TABLE_ID"] into the post/page/text widget, where <TABLE_ID> is the ID of your table (can be found on the “All Tables” screen.)
-
-== Build Any Type of Table ==
-You can build any type of table using Ninja Tables. Our Users already build various type of tables using this resposive table plugin.
 <ul><li>Data Tables</li>
 <li>Pricing Table</li>
 <li>Amazon Affiliate Product Table</li>
@@ -94,35 +90,31 @@ You can build any type of table using Ninja Tables. Our Users already build vari
 <li>Sports Team Member Table with Image</li>
 <li>Any Type of Data that need to be shown as tabular format</li></ul>
 
-== Blazing Fast Frontend Table Rendering ==
-We have optimized this plugin for last 1 year and we made the plugin feature rich but we did not compromise with you page speed. Ninja Table only load the scripts and styles on the pages where you inserted the shortcode. That means you site will not be slow. Our ajax technique load your thousanads of row withour slowing down your site. Our frontend javascript file is less than 4KB ( It's true ). We are continuing improve this plugin so you may contribute by giving us suggession and what do you think about this plugin anytime. Our engineers will get back to you as soon as possible.
+### Blazing Fast Frontend Table Rendering
+We have optimized this plugin for last 1 year and we made the plugin feature rich but we did not compromise with you page speed. Ninja Table only loads the scripts and styles on the pages where you inserted the shortcode. That means your site will not be slow. Our ajax technique load your thousands of row without slowing down your site. Our frontend javascript file is less than 4KB ( It's true ). We are continuing to improve this plugin so you may contribute by giving us suggestions and what do you think about this plugin anytime. Our engineers will get back to you as soon as possible.
 
-== Awesome Support ==
-Get dedicated support from our awesome happiness managers and developers and Yes! It's completely free.
+### Awesome Support
+Get dedicated support from our awesome happiness managers and developers and Yes! It's **completely free**. All you need to do is create a support ticker from here: https://wpmanageninja.com/support-tickets/ . Within a few hours (maximum), your problems will be solved. You can also request any features you want by creating the support tickets.
 
-== Let Us Know What Do You Think ==
-We always hear our users. We have a dedicated support team. We try to integrate features that our users want. Please let us know your feedback and we will get back to you as soon as possible.
+### Let Us Know What Do You Think
+We always hear our users. We have a dedicated support team. We try to integrate features that our users want. Please let us know your feedback and we will get back to you **as soon as possible**.
 
 == Documentation with Video ==
-<ul><li><a href="https://wpmanageninja.com/ninja-tables/?utm_source=ninja-tables-wp-repo" target="_blank">Home Page</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/getting-started/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Introduction</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/demo/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Demo</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/setting-up-a-table/?utm_source=ninja-tables-wp-repo" target="_blank">Setting up a Table</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables-wp-repo" target="_blank">Configure Responsive Breakdowns for Table</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table Data from CSV</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/export-data/?utm_source=ninja-tables-wp-repo" target="_blank">Export Data from a Table</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/export-data/?utm_source=ninja-tables-wp-repo" target="_blank">Export Data from a Table</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-csv/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from CSV</a></li>
+<li><a href="https://wpmanageninja.com/ninja-tables/use-case/?utm_source=ninja-tables-wp-repo" target="_blank">Ninja Tables Demo</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/getting-started-with-ninja-tables/setting-up-a-table/?utm_source=ninja-tables-wp-repo" target="_blank">Setting up a Table</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/configuring-tables/configure-responsive-breakdowns-for-table/?utm_source=ninja-tables-wp-repo" target="_blank">Configure Responsive Breakdowns for Table</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/designing-tables/visual-table-styling/?utm_source=ninja-tables-wp-repo" target="_blank">Visual Table Styling</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/import-export/import-table-data-from-csv/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from CSV</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/export-data/?utm_source=ninja-tables-wp-repo" target="_blank">Export Data from a Table</a></li>
 <li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-json-file/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from JSON file</a></li>
-<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-table-press-plugin/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from Table Press Plugin</a></li></ul>
-
+<li><a href="https://wpmanageninja.com/r/docs/ninja-tables/import-table-from-table-press-plugin/?utm_source=ninja-tables-wp-repo" target="_blank">Import Table from Table Press Plugin</a></li>
+<li><a href="https://wpmanageninja.com/docs/ninja-tables/integrations/wp-fluent-form-integration/?utm_source=ninja-tables-wp-repo" target="_blank">WP Fluent Form Integration with Ninja Tables</a></li></ul>
 
 == Try Best Contact From Builder Plugin Too ==
 [WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
 
 
 So, give this plugin a try and check the awesome powerful features and table styles, Let us know what you loved and what else you need more.
-
 
 
 == Installation ==
@@ -148,23 +140,23 @@ Ninja Tables is the most beginner friendly and fastest WordPress Tables plugin a
 
 Yes, absolutely you can. We have introduced a feature that helps you import tables from your existing TablePress plugin. With this feature, you don’t have to build from scratch all those tables you created with your TablePress plugin, but can integrate them in Ninja tables with just a few clicks!
 
-= Can I import tables from "Ultimate Tables plugin" to Ninja tables? =
+= Can I import tables from "Ultimate Tables Plugin" to Ninja tables? =
 
-Yes, We have added this feature to version 2.2.5. Recently, many Ultimate Tables users wanted to move to Ninja Tables and this was on of the most wanted features. We have explored Ultimate Tables and added optimized feature to transfer your "Ultimate Tables" data to Ninja Tables easily. Now You can transfer your "Ultimate Tables" data with a single click :)
+Yes, We have added this feature to version 2.2.5. Recently, many Ultimate Tables users wanted to move to Ninja Tables and this was one of the most wanted features. We have explored Ultimate Tables and added an optimized feature to transfer your "Ultimate Tables" data to Ninja Tables easily. Now You can transfer your "Ultimate Tables" data with a single click :)
 
 = Can I import tables from "Data Tables Generator by Supsystic" Plugin to Ninja tables? =
 
-Yes, We also added this feature to version 2.2.5. As like Ultimate Tables, some of our wanted to move their data from Data Tables Generator by Supsystic to Ninja Tables. We have added a features where you can now transfer "Data Tables Generator by Supsystic" data to Ninja Tables with a single click.
+Yes, We also added this feature to version 2.2.5. As like Ultimate Tables, some of our wanted to move their data from Data Tables Generator by Supsystic to Ninja Tables. We have added a feature where you can now transfer "Data Tables Generator by Supsystic" data to Ninja Tables with a single click.
 
 = How can I import my tables from other plugins? =
 
-If you are using a table builder plugin other than TablePress / Data Tables Generator by Supsystic / ULTIMATE TABLES, you have to export the table files in CSV/JSON format. Ninja Tables allow you to upload those CSV/JSON files directly into Ninja Tables.
+If you are using a table builder plugin other than TablePress / Data Tables Generator by Supsystic / Ultimate Tables, you have to export the table files in CSV/JSON format. Ninja Tables allow you to upload those CSV/JSON files directly into Ninja Tables.
 
-= How can I manage long tables with huge amount of data? =
+= How can I manage long tables with a huge amount of data? =
 
-Tables are usually introduced to present a huge amount of data in an organized way. Still, sometimes large amount of entries can botch that purpose. To maintain this hassle you can utilize different options Ninja Tables offers. You can use Pagination to break down your tables in segments. Not only that, Search/Filter option allows you to quickly find out the exact information you might be looking for from a haystack of table data.
+Tables are usually introduced to present a huge amount of data in an organized way. Still, sometimes a large number of entries can botch that purpose. To maintain this hassle you can utilize different options Ninja Tables offers. You can use Pagination to break down your tables in segments. Not only that, Search/Filter option allows you to quickly find out the exact information you might be looking for from a haystack of table data.
 
-= Can I upload images / medias to table cells? =
+= Can I upload images/media to table cells? =
 
 Yes, For that please check pro add one <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">here</a>
 
@@ -172,7 +164,7 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 == Screenshots ==
 
 1. Table Preview with Features
-2. Add / Edit Table Data
+2. Stackable Table Demo
 3. Backend - Table Column Configuration
 4. Table Design Studio - Use any color in your mind
 5. Backend - Import / Export Table Data
@@ -183,6 +175,14 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 3.1.0 ( Date: December 24, 2018 ) =
+* Added Stackable Table UI
+* Added Default Table Configration Option
+* Fix Intro Screen
+* Improve Table UI
+* Improve overall Admin UI
+* Editor Link bug fix for latest version of WordPress
 
 = 3.0.6 ( Date: November 28, 2018 ) =
 * Fix WP FluentForm Integration
