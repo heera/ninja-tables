@@ -722,6 +722,7 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
             'created_at' => $time,
             'updated_at' => $time
         );
+
         if(isset($item['position']) && defined('NINJAPROPLUGIN_VERSION')) {
             $data['position'] = $item['position'];
         }

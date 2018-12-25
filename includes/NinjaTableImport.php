@@ -132,6 +132,10 @@ class NinjaTableImport
         $fileName = sanitize_text_field($_FILES['file']['name']);
 
         $data = file_get_contents($tmpName);
+        if(isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+            $data = utf8_encode($data);
+        }
+
         $csvParser = new CSVParser();
         $csvParser->load_data($data);
         $delimiter = $csvParser->find_delimiter();
@@ -157,6 +161,7 @@ class NinjaTableImport
         $header = ninja_table_format_header($header);
 
         $this->storeTableConfigWhenImporting($tableId, $header);
+
 
         ninjaTableInsertDataToTable($tableId, $reader, $header);
 
@@ -257,7 +262,13 @@ class NinjaTableImport
         $tableId = intval($_REQUEST['table_id']);
         $tmpName = $_FILES['file']['tmp_name'];
         $csvParser = new CSVParser();
-        $csvParser->load_data(file_get_contents($tmpName));
+
+        $data = file_get_contents($tmpName);
+        if(isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+            $data = utf8_encode($data);
+        }
+
+        $csvParser->load_data($data);
         $delimiter = $csvParser->find_delimiter();
         $reader = $csvParser->parse($delimiter);
 

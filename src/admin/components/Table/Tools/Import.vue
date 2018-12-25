@@ -13,6 +13,10 @@
                     </div>
 
                     <div class="form-group">
+                        <el-checkbox true-label="yes" false-label="no" v-model="do_unicode">Convert to UTF-8 format ( Check this if your csv is non-unicode format )</el-checkbox>
+                    </div>
+
+                    <div class="form-group">
                         <el-button type="primary" icon="el-icon-upload2" size="small"
                                    @click.prevent="upload" :loading="btnLoading">
                             {{ $t('Import from CSV') }}
@@ -72,7 +76,8 @@
             return {
                 btnLoading: false,
                 replace: false,
-                tutorial: "https://wpmanageninja.com/r/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
+                tutorial: "https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables",
+                do_unicode: 'no'
             }
         },
         computed: {
@@ -110,6 +115,7 @@
                 formData.append('target_action', 'upload-data');
                 formData.append('table_id', this.tableId);
                 formData.append('replace', this.replace);
+                formData.append('do_unicode', this.do_unicode);
 
                 jQuery.ajax({
                     url: ajaxurl,

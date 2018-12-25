@@ -37,13 +37,17 @@
                         </option>
                     </select>
 
-                    <p v-show="imports.format === 'csv'" class="hint">
-                        Check tutorial for importing data from CSV file
+                    <template v-if="imports.format === 'csv'">
+                        <p class="hint">
+                            Check tutorial for importing data from CSV file
+                            <a href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
+                               target="_blank"
+                            >here</a>
+                        </p>
+                        <el-checkbox true-label="yes" false-label="no" v-model="do_unicode">Convert to UTF-8 format ( Check this if your csv is non-unicode format )</el-checkbox>
+                    </template>
 
-                        <a href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
-                           target="_blank"
-                        >here</a>
-                    </p>
+
 
                     <p v-show="imports.format === 'json' || imports.format === 'ninjaJson'" class="hint">
                         Check tutorial for importing Table from JSON file
@@ -91,8 +95,9 @@
                         'json': this.$t('JSON - JavaScript Object Notation'),
                         'ninjaJson': this.$t('JSON - Exported From Ninja Tables'),
                     },
-                    format: 'csv',
+                    format: 'csv'
                 },
+                do_unicode: 'no',
                 errors: [],
                 btnLoading: false
             }
@@ -123,6 +128,7 @@
                 formData.append('file', file);
                 formData.append('action', 'ninja_tables_ajax_actions');
                 formData.append('target_action', 'import-table');
+                formData.append('do_unicode', this.do_unicode);
 
                 jQuery.ajax({
                     url: ajaxurl,
