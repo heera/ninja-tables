@@ -91,6 +91,13 @@ class NinjaTablePublic
         $skip = ArrayHelper::get($_REQUEST, 'skip_rows', false);
         $limit = ArrayHelper::get($_REQUEST, 'limit_rows', false);
 
+        if(!$limit && !$skip && isset($_REQUEST['chunk_number'])) {
+            $chunkNumber = ArrayHelper::get($_REQUEST, 'chunk_number', 0);
+            $perChunk = ninjaTablePerChunk($tableId);
+            $skip = $chunkNumber * $perChunk;
+            $limit = $perChunk;
+        }
+
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip);
 
         $formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);

@@ -340,6 +340,10 @@ class NinjaFooTable
             $table_classes .= ' ninja_has_filter';
         }
 
+
+
+
+
         $table_vars = array(
             'table_id' => $table_id,
             'title' => $table->post_title,
@@ -350,6 +354,14 @@ class NinjaFooTable
             'instance_name' => $table_instance_name,
             'table_version' => NINJA_TABLES_VERSION
         );
+
+        if($renderType == 'ajax_table') {
+            $totalSize = ninja_tables_DbTable()->where('table_id', $table_id)->count();
+            $perChunk = ninjaTablePerChunk($table_id);
+            if($totalSize > $perChunk) {
+                $table_vars['chunks'] = ceil($totalSize / $perChunk) - 1;
+            }
+        }
 
         $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id);
 

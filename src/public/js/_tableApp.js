@@ -129,6 +129,7 @@ export default {
                 }
             });
 
+
         if (tableConfig.settings.stack_config && tableConfig.settings.stack_config.stackable) {
             $(document).trigger('ninja_table_init_stackables', {
                 '$table': $table,
@@ -150,12 +151,40 @@ export default {
 
         let initConfig = that.getNinjaTableConfig(tableConfig);
 
-        let $tableInstance = $table.footable(initConfig);
+        if(tableConfig.chunks) {
+            $table.on('ready.ft.table', (e, fooTable) => {
+                that.loadMoreData(tableConfig, fooTable);
+            });
+        }
+
+        let $tableInstance = FooTable.init($table, initConfig);
+
         if (!this.ninjaFooTablesInstance) {
             this.ninjaFooTablesInstance = [];
         }
         this.ninjaFooTablesInstance[tableConfig.instance_name] = $tableInstance;
         $table.find("td:contains('#colspan#')").remove();
+    },
+    loadMoreData(tableConfig, fooTable) {
+        let maxChuck = tableConfig.chunks;
+        this.loadChuck(1, tableConfig, fooTable);
+    },
+    loadChuck(counter, tableConfig, fooTable) {
+        let maxChuck = tableConfig.chunks;
+        if(counter <= maxChuck) {
+            $.get(window.ninja_footables.ajax_url, {
+                action: 'wp_ajax_ninja_tables_public_action',
+                table_id: tableConfig.table_id,
+                target_action: 'get-all-data',
+                default_sorting: tableConfig.settings.default_sorting,
+                skip_rows: tableConfig.settings.skip_rows,
+                limit_rows: tableConfig.settings.limit_rows,
+                chunk_number: counter
+            }).then(response => {
+                this.loadChuck(counter + 1, tableConfig, fooTable);
+                fooTable.rows.load(response, true);
+            });
+        }
     },
     getNinjaTableConfig(tableConfig) {
         // Prepare Table Init Configuration
@@ -170,14 +199,18 @@ export default {
         };
 
         if (tableConfig.render_type !== 'legacy_table') {
-            initConfig.rows = $.get(window.ninja_footables.ajax_url, {
+            let rowRequestUrlParams = {
                 action: 'wp_ajax_ninja_tables_public_action',
                 table_id: tableConfig.table_id,
                 target_action: 'get-all-data',
                 default_sorting: tableConfig.settings.default_sorting,
                 skip_rows: tableConfig.settings.skip_rows,
-                limit_rows: tableConfig.settings.limit_rows
-            });
+                limit_rows: tableConfig.settings.limit_rows,
+            };
+            if(tableConfig.chunks && tableConfig.chunks > 0) {
+                rowRequestUrlParams.chunk_number = 0;
+            }
+            initConfig.rows = $.get(window.ninja_footables.ajax_url, rowRequestUrlParams);
         }
 
         initConfig.sorting = {

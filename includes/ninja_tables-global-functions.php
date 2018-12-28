@@ -729,3 +729,7 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
         ninja_tables_DbTable()->insert($data);
     }
 }
+
+function ninjaTablePerChunk($table_id = false) {
+    return apply_filters('ninja_table_per_chunk', 4000, $table_id);
+}
