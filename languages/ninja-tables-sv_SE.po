@@ -1,0 +1,216 @@
+# Translation of Plugins - Ninja Tables &#8211; Best Responsive Table Plugin for WordPress - Stable (latest release) in Swedish
+# This file is distributed under the same license as the Plugins - Ninja Tables &#8211; Best Responsive Table Plugin for WordPress - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2018-06-10 12:04:15+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: sv_SE\n"
+"Project-Id-Version: Plugins - Ninja Tables &#8211; Best Responsive Table Plugin for WordPress - Stable (latest release)\n"
+
+#: admin/NinjaTablesAdmin.php:1544
+msgid "Successfully duplicated table."
+msgstr "Tabellen duplicerades."
+
+#: admin/NinjaTablesAdmin.php:133
+msgid "<span style=\"color:#f39c12;\">Get Pro</span>"
+msgstr "<span style=\"color:#f39c12;\">Skaffa Pro</span>"
+
+#: admin/NinjaTablesAdmin.php:99
+msgid "NinjaTables"
+msgstr "NinjaTables"
+
+#: includes/libs/TableDrivers/NinjaFooTable.php:50
+#: includes/libs/TableDrivers/NinjaFooTable.php:160
+msgid "No Result Found"
+msgstr "Inget resultat hittades"
+
+#: includes/libs/TableDrivers/NinjaFooTable.php:49
+#: includes/libs/TableDrivers/NinjaFooTable.php:159
+msgid "Search"
+msgstr "Sök"
+
+#: includes/libs/TableDrivers/NinjaFooTable.php:48
+#: includes/libs/TableDrivers/NinjaFooTable.php:158
+msgid "Search in"
+msgstr "Sök i"
+
+#: admin/NinjaTablesAdmin.php:1113
+msgid "Select a Table"
+msgstr "Välj en tabell"
+
+#: admin/NinjaTablesAdmin.php:1093
+msgid "Please select a table"
+msgstr "Välj en tabell"
+
+#: admin/NinjaTablesAdmin.php:1094
+msgid "Insert Shortcode"
+msgstr "Infoga kortkod"
+
+#: admin/NinjaTablesAdmin.php:1091
+msgid "Select a Table to insert"
+msgstr "Välj en tabell att infoga"
+
+#: admin/NinjaTablesAdmin.php:1092
+msgid "Insert Ninja Tables Shortcode"
+msgstr "Infoga Ninja Tables kortkod"
+
+#: admin/NinjaTablesAdmin.php:125
+msgid "Import a Table"
+msgstr "Importera en tabell"
+
+#: admin/NinjaTablesAdmin.php:447
+msgid "Sorry, we could not import the table."
+msgstr "Tyvärr, vi kunde inte importera tabellen."
+
+#: admin/NinjaTablesAdmin.php:537 admin/NinjaTablesAdmin.php:556
+#: admin/NinjaTablesAdmin.php:602
+msgid "Successfully added a table."
+msgstr "Har lagt till tabell utan problem."
+
+#. Author URI of the plugin/theme
+msgid "https://wpmanageninja.com/"
+msgstr "https://wpmanageninja.com/"
+
+#. Author of the plugin/theme
+msgid "WPManageNinja"
+msgstr "WPManageNinja"
+
+#: admin/NinjaTablesAdmin.php:942
+msgid "Please set table configuration."
+msgstr "Ange tabellkonfiguration."
+
+#: admin/NinjaTablesAdmin.php:153
+msgid "Help"
+msgstr "Hjälp"
+
+#: admin/NinjaTablesAdmin.php:118
+msgid "Tools"
+msgstr "Verktyg"
+
+#: admin/NinjaTablesAdmin.php:113
+msgid "All Tables"
+msgstr "Alla tabeller"
+
+#: admin/NinjaTablesAdmin.php:79
+msgid "No Table Found"
+msgstr "Ingen tabell hittades"
+
+#: admin/NinjaTablesAdmin.php:78
+msgid "Search Table"
+msgstr "Sök tabell"
+
+#: admin/NinjaTablesAdmin.php:75
+msgid "New Table"
+msgstr "Ny tabell"
+
+#: admin/NinjaTablesAdmin.php:72
+msgid "Add New Table"
+msgstr "Lägg till ny tabell"
+
+#: admin/NinjaTablesAdmin.php:71
+msgid "Add Table"
+msgstr "Lägg till tabell"
+
+#: admin/NinjaTablesAdmin.php:69
+msgid "Table"
+msgstr "Tabell"
+
+#: admin/NinjaTablesAdmin.php:82
+msgid "Parent Table"
+msgstr "Överordnad tabell"
+
+#: admin/NinjaTablesAdmin.php:76 admin/NinjaTablesAdmin.php:77
+msgid "View Table"
+msgstr "Visa tabell"
+
+#: admin/NinjaTablesAdmin.php:74
+msgid "Edit Table"
+msgstr "Redigera tabell"
+
+#: admin/NinjaTablesAdmin.php:73
+msgid "Edit"
+msgstr "Redigera"
+
+#. #-#-#-#-#  ninja-tables-code.pot (Ninja Tables 2.2.0)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: admin/NinjaTablesAdmin.php:59 admin/NinjaTablesAdmin.php:68
+#: admin/NinjaTablesAdmin.php:70
+msgid "Ninja Tables"
+msgstr "Ninja Tables"
+
+#: admin/NinjaTablesAdmin.php:80
+msgid "No Table Found in Trash"
+msgstr "Ingen tabell hittad i papperskorgen"
+
+#: admin/NinjaTablesAdmin.php:742
+msgid "Successfully updated configuration."
+msgstr "Konfigurationen uppdaterades utan problem."
+
+#: admin/NinjaTablesAdmin.php:763
+msgid "Invalid Table to Delete"
+msgstr "Ogiltigt tabell att ta bort"
+
+#: admin/NinjaTablesAdmin.php:781
+msgid "Successfully deleted the table."
+msgstr "Tabellen har tagits bort utan problem."
+
+#: admin/NinjaTablesAdmin.php:373
+msgid "No appropriate driver found for the import format."
+msgstr "Ingen lämplig drivrutin hittades för importformatet."
+
+#: admin/NinjaTablesAdmin.php:347
+msgid "Successfully added table."
+msgstr "Tabellen har lagts till utan problem."
+
+#: admin/NinjaTablesAdmin.php:330
+msgid "The name field is required."
+msgstr "Namnfältet är obligatoriskt."
+
+#: admin/NinjaTablesAdmin.php:900
+msgid "Successfully saved the data."
+msgstr "Sparade data utan problem."
+
+#: admin/NinjaTablesAdmin.php:926
+msgid "Successfully deleted data."
+msgstr "Tog bort data utan problem."
+
+#: admin/NinjaTablesAdmin.php:354
+msgid "Successfully updated table."
+msgstr "Uppdaterade tabell utan problem."
+
+#: admin/NinjaTablesAdmin.php:612
+msgid "Temporary table description"
+msgstr "Tillfällig tabellbeskrivning"
+
+#: admin/NinjaTablesAdmin.php:611
+msgid "Temporary table name"
+msgstr "Tillfälligt tabellnamn"
+
+#: admin/NinjaTablesAdmin.php:571
+msgid "You have a faulty JSON file. Please export a new one."
+msgstr "Du har en felaktig JSON-fil. Exportera en ny."
+
+#: admin/NinjaTablesAdmin.php:988
+msgid "Successfully uploaded data."
+msgstr "Laddade upp data utan problem."
+
+#. Description of the plugin/theme
+msgid "The Easiest & Fastest Responsive Table Plugin on WordPress. Multiple templates, drag-&-drop live table builder, multiple color scheme, and styles."
+msgstr "Det enklaste och snabbaste tillägget för responsiva tabeller i WordPress. Flera mallar, tabellbyggare med drag-och-släpp funktion, flera färgscheman och stilar."
+
+#: admin/NinjaTablesAdmin.php:960
+msgid "Please use the provided CSV header structure."
+msgstr "Använd den angivna strukturen för CSV-sidhuvudet."
+
+#: includes/libs/ninjadb/src/BaseModel.php:202
+#: includes/libs/ninjadb/src/BaseModel.php:231
+msgid "Where clause does not exist, Please add where clause first"
+msgstr "Där klausul saknas, lägg till en först"
+
+#. Plugin URI of the plugin/theme
+msgid "https://wpmanageninja.com/ninja-tables/"
+msgstr "https://wpmanageninja.com/ninja-tables/"

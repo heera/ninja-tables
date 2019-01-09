@@ -88,7 +88,7 @@ class NinjaTablePublic
             wp_send_json_success([], 200);
         }
 
-        $skip = ArrayHelper::get($_REQUEST, 'skip_rows', false);
+        $skip = ArrayHelper::get($_REQUEST, 'skip_rows', 0);
         $limit = ArrayHelper::get($_REQUEST, 'limit_rows', false);
 
         if(!$limit && !$skip && isset($_REQUEST['chunk_number'])) {
@@ -101,6 +101,23 @@ class NinjaTablePublic
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip);
 
         $formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
+
+        $dataProvider = ninja_table_get_data_provider($tableId);
+        if($dataProvider == 'default') {
+            $newStyledData = array();
+            $counter = $skip;
+            foreach ($formatted_data as $datum) {
+                $newStyledData[] = array(
+                    'options' => array(
+                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : ''
+                    ),
+                    'value' => $datum
+                );
+                $counter = $counter + 1;
+            }
+            $formatted_data = $newStyledData;
+        }
+
         wp_send_json($formatted_data, 200);
         wp_die();
     }

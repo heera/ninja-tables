@@ -71,7 +71,28 @@ class NinjaFooTable
      */
     private static function addCustomColorCSS($tableArray, $extra_css = '')
     {
-        $css_prefix = '#footable_' . $tableArray['table_id'];
+        $css = self::generateCustomColorCSS($tableArray, $extra_css);
+        if($css) {
+            add_action('ninja_tables_after_table_print', function () use ($css) {
+                echo $css;
+            });
+        }
+    }
+
+    private static function generateCustomColorCSS($tableArray, $extra_css = '') {
+        $tableId = $tableArray['table_id'];
+        $cellStyles = array();
+        $tableProvider = ninja_table_get_data_provider($tableId);
+        if($tableProvider == 'default' && get_option('_ninja_tables_settings_migration')) {
+            ob_start();
+            $cellStyles = ninja_tables_DbTable()
+                ->select(array('id', 'settings'))
+                ->where('table_id', $tableId)
+                ->whereNotNull('settings')
+                ->get();
+            $maybeError = ob_get_clean();
+        }
+        $css_prefix = '#footable_' . $tableId;
         $customColumnCss = '';
         if (defined('NINJATABLESPRO')) {
             $columns = ArrayHelper::get($tableArray, 'columns');
@@ -91,7 +112,7 @@ class NinjaFooTable
         }
 
         $colors = false;
-        $custom_css = get_post_meta($tableArray['table_id'], '_ninja_tables_custom_css', true);
+        $custom_css = get_post_meta($tableId, '_ninja_tables_custom_css', true);
 
         if (ArrayHelper::get($tableArray, 'settings.table_color_type') == 'custom_color'
             && defined('NINJATABLESPRO')
@@ -128,12 +149,12 @@ class NinjaFooTable
 
         $custom_css .= $extra_css . $customColumnCss;
 
-        if (!$colors && !$custom_css) {
+        if (!$colors && !$custom_css && !$cellStyles) {
             return;
         }
-        add_action('wp_footer', function () use ($custom_css, $colors, $css_prefix) {
-            include 'views/ninja_footable_css.php';
-        });
+        ob_start();
+        include 'views/ninja_footable_css.php';
+        return ob_get_clean();
     }
 
     private static function render($tableArray)
@@ -307,8 +328,11 @@ class NinjaFooTable
                 'stackable' => $isStackable,
                 'stacks_devices' => $stackDevices
             );
-            $extraStackClasses = implode(' ', ArrayHelper::get($settings, 'stacks_appearances', array()));
-            $table_classes .= ' '.$extraStackClasses;
+            $stackApearances = ArrayHelper::get($settings, 'stacks_appearances', array());
+            if(is_array($stackApearances) && $stackApearances) {
+                $extraStackClasses = implode(' ', $stackApearances);
+                $table_classes .= ' '.$extraStackClasses;
+            }
         }
 
         if (!$enableSearch) {
@@ -339,10 +363,6 @@ class NinjaFooTable
         } else if($configSettings['defualt_filter']) {
             $table_classes .= ' ninja_has_filter';
         }
-
-
-
-
 
         $table_vars = array(
             'table_id' => $table_id,

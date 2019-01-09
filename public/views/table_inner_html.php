@@ -23,13 +23,18 @@
 </tr>
 </thead>
 <tbody>
+
 <?php
 if($table_rows && count($table_columns)):
 $columnLength = count($table_columns) - 1;
 foreach ($table_rows as $row_index => $table_row) :
     $row = '';
+    $row_class = 'ninja_table_row_'.$row_index;
+        if(isset($table_row['___id___'])) {
+            $row_class .= ' nt_row_id_'.$table_row['___id___'];
+        }
     ?>
-    <tr class="ninja_table_row_<?php echo $row_index; ?>">
+    <tr class="<?php echo $row_class; ?>">
         <?php
         $colSpanCounter = 1; // Make the colspan counter 1 at first
         foreach ($table_columns as $index => $table_column) {

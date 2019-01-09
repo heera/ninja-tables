@@ -241,7 +241,7 @@ class NinjaTablesAdmin
 
         wp_enqueue_script(
             $this->plugin_name,
-            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin.".NINJA_TABLES_ASSET_VERSION.".js",
+            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin." . NINJA_TABLES_ASSET_VERSION . ".js",
             array('jquery'),
             $this->version,
             true
@@ -313,7 +313,7 @@ class NinjaTablesAdmin
                 plugin_dir_url(__DIR__) . "assets/css/ninjatables-public.css",
                 plugin_dir_url(__DIR__) . "public/libs/footable/js/footable.min.js",
                 plugin_dir_url(__DIR__) . "public/libs/moment/moment.min.js",
-                plugin_dir_url(__DIR__) . "assets/js/ninja-tables-footable.".NINJA_TABLES_ASSET_VERSION.".js",
+                plugin_dir_url(__DIR__) . "assets/js/ninja-tables-footable." . NINJA_TABLES_ASSET_VERSION . ".js",
             ),
             'activated_features' => apply_filters('ninja_table_activated_features', array(
                 'default_tables' => true,
@@ -446,7 +446,7 @@ class NinjaTablesAdmin
 
         $postId = intval($_REQUEST['tableId']);
 
-        if(isset($_REQUEST['table_caption'])) {
+        if (isset($_REQUEST['table_caption'])) {
             update_post_meta($postId, '_ninja_table_caption', sanitize_text_field($_REQUEST['table_caption']));
         }
 
@@ -515,6 +515,9 @@ class NinjaTablesAdmin
         $table = apply_filters('ninja_tables_get_table_' . $provider, $table);
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
+
+
+        $this->migrateSettingColumnIfNeeded();
 
         wp_send_json(array(
             'preview_url' => site_url('?ninjatable_preview=' . $tableID),
@@ -598,7 +601,7 @@ class NinjaTablesAdmin
         $tableId = intval($_REQUEST['id']);
         $table = get_post($tableId);
 
-        if($table) {
+        if ($table) {
             $table->table_caption = get_post_meta($tableId, '_ninja_table_caption', true);
         }
 
@@ -649,11 +652,9 @@ class NinjaTablesAdmin
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
 
             $query = ninja_tables_DbTable()->where('table_id', $tableId);
-
             if ($search) {
                 $query->search($search, array('value'));
             }
-
             $data = $query->take($perPage)
                 ->skip($skip)
                 ->orderBy($orderByField, $orderByType)
@@ -663,13 +664,29 @@ class NinjaTablesAdmin
 
             $response = array();
 
+            $hasSettings = true;
             foreach ($data as $item) {
+                $hasSettings = property_exists($item, 'settings');
+                $settings = (object)array();
+                if ($hasSettings) {
+                    $settings = maybe_unserialize($item->settings);
+                    if (!is_array($settings)) {
+                        $settings = (object)array();
+                    }
+                }
                 $response[] = array(
                     'id' => $item->id,
+                    'created_at' => $item->created_at,
+                    'settings' => $settings,
                     'position' => property_exists($item, 'position') ? $item->position : null,
                     'values' => json_decode($item->value, true)
                 );
             }
+
+            if (!$hasSettings) {
+                // We have to migrate the data now
+            }
+
         } else {
             list($response, $total) = apply_filters(
                 'ninja_tables_get_table_data_' . $dataSourceType,
@@ -711,7 +728,7 @@ class NinjaTablesAdmin
     {
         $tableSettings = $tableSettings ?: ninja_table_get_table_settings($tableId, 'admin');
 
-        $orderByField = 'id';
+        $orderByField = 'created_at';
         $orderByType = 'DESC';
 
         if (isset($tableSettings['sorting_type'])) {
@@ -720,7 +737,7 @@ class NinjaTablesAdmin
                 $orderByField = 'position';
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
-                $orderByField = 'id';
+                $orderByField = 'created_at';
                 if ($tableSettings['default_sorting'] === 'new_first') {
                     $orderByType = 'DESC';
                 } else {
@@ -749,14 +766,49 @@ class NinjaTablesAdmin
             'updated_at' => date('Y-m-d H:i:s')
         );
 
-        if ($id = intval($_REQUEST['id'])) {
-            ninja_tables_DbTable()->where('id', $id)->update($attributes);
-        } else {
-            $attributes['created_at'] = date('Y-m-d H:i:s');
+        if (isset($_REQUEST['settings'])) {
+            $attributes['settings'] = maybe_serialize(wp_unslash($_REQUEST['settings']));
+        }
 
+        if (isset($_REQUEST['created_at']) && $_REQUEST['created_at']) {
+            $attributes['created_at'] = sanitize_text_field($_REQUEST['created_at']);
+        }
+
+        if ($id = intval($_REQUEST['id'])) {
+            do_action('ninja_table_before_update_item', $id, $tableId, $attributes);
+            ninja_tables_DbTable()->where('id', $id)->update($attributes);
+            do_action('ninja_table_after_update_item', $id, $tableId, $attributes);
+        } else {
+
+            if (isset($_REQUEST['insert_after_id'])) {
+                list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
+
+                if($orderByField == 'created_at') {
+                    // Calculate the insert position Date
+                    $prevItemId = absint($_REQUEST['insert_after_id']);
+                    $previousItem = ninja_tables_DbTable()
+                        ->where('id', $prevItemId)
+                        ->first();
+                    if ($previousItem) {
+                        if ($orderByType == 'ASC') {
+                            // ASC means, We have to minus time to created_at
+                            $newDateStamp = strtotime($previousItem->created_at) + 1;
+                        } else {
+                            $newDateStamp = strtotime($previousItem->created_at) - 1;
+                        }
+                        $attributes['created_at'] = date('Y-m-d H:i:s', $newDateStamp);
+                    }
+                }
+            }
+
+            if (!isset($attributes['created_at'])) {
+                $attributes['created_at'] = date('Y-m-d H:i:s');
+            }
             $attributes = apply_filters('ninja_tables_item_attributes', $attributes);
 
+            do_action('ninja_table_before_add_item', $tableId, $attributes);
             $id = $insertId = ninja_tables_DbTable()->insert($attributes);
+            do_action('ninja_table_after_add_item', $insertId, $tableId, $attributes);
         }
 
         $item = ninja_tables_DbTable()->find($id);
@@ -766,6 +818,10 @@ class NinjaTablesAdmin
         update_post_meta($tableId, '_last_edited_by', get_current_user_id());
         update_post_meta($tableId, '_last_edited_time', date('Y-m-d H:i:s'));
 
+        $itemSettings = maybe_unserialize($item->settings);
+        if (!is_array($itemSettings)) {
+            $itemSettings = (object)array();
+        }
 
         wp_send_json(array(
             'message' => __('Successfully saved the data.', 'ninja-tables'),
@@ -773,6 +829,8 @@ class NinjaTablesAdmin
                 'id' => $item->id,
                 'values' => $formattedRow,
                 'row' => json_decode($item->value),
+                'created_at' => $item->created_at,
+                'settings' => $itemSettings,
                 'position' => property_exists($item, 'position') ? $item->position : null
             )
         ), 200);
@@ -1130,6 +1188,30 @@ class NinjaTablesAdmin
         update_option($option, true);
     }
 
+
+    private function migrateSettingColumnIfNeeded()
+    {
+        // If the database is already migrated for manual
+        // sorting the option table would have a flag.
+        $option = '_ninja_tables_settings_migration';
+
+        if (get_option($option)) {
+            return;
+        }
+
+        global $wpdb;
+        $tableName = $wpdb->prefix . ninja_tables_db_table_name();
+
+        // Update the databse to hold the sorting position number.
+        $sql = "ALTER TABLE $tableName ADD COLUMN `settings` LONGTEXT AFTER `value`;";
+        ob_start();
+        $wpdb->query($sql);
+        $maybeError = ob_get_clean();
+        // Keep a flag on the options table that the
+        // db is migrated to use for manual sorting.
+        update_option($option, true);
+    }
+
     public function getAllPostTypes()
     {
         global $wpdb;
@@ -1326,14 +1408,16 @@ class NinjaTablesAdmin
         ), 200);
     }
 
-    public function add_plugin_action_links($links) {
+    public function add_plugin_action_links($links)
+    {
 
-        if(!defined('NINJATABLESPRO')) {
+        if (!defined('NINJATABLESPRO')) {
             $links[] = '<a style="color: green; font-weight: bold;" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">Go Pro</a>';
         }
 
-        $links[] = '<a href="'.admin_url('admin.php?page=ninja_tables#/').'">' . __( 'All Tables', 'ninja-tables' ) . '</a>';
+        $links[] = '<a href="' . admin_url('admin.php?page=ninja_tables#/') . '">' . __('All Tables', 'ninja-tables') . '</a>';
 
         return $links;
     }
+
 }

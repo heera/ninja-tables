@@ -6,7 +6,7 @@
             :append-to-body="true"
             @close="closeModal">
         <div v-if="show">
-            <div v-for="column in columns" class="form-group">
+            <div v-for="column in columns" :key="column.key" class="form-group">
                 <label :for="slugify(column.key)">{{ column.name || column.key }}</label>
                 <div v-if="column.data_type == 'textarea'">
                     <textarea :placeholder="column.name" :id="slugify(column.key)" class="form-control"
@@ -43,7 +43,6 @@
                            v-model="newColumn[column.key]">
                 </div>
             </div>
-
             <div v-if="!editId && manualSort && !insertAfterPosition">
                 Add at
                 <input type="radio" v-model="position" value="last" style="margin-left: 5px;">Last
@@ -51,6 +50,54 @@
             </div>
         </div>
 
+        <div class="row_config_container" v-if="row_config">
+            <h3>Row Settings</h3>
+            <div class="form_row_full">
+                <div class="form-group form_row_half">
+                    <label>Row Background Color</label>
+                    <el-color-picker v-model="item_settings.row_bg" show-alpha></el-color-picker>
+                </div>
+                <div class="form-group form_row_half">
+                    <label>Row Text Color</label>
+                    <el-color-picker v-model="item_settings.text_color" show-alpha></el-color-picker>
+                </div>
+            </div>
+            <h3>Cell Color Customization</h3>
+            <table class="wp-list-table widefat fixed striped">
+                <thead>
+                    <tr>
+                        <th>Column</th>
+                        <th>Background Color</th>
+                        <th>Text Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="column in columns" :key="column.key">
+                        <td>{{ column.name }}</td>
+                        <td>
+                            <el-color-picker v-model="item_settings.cell[column.key]['background-color']" show-alpha></el-color-picker>
+                        </td>
+                        <td>
+                            <el-color-picker v-model="item_settings.cell[column.key]['color']" show-alpha></el-color-picker>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div v-if="!insertAfterPosition" style="margin-top: 20px" class="form-group">
+                <label>
+                    Data Create Date
+                    <el-tooltip placement="top-start" effect="light" content="If you use table sorting by create date then you can change create date to sort your data">
+                        <i class="el-icon-info el-text-info"></i>
+                    </el-tooltip>
+                </label>
+                <el-date-picker
+                        v-model="created_at"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        type="datetime"
+                        placeholder="Select date and time">
+                </el-date-picker>
+            </div>
+        </div>
         <div slot="footer" class="dialog-footer" :class="{ 'single-child': shouldNotContinueAdding }">
             <template v-if="!shouldNotContinueAdding">
                 <div>
@@ -59,9 +106,8 @@
                 </label>
                 </div>
             </template>
-
             <div class="dialog-footer-item">
-                <el-button @click.prevent="closeModal" type="danger" size="small">{{ $t('Cancel') }}</el-button>
+                <el-button @click="row_config = !row_config" size="small" type="danger"><i class="el-icon-setting"></i></el-button>
                 <el-button v-loading="btnLoading" :disabled="btnLoading" type="primary" size="small" @click="addData">
                     <span v-if="editId"> {{ $t('Update') }}</span>
                     <span v-else>{{ $t('Add') }}</span>
@@ -77,18 +123,17 @@
 
     import wp_editor from '../../../common/_wp_editor';
     import NinjaDatePicker from '../Extras/_NinjaDatePicker'
-
     export default {
         name: 'add_data',
-        props: ['title', 'show', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition', 'type'],
+        props: ['title', 'show', 'columns', 'table_id', 'item', 'manualSort', 'insertAfterPosition', 'insertAfterId', 'type'],
         data() {
             return {
+                row_config: false,
                 editorOption: {
                     modules: {
                         toolbar: [
                             ['bold', 'italic', 'underline', 'strike', 'link'],        // toggled buttons
                             ['blockquote', 'code-block'],
-
                             [{'header': 1}, {'header': 2}],               // custom button values
                             [{'list': 'ordered'}, {'list': 'bullet'}],
                             [{'script': 'sub'}, {'script': 'super'}],      // superscript/subscript
@@ -102,7 +147,9 @@
                 newColumn: {},
                 has_pro: !!window.ninja_table_admin.hasPro,
                 position: 'last',
-                modal_title: 'Add Row'
+                modal_title: 'Add Row',
+                item_settings: {},
+                created_at: ''
             }
         },
         computed: {
@@ -116,7 +163,6 @@
         watch: {
             item() {
                 this.initNewColumnObj();
-
                 if (!this.item) {
                     this.modal_title = 'Add Row'
                 }
@@ -147,29 +193,41 @@
                     table_id: this.table_id,
                     row: this.newColumn,
                     id: this.editId,
+                    created_at: this.created_at,
+                    settings: this.item_settings,
+                    position: this.position
                 };
-
-                if (this.manualSort) {
-                    if (this.insertAfterPosition) {
-                        data['position'] = this.insertAfterPosition + 1;
-                    } else {
-                        data['position'] = this.position;
-                    }
+                if(this.insertAfterId) {
+                    data['insert_after_id'] = this.insertAfterId;
+                    data['position'] = parseInt(this.insertAfterPosition) + 1;
                 }
 
                 jQuery.post(ajaxurl, data)
                     .then((response) => {
+
+                        if(!response.item) {
+                            this.$message({
+                                showClose: true,
+                                message: 'Failed to add/update data. Please reload this page and try again',
+                                type: 'error'
+                            });
+                            return;
+                        }
+
                         this.$message({
                             showClose: true,
                             message: response.message,
                             type: 'success'
                         });
                         this.initNewColumnObj();
-
                         if (this.editId) {
                             this.$emit('updateItem', response.item);
                         } else {
-                            this.$emit('createItem', response.item);
+                            let position = data.position;
+                            if(!this.manualSort && !this.insertAfterId) {
+                                position = 'last-first';
+                            }
+                            this.$emit('createItem', response.item, position);
                         }
                         if (this.editId || !this.continueAdding) {
                             this.$emit('modal_close');
@@ -200,6 +258,23 @@
                         : '';
                 });
                 this.newColumn = columnObj;
+                this.initItemSettings();
+            },
+            initItemSettings() {
+                if(this.item && this.item.settings) {
+                    this.item_settings = this.item.settings;
+                }
+                if(!this.item_settings.cell) {
+                    this.$set(this.item_settings, 'cell', {});
+                }
+                each(this.columns, (column) => {
+                    if(!this.item_settings.cell[column.key]) {
+                        this.$set(this.item_settings.cell, column.key, {});
+                    }
+                });
+                if(this.item) {
+                    this.created_at = this.item.created_at;
+                }
             },
             onEditorChange(key, {editor, html, text}) {
                 this.newColumn[key] = html;
@@ -237,5 +312,13 @@
         &.single-child {
             justify-content: flex-end;
         }
+    }
+
+    .row_config_container {
+        display: block;
+        padding: 10px 15px;
+        background: rgb(224, 224, 224);
+        position: relative;
+        border-radius: 5px;
     }
 </style>

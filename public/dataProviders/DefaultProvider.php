@@ -41,13 +41,12 @@ class DefaultProvider
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
 
         if ($defaultSorting == 'new_first') {
-            $query->orderBy('id', 'desc');
+            $query->orderBy('created_at', 'desc');
         } else if ($defaultSorting == 'manual_sort') {
             $query->orderBy('position', 'asc');
         } else {
-            $query->orderBy('id', 'asc');
+            $query->orderBy('created_at', 'asc');
         }
-
 
         $skip = intval($skip);
         if ($skip && $skip > 0) {
@@ -64,6 +63,7 @@ class DefaultProvider
         foreach ($query->get() as $item) {
             $values = json_decode($item->value, true);
             $values = array_map('do_shortcode', $values);
+            $values['___id___'] = $item->id;
             $data[] = $values;
         }
 

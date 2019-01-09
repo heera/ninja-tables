@@ -64,13 +64,15 @@
                         mode : "none",
                         tinymce: {
                             toolbar1: 'formatselect,bold,italic,bullist,numlist,link,blockquote,alignleft,aligncenter,alignright,strikethrough,underline,forecolor,codeformat,removeformat,undo,redo',
+                            valid_elements: "*[*]",
+                            forced_root_block : "",
                             setup(ed) {
                                 ed.on('change', function (ed, l) {
                                     that.changeContentEvent();
                                 });
                             }
                         },
-                        quicktags: true
+                        quicktags: true,
                     });
                     jQuery('#'+this.ninja_editor_id).on('change', function(e) {
                         that.changeContentEvent();

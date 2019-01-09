@@ -66,6 +66,7 @@ class NinjaTablesActivator {
 				position int(11),
 				table_id int(11) NOT NULL,
 				attribute varchar(255) NOT NULL,
+				settings longtext,
 				value longtext,
 				created_at timestamp NULL,
 				updated_at timestamp NULL
@@ -73,6 +74,9 @@ class NinjaTablesActivator {
 
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 			dbDelta( $sql );
+
+			update_option('_ninja_tables_settings_migration', true);
+			update_option('_ninja_tables_sorting_migration', true);
 		}
 	}
 }
