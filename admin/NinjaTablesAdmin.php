@@ -224,6 +224,7 @@ class NinjaTablesAdmin
     {
         if (function_exists('wp_enqueue_editor')) {
             wp_enqueue_editor();
+            wp_enqueue_script('thickbox');
         }
         if (function_exists('wp_enqueue_media')) {
             wp_enqueue_media();

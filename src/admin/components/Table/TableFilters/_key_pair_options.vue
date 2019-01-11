@@ -2,13 +2,20 @@
     <table class="ninja_filter_table">
         <thead>
             <tr>
+                <th></th>
                 <th>Label</th>
                 <th>Filter Value</th>
-                <th></th>
             </tr>
         </thead>
-        <tbody>
+        <draggable
+                :options="{handle:'.handle'}"
+                :list="value"
+                :element="'tbody'"
+        >
             <tr v-for="(filter, index) in value">
+                <td>
+                    <span style="margin-top: 10px" class="dashicons dashicons-editor-justify handle"></span>
+                </td>
                 <td>
                     <el-input size="mini" v-model="filter.label" type="text"></el-input>
                 </td>
@@ -20,12 +27,14 @@
                     <el-button @click="add()" v-show="(index + 1) == value.length" type="success" size="mini">+</el-button>
                 </td>
             </tr>
-        </tbody>
+        </draggable>
     </table>
 </template>
 <script type="text/babel">
+    import draggable from 'vuedraggable'
     export default {
         name: 'ninja_key_pair_options',
+        components: { draggable },
         props: ['value'],
         data() {
             return {

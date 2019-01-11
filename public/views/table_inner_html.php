@@ -34,7 +34,7 @@ foreach ($table_rows as $row_index => $table_row) :
             $row_class .= ' nt_row_id_'.$table_row['___id___'];
         }
     ?>
-    <tr class="<?php echo $row_class; ?>">
+    <tr data-row_id="<?php echo $table_row['___id___'];?>" class="<?php echo $row_class; ?>">
         <?php
         $colSpanCounter = 1; // Make the colspan counter 1 at first
         foreach ($table_columns as $index => $table_column) {

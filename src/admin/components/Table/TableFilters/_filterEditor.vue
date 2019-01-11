@@ -157,10 +157,14 @@
                     <i class="el-icon-info el-text-info"></i>
                 </el-tooltip>
             </template>
-            <el-checkbox-group v-model="activeEditor.columns">
+            <el-checkbox-group v-if="current_columns.length" v-model="activeEditor.columns">
                 <el-checkbox v-for="column in current_columns" :key="column.key" :label="column.key">{{column.name}}</el-checkbox>
             </el-checkbox-group>
+            <div v-else>
+                Sorry, No corresponding columns found based on your selection and column's data type
+            </div>
         </el-form-item>
+
         <el-form-item v-if="activeEditor.type == 'reset_filter'">
             <template slot="label">
                 {{ $t('Button Text') }}
@@ -171,7 +175,6 @@
         <el-form-item>
             <el-checkbox true-label="yes" false-label="no" v-model="activeEditor.strict">Enable Strict Mode (If Enable, Ninja Table will try to match exact value)</el-checkbox>
         </el-form-item>
-
     </el-form>
 </template>
 
@@ -232,6 +235,14 @@
                 if(value == 'select') {
                     this.$set(this.activeEditor, 'select_value_type', 'manual');
                 }
+                if(!Array.isArray(this.activeEditor.columns)) {
+                    this.activeEditor.columns = [];
+                }
+            }
+        },
+        mounted() {
+            if(!Array.isArray(this.activeEditor.columns)) {
+                this.activeEditor.columns = [];
             }
         }
     }

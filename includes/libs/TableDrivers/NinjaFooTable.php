@@ -242,7 +242,6 @@ class NinjaFooTable
                     ? $column['decimalSeparator'] : '';
             }
 
-
             $formatted_columns[] = apply_filters(
                 'ninja_table_column_attributes', $formatted_column, $column, $table_id, $tableArray
             );
@@ -368,6 +367,7 @@ class NinjaFooTable
             'table_id' => $table_id,
             'title' => $table->post_title,
             'columns' => $formatted_columns,
+            'original_columns' => $columns,
             'settings' => $configSettings,
             'render_type' => $renderType,
             'custom_css' => $customCss,
@@ -383,7 +383,7 @@ class NinjaFooTable
             }
         }
 
-        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id);
+        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id, $tableArray);
 
         self::addInlineVars(json_encode($table_vars, true), $table_id, $table_instance_name);
         $foo_table_attributes = self::getFootableAtrributes($table_id);

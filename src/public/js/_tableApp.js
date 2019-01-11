@@ -1,13 +1,14 @@
 import Event from "./EventBus";
 import './ninja-tables-footable-custom-event';
 import './_stackable';
+
 let $ = jQuery;
 export default {
     initTables: function () {
         let that = this;
         this.ninjaFooTablesInstance = [];
         let footables = $('table.foo-table.ninja_footable');
-        if(footables.length) {
+        if (footables.length) {
             $.each(footables, (index, table) => {
                 let $table = $(table);
                 let tableDataName = $table.attr('data-ninja_table_instance');
@@ -151,7 +152,7 @@ export default {
 
         let initConfig = that.getNinjaTableConfig(tableConfig);
 
-        if(tableConfig.chunks) {
+        if (tableConfig.chunks) {
             $table.on('ready.ft.table', (e, fooTable) => {
                 that.loadMoreData(tableConfig, fooTable);
             });
@@ -171,7 +172,7 @@ export default {
     },
     loadChuck(counter, tableConfig, fooTable) {
         let maxChuck = tableConfig.chunks;
-        if(counter <= maxChuck) {
+        if (counter <= maxChuck) {
             $.get(window.ninja_footables.ajax_url, {
                 action: 'wp_ajax_ninja_tables_public_action',
                 table_id: tableConfig.table_id,
@@ -195,7 +196,19 @@ export default {
             "columns": tableConfig.columns,
             "expandFirst": tableConfig.settings.expandFirst,
             "expandAll": tableConfig.settings.expandAll,
-            "empty": tableConfig.settings.i18n.no_result_text
+            "empty": tableConfig.settings.i18n.no_result_text,
+            "editing": {
+                "enabled": true,
+                "position": "right",
+                editRow(row) {
+                    let self = this;
+                    jQuery(document).trigger('ninja_table_edit_row', {
+                        row: row,
+                        self: self,
+                        tableConfig: tableConfig
+                    });
+                }
+            }
         };
 
         if (tableConfig.render_type !== 'legacy_table') {
@@ -207,7 +220,7 @@ export default {
                 skip_rows: tableConfig.settings.skip_rows,
                 limit_rows: tableConfig.settings.limit_rows,
             };
-            if(tableConfig.chunks && tableConfig.chunks > 0) {
+            if (tableConfig.chunks && tableConfig.chunks > 0) {
                 rowRequestUrlParams.chunk_number = 0;
             }
             initConfig.rows = $.get(window.ninja_footables.ajax_url, rowRequestUrlParams);
@@ -249,9 +262,12 @@ export default {
                 });
                 validColumns = allColumns.filter(value => -1 !== filterColumns.indexOf(value));
             }
+
+            console.log(tableConfig.settings.hide_default_filter);
+
             initConfig.filtering.filters = [{
                 "name": "ninja_table_default_filter",
-                "hidden": true,
+                "hidden": tableConfig.settings.hide_default_filter == 'yes',
                 "query": tableConfig.settings.defualt_filter,
                 "columns": validColumns
             }];
@@ -322,7 +338,13 @@ export default {
         if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
             return jQuery(valueOrElement).text();
         } else {
-            return jQuery('<div>' + valueOrElement + "</div>").text();
+            // Create a new div element
+            var temporalDivElement = document.createElement("div");
+            // Set the HTML content with the providen
+            temporalDivElement.innerHTML = valueOrElement;
+            // Retrieve the text property of the element (cross-browser support)
+            var text = temporalDivElement.textContent || temporalDivElement.innerText || "";
+            return text.replace(/(\r\n\t|\n|\r\t)/gm, "").trim();
         }
     }
 }

@@ -24,5 +24,5 @@
         </colgroup>
 		<?php do_action( 'ninja_tables_inside_table_render', $table, $table_vars ); ?>
     </table>
-	<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
+	<?php do_action( 'ninja_tables_after_table_print', $table, $table_vars ); ?>
 </div>

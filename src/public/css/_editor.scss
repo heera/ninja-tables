@@ -1,0 +1,108 @@
+.nt_editor_modal {
+
+  display: none !important;
+  visibility: hidden !important;
+
+  &.show_nt_modal {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  &.has_nt_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99999;
+    .nt_modal_wrapper {
+      position: relative;
+      width: 650px;
+      background: white;
+      max-width: 95%;
+      margin: 70px auto 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.31);
+      border-radius: 3px;
+      border: 0;
+      text-align: left;
+    }
+  }
+  .nt_modal_header {
+    display: block;
+    margin: 0;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgb(229, 229, 229);
+    position: relative;
+    h3 {
+      padding: 0;
+      margin: 0;
+      font-size: 22px;
+    }
+    .nt_editor_close {
+      position: absolute;
+      top: 15px;
+      font-size: 22px;
+      right: 20px;
+      line-height: 22px;
+      color: #545454;
+      cursor: pointer;
+      &:hover {
+        color: black;
+      }
+    }
+  }
+
+  .nt_modal_body {
+    display: block;
+    padding: 20px 25px;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    text-align: left;
+    .nt_form_group {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      > label {
+        font-weight: bold;
+      }
+      .nt_form_input, .nt_form_textarea {
+        padding: 5px 10px;
+        background: white;
+        border: 1px solid rgb(229, 229, 229);
+        width: 100%;
+        min-width: 100%;
+        &:focus {
+          border: 1px solid rgb(115, 115, 115);
+        }
+      }
+      .nt_form_textarea {
+        max-width: 100%;
+        min-height: 75px;
+      }
+    }
+  }
+
+  .nt_modal_footer {
+    background: rgb(249, 249, 249);
+    text-align: right;
+    border-top: 1px solid rgb(229, 229, 229);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    padding: 0px 10px;
+    .nt_editor_action {
+      display: inline-block;
+      padding: 10px;
+      color: #545454;
+      cursor: pointer;
+      margin-left: 20px;
+      &:hover {
+        color: black;
+      }
+    }
+  }
+}
+
+.pika-single.is-bound {
+  z-index: 9999999999999999;
+}

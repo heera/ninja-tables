@@ -109,7 +109,8 @@ class NinjaTablePublic
             foreach ($formatted_data as $datum) {
                 $newStyledData[] = array(
                     'options' => array(
-                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : ''
+                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : '',
+                        'id' => isset($datum['___id___']) ? $datum['___id___'] : '',
                     ),
                     'value' => $datum
                 );
