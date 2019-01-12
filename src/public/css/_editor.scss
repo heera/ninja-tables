@@ -1,11 +1,13 @@
 .nt_editor_modal {
-
   display: none !important;
   visibility: hidden !important;
-
   &.show_nt_modal {
     display: block !important;
     visibility: visible !important;
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    transition: all 0.5s ease;
   }
 
   &.has_nt_modal {
@@ -22,7 +24,7 @@
       background: white;
       max-width: 95%;
       margin: 70px auto 20px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.31);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, .31);
       border-radius: 3px;
       border: 0;
       text-align: left;
@@ -81,6 +83,9 @@
         min-height: 75px;
       }
     }
+    .nt_is_required {
+      color: rgb(169, 68, 66);
+    }
   }
 
   .nt_modal_footer {
@@ -101,8 +106,43 @@
       }
     }
   }
+
+  &.nt_modal_editing {
+    .nt_editor_add, .nt_add_data_header {
+      display: none !important;
+    }
+  }
+  &.nt_modal_adding {
+    .nt_editor_update, .nt_edit_data_header {
+      display: none !important;
+    }
+  }
 }
 
 .pika-single.is-bound {
   z-index: 9999999999999999;
+}
+
+.nt_pro_notification {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: auto;
+  padding: 5px 20px;
+  border-radius: 5px;
+  color: rgb(49, 112, 143);
+  background-color: rgb(217, 237, 247);
+  border-color: rgb(188, 232, 241);
+  z-index: 9999999999;
+  box-shadow: 3px 3px 3px 3px #b5b1b17a;
+  &.nt_notification_type_success {
+    color: rgb(60, 118, 61);
+    background-color: rgb(223, 240, 216);
+    border-color: rgb(214, 233, 198);
+  }
+  &.nt_notification_type_error {
+    color: rgb(169, 68, 66);
+    background-color: rgb(242, 222, 222);
+    border-color: rgb(235, 204, 209);
+  }
 }

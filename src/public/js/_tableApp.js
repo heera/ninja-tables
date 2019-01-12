@@ -197,9 +197,27 @@ export default {
             "expandFirst": tableConfig.settings.expandFirst,
             "expandAll": tableConfig.settings.expandAll,
             "empty": tableConfig.settings.i18n.no_result_text,
-            "editing": {
-                "enabled": true,
+            "editing": {}
+        };
+
+        if (tableConfig.editing && tableConfig.editing.enabled) {
+            initConfig.editing = {
+                "enabled": tableConfig.editing.enabled,
                 "position": "right",
+                "alwaysShow": tableConfig.editing.alwaysShow,
+                "allowEdit": tableConfig.editing.editing,
+                "allowDelete": tableConfig.editing.deleting,
+                "allowView": false,
+                "showText": '<span class="fooicon fooicon-pencil" aria-hidden="true"></span> '+tableConfig.editing.showText,
+                "hideText": tableConfig.editing.hideText,
+                "addText": tableConfig.editing.addText,
+                "column": {
+                    "classes": "footable-editing",
+                    "name": "____editing____",
+                    "title": tableConfig.editing.editingColumnTitle,
+                    "filterable": false,
+                    "sortable": false
+                },
                 editRow(row) {
                     let self = this;
                     jQuery(document).trigger('ninja_table_edit_row', {
@@ -207,9 +225,17 @@ export default {
                         self: self,
                         tableConfig: tableConfig
                     });
+                },
+                addRow() {
+                    let self = this;
+                    jQuery(document).trigger('ninja_table_add_row', {
+                        self: self,
+                        tableConfig: tableConfig
+                    });
                 }
             }
-        };
+        }
+
 
         if (tableConfig.render_type !== 'legacy_table') {
             let rowRequestUrlParams = {
@@ -223,6 +249,10 @@ export default {
             if (tableConfig.chunks && tableConfig.chunks > 0) {
                 rowRequestUrlParams.chunk_number = 0;
             }
+            if (tableConfig.editing && tableConfig.editing.own_data_only) {
+                rowRequestUrlParams.own_only = 'yes';
+            }
+
             initConfig.rows = $.get(window.ninja_footables.ajax_url, rowRequestUrlParams);
         }
 

@@ -179,6 +179,7 @@ class NinjaTableImport
 
         $content = json_decode(file_get_contents($tmpName), true);
 
+
         $header = array_keys(array_pop(array_reverse($content)));
 
         $formattedHeader = array();
@@ -200,7 +201,20 @@ class NinjaTableImport
     {
         $tmpName = $_FILES['file']['tmp_name'];
 
-        $content = json_decode(file_get_contents($tmpName), true);
+        $parsedContent = file_get_contents($tmpName);
+
+        $content = json_decode($parsedContent, true);
+
+        if(json_last_error()) {
+            for ($i = 0; $i <= 31; ++$i) {
+                $parsedContent = str_replace(chr($i), "", $parsedContent);
+            }
+            $parsedContent = str_replace(chr(127), "", $parsedContent);
+            if (0 === strpos(bin2hex($parsedContent), 'efbbbf')) {
+                $parsedContent = substr($parsedContent, 3);
+            }
+            $content = json_decode($parsedContent, true);
+        }
 
         // validation
         if (!$content['post'] || !$content['columns'] || !$content['settings']) {
@@ -316,7 +330,7 @@ class NinjaTableImport
             array_push($data, array(
                 'table_id' => $tableId,
                 'attribute' => 'value',
-                'value' => json_encode($itemTemp),
+                'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
                 'created_at' => $time,
                 'updated_at' => $time
             ));

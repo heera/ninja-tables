@@ -3,6 +3,28 @@
     padding: 0.92857143em 0.78571429em;
   }
 
+  th.footable-editing {
+    min-width: 75px;
+  }
+
+  td.footable-editing {
+    .btn-group {
+      button {
+        padding: 1px 5px;
+        margin: 0;
+        border-radius: 3px;
+        &:last-child {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+        &:first-child {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+    }
+  }
+
   .form-inline {
     display: block !important;
     margin-bottom: 0;
@@ -430,6 +452,9 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     .footable_parent {
       overflow-x: hidden !important;
       width: 100%;
+    }
+    .footable-editing {
+      display: none !important;
     }
   }
 }

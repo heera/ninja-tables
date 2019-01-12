@@ -763,7 +763,7 @@ class NinjaTablesAdmin
         $attributes = array(
             'table_id' => $tableId,
             'attribute' => 'value',
-            'value' => json_encode($formattedRow, true),
+            'value' => json_encode($formattedRow, JSON_UNESCAPED_UNICODE),
             'updated_at' => date('Y-m-d H:i:s')
         );
 

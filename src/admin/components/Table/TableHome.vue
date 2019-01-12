@@ -155,6 +155,10 @@
                         title: 'Table Design'
                     },
                     {
+                        route: 'table_editing',
+                        title: 'Frontend Editing'
+                    },
+                    {
                         route: 'additional_css',
                         title: 'Custom CSS/JS'
                     },
