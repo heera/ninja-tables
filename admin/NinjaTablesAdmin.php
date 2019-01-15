@@ -1091,6 +1091,7 @@ class NinjaTablesAdmin
     {
         $oldPostId = intval($_REQUEST['tableId']);
 
+        $this->checkDBMigrations();
         $post = get_post($oldPostId);
 
         // Duplicate table itself.
@@ -1116,8 +1117,8 @@ class NinjaTablesAdmin
         // Duplicate table rows.
         $itemsTable = $wpdb->prefix . ninja_tables_db_table_name();
 
-        $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `attribute`, `value`, `created_at`, `updated_at`)";
-        $sql .= " SELECT `position`, $newPostId, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
+        $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `owner_id`, `settings`, `attribute`, `value`, `created_at`, `updated_at`)";
+        $sql .= " SELECT `position`, $newPostId, `owner_id`, `settings`, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
         $sql .= " WHERE `table_id` = $oldPostId";
 
         $wpdb->query($sql);
