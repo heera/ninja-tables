@@ -937,7 +937,7 @@ class NinjaTablesAdmin
                     }
                 }
             }
-            
+
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,

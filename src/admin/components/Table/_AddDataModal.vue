@@ -51,27 +51,28 @@
         </div>
 
         <div class="row_config_container" v-if="row_config">
-            <h3>Row Settings</h3>
-            <div class="form_row_full">
-                <div class="form-group form_row_half">
-                    <label>Row Background Color</label>
-                    <el-color-picker v-model="item_settings.row_bg" show-alpha></el-color-picker>
+            <template v-if="has_pro">
+                <h3>Row Settings</h3>
+                <div class="form_row_full">
+                    <div class="form-group form_row_half">
+                        <label>Row Background Color</label>
+                        <el-color-picker v-model="item_settings.row_bg" show-alpha></el-color-picker>
+                    </div>
+                    <div class="form-group form_row_half">
+                        <label>Row Text Color</label>
+                        <el-color-picker v-model="item_settings.text_color" show-alpha></el-color-picker>
+                    </div>
                 </div>
-                <div class="form-group form_row_half">
-                    <label>Row Text Color</label>
-                    <el-color-picker v-model="item_settings.text_color" show-alpha></el-color-picker>
-                </div>
-            </div>
-            <h3>Cell Color Customization</h3>
-            <table class="wp-list-table widefat fixed striped">
-                <thead>
+                <h3>Cell Color Customization</h3>
+                <table class="wp-list-table widefat fixed striped">
+                    <thead>
                     <tr>
                         <th>Column</th>
                         <th>Background Color</th>
                         <th>Text Color</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <tr v-for="column in columns" :key="column.key">
                         <td>{{ column.name }}</td>
                         <td>
@@ -81,22 +82,28 @@
                             <el-color-picker v-model="item_settings.cell[column.key]['color']" show-alpha></el-color-picker>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-            <div v-if="!insertAfterPosition" style="margin-top: 20px" class="form-group">
-                <label>
-                    Data Create Date
-                    <el-tooltip placement="top-start" effect="light" content="If you use table sorting by create date then you can change create date to sort your data">
-                        <i class="el-icon-info el-text-info"></i>
-                    </el-tooltip>
-                </label>
-                <el-date-picker
-                        v-model="created_at"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        type="datetime"
-                        placeholder="Select date and time">
-                </el-date-picker>
-            </div>
+                    </tbody>
+                </table>
+                <div v-if="!insertAfterPosition" style="margin-top: 20px" class="form-group">
+                    <label>
+                        Data Create Date
+                        <el-tooltip placement="top-start" effect="light" content="If you use table sorting by create date then you can change create date to sort your data">
+                            <i class="el-icon-info el-text-info"></i>
+                        </el-tooltip>
+                    </label>
+                    <el-date-picker
+                            v-model="created_at"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            type="datetime"
+                            placeholder="Select date and time">
+                    </el-date-picker>
+                </div>
+            </template>
+            <template v-else>
+                <h3>Row and Cell Color Customization</h3>
+                <p>Using this module, You can set cell and row level colors of your data, It's a pro feature, Please purchase pro to unlock this feature</p>
+                <a href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=wp_plugin&utm_term=upgrade" target="_blank"><button type="button" class="el-button el-button--danger el-button--mini"><span>Buy Pro</span></button></a>
+            </template>
         </div>
         <div slot="footer" class="dialog-footer" :class="{ 'single-child': shouldNotContinueAdding }">
             <template v-if="!shouldNotContinueAdding">
@@ -313,11 +320,11 @@
             justify-content: flex-end;
         }
     }
-
+    
     .row_config_container {
         display: block;
         padding: 10px 15px;
-        background: rgb(224, 224, 224);
+        background: rgb(216, 237, 253);
         position: relative;
         border-radius: 5px;
     }
