@@ -129,8 +129,7 @@ export default {
                     $table.removeClass('ninja_has_filter');
                 }
             });
-
-
+        
         if (tableConfig.settings.stack_config && tableConfig.settings.stack_config.stackable) {
             $(document).trigger('ninja_table_init_stackables', {
                 '$table': $table,

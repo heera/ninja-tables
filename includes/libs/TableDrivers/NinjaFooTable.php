@@ -80,7 +80,7 @@ class NinjaFooTable
     }
 
     private static function generateCustomColorCSS($tableArray, $extra_css = '') {
-        $tableId = $tableArray['table_id'];
+        $tableId = intval($tableArray['table_id']);
         $cellStyles = array();
         $tableProvider = ninja_table_get_data_provider($tableId);
         if($tableProvider == 'default' && get_option('_ninja_tables_settings_migration')) {
@@ -92,6 +92,7 @@ class NinjaFooTable
                 ->get();
             $maybeError = ob_get_clean();
         }
+
         $css_prefix = '#footable_' . $tableId;
         $customColumnCss = '';
         if (defined('NINJATABLESPRO')) {

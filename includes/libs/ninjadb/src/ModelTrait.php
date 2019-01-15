@@ -118,7 +118,7 @@ trait ModelTrait {
      * @return $this
      */
     public function whereNotNull($key) {
-        $this->whereHandler($key, 'IS NOT NULL');
+        $this->whereHandler($key, 'IS NOT', 'NULL');
         return $this;
     }
 
@@ -128,7 +128,7 @@ trait ModelTrait {
      * @return $this
      */
     public function whereNull($key) {
-        $this->whereHandler($key, 'IS NULL');
+        $this->whereHandler($key, 'IS', 'NULL');
         return $this;
     }
 

@@ -881,9 +881,9 @@ class NinjaTablesAdmin
 
         $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
 
-        $data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true);
-
         if ($format == 'csv') {
+
+            $data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true);
 
             $header = array();
 
@@ -904,22 +904,37 @@ class NinjaTablesAdmin
         } elseif ($format == 'json') {
             $table = get_post($tableId);
 
+            $dataProvider = ninja_table_get_data_provider($tableId);
+            $rows = array();
+            if($dataProvider == 'default') {
+                $rawRows = ninja_tables_DbTable()
+                    ->select(array('position', 'owner_id', 'attribute', 'value', 'settings', 'created_at', 'updated_at'))
+                    ->where('table_id', $tableId)
+                    ->get();
+                foreach ($rawRows as $row) {
+                    $row->value = json_decode($row->value, true);
+                    $rows[] = $row;
+                }
+            }
+
+            $matas = get_post_meta($tableId);
+            $allMeta = array();
+
+            foreach ($matas as $metaKey => $metaValue) {
+                if(isset($metaValue[0])) {
+                    $metaValue = maybe_unserialize($metaValue[0]);
+                    $allMeta[$metaKey] = $metaValue;
+                }
+            }
+
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,
                 'settings' => $tableSettings,
-                'data_provider' => ninja_table_get_data_provider($tableId),
-                'metas' => array(
-                    '_ninja_tables_data_provider' => get_post_meta($tableId, '_ninja_tables_data_provider', true),
-                    '_ninja_wp_posts_query_extra' => get_post_meta($tableId, '_ninja_wp_posts_query_extra', true),
-                    '_ninja_table_wpposts_ds_where' => get_post_meta($tableId, '_ninja_table_wpposts_ds_where', true),
-                    '_ninja_table_wpposts_ds_post_types' => get_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', true),
-                    '_ninja_tables_data_provider_url' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
-                    '_ninja_tables_data_provider_ff_form_id' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
-                    '_ninja_table_custom_filters' => get_post_meta($tableId, '_ninja_table_custom_filters', true),
-                    '_ninja_custom_filter_styling' => get_post_meta($tableId, '_ninja_custom_filter_styling', true)
-                ),
-                'rows' => $data,
+                'data_provider' => $dataProvider,
+                'metas' => $allMeta,
+                'rows' => array(),
+                'original_rows' => $rows
             );
             $this->exportAsJSON($exportData, $fileName . '.json');
         }

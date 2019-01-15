@@ -132,7 +132,7 @@ class NinjaTableImport
         $fileName = sanitize_text_field($_FILES['file']['name']);
 
         $data = file_get_contents($tmpName);
-        if(isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+        if (isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
             $data = utf8_encode($data);
         }
 
@@ -205,7 +205,7 @@ class NinjaTableImport
 
         $content = json_decode($parsedContent, true);
 
-        if(json_last_error()) {
+        if (json_last_error()) {
             for ($i = 0; $i <= 31; ++$i) {
                 $parsedContent = str_replace(chr($i), "", $parsedContent);
             }
@@ -237,18 +237,24 @@ class NinjaTableImport
 
         update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
 
-        if (isset($content['data_provider']) && $content['data_provider'] != 'default') {
-            $metas = $content['metas'];
-            foreach ($metas as $meta_key => $meta_value) {
-                update_post_meta($tableId, $meta_key, $meta_value);
+        $metas = $content['metas'];
+        foreach ($metas as $meta_key => $meta_value) {
+            update_post_meta($tableId, $meta_key, $meta_value);
+        }
+
+        if ($rows = $content['rows']) {
+            $header = [];
+            foreach ($content['columns'] as $column) {
+                $header[$column['key']] = $column['name'];
             }
-        } else {
-            if ($rows = $content['rows']) {
-                $header = [];
-                foreach ($content['columns'] as $column) {
-                    $header[$column['key']] = $column['name'];
-                }
-                ninjaTableInsertDataToTable($tableId, $rows, $header);
+            ninjaTableInsertDataToTable($tableId, $rows, $header);
+        }
+
+        if (isset($content['original_rows']) && $originalRows = $content['original_rows']) {
+            foreach ($originalRows as $row) {
+                $row['table_id'] = $tableId;
+                $row['values'] = json_encode($row['values'], JSON_UNESCAPED_UNICODE);
+                ninja_tables_DbTable()->insert($row);
             }
         }
 
@@ -278,7 +284,7 @@ class NinjaTableImport
         $csvParser = new CSVParser();
 
         $data = file_get_contents($tmpName);
-        if(isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+        if (isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
             $data = utf8_encode($data);
         }
 
