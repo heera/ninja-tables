@@ -678,7 +678,7 @@ class NinjaTablesAdmin
                 }
 
                 $createdBy = '';
-                if(property_exists($item, 'owner_id')) {
+                if (property_exists($item, 'owner_id')) {
                     $userInfo = get_userdata($item->owner_id);
                     $createdBy = $userInfo->display_name;
                 }
@@ -686,7 +686,7 @@ class NinjaTablesAdmin
                     'id' => $item->id,
                     'created_at' => $item->created_at,
                     'settings' => $settings,
-                    'created_by' =>  $createdBy,
+                    'created_by' => $createdBy,
                     'position' => property_exists($item, 'position') ? $item->position : null,
                     'values' => json_decode($item->value, true)
                 );
@@ -793,7 +793,7 @@ class NinjaTablesAdmin
             if (isset($_REQUEST['insert_after_id'])) {
                 list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
 
-                if($orderByField == 'created_at') {
+                if ($orderByField == 'created_at') {
                     // Calculate the insert position Date
                     $prevItemId = absint($_REQUEST['insert_after_id']);
                     $previousItem = ninja_tables_DbTable()
@@ -906,7 +906,7 @@ class NinjaTablesAdmin
 
             $dataProvider = ninja_table_get_data_provider($tableId);
             $rows = array();
-            if($dataProvider == 'default') {
+            if ($dataProvider == 'default') {
                 $rawRows = ninja_tables_DbTable()
                     ->select(array('position', 'owner_id', 'attribute', 'value', 'settings', 'created_at', 'updated_at'))
                     ->where('table_id', $tableId)
@@ -920,13 +920,24 @@ class NinjaTablesAdmin
             $matas = get_post_meta($tableId);
             $allMeta = array();
 
+            $excludedMetaKeys = array(
+                '_ninja_table_cache_object',
+                '_ninja_table_cache_html',
+                '_external_cached_data',
+                '_last_external_cached_time',
+                '_last_edited_by',
+                '_last_edited_time'
+            );
+
             foreach ($matas as $metaKey => $metaValue) {
-                if(isset($metaValue[0])) {
-                    $metaValue = maybe_unserialize($metaValue[0]);
-                    $allMeta[$metaKey] = $metaValue;
+                if(!in_array($metaKey, $excludedMetaKeys)) {
+                    if (isset($metaValue[0])) {
+                        $metaValue = maybe_unserialize($metaValue[0]);
+                        $allMeta[$metaKey] = $metaValue;
+                    }
                 }
             }
-
+            
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,
@@ -1188,11 +1199,12 @@ class NinjaTablesAdmin
         return ob_get_clean();
     }
 
-    private function checkDBMigrations() {
+    private function checkDBMigrations()
+    {
         $firstRow = ninja_tables_DbTable()->first();
 
-        if(!$firstRow) {
-            if(get_option('_ninja_table_db_settings_owner_id')) {
+        if (!$firstRow) {
+            if (get_option('_ninja_table_db_settings_owner_id')) {
                 return true;
             }
             $this->migrateSettingColumnIfNeeded();
@@ -1201,16 +1213,17 @@ class NinjaTablesAdmin
             return true;
         }
 
-        if(!property_exists($firstRow, 'owner_id')) {
+        if (!property_exists($firstRow, 'owner_id')) {
             $this->migrateOwnerColumnIfNeeded();
         }
 
-        if(!property_exists($firstRow, 'settings')) {
+        if (!property_exists($firstRow, 'settings')) {
             $this->migrateSettingColumnIfNeeded();
         }
 
         return true;
     }
+
     public function migrateDatabaseIfNeeded()
     {
         // If the database is already migrated for manual
@@ -1468,9 +1481,10 @@ class NinjaTablesAdmin
         return $links;
     }
 
-    public function getGlobalSettings() {
+    public function getGlobalSettings()
+    {
         $suppressError = get_option('_ninja_suppress_error');
-        if(!$suppressError) {
+        if (!$suppressError) {
             $suppressError = 'log_silently';
         }
 
@@ -1479,7 +1493,8 @@ class NinjaTablesAdmin
         ), 200);
     }
 
-    public function updateGlobalSettings() {
+    public function updateGlobalSettings()
+    {
         $errorHandling = sanitize_text_field($_REQUEST['suppress_error']);
         update_option('_ninja_suppress_error', $errorHandling, true);
         wp_send_json_success(array(
