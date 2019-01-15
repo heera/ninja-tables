@@ -108,13 +108,21 @@
   }
 
   &.nt_modal_editing {
-    .nt_editor_add, .nt_add_data_header {
+    .nt_editor_add, .nt_add_data_header, .nt_delete_data_header, .nt_delete_modal_body, .nt_editor_delete {
       display: none !important;
     }
   }
   &.nt_modal_adding {
-    .nt_editor_update, .nt_edit_data_header {
+    .nt_editor_update, .nt_edit_data_header, .nt_delete_data_header, .nt_delete_modal_body, .nt_editor_delete {
       display: none !important;
+    }
+  }
+  &.nt_row_delete {
+    .nt_editor_update, .nt_edit_data_header, .nt_editor_add, .nt_add_data_header, .nt_editor_apply, .nt_edit_add_modal_body {
+      display: none !important;
+    }
+    .nt_modal_wrapper {
+      margin-top: 20vh;
     }
   }
 }

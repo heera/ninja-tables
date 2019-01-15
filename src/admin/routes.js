@@ -5,6 +5,7 @@ const ImportTable = require('./components/Tools/Import.vue');
 const PermissionSettings = require('./components/Tools/Privacy');
 const DefaultTableAppearance = require('./components/Tools/DefaultAppearance');
 const LicenseSettings = require('./components/Tools/License');
+const GlobalSettings = require('./components/Tools/GlobalSettings');
 
 
 const TableHome = require('./components/Table/TableHome.vue');
@@ -51,6 +52,11 @@ export const routes = [
                         path: 'licensing',
                         name: 'licensing',
                         component: LicenseSettings
+                    },
+                    {
+                        path: 'global_settings',
+                        name: 'global_settings',
+                        component: GlobalSettings
                     }
                 ]
             },

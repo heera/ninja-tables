@@ -66,7 +66,7 @@
                 </template>
             </div>
             <div v-else-if="hasPro" class="section_block">
-                <h3>Custom Filters is introduced in version 2.4.0. Please upgrade <b>Ninja tables pro</b> plugin to use
+                <h3>Custom Filters is introduced in version 2.4.0. Please update <b>Ninja tables pro</b> plugin to use
                     this feature</h3>
             </div>
             <div v-else class="section_block text-center">

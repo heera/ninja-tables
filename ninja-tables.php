@@ -80,3 +80,4 @@ function ninja_tables_boot()
 
 // kick off
 ninja_tables_boot();
+

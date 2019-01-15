@@ -1224,5 +1224,24 @@ h2.nav-tab-wrapper {
     th {
       font-weight: 500;
     }
+    tr td, tr th {
+      border-bottom: 1px solid rgb(234, 234, 234) !important;
+    }
   }
 }
+
+.el-radio-group.spaced {
+  max-width: 100%;
+  position: relative;
+  > label {
+    display: inline-block;
+  }
+}
+
+.el-radio-group.spaced_new_line > label {
+  display: block;
+  margin-left: 0 !important;
+  margin-bottom: 10px;
+}
+
+

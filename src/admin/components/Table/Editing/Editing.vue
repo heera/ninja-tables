@@ -1,12 +1,32 @@
 <template>
     <div class="table_editing">
-        <div v-if="!config.table.isEditable">
+        <div v-if="!hasPro">
+            <div class="el-main-editing">
+                <div class="ninja_header_editing">
+                    <h2 class="">
+                        Frontend Editing Settings
+                    </h2>
+                </div>
+                <div class="editing_body text-center">
+                    <h3>Frontend Editing is a pro only features. Please purchase <b>"Ninja Tables Pro"</b> to use this feature</h3>
+                    <p>Using this module, You can let your frontend users to add/edit/delete records based on user role. Also, You can separate the records by user submission</p>
+                    <a class="el-button el-button--danger" target="_blank" href="https://wpmanageninja.com/ninja-tables/ninja-tables-pro-pricing/?utm_source=ninja-tables&utm_medium=wp&utm_campaign=frontend-editing&utm_term=upgrade">Purchase Now</a>
+                </div>
+            </div>
+        </div>
+        <div v-else-if="!isActivated">
+            <h3>
+                Custom Filters is introduced in version 3.2.0. Please update <b>Ninja tables pro</b> plugin to use
+                this feature
+            </h3>
+        </div>
+        <div v-else-if="!config.table.isEditable">
             <h3>This table can not be editable on frontend</h3>
             <p>Only "Default" data source tables can be editable</p>
         </div>
-        <div class="el-main-editing" v-else>
+        <div v-else v-loading="fetching" class="el-main-editing">
             <div class="ninja_header_editing">
-                <h2 class="">
+                <h2>
                     Frontend Editing Settings
                 </h2>
                 <div class="heading_actions">
@@ -14,13 +34,11 @@
                 </div>
             </div>
             <div class="editing_body">
-
                 <div class="editing_sub_section">
                     <el-checkbox true-label="yes" false-label="no" v-model="settings.allow_frontend">
                         Enable Frontend editing
                     </el-checkbox>
                 </div>
-
                 <template v-if="settings.allow_frontend == 'yes'">
                     <div class="editing_sub_section">
                         <div class="ninja_section_block_header">
@@ -58,6 +76,10 @@
                                 <el-checkbox true-label="yes" false-label="no" v-model="settings.own_data_only">
                                     Users can see and edit/delete only own data
                                 </el-checkbox>
+                            </div>
+                            <div style="line-height: 120%" v-show="settings.own_data_only == 'yes'">
+                                Your Selected user roles only see their own data and manage those data. Other user roles can not see any data. If you want to show all the data without editing tools to all users, you can use the following shortcode:
+                                <br /><pre><b>[ninja_tables disable_edit="yes" id="{{ tableId }}"]</b></pre>
                             </div>
                         </div>
                     </div>
@@ -101,6 +123,53 @@
                             </table>
                         </div>
                     </div>
+
+                    <div class="editing_sub_section">
+                        <div class="ninja_section_block_header">
+                            <h3>Appearance Settings</h3>
+                            <p>
+                                You can set the Editing Component Labels and Appearances
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <el-checkbox true-label="yes" false-label="no" v-model="appearance_settings.alwaysShow">
+                                Always Show Edit Icons
+                            </el-checkbox>
+                        </div>
+
+
+                        <div class="form_row_full">
+                            <div class="form_group form_row_half">
+                                <label>Add Row Button Label</label>
+                                <el-input size="mini" placeholder="eg: New row" v-model="appearance_settings.addText"></el-input>
+                            </div>
+                            <div class="form_group form_row_half">
+                                <label>Edit Rows Button Label</label>
+                                <el-input size="mini" placeholder="eg: Edit rows" v-model="appearance_settings.showText"></el-input>
+                            </div>
+                        </div>
+
+                        <div class="form_row_full">
+                            <div class="form_group form_row_half">
+                                <label>Add Popup Heading</label>
+                                <el-input size="mini" placeholder="eg: Add Data" v-model="appearance_settings.addModalLabel"></el-input>
+                            </div>
+                            <div class="form_group form_row_half">
+                                <label>Edit Popup Heading</label>
+                                <el-input size="mini" placeholder="eg: Edit Data" v-model="appearance_settings.editModalLabel"></el-input>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Editor Icon Position</label>
+                            <br/>
+                            <el-radio-group size="mini" v-model="appearance_settings.position">
+                                <el-radio-button label="left">Left</el-radio-button>
+                                <el-radio-button label="right">Right</el-radio-button>
+                            </el-radio-group>
+                        </div>
+                    </div>
                 </template>
 
                 <div style="text-align: right" class="form_group">
@@ -129,7 +198,10 @@
                 user_roles: {},
                 editing_items: {},
                 required_items: {},
-                default_values: {}
+                default_values: {},
+                appearance_settings: {},
+                hasPro: !!window.ninja_table_admin.hasPro,
+                isActivated: !!window.ninja_table_admin.activated_features.ninja_table_front_editor
             }
         },
         methods: {
@@ -145,6 +217,7 @@
                         this.editing_items = response.data.editor_pref.editing_items;
                         this.required_items = response.data.editor_pref.required_items;
                         this.default_values = response.data.editor_pref.default_values;
+                        this.appearance_settings = response.data.editor_pref.appearance_settings;
                     })
                     .fail(error => {
 
@@ -161,7 +234,8 @@
                     settings: this.settings,
                     editing_items: this.editing_items,
                     required_items: this.required_items,
-                    default_values: this.default_values
+                    default_values: this.default_values,
+                    appearance_settings: this.appearance_settings,
                 };
                 this.$post(data)
                     .then(response => {

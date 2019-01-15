@@ -375,15 +375,18 @@ class NinjaFooTable
             'table_version' => NINJA_TABLES_VERSION
         );
 
+        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id, $tableArray);
+
+
         if($renderType == 'ajax_table') {
-            $totalSize = ninja_tables_DbTable()->where('table_id', $table_id)->count();
+            $totalSizeQuery = ninja_tables_DbTable()->where('table_id', $table_id);
+            $totalSizeQuery = apply_filters('ninja_tables_total_size_query', $totalSizeQuery, $table_vars);
+            $totalSize = $totalSizeQuery->count();
             $perChunk = ninjaTablePerChunk($table_id);
             if($totalSize > $perChunk) {
                 $table_vars['chunks'] = ceil($totalSize / $perChunk) - 1;
             }
         }
-
-        $table_vars = apply_filters('ninja_table_rendering_table_vars', $table_vars, $table_id, $tableArray);
 
         self::addInlineVars(json_encode($table_vars, true), $table_id, $table_instance_name);
         $foo_table_attributes = self::getFootableAtrributes($table_id);
@@ -411,15 +414,20 @@ class NinjaFooTable
         $isDisableCache = true;
         $limitRows = ArrayHelper::get($table_vars, 'settings.limit_rows', false);
         $skipRows = ArrayHelper::get($table_vars, 'settings.skip_rows', false);
-
         $tableColumns = $table_vars['columns'];
+        $ownOnly = false;
+
+        if(ArrayHelper::get($table_vars, 'editing.own_data_only') == 'yes') {
+            $ownOnly = true;
+        }
 
         $formatted_data = ninjaTablesGetTablesDataByID(
                 $table->ID,
                 $table_vars['settings']['default_sorting'],
                 false,
                 $limitRows,
-                $skipRows
+                $skipRows,
+                $ownOnly
         );
 
         $tableHtml = self::loadView('public/views/table_inner_html', array(

@@ -137,7 +137,7 @@ if (!function_exists('ninja_table_is_in_production_mood')) {
 }
 
 
-function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false, $skip = false)
+function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disableCache = false, $limit = false, $skip = false, $ownOnly = false)
 {
     $providerName = ninja_table_get_data_provider($tableId);
     $providerName = in_array($providerName, array('csv', 'google-csv')) ? 'csv' : $providerName;
@@ -148,7 +148,8 @@ function ninjaTablesGetTablesDataByID($tableId, $defaultSorting = false, $disabl
         $tableId,
         $defaultSorting,
         $limit,
-        $skip
+        $skip,
+        $ownOnly
     );
 }
 

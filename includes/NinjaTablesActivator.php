@@ -65,6 +65,7 @@ class NinjaTablesActivator {
 				id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 				position int(11),
 				table_id int(11) NOT NULL,
+				owner_id int(11),
 				attribute varchar(255) NOT NULL,
 				settings longtext,
 				value longtext,

@@ -98,7 +98,12 @@ class NinjaTablePublic
             $limit = $perChunk;
         }
 
-        $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip);
+        $ownOnly = false;
+        if(isset($_REQUEST['own_only']) && $_REQUEST['own_only'] == 'yes') {
+            $ownOnly = true;
+        }
+
+        $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip, $ownOnly);
 
         $formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
 

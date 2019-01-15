@@ -164,7 +164,7 @@ class NinjaTablesAdmin
                 $submenu['ninja_tables']['activate_license'] = array(
                     '<span style="color:#f39c12;">Activate License</span>',
                     $capability,
-                    'admin.php?page=ninja_tables#/tools?active_menu=license',
+                    'admin.php?page=ninja_tables#/tools/licensing',
                     '',
                     'ninja_table_license_menu'
                 );
@@ -365,7 +365,9 @@ class NinjaTablesAdmin
             'get_default_settings' => 'getDefaultSettings',
             'save_default_settings' => 'saveDefaultSettings',
             'get_button_settings' => 'getButtonSettings',
-            'update_button_settings' => 'updateButtonSettings'
+            'update_button_settings' => 'updateButtonSettings',
+            'get_global_settings' => 'getGlobalSettings',
+            'update_global_settings' => 'updateGlobalSettings',
         );
 
         $importRoutes = array(
@@ -517,8 +519,7 @@ class NinjaTablesAdmin
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
 
-
-        $this->migrateSettingColumnIfNeeded();
+        $this->checkDBMigrations();
 
         wp_send_json(array(
             'preview_url' => site_url('?ninjatable_preview=' . $tableID),
@@ -675,10 +676,17 @@ class NinjaTablesAdmin
                         $settings = (object)array();
                     }
                 }
+
+                $createdBy = '';
+                if(property_exists($item, 'owner_id')) {
+                    $userInfo = get_userdata($item->owner_id);
+                    $createdBy = $userInfo->display_name;
+                }
                 $response[] = array(
                     'id' => $item->id,
                     'created_at' => $item->created_at,
                     'settings' => $settings,
+                    'created_by' =>  $createdBy,
                     'position' => property_exists($item, 'position') ? $item->position : null,
                     'values' => json_decode($item->value, true)
                 );
@@ -764,6 +772,7 @@ class NinjaTablesAdmin
             'table_id' => $tableId,
             'attribute' => 'value',
             'value' => json_encode($formattedRow, JSON_UNESCAPED_UNICODE),
+            'owner_id' => get_current_user_id(),
             'updated_at' => date('Y-m-d H:i:s')
         );
 
@@ -1163,6 +1172,29 @@ class NinjaTablesAdmin
         return ob_get_clean();
     }
 
+    private function checkDBMigrations() {
+        $firstRow = ninja_tables_DbTable()->first();
+
+        if(!$firstRow) {
+            if(get_option('_ninja_table_db_settings_owner_id')) {
+                return true;
+            }
+            $this->migrateSettingColumnIfNeeded();
+            $this->migrateOwnerColumnIfNeeded();
+            update_option('_ninja_table_db_settings_owner_id', true);
+            return true;
+        }
+
+        if(!property_exists($firstRow, 'owner_id')) {
+            $this->migrateOwnerColumnIfNeeded();
+        }
+
+        if(!property_exists($firstRow, 'settings')) {
+            $this->migrateSettingColumnIfNeeded();
+        }
+
+        return true;
+    }
     public function migrateDatabaseIfNeeded()
     {
         // If the database is already migrated for manual
@@ -1189,28 +1221,27 @@ class NinjaTablesAdmin
         update_option($option, true);
     }
 
-
     private function migrateSettingColumnIfNeeded()
     {
-        // If the database is already migrated for manual
-        // sorting the option table would have a flag.
-        $option = '_ninja_tables_settings_migration';
-
-        if (get_option($option)) {
-            return;
-        }
-
         global $wpdb;
         $tableName = $wpdb->prefix . ninja_tables_db_table_name();
-
         // Update the databse to hold the sorting position number.
         $sql = "ALTER TABLE $tableName ADD COLUMN `settings` LONGTEXT AFTER `value`;";
         ob_start();
         $wpdb->query($sql);
         $maybeError = ob_get_clean();
-        // Keep a flag on the options table that the
-        // db is migrated to use for manual sorting.
-        update_option($option, true);
+        update_option('_ninja_tables_settings_migration', true);
+    }
+
+    private function migrateOwnerColumnIfNeeded()
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix . ninja_tables_db_table_name();
+        // Update the databse to hold the sorting position number.
+        $sql = "ALTER TABLE $tableName ADD COLUMN `owner_id` int(11) AFTER `table_id`;";
+        ob_start();
+        $wpdb->query($sql);
+        $maybeError = ob_get_clean();
     }
 
     public function getAllPostTypes()
@@ -1421,4 +1452,22 @@ class NinjaTablesAdmin
         return $links;
     }
 
+    public function getGlobalSettings() {
+        $suppressError = get_option('_ninja_suppress_error');
+        if(!$suppressError) {
+            $suppressError = 'log_silently';
+        }
+
+        wp_send_json_success(array(
+            'ninja_suppress_error' => $suppressError
+        ), 200);
+    }
+
+    public function updateGlobalSettings() {
+        $errorHandling = sanitize_text_field($_REQUEST['suppress_error']);
+        update_option('_ninja_suppress_error', $errorHandling, true);
+        wp_send_json_success(array(
+            'message' => __('Settings successfully updated', 'ninja-tables')
+        ), 200);
+    }
 }

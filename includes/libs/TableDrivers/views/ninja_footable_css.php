@@ -65,11 +65,11 @@
     <?php foreach ($cellStyles as $cellStyle): ?>
 <?php
 $cell = maybe_unserialize($cellStyle->settings);
-$cellPrefix = $css_prefix.' .nt_row_id_'.$cellStyle->id;
+$cellPrefix = $css_prefix.'.ninja_footable.ninja_table_pro tbody tr.nt_row_id_'.$cellStyle->id;
 ?>
 <?php echo $cellPrefix ?> {
-<?php if(@$cell['row_bg']): ?>background: <?php echo $cell['row_bg'].';'; endif; ?>
-<?php if(@$cell['text_color']): ?>color: <?php echo $cell['text_color'].';'; endif; ?>}
+<?php if(@$cell['row_bg']): ?>background: <?php echo $cell['row_bg'].' !important;'; endif; ?>
+<?php if(@$cell['text_color']): ?>color: <?php echo $cell['text_color'].'!important;'; endif; ?>}
 <?php foreach ($cell['cell'] as $cell_key => $values): ?>
 <?php $specCellPrefix = $cellPrefix.' .ninja_clmn_nm_'.$cell_key; ?>
 <?php echo $specCellPrefix ?> {

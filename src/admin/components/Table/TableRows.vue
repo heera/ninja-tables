@@ -111,18 +111,23 @@
                         </template>
                     </el-table-column>
                     <template v-if="isEditable">
-                        <el-table-column
-                                v-if="show_meta"
-                                label="Data ID"
-                                width="100px"
-                                prop="id"
-                        />
-                        <el-table-column
-                                v-if="show_meta"
-                                label="Create Date"
-                                width="165px"
-                                prop="created_at"
-                        />
+                        <template v-if="show_meta">
+                            <el-table-column
+                                    label="Data ID"
+                                    width="100px"
+                                    prop="id"
+                            />
+                            <el-table-column
+                                    label="Created By"
+                                    width="165px"
+                                    prop="created_by"
+                            />
+                            <el-table-column
+                                    label="Create Date"
+                                    width="165px"
+                                    prop="created_at"
+                            />
+                        </template>
                         <el-table-column
                                 fixed="right"
                                 label="Actions"
@@ -504,7 +509,7 @@
                         position = 'last';
                     }
                }
-               
+
                 if (position) {
                     if (position == 'last') {
                         this.items.push(item);

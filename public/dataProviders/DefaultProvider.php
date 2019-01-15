@@ -7,7 +7,7 @@ class DefaultProvider
     public function boot()
     {
         add_filter('ninja_tables_get_table_default', array($this, 'getTableSettings'));
-        add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 5);
+        add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 6);
     }
 
     public function getTableSettings($table)
@@ -22,12 +22,12 @@ class DefaultProvider
         return $table;
     }
 
-    public function data($data, $tableId, $defaultSorting, $limit = false, $skip = false)
+    public function data($data, $tableId, $defaultSorting, $limit = false, $skip = false, $ownOnly = false)
     {
         $advancedQuery = false;
         $disabledCache = false;
 
-        if($skip || $limit) {
+        if($skip || $limit || $ownOnly) {
             $advancedQuery = true;
         }
         // if cached not disabled then return cached data
@@ -58,6 +58,10 @@ class DefaultProvider
             $query->limit($limit);
         } else if($skip && $skip > 0) {
             $query->limit(99999);
+        }
+
+        if($ownOnly) {
+            $query = apply_filters('ninja_table_own_data_filter_query', $query, $tableId);
         }
 
         foreach ($query->get() as $item) {

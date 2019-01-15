@@ -52,7 +52,12 @@
                         route: 'licensing',
                         title: this.$t('License'),
                         icon_class: 'dashicons dashicons-shield',
-                    }
+                    },
+                    {
+                        route: 'global_settings',
+                        title: this.$t('Global Settings'),
+                        icon_class: 'el-icon-menu',
+                    },
                 ]);
             }
         },

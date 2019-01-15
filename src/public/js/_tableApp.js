@@ -203,7 +203,7 @@ export default {
         if (tableConfig.editing && tableConfig.editing.enabled) {
             initConfig.editing = {
                 "enabled": tableConfig.editing.enabled,
-                "position": "right",
+                "position": tableConfig.editing.position,
                 "alwaysShow": tableConfig.editing.alwaysShow,
                 "allowEdit": tableConfig.editing.editing,
                 "allowDelete": tableConfig.editing.deleting,
@@ -229,6 +229,14 @@ export default {
                 addRow() {
                     let self = this;
                     jQuery(document).trigger('ninja_table_add_row', {
+                        self: self,
+                        tableConfig: tableConfig
+                    });
+                },
+                deleteRow(row) {
+                    let self = this;
+                    jQuery(document).trigger('ninja_table_delete_row', {
+                        row: row,
                         self: self,
                         tableConfig: tableConfig
                     });

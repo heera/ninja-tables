@@ -118,7 +118,17 @@ trait ModelTrait {
      * @return $this
      */
     public function whereNotNull($key) {
-        $this->whereHandler($key, 'IS NOT', 'NULL');
+        $this->whereHandler($key, 'IS NOT NULL');
+        return $this;
+    }
+
+    /**
+     * @param string|array $key
+     * @usage ninjaDB()->whereNull('id')
+     * @return $this
+     */
+    public function whereNull($key) {
+        $this->whereHandler($key, 'IS NULL');
         return $this;
     }
 
