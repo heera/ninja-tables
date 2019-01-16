@@ -247,6 +247,12 @@ class NinjaTableClass
 
         $this->loader->add_filter('plugin_action_links_ninja-tables/ninja-tables.php', $plugin_admin, 'add_plugin_action_links');
 
+        add_filter('admin_footer_text', function ($content) {
+            if (isset($_GET['page']) && $_GET['page'] == 'ninja_tables') {
+                $content = 'If you like Ninja Tables <a target="_blank" href="https://wordpress.org/support/plugin/ninja-tables/reviews/#new-post">please leave us a ★★★★★ rating</a>. Many thanks from the WPManageNinja team in advance :)';
+            }
+            return $content;
+        });
     }
 
     /**
@@ -293,7 +299,7 @@ class NinjaTableClass
 
         add_action('wp_head', function () {
             $errorType = get_option('_ninja_suppress_error');
-            if(!$errorType) {
+            if (!$errorType) {
                 $errorType = 'log_silently';
             }
             if ($errorType != 'no'):
