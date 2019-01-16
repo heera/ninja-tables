@@ -1,11 +1,11 @@
-=== Ninja Tables - WP Data Tables Plugin for WordPress ===
+=== Ninja Tables - WP Data Table Plugin for WordPress ===
 Contributors: techjewel, adreastrian, heera, wpmanageninja
 Donate link: https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/
-Tags:  table, WP Data tables, WordPress tables Plugin, Table Grid, wp tables, data tables, datatables plugin, csv data, Footable Plugin, Tablular Data, Product Table, stackable table
+Tags:  table, Data Tables, WP Data tables, WordPress table Plugin, Table Grid, wp table, datatables plugin, csv data, csv, TablePress Migration, Footable Plugin, Tablular Data, Product Table, stackable table, spreadsheet data, visualise data, Woo Commerce Product Table, product table, product tables, Amazon Affiliate Table, product catalog, price list, pricing list, order forms, wholesale Table
 Requires at least: 4.5
 Requires PHP: 5.4 or greater
-Tested up to: 5.0.2
-Stable tag: 3.1.0
+Tested up to: 5.0.3
+Stable tag: 3.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Meet **Ninja Tables** that comes with all the solutions of the problems you face
 
 If you want to try our **Ninja Tables** Plugin without installing you can try from this [demo page.](https://wpmanageninja.com/ninja-tables/use-case/) You can watch the usage demo on [YouTube](https://www.youtube.com/watch?v=YVK-4PSAbXw) too.
 
-== Live Preview ==
+== Live Video Preview ==
 [youtube https://www.youtube.com/watch?v=-s0Gi39gOhE&t=0s&index=2&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL]
 
 If you have tried the demo, you can clearly understand how fast and dynamic the tables can be. That's why we call our **Ninja Tables** The Easiest Table Plugin on WordPress that comes with most advanced frontend table styles, for example, Footables, Bootstrap 3, Bootstrap 4, Symmetric UI etc. Ninja Table is perfect for your product list view, make order forms, wholesale WooCommerce products and product catalogues. If you want to add pagination, sorting or filtering on your tables, Ninja Tables is perfect for you. Our Ninja Table is SEO friendly and all the contents of the table can be picked by the search engines.
@@ -31,6 +31,7 @@ If you are worried about table styling I would say brace yourself because we are
 
 We also have 3 most popular CSS libraries with unlimited color schema! The most featured styles of Ninja Tables are as follow.
 
+- SEO friendly, content of your Table picked up by search engines like google
 - Single Line Cells
 - Fixed Layout
 - Hover rows
@@ -41,9 +42,19 @@ We also have 3 most popular CSS libraries with unlimited color schema! The most 
 - RTL Support
 - Data Tables
 - Foo Tables
+- Stackable Table
 - Bootstrap 3 Table Styles
 - Bootstrap 4 Table Styles
 - Semantic UI Table Styles
+- Also Table Plugin have the following Pro Features
+- Unlimited Table Colors and Customization
+- [Live Connect with Google Sheets](https://wpmanageninja.com/ninja-tables/google-sheets-integration/)
+- [WooCommerce Product Table](https://wpmanageninja.com/ninja-tables/woocommerce-product-table/)
+- [WP Posts / Any Custom Post Type Integration](https://wpmanageninja.com/ninja-tables/wp-posts/)
+- [Rich Media Integration with WP Table](https://wpmanageninja.com/ninja-tables/add-media-to-tables/)
+- [Conditional Column Formatting](https://wpmanageninja.com/ninja-tables/conditional-column-formatting/)
+- FrontEnd Table Editing
+- FrontEnd Table export – CSV, Print, PDF
 
 ### Ninja Table is blazingly fast!
 We care about the developers and the users. We know other plugins receive a high amount of complaints about the speed of rendering of the tables. But Ninja Tables never has the issue of loading or rendering data both on frontend and backend! Ninja Table's backend is built on VueJs and VueRouter as SPA! That is the main reason why Ninja tables users get the smooth experience of creating tables, configuring settings, adding entries, importing from CSVs, rearranging columns etc in like less time than a blink of an eye! The frontend of the tables is even faster! We use minimal JS and CSS to load the table while we do have the AJAX with our tables so our tables can handle thousands of data without affecting the page load! Another improtant part is, the css and js files will be loaded only in the page where you add ninja tables shortcode.
@@ -53,7 +64,9 @@ We care about the developers and the users. We know other plugins receive a high
 We have introduced the finest feature you can ever get for editing a table which is a design studio for customizing and styling your tables with the most realtime visual changes you can see while editing and making your tables! With our Design Studio, you can set colors to the table components or do customize anything without even writing a single line of CSS! If you are worried about the responsiveness of your tables, you can visually see how your tables will look like on various devices from the design studio. [Here](https://www.youtube.com/watch?v=GG2sVd6JMtE&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL&index=4) is a quick view of how you can customize your tables with the Design Studio.
 
 ### Ninja Tables are responsive
-It is hard to believe that we have made all types of tables responsive! Yes, we did that critical task f making all the tables responsive for mobile devices by placing in-row expandable areas! You can control which columns you want to show what kind of device form our design studio. The amazing part is, the searching, paginations, sorting and all other features also work on the mobile devices! Trust me it is tough for the common users! Here is a demo for you. [youtube https://www.youtube.com/watch?v=HLdl6PANTII&list=PLXpD0vT4thWGRfXfDvLdYbV7sI3LcaPCL&index=3]
+It is hard to believe that we have made all types of tables responsive! Yes, we did that critical task f making all the tables responsive for mobile devices by placing in-row expandable areas! You can control which columns you want to show what kind of device form our design studio. The amazing part is, the searching, paginations, sorting and all other features also work on the mobile devices! Trust me it is tough for the common users! Here is a demo for you.
+
+[youtube https://www.youtube.com/watch?v=R3gKtAg6EbA]
 
 In version 3.1.0 we have introduced <b>Stackable Table UI</b> where you can show each row as list view for mobile and table. Please check screenshot-2
 
@@ -79,7 +92,7 @@ If you are familiar with our another extremely useful plugin **[Fluent Form,](ht
 ### Build Any Type of Table
 You can build any type of table using Ninja Tables. Our Users already build various types of tables using this responsive table plugin.
 
-<ul><li>Data Tables</li>
+<ul><li>Data Table</li>
 <li>Pricing Table</li>
 <li>Amazon Affiliate Product Table</li>
 <li>Product Comparion Table</li>
@@ -112,7 +125,6 @@ We always hear our users. We have a dedicated support team. We try to integrate 
 
 == Try Best Contact From Builder Plugin Too ==
 [WP FluentForm – Best Contact Form Plugin with Advanced Form Builder Features](https://wordpress.org/plugins/fluentform/)
-
 
 So, give this plugin a try and check the awesome powerful features and table styles, Let us know what you loved and what else you need more.
 
@@ -175,6 +187,14 @@ Yes, For that please check pro add one <a href="https://wpmanageninja.com/downlo
 9. Import TablePress Tables in NinjaTables
 
 == Changelog ==
+
+= 3.2.0 ( Date: January 16, 2019 ) =
+* Fix Using Icon Markup in HTML Field
+* Improved Table Import Export Feature
+* Added Global JS error handling. Now Ninja table will be initiazed if other plugin throw JS error on front end.
+* Added Advanced Css Classes for Table rows to styling.
+* Improve overall Admin UI
+* Added Performance improvement to load lots of data on frontend
 
 = 3.1.0 ( Date: December 24, 2018 ) =
 * Added Stackable Table UI

@@ -16,7 +16,7 @@ class NinjaTablesUltimateTableMigration extends NinjaTablesMigration
 	public function migrateTable($tableId) {
 	    try {
 			global $wpdb;
-			$table = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}ultimatetables WHERE id = {$tableId}");
+			$table = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}ultimatetables WHERE id = {$tableId} LIMIT 1");
 			if(!$table) {
 				return new \WP_Error( 'broke', __('No Ultimate Table Found with the selected table', 'ninja-tables') );
 			}

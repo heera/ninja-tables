@@ -1197,7 +1197,7 @@ class NinjaTablesAdmin
         return ob_get_clean();
     }
 
-    private function checkDBMigrations()
+    public function checkDBMigrations()
     {
         $firstRow = ninja_tables_DbTable()->first();
         if (!$firstRow) {

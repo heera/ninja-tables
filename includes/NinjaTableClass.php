@@ -216,6 +216,8 @@ class NinjaTableClass
 
         $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
 
+        $this->loader->add_action('ninja_table_check_db_integrity', $plugin_admin, 'checkDBMigrations');
+
         add_action('admin_enqueue_scripts', function () {
             if (isset($_GET['page']) && $_GET['page'] == 'ninja_tables') {
                 if (function_exists('wp_enqueue_editor')) {

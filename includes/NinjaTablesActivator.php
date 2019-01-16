@@ -78,6 +78,11 @@ class NinjaTablesActivator {
 
 			update_option('_ninja_tables_settings_migration', true);
 			update_option('_ninja_tables_sorting_migration', true);
-		}
+		} else {
+		    // check if the new columns is there or not
+            do_action('ninja_table_check_db_integrity');
+            update_option('_ninja_tables_settings_migration', true);
+            update_option('_ninja_tables_sorting_migration', true);
+        }
 	}
 }
