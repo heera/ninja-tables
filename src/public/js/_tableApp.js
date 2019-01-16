@@ -256,7 +256,7 @@ export default {
             if (tableConfig.chunks && tableConfig.chunks > 0) {
                 rowRequestUrlParams.chunk_number = 0;
             }
-            if (tableConfig.editing && tableConfig.editing.own_data_only) {
+            if (tableConfig.editing && tableConfig.editing.enabled) {
                 rowRequestUrlParams.own_only = 'yes';
             }
 
