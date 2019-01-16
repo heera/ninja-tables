@@ -111,10 +111,10 @@ class NinjaTablePublic
         if($dataProvider == 'default') {
             $newStyledData = array();
             $counter = $skip;
-            foreach ($formatted_data as $datum) {
+            foreach ($formatted_data as $index => $datum) {
                 $newStyledData[] = array(
                     'options' => array(
-                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : '',
+                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : 'ninja_table_row_'.$counter,
                     ),
                     'value' => $datum
                 );
