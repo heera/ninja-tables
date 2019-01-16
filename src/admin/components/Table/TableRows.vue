@@ -383,7 +383,7 @@
                         this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail((error) => {
-                        console.log(error);
+
                     })
                     .always(() => {
                         this.loading = false;

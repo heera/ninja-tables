@@ -268,7 +268,7 @@
                         this.post_data_types = response.data.custom_fields
                     })
                     .fail(error => {
-                        console.log(error);
+
                     })
                     .always(() => {
                         this.loading = false;

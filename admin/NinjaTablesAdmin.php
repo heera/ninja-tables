@@ -649,9 +649,9 @@ class NinjaTablesAdmin
         $search = esc_attr($_REQUEST['search']);
 
         $dataSourceType = ninja_table_get_data_provider($tableId);
-
         if ($dataSourceType == 'default') {
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
+
 
             $query = ninja_tables_DbTable()->where('table_id', $tableId);
             if ($search) {
@@ -742,7 +742,6 @@ class NinjaTablesAdmin
 
         if (isset($tableSettings['sorting_type'])) {
             if ($tableSettings['sorting_type'] === 'manual_sort') {
-                $this->migrateDatabaseIfNeeded();
                 $orderByField = 'position';
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
@@ -754,7 +753,6 @@ class NinjaTablesAdmin
                 }
             }
         }
-
         return [$orderByField, $orderByType];
     }
 
@@ -1202,7 +1200,6 @@ class NinjaTablesAdmin
     private function checkDBMigrations()
     {
         $firstRow = ninja_tables_DbTable()->first();
-
         if (!$firstRow) {
             if (get_option('_ninja_table_db_settings_owner_id')) {
                 return true;
@@ -1212,34 +1209,25 @@ class NinjaTablesAdmin
             update_option('_ninja_table_db_settings_owner_id', true);
             return true;
         }
-
         if (!property_exists($firstRow, 'owner_id')) {
             $this->migrateOwnerColumnIfNeeded();
         }
-
         if (!property_exists($firstRow, 'settings')) {
             $this->migrateSettingColumnIfNeeded();
         }
-
+        if (!property_exists($firstRow, 'position')) {
+            $this->migratePositionDatabase();
+        }
         return true;
     }
 
-    public function migrateDatabaseIfNeeded()
+    public function migratePositionDatabase()
     {
         // If the database is already migrated for manual
         // sorting the option table would have a flag.
         $option = '_ninja_tables_sorting_migration';
         global $wpdb;
         $tableName = $wpdb->prefix . ninja_tables_db_table_name();
-
-        $row = $wpdb->get_row("SELECT * FROM $tableName");
-
-        if (!$row) {
-            return;
-        }
-        if (property_exists($row, 'position')) {
-            return;
-        }
 
         // Update the databse to hold the sorting position number.
         $sql = "ALTER TABLE $tableName ADD COLUMN `position` INT(11) AFTER `id`;";

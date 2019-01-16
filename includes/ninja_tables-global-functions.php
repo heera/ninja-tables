@@ -699,6 +699,8 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
     $time = current_time('mysql');
     $headerCount = count($header);
 
+    $userId = get_current_user_id();
+
     foreach ($values as $item) {
         if ($headerCount == count($item)) {
             $itemTemp = array_combine($header, $item);
@@ -719,6 +721,7 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
         $data = array(
             'table_id' => $tableId,
             'attribute' => 'value',
+            'owner_id' => $userId,
             'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
             'created_at' => $time,
             'updated_at' => $time

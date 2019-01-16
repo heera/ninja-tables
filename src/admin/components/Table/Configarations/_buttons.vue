@@ -139,7 +139,7 @@
                         this.table_buttons = response.data.button_settings;
                     })
                     .fail(error => {
-                        console.log(error);
+
                     })
                     .always(() => {
                         this.fetching = false;
@@ -161,7 +161,7 @@
                         });
                     })
                     .fail(error => {
-                        console.log(error);
+
                     })
                     .always(() => {
                         this.saving = false;

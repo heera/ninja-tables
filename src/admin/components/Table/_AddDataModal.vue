@@ -320,7 +320,7 @@
             justify-content: flex-end;
         }
     }
-    
+
     .row_config_container {
         display: block;
         padding: 10px 15px;

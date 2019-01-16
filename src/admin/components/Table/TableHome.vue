@@ -122,7 +122,6 @@
                         this.preview_url = response.preview_url;
                     })
                     .fail((error) => {
-                        console.log(error);
                         this.$message.error(error.responseJSON.data.message);
                         if(error.responseJSON.data.route) {
                             this.$router.push({ name: error.responseJSON.data.route });

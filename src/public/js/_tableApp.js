@@ -300,8 +300,6 @@ export default {
                 validColumns = allColumns.filter(value => -1 !== filterColumns.indexOf(value));
             }
 
-            console.log(tableConfig.settings.hide_default_filter);
-
             initConfig.filtering.filters = [{
                 "name": "ninja_table_default_filter",
                 "hidden": tableConfig.settings.hide_default_filter == 'yes',

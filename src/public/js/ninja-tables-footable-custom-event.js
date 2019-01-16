@@ -17,7 +17,7 @@ Event.on('ninja-tables-apply-conditional-formatting', function(e, $table, config
                     let $elements = getElements($table, condition, colIndex, column);
                     Actions[action]($elements, $table, condition, colIndex, column);
                 } else {
-                    console.log(action);
+
                 }
 			}
         });

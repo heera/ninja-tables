@@ -87,15 +87,15 @@
                     _ninjatables_pro_license_key: this.licenseKey
                 })
                 .then(response => {
-                    jQuery('.error_notice_ninjatables_pro_license').remove();
-                    this.is_valid = 'valid';
+                    if(response.data.message) {
+                        jQuery('.error_notice_ninjatables_pro_license').remove();
+                        this.is_valid = 'valid';
+                    } else {
+                        this.error_message = 'Something is wrong when contacting with license server. Please make sure you have curl installed you server';
+                    }
                 })
                     .fail(error => {
-                        if(error.status == 400) {
-                            this.error_message = 'Looks like you did not update Ninja Table pro Add-On. Please update Ninja table Pro to latest version';
-                        } else {
-                            this.error_message = error.responseJSON.data.message;
-                        }
+                        this.error_message = error.responseJSON.data.message;
                     })
                     .always(() => {
                         this.doing_ajax = false;

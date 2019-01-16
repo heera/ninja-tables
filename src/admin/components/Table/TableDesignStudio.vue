@@ -819,7 +819,6 @@
                     return;
                 }
 
-                console.log('init_tables');
 
                 this.footableLoading = true;
                 let NinjaTableApp = window.ninjaTableApp;
@@ -999,7 +998,6 @@
             getTableConfig() {
                 let custom_css = {};
                 this.config.columns.forEach((column, index) => {
-                    console.log(column);
                     custom_css['ninja_column_'+index] = {
                         'text-align':column.textAlign,
                         'width' : column.width+'px'

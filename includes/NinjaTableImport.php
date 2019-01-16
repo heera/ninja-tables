@@ -1,5 +1,4 @@
 <?php
-
 namespace NinjaTables\Classes;
 
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
@@ -9,7 +8,6 @@ use NinjaTables\Libs\CSVParser\CSVParser;
 
 class NinjaTableImport
 {
-
     private $cpt_name = 'ninja-table';
 
     public function importTable()
@@ -25,8 +23,7 @@ class NinjaTableImport
         }
 
         wp_send_json(array(
-            'message' => __('No appropriate driver found for the import format.',
-                'ninja-tables')
+            'message' => __('No appropriate driver found for the import format.', 'ninja-tables')
         ), 423);
     }
 
@@ -119,7 +116,7 @@ class NinjaTableImport
             'application/vnd.msexcel',
             'text/anytext',
             'application/octet-stream',
-            'application/txt',
+            'application/txt'
         );
         if (!in_array($_FILES['file']['type'], $mimes)) {
             wp_send_json_error(array(
@@ -329,16 +326,17 @@ class NinjaTableImport
         }
 
         $data = array();
-        $time = current_time('mysql');
 
+        $userId = get_current_user_id();
         foreach ($reader as $item) {
             $itemTemp = array_combine($header, $item);
             array_push($data, array(
                 'table_id' => $tableId,
                 'attribute' => 'value',
+                'owner_id' => $userId,
                 'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
-                'created_at' => $time,
-                'updated_at' => $time
+                'created_at' => date('Y-m-d H:i:s'),
+                'updated_at' => date('Y-m-d H:i:s')
             ));
         }
 
