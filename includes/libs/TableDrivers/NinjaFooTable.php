@@ -298,11 +298,12 @@ class NinjaFooTable
             && ArrayHelper::get($settings, 'table_color') != 'ninja_no_color_table')
         ) {
             $tableHasColor = 'colored_table';
-            $table_classes .= ' inverted';
+            $configSettings['extra_css_class'] = 'inverted';
         }
         if (ArrayHelper::get($settings, 'table_color_type') == 'custom_color') {
             $tableHasColor = 'colored_table';
-            $table_classes .= ' inverted ninja_custom_color ninja_custom_color';
+            $table_classes .= ' ninja_custom_color ninja_custom_color';
+            $configSettings['extra_css_class'] = 'inverted';
         }
 
         if ($pagingPosition = ArrayHelper::get($settings, 'pagination_position')) {
@@ -341,6 +342,9 @@ class NinjaFooTable
 
         if (defined('NINJATABLESPRO')) {
             $table_classes .= ' ninja_table_pro';
+            if(ArrayHelper::get($settings, 'hide_on_empty')) {
+                $configSettings['hide_on_empty'] = true;
+            }
         }
 
         $advancedFilterSettings = get_post_meta($table_id, '_ninja_custom_filter_styling', true);
@@ -470,6 +474,14 @@ class NinjaFooTable
 
         if ($searchBarPosition = ArrayHelper::get($settings, 'search_position')) {
             $tableCassClasses[] = 'ninja_search_' . $searchBarPosition;
+        }
+
+        if( ArrayHelper::get($settings, 'hide_responsive_labels')) {
+            $tableCassClasses[] = 'nt_hide_breakpoint_labels';
+        }
+
+        if( ArrayHelper::get($settings, 'nt_search_full_width')) {
+            $tableCassClasses[] = 'nt_search_full_width';
         }
 
         $definedClasses = ArrayHelper::get($settings, 'css_classes', array());

@@ -28,10 +28,8 @@ if (!function_exists('ninja_table_get_table_settings')) {
     function ninja_table_get_table_settings($tableId, $scope = 'public')
     {
         $tableSettings = get_post_meta($tableId, '_ninja_table_settings', true);
-
         if (!$tableSettings) {
             $tableSettings = getDefaultNinjaTableSettings();
-            $tableSettings = array_merge(getDefaultNinjaTableSettings(), $tableSettings);
         } else if (empty($tableSettings['css_classes'])) {
             $tableSettings['css_classes'] = array();
         }
@@ -54,7 +52,8 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
             "css_classes" => array(),
             "enable_search" => true,
             "column_sorting" => true,
-            "default_sorting" => 'new_first',
+            "default_sorting" => 'old_first',
+            "sorting_type" => "by_created_at",
             "table_color" => 'ninja_no_color_table',
             "render_type" => $renderType,
             "table_color_type" => 'pre_defined_color',
@@ -70,7 +69,7 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
         if(!$settings) {
             $settings = array();
         }
-        $settings = array_merge($defaults, $settings);
+        $settings = wp_parse_args($defaults, $settings);
         return apply_filters('get_default_ninja_table_settings', $settings);
     }
 }
@@ -698,10 +697,10 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
     $header = array_keys($header);
     $time = current_time('mysql');
     $headerCount = count($header);
-
+    $timeStamp = time();
     $userId = get_current_user_id();
 
-    foreach ($values as $item) {
+    foreach ($values as $index => $item) {
         if ($headerCount == count($item)) {
             $itemTemp = array_combine($header, $item);
         } else {
@@ -723,7 +722,7 @@ function ninjaTableInsertDataToTable($tableId, $values, $header)
             'attribute' => 'value',
             'owner_id' => $userId,
             'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
-            'created_at' => $time,
+            'created_at' => date('Y-m-d H:i:s', $timeStamp + $index),
             'updated_at' => $time
         );
 

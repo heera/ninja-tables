@@ -172,7 +172,8 @@ export default {
     loadChuck(counter, tableConfig, fooTable) {
         let maxChuck = tableConfig.chunks;
         if (counter <= maxChuck) {
-            $.get(window.ninja_footables.ajax_url, {
+
+            let uri_params = {
                 action: 'wp_ajax_ninja_tables_public_action',
                 table_id: tableConfig.table_id,
                 target_action: 'get-all-data',
@@ -180,9 +181,20 @@ export default {
                 skip_rows: tableConfig.settings.skip_rows,
                 limit_rows: tableConfig.settings.limit_rows,
                 chunk_number: counter
-            }).then(response => {
+            };
+
+            if (tableConfig.editing && tableConfig.editing.check_editing == 'yes') {
+                uri_params.check_editing = 'yes';
+                if( tableConfig.editing.own_data_only == 'yes' ) {
+                    uri_params.own_only = 'yes';
+                }
+            }
+
+            $.get(window.ninja_footables.ajax_url, uri_params).then(response => {
                 this.loadChuck(counter + 1, tableConfig, fooTable);
-                fooTable.rows.load(response, true);
+                if(response) {
+                    fooTable.rows.load(response, true);
+                }
             });
         }
     },
@@ -242,8 +254,6 @@ export default {
                 }
             }
         }
-
-
         if (tableConfig.render_type !== 'legacy_table') {
             let rowRequestUrlParams = {
                 action: 'wp_ajax_ninja_tables_public_action',
@@ -256,8 +266,12 @@ export default {
             if (tableConfig.chunks && tableConfig.chunks > 0) {
                 rowRequestUrlParams.chunk_number = 0;
             }
-            if (tableConfig.editing && tableConfig.editing.enabled) {
-                rowRequestUrlParams.own_only = 'yes';
+
+            if ( tableConfig.editing && tableConfig.editing.check_editing == 'yes' ) {
+                rowRequestUrlParams.check_editing = 'yes';
+                if(tableConfig.editing.own_data_only == 'yes') {
+                    rowRequestUrlParams.own_only = 'yes';
+                }
             }
 
             initConfig.rows = $.get(window.ninja_footables.ajax_url, rowRequestUrlParams);
@@ -319,9 +333,23 @@ export default {
     onReadyFooTable($table, tableConfig) {
         let cssStyles = tableConfig.custom_css;
 
+        console.log(tableConfig.settings);
+
+        if(tableConfig.settings.extra_css_class) {
+            $table.addClass(tableConfig.settings.extra_css_class);
+        }
+
         jQuery.each(cssStyles, (className, values) => {
             $table.find('.' + className).css(values);
         });
+
+        if(tableConfig.settings.hide_on_empty) {
+            $table.on('expanded.ft.row', function(e, ft, row){
+                $table.find('table.footable-details td:empty').parent().addClass('nt_has_hide');
+            });
+            // We have to run this intially if all the rows are expanded by default
+            $table.find('table.footable-details td:empty').parent().addClass('nt_has_hide');
+        }
 
         jQuery(document).trigger('ninja_table_ready_init', {
             '$table': $table,

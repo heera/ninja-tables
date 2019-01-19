@@ -201,7 +201,6 @@ class NinjaTableClass
 
         $plugin_admin = new \NinjaTablesAdmin($this->get_plugin_name(), $this->get_version());
         $leadActions = new \WPManageNinja\Lead\LeadFlow();
-        $demoPage = new ProcessDemoPage();
         $this->loader->add_action('init', $plugin_admin, 'register_post_type');
         $this->loader->add_action('init', $leadActions, 'boot');
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_menu');
@@ -213,8 +212,6 @@ class NinjaTableClass
             'ajax_routes'
         );
         $this->loader->add_action('init', $plugin_admin, 'add_tabales_to_editor');
-
-        $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
 
         $this->loader->add_action('ninja_table_check_db_integrity', $plugin_admin, 'checkDBMigrations');
 
@@ -307,6 +304,8 @@ class NinjaTableClass
             if ($errorType != 'no'):
                 ?>
                 <script type="text/javascript">
+                    // Ninja Tables is supressing the global JS to keep all the JS functions work event other plugins throw error.
+                    // If You want to disable this please go to Ninja Tables -> Tools -> Global Settings and disable it
                     var oldOnError = window.onerror;
                     window.onerror = function (message, url, lineNumber) {
                         if (oldOnError) oldOnError.apply(this, arguments);  // Call any previously assigned handler
@@ -320,6 +319,8 @@ class NinjaTableClass
             endif;
         }, 9);
 
+        $demoPage = new ProcessDemoPage();
+        $this->loader->add_action('init', $demoPage, 'handleExteriorPages');
     }
 
     /**

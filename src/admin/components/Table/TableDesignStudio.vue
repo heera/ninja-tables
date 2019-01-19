@@ -109,14 +109,6 @@
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
-                            <label v-if="tableLibs[tableSettings.library].supports.ajax" for="enable_ajax">
-                                <input v-model="tableSettings.enable_ajax" type="checkbox" value="1" id="enable_ajax"/>
-                                {{ $t('Enable Ajax Loading') }}
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="Enable this if you have more than 10,000 records in your table">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
                             <label for="enable_search">
                                 <input v-model="tableSettings.enable_search" type="checkbox" value="1"
                                        id="enable_search"/> {{ $t('Enable the visitor to filter or search the table.')
@@ -132,6 +124,27 @@
                             </label>
                             <label><input v-model="tableSettings.hide_all_borders" type="checkbox">
                                 Hide All Borders
+                            </label>
+                            <label><input v-model="tableSettings.hide_on_empty" type="checkbox">
+                                Hide empty items on responsive breakdown <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this then the empty ietems will not show into responsive drawer / Stackable View">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+                            <label><input v-model="tableSettings.hide_responsive_labels" type="checkbox">
+                                Hide Labels on responsive breakdown <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this then columns headings will not show into responsive drawer / Stackable View">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+                            <label><input v-model="tableSettings.nt_search_full_width" type="checkbox">
+                                Make search input as full width <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this, Then the search input will take all the available space (100% width)">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
                             </label>
                         </div>
 
@@ -577,6 +590,16 @@
                     table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
                 }
 
+                if(this.tableSettings.hide_responsive_labels) {
+                    classes.push('nt_hide_breakpoint_labels');
+                }
+
+                if(this.tableSettings.nt_search_full_width) {
+                    classes.push('nt_search_full_width');
+                }
+
+
+
                 if (this.tableSettings.css_lib == 'semantic_ui') {
                     classes.push('ui');
                 }
@@ -818,11 +841,16 @@
                 if (this.footableLoading || !this.script_loaded) {
                     return;
                 }
-
-
                 this.footableLoading = true;
                 let NinjaTableApp = window.ninjaTableApp;
                 let $table = jQuery('#footable_' + this.tableId);
+
+                if(this.tableSettings.hide_on_empty) {
+                    $table.on('expanded.ft.row', function(e, ft, row){
+                        $table.find('table.footable-details td:empty').parent().addClass('nt_has_hide');
+                    });
+                }
+
                 NinjaTableApp.initTable($table, this.getTableConfig());
                 this.footableLoading = false;
             },
@@ -1007,7 +1035,7 @@
                     columns: this.formattedColumns,
                     custom_css: custom_css,
                     settings: {
-                        default_sorting: 'new_first',
+                        default_sorting: 'old_first',
                         defualt_filter: false,
                         defualt_filter_column: null,
                         expandAll:  this.tableSettings.expand_type === "expandAll",

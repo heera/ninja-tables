@@ -31,7 +31,7 @@ class DefaultProvider
             $advancedQuery = true;
         }
         // if cached not disabled then return cached data
-        if( !$advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId)) {
+        if( ! $advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId) ) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
                 return $cachedData;
@@ -41,11 +41,11 @@ class DefaultProvider
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
 
         if ($defaultSorting == 'new_first') {
-            $query->orderBy('created_at', 'desc');
+            $query->orderBy('created_at, id', 'desc');
         } else if ($defaultSorting == 'manual_sort') {
             $query->orderBy('position', 'asc');
         } else {
-            $query->orderBy('created_at', 'asc');
+            $query->orderBy('created_at, id', 'asc');
         }
 
         $skip = intval($skip);

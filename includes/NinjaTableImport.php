@@ -93,14 +93,10 @@ class NinjaTableImport
                 'breakpoints' => ''
             );
         }
-
         update_post_meta($tableId, '_ninja_table_columns', $ninjaTableColumns);
-
         // ninja_table_settings
         $ninjaTableSettings = ninja_table_get_table_settings($tableId, 'admin');
-
         update_post_meta($tableId, '_ninja_table_settings', $ninjaTableSettings);
-
         ninjaTablesClearTableDataCache($tableId);
     }
 
@@ -146,7 +142,6 @@ class NinjaTableImport
         }
 
         $header = array_shift($reader);
-        $reader = array_reverse($reader);
 
         $tableId = $this->createTable(array(
             'post_title' => $fileName,
@@ -250,7 +245,7 @@ class NinjaTableImport
         if (isset($content['original_rows']) && $originalRows = $content['original_rows']) {
             foreach ($originalRows as $row) {
                 $row['table_id'] = $tableId;
-                $row['values'] = json_encode($row['values'], JSON_UNESCAPED_UNICODE);
+                $row['value'] = json_encode($row['value'], JSON_UNESCAPED_UNICODE);
                 ninja_tables_DbTable()->insert($row);
             }
         }

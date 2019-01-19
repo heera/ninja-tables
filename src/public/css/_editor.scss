@@ -1,6 +1,29 @@
 .nt_editor_modal {
   display: none !important;
   visibility: hidden !important;
+  .nt_form_loader {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.5);
+    z-index: 99999;
+    i.fooicon.fooicon-loader {
+      position: absolute;
+      top: 48%;
+      left: 49%;
+      right: 49%;
+      font-size: 30px;
+      line-height: 30px;
+      width: 30px;
+      height: 30px;
+      animation: fooicon-spin-r 2s infinite linear;
+    }
+  }
+
   &.show_nt_modal {
     display: block !important;
     visibility: visible !important;
@@ -48,6 +71,7 @@
       right: 20px;
       line-height: 22px;
       color: #545454;
+      font-family: arial;
       cursor: pointer;
       &:hover {
         color: black;
@@ -101,6 +125,7 @@
       color: #545454;
       cursor: pointer;
       margin-left: 20px;
+      font-size: 16px;
       &:hover {
         color: black;
       }
@@ -123,6 +148,12 @@
     }
     .nt_modal_wrapper {
       margin-top: 20vh;
+    }
+  }
+  &.nt_submitting_form {
+    .nt_form_loader {
+      display: block;
+      visibility: visible;
     }
   }
 }

@@ -745,7 +745,7 @@ class NinjaTablesAdmin
                 $orderByField = 'position';
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
-                $orderByField = 'created_at';
+                $orderByField = 'created_at, id';
                 if ($tableSettings['default_sorting'] === 'new_first') {
                     $orderByType = 'DESC';
                 } else {
