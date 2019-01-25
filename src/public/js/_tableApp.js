@@ -7,7 +7,7 @@ export default {
     initTables: function () {
         let that = this;
         this.ninjaFooTablesInstance = [];
-        let footables = $('table.foo-table.ninja_footable');
+        let footables = jQuery('table.foo-table.ninja_footable');
         if (footables.length) {
             $.each(footables, (index, table) => {
                 let $table = $(table);
@@ -48,11 +48,13 @@ export default {
                     } else {
                         valueOrElement = valueOrElement.toString();
                     }
-                    if (valueOrElement && column.thousandSeparator) {
-                        valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
-                    }
                     if (valueOrElement && column.decimalSeparator) {
                         valueOrElement = valueOrElement.split(column.decimalSeparator).join(".");
+                    }
+                    if (valueOrElement && column.thousandSeparator) {
+                        valueOrElement = valueOrElement.split(column.thousandSeparator).join("");
+                    } else {
+                        valueOrElement = valueOrElement.split(',').join("");
                     }
                     let numberValue = Number(valueOrElement);
                     if (isNaN(numberValue)) {
@@ -67,7 +69,7 @@ export default {
             }
             // format the value here
             column.formatter = function (value, options, rowData) {
-                if (column.transformed_value) {
+                if (column.transformed_value && column.transformed_value.trim()) {
                     value = that.getShortcodes(column.transformed_value, column, rowData);
                 }
                 return value;
@@ -88,7 +90,9 @@ export default {
                         'ninja-tables-apply-conditional-formatting',
                         [$table, tableConfig]
                     );
-                    $table.find("td:contains('#colspan#')").remove();
+                    if($table.find("td:contains('#colspan#')").length) {
+                        $table.find("td:contains('#colspan#')").remove();
+                    }
                 } catch (error) {
                     console.warn(error);
                 }
@@ -333,8 +337,6 @@ export default {
     onReadyFooTable($table, tableConfig) {
         let cssStyles = tableConfig.custom_css;
 
-        console.log(tableConfig.settings);
-
         if(tableConfig.settings.extra_css_class) {
             $table.addClass(tableConfig.settings.extra_css_class);
         }
@@ -361,6 +363,7 @@ export default {
             'tableConfig': tableConfig
         });
 
+
         if (jQuery('.ninja_filter_date_picker,.ninja_filter_date_range').length && Pikaday) {
             let datePikers = jQuery('.ninja_filter_date_picker,.ninja_filter_date_range');
             jQuery.each(datePikers, function (index, datePiker) {
@@ -368,6 +371,15 @@ export default {
                 $piker.pikaday({
                     format: $piker.data('date_format')
                 });
+            });
+        }
+
+        if(tableConfig.settings.paginate_to_top) {
+            $table.find('.footable-page-link').on('click', function() {
+                console.log(jQuery('#footable_'+tableConfig.table_id).offset().top);
+                jQuery('html, body').animate(
+                    { scrollTop: jQuery('#footable_'+tableConfig.table_id).offset().top }, 200
+                );
             });
         }
     },
@@ -399,7 +411,8 @@ export default {
     },
     textFilterValue(valueOrElement) {
         if (FooTable.is.element(valueOrElement) || FooTable.is.jq(valueOrElement)) {
-            return jQuery(valueOrElement).text();
+            let text = jQuery(valueOrElement).text();
+            return text.replace(/(\r\n\t|\n|\r\t|")/gm, "").trim();
         } else {
             // Create a new div element
             var temporalDivElement = document.createElement("div");
@@ -407,7 +420,7 @@ export default {
             temporalDivElement.innerHTML = valueOrElement;
             // Retrieve the text property of the element (cross-browser support)
             var text = temporalDivElement.textContent || temporalDivElement.innerText || "";
-            return text.replace(/(\r\n\t|\n|\r\t)/gm, "").trim();
+            return text.replace(/(\r\n\t|\n|\r\t|")/gm, "").trim();
         }
     }
 }

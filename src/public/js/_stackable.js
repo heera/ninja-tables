@@ -10,6 +10,11 @@ jQuery(document).on('ninja_table_init_stackables', function (e, data) {
         return targetBreakpoints.indexOf(currentName) !== -1;
     }
 
+    let isEditable = false;
+    if($table.hasClass('footable-editing')) {
+        isEditable = true;
+    }
+
     $table
         .on('expand.ft.row', function (e, data, selfArg) {
             if (!isStackable(data.breakpoints.current.name)) {
@@ -31,9 +36,6 @@ jQuery(document).on('ninja_table_init_stackables', function (e, data) {
             selfArg.$toggle.removeClass('fooicon-plus').addClass('fooicon-minus');
             selfArg.expanded = true;
             selfArg.ft.raise('expanded.ft.row', [self]);
-        })
-        .on('after.ft.breakpoints', function (e, element, current, previous) {
-
         })
         .on('draw.ft.table', function (event, $element) {
             if (isStackable($element.breakpoints.current.name)) {

@@ -52,6 +52,15 @@
                                      :key="column.key"
                     ></el-table-column>
                 </el-table>
+
+                <h3>or as bellow</h3>
+                <el-table border :data="sampleData" style="width: 100%" stripe>
+                    <el-table-column v-for="column in columns"
+                                     :prop="column.key"
+                                     :label="column.name"
+                                     :key="column.key"
+                    ></el-table-column>
+                </el-table>
             </div>
             <div v-else="" class="error">
                 <p>{{ $t('Please set table configuration first.') }}</p>

@@ -6,19 +6,17 @@
             <el-button type="success" @click="create">
                 Create Your First Table
             </el-button>
-
             <router-link :to="{ name: 'import_tables' }">
                 <el-button type="info">{{ $t( 'Import From CSV' ) }}</el-button>
             </router-link>
         </div>
         <hr/>
-
         <div class="ninja_docs">
             <h4>Ninja Tables Documentation:</h4>
             <ul>
                 <li>
                     <a target="_blank"
-                       href="https://wpmanageninja.com/docs/ninja-tables/configure-tables/?ninja_intro=1">
+                       href="https://wpmanageninja.com/ninja-tables/use-case/?ninja_intro=1">
                         Demo and Basic Settings
                     </a>
                 </li>

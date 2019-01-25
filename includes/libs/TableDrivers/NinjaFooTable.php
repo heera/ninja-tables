@@ -345,6 +345,10 @@ class NinjaFooTable
             if(ArrayHelper::get($settings, 'hide_on_empty')) {
                 $configSettings['hide_on_empty'] = true;
             }
+
+            if(ArrayHelper::get($settings, 'paginate_to_top')) {
+                $configSettings['paginate_to_top'] = true;
+            }
         }
 
         $advancedFilterSettings = get_post_meta($table_id, '_ninja_custom_filter_styling', true);

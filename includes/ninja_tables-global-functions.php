@@ -69,7 +69,8 @@ if (!function_exists('getDefaultNinjaTableSettings')) {
         if(!$settings) {
             $settings = array();
         }
-        $settings = wp_parse_args($defaults, $settings);
+        $settings = wp_parse_args($settings,$defaults);
+
         return apply_filters('get_default_ninja_table_settings', $settings);
     }
 }

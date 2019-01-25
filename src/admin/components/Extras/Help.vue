@@ -6,6 +6,24 @@
         <div class="ninja_documentaion_wrapper">
             <div class="ninja_doc_top_blocks">
                 <div class="ff_block block_1_3">
+                    <div class="ff_block_box help_container text-center">
+                        <img class="block_icon" :src="imageUrl('fluent-icon.png')" />
+                        <h3>Try WP FluentFrom</h3>
+                        <p><b>Need to build a contact form by drag and drop form builder?</b> Try the modern contact form plugin with all the necessary input fields, notifications and connect your form with powerful integrations</p>
+                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/fluentform/">Download from wp.org (Free)</a></p>
+                    </div>
+                </div>
+
+                <div class="ff_block block_1_3">
+                    <div class="ff_block_box help_container text-center">
+                        <img class="block_icon" :src="imageUrl('azonpress_logo.jpg')" />
+                        <h3>Amazon Affiliate Plugin</h3>
+                        <p>Amazon Affiliate WordPress Plugin for serious Amazon Affiliates</p>
+                        <p><a target="_blank" class="button button-primary" href="https://wpmanageninja.com/azonpress/">Download AzonPress</a></p>
+                    </div>
+                </div>
+
+                <div class="ff_block block_1_3">
                     <div class="ff_block_box text-center">
                         <img class="block_icon" :src="imageUrl('support.png')" />
                         <h3>Need And Expert Support?</h3>
@@ -13,23 +31,9 @@
                         <p><a target="_blank" class="button button-primary" href="https://wpmanageninja.com/support-tickets/">Contact Support</a></p>
                     </div>
                 </div>
-                <div class="ff_block block_1_3">
-                    <div class="ff_block_box text-center">
-                        <img class="block_icon" :src="imageUrl('bug.png')" />
-                        <h3>Found a Bug?</h3>
-                        <p>Please report us and we promise we will fix that as soon as humanly possible</p>
-                        <p><a target="_blank" class="button button-primary" href="https://wpmanageninja.com/support-tickets/submit-ticket/">Submit a Support Ticket</a></p>
-                    </div>
-                </div>
-                <div class="ff_block block_1_3">
-                    <div class="ff_block_box text-center">
-                        <img class="block_icon" :src="imageUrl('heart.png')" />
-                        <h3>Love this Plugin?</h3>
-                        <p>Please write a review in wp.org plugin repository. We appreciate it!</p>
-                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/ninja-tables/reviews/#new-post">Write Review</a></p>
-                    </div>
-                </div>
-                
+
+                <div style="width: 100%;float: none;position: relative;height: 10px;overflow: hidden;"></div>
+
                 <div class="ff_block block_1_3">
                     <div class="ff_block_box help_container">
                         <h3>User Guide</h3>
@@ -39,20 +43,12 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="ff_block block_1_3">
-                    <div class="ff_block_box help_container text-center">
-                        <img class="block_icon" :src="imageUrl('fluent-icon.png')" />
-                        <h3>Try WP FluentFrom</h3>
-                        <p><b>Need to build a contact form by drag and drop form builder?</b> Try the modern contact form plugin with all the necessary input fields, notifications and connect your form with powerful integrations</p>
-                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/fluentform/">Download from wp.org (Free)</a></p>
-                    </div>
-                </div>
-                
-                <div class="ff_block block_1_3">
-                    <div class="ff_block_box help_container">
-                        <h3>Need More Help?</h3>
-                        <p>{{ $t('For any type of query which was not covered in our documentation, Please submit a support ticket') }} <a href="https://wpmanageninja.com/support-tickets/submit-ticket/" target="_blank">Submit a support ticket</a></p>
+                    <div class="ff_block_box text-center">
+                        <img class="block_icon" :src="imageUrl('heart.png')" />
+                        <h3>Love this Plugin?</h3>
+                        <p>Please write a review in wp.org plugin repository. We appreciate it!</p>
+                        <p><a target="_blank" class="button button-primary" href="https://wordpress.org/plugins/ninja-tables/reviews/#new-post">Write Review</a></p>
                     </div>
                 </div>
                 

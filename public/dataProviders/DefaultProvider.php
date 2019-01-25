@@ -34,18 +34,16 @@ class DefaultProvider
         if( ! $advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId) ) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
-                return $cachedData;
+               // return $cachedData;
             }
         }
-
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
-
         if ($defaultSorting == 'new_first') {
-            $query->orderBy('created_at, id', 'desc');
+            $query->orderBy('created_at', 'desc');
         } else if ($defaultSorting == 'manual_sort') {
             $query->orderBy('position', 'asc');
         } else {
-            $query->orderBy('created_at, id', 'asc');
+            $query->orderBy('created_at', 'asc');
         }
 
         $skip = intval($skip);
@@ -64,7 +62,10 @@ class DefaultProvider
             $query = apply_filters('ninja_table_own_data_filter_query', $query, $tableId);
         }
 
-        foreach ($query->get() as $item) {
+        global $wpdb;
+        $items = $query->get();
+        //dd($wpdb->last_query);
+        foreach ($items as $item) {
             $values = json_decode($item->value, true);
             $values = array_map('do_shortcode', $values);
             $values['___id___'] = $item->id;

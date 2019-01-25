@@ -299,7 +299,7 @@ class NinjaTableClass
         add_action('wp_head', function () {
             $errorType = get_option('_ninja_suppress_error');
             if (!$errorType) {
-                $errorType = 'log_silently';
+                $errorType = 'no';
             }
             if ($errorType != 'no'):
                 ?>

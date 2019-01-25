@@ -139,13 +139,6 @@
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
-                            <label><input v-model="tableSettings.nt_search_full_width" type="checkbox">
-                                Make search input as full width <span v-show="!has_pro">(Pro Only)</span>
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="If You enable this, Then the search input will take all the available space (100% width)">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
                         </div>
 
                         <div class="form_group label-normalize">
@@ -371,6 +364,15 @@
                                 <el-radio-button label="center">Center</el-radio-button>
                                 <el-radio-button label="right">Right</el-radio-button>
                             </el-radio-group>
+
+                            <label><input v-model="tableSettings.paginate_to_top" type="checkbox">
+                                Scroll to table top for pagination change <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If you enable this then on pagination change, the table will be scrolled to top">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+
                         </div>
 
                         <div class="form_group">
@@ -383,6 +385,14 @@
                                 <el-radio-button label="right">Right</el-radio-button>
                                 <el-radio-button label="">Default</el-radio-button>
                             </el-radio-group>
+
+                            <label><input v-model="tableSettings.nt_search_full_width" type="checkbox">
+                                Make search input as full width <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this, Then the search input will take all the available space (100% width)">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
                         </div>
 
                         <div class="form_group">

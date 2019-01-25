@@ -652,7 +652,6 @@ class NinjaTablesAdmin
         if ($dataSourceType == 'default') {
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
 
-
             $query = ninja_tables_DbTable()->where('table_id', $tableId);
             if ($search) {
                 $query->search($search, array('value'));
@@ -745,7 +744,7 @@ class NinjaTablesAdmin
                 $orderByField = 'position';
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
-                $orderByField = 'created_at, id';
+                $orderByField = 'created_at';
                 if ($tableSettings['default_sorting'] === 'new_first') {
                     $orderByType = 'DESC';
                 } else {
@@ -787,10 +786,8 @@ class NinjaTablesAdmin
             ninja_tables_DbTable()->where('id', $id)->update($attributes);
             do_action('ninja_table_after_update_item', $id, $tableId, $attributes);
         } else {
-
             if (isset($_REQUEST['insert_after_id'])) {
                 list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
-
                 if ($orderByField == 'created_at') {
                     // Calculate the insert position Date
                     $prevItemId = absint($_REQUEST['insert_after_id']);
@@ -805,6 +802,7 @@ class NinjaTablesAdmin
                             $newDateStamp = strtotime($previousItem->created_at) - 1;
                         }
                         $attributes['created_at'] = date('Y-m-d H:i:s', $newDateStamp);
+                        $this->fixCreatedAtDate($tableId, $previousItem->created_at, $orderByType);
                     }
                 }
             }
@@ -812,6 +810,7 @@ class NinjaTablesAdmin
             if (!isset($attributes['created_at'])) {
                 $attributes['created_at'] = date('Y-m-d H:i:s');
             }
+
             $attributes = apply_filters('ninja_tables_item_attributes', $attributes);
 
             do_action('ninja_table_before_add_item', $tableId, $attributes);
@@ -842,6 +841,30 @@ class NinjaTablesAdmin
                 'position' => property_exists($item, 'position') ? $item->position : null
             )
         ), 200);
+    }
+
+    private function fixCreatedAtDate($tableId, $refDate, $orderType )
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix.ninja_tables_db_table_name();
+        if($orderType == 'ASC') {
+            $query = "UPDATE {$tableName}
+                  SET created_at = ADDTIME(created_at, 2)
+                  WHERE table_id = %d
+                  AND created_at > %s";
+        } else {
+            $query = "UPDATE {$tableName}
+                  SET created_at = SUBTIME(created_at, 2)
+                  WHERE table_id = %d
+                  AND created_at < %s";
+        }
+
+        $bindings = [
+            $tableId,
+            $refDate
+        ];
+        $query .= " ORDER BY created_at ".$orderType;
+        $wpdb->query($wpdb->prepare($query, $bindings));
     }
 
     public function deleteData()
@@ -1175,6 +1198,7 @@ class NinjaTablesAdmin
             $formattedColumns[] = NinjaFooTable::getFormattedColumn($column, $index, $tableSettings, true,
                 'by_created_at');
         }
+
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true, 25);
 
         if (count($formatted_data) > 25) {
@@ -1473,7 +1497,7 @@ class NinjaTablesAdmin
     {
         $suppressError = get_option('_ninja_suppress_error');
         if (!$suppressError) {
-            $suppressError = 'log_silently';
+            $suppressError = 'no';
         }
 
         wp_send_json_success(array(

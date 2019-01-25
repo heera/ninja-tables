@@ -123,7 +123,7 @@
                                     prop="created_by"
                             />
                             <el-table-column
-                                    label="Create Date"
+                                    label="Reference Date"
                                     width="165px"
                                     prop="created_at"
                             />
@@ -135,7 +135,7 @@
                                 width="120">
                             <template slot-scope="scope">
                                 <a v-if="has_pro" @click="addAfter(scope)">
-                                    <el-tooltip placement="top-end" effect="light" content="Add data" :open-delay="500">
+                                    <el-tooltip placement="top-end" effect="light" content="Add Data after this row" :open-delay="500">
                                         <span class="dashicons dashicons-plus"></span>
                                     </el-tooltip>
                                 </a>
@@ -525,7 +525,10 @@
                     this.items.unshift(item);
                 }
                 if (this.insertAfterPosition) {
-                    this.insertAfterPosition += 1;
+                    this.insertAfterPosition = item.position;
+                }
+                if (this.insertAfterId) {
+                    this.insertAfterId = item.id;
                 }
                 this.paginate.total++;
             },
@@ -736,10 +739,14 @@
             duplicateData(item) {
                 this.updateItem = Object.assign({}, item.row);
                 this.updateItem.id = null;
-
                 if (this.hasSortable) {
                     this.insertAfterPosition = item.$index + 1;
                 }
+
+                this.insertAfterPosition = parseInt(item.row.position);
+                this.insertAfterHash = item.$index;
+                this.insertAfterId = item.row.id;
+
                 this.addDataModal = true;
                 this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
@@ -756,10 +763,10 @@
                 this.$nextTick(() => this.storeSettings());
             },
             renderTableCell(value, column, row) {
-                if (!column.transformed_value) {
-                    return value;
+                if (column.transformed_value && column.transformed_value.trim()) {
+                    return this.getShortcodes(value, column, row);
                 }
-                return this.getShortcodes(value, column, row);
+                return value;
             },
             getShortcodes(str, column, row) {
                 let transValue = column.transformed_value;

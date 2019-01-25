@@ -133,7 +133,7 @@ class NinjaTableImport
         $csvParser->load_data($data);
         $delimiter = $csvParser->find_delimiter();
         $reader = $csvParser->parse($delimiter);
-
+        
         if ($csvParser->error) {
             wp_send_json_error(array(
                 'errors' => array_values(array_slice($csvParser->error_info, 0, 5)),
@@ -323,6 +323,7 @@ class NinjaTableImport
         $data = array();
 
         $userId = get_current_user_id();
+        $timeStamp = time() - ( count($reader) * 100 );
         foreach ($reader as $item) {
             $itemTemp = array_combine($header, $item);
             array_push($data, array(
@@ -330,9 +331,10 @@ class NinjaTableImport
                 'attribute' => 'value',
                 'owner_id' => $userId,
                 'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
-                'created_at' => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s', $timeStamp),
                 'updated_at' => date('Y-m-d H:i:s')
             ));
+            $timeStamp = $timeStamp + 100;
         }
 
         $replace = $_REQUEST['replace'] === 'true';

@@ -404,9 +404,14 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
       .ninja_filter_date_from, .ninja_filter_number_from, .ninja_filter_date_to, .ninja_filter_number_to {
         margin-bottom: 5px;
       }
-
       .form-group.footable-filtering-search {
-        margin-top: 24px !important;
+        .sr-only {
+          position: relative;
+          visibility: hidden !important;
+          color: rgba(0, 0, 0, 0);
+          height: 0;
+          width: 0;
+        }
       }
     }
   }
