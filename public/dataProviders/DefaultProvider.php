@@ -34,7 +34,7 @@ class DefaultProvider
         if( ! $advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId) ) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
-               // return $cachedData;
+                return $cachedData;
             }
         }
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
@@ -67,7 +67,9 @@ class DefaultProvider
         //dd($wpdb->last_query);
         foreach ($items as $item) {
             $values = json_decode($item->value, true);
-            $values = array_map('do_shortcode', $values);
+            if($values) {
+                $values = array_map('do_shortcode', $values);
+            }
             $values['___id___'] = $item->id;
             $data[] = $values;
         }
