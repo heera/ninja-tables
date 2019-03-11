@@ -7,7 +7,7 @@ class DefaultProvider
     public function boot()
     {
         add_filter('ninja_tables_get_table_default', array($this, 'getTableSettings'));
-        add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 5);
+        add_filter('ninja_tables_fetching_table_rows_default', array($this, 'data'), 10, 6);
     }
 
     public function getTableSettings($table)
@@ -22,32 +22,29 @@ class DefaultProvider
         return $table;
     }
 
-    public function data($data, $tableId, $defaultSorting, $limit = false, $skip = false)
+    public function data($data, $tableId, $defaultSorting, $limit = false, $skip = false, $ownOnly = false)
     {
         $advancedQuery = false;
         $disabledCache = false;
 
-        if($skip || $limit) {
+        if($skip || $limit || $ownOnly) {
             $advancedQuery = true;
         }
         // if cached not disabled then return cached data
-        if( !$advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId)) {
+        if( ! $advancedQuery && ! $disabledCache = ninja_tables_shouldNotCache($tableId) ) {
             $cachedData = get_post_meta($tableId, '_ninja_table_cache_object', true);
             if ($cachedData) {
                 return $cachedData;
             }
         }
-
         $query = ninja_tables_DbTable()->where('table_id', $tableId);
-
         if ($defaultSorting == 'new_first') {
-            $query->orderBy('id', 'desc');
+            $query->orderBy('created_at', 'desc');
         } else if ($defaultSorting == 'manual_sort') {
             $query->orderBy('position', 'asc');
         } else {
-            $query->orderBy('id', 'asc');
+            $query->orderBy('created_at', 'asc');
         }
-
 
         $skip = intval($skip);
         if ($skip && $skip > 0) {
@@ -61,9 +58,19 @@ class DefaultProvider
             $query->limit(99999);
         }
 
-        foreach ($query->get() as $item) {
+        if($ownOnly) {
+            $query = apply_filters('ninja_table_own_data_filter_query', $query, $tableId);
+        }
+
+        global $wpdb;
+        $items = $query->get();
+        //dd($wpdb->last_query);
+        foreach ($items as $item) {
             $values = json_decode($item->value, true);
-            $values = array_map('do_shortcode', $values);
+            if($values) {
+                $values = array_map('do_shortcode', $values);
+            }
+            $values['___id___'] = $item->id;
             $data[] = $values;
         }
 

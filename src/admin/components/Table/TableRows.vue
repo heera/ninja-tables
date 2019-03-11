@@ -12,6 +12,7 @@
                 :item="updateItem"
                 :manual-sort="config.settings.sorting_type === 'manual_sort'"
                 :insert-after-position="insertAfterPosition"
+                :insertAfterId="insertAfterId"
                 :type="dataModalType"
             ></add_data_modal>
 
@@ -58,6 +59,9 @@
                     <button class="button action" v-on:click.prevent="handleBulkAction">{{ $t('Apply') }}</button>
                     <label for="compact_view" class="form_group">
                         <input id="compact_view" type="checkbox" v-model="isCompact"/> Compact View
+                    </label>
+                    <label>
+                        | <i title="show meta data" @click="show_meta = !show_meta" class="el-icon-news"></i>
                     </label>
                     <label class="form_group search_action" for="search">
                         <input v-on:keyup.enter="getData" id="search" class="form-control inline" v-model="searchString"
@@ -106,34 +110,52 @@
                                  v-html="renderTableCell(scope.row.values[column.key], column, scope.row.values)"></div>
                         </template>
                     </el-table-column>
-                    <el-table-column
-                            v-if="isEditable"
-                            fixed="right"
-                            label="Actions"
-                            class-name="actions"
-                            width="120">
-                        <template slot-scope="scope">
-                            <a v-if="has_pro" @click="addAfter(scope)">
-                                <el-tooltip placement="top-end" effect="light" content="Add data" :open-delay="500">
-                                    <span class="dashicons dashicons-plus"></span>
-                                </el-tooltip>
-                            </a>
-
-                            <a @click="showUpdateModal(scope)">
-                                <el-tooltip placement="top-end" effect="light" content="Edit data" :open-delay="500">
-                                    <span class="dashicons dashicons-edit"></span>
-                                </el-tooltip>
-                            </a>
-
-                            <a @click="duplicateData(scope)">
-                                <el-tooltip placement="top-end" effect="light" content="Duplicate data"
-                                            :open-delay="500">
-                                    <span class="dashicons dashicons-admin-page"></span>
-                                </el-tooltip>
-                            </a>
-                            <delete-pop-over @deleted="deleteItem(scope.row.id)"></delete-pop-over>
+                    <template v-if="isEditable">
+                        <template v-if="show_meta">
+                            <el-table-column
+                                    label="Data ID"
+                                    width="100px"
+                                    prop="id"
+                            />
+                            <el-table-column
+                                    label="Created By"
+                                    width="165px"
+                                    prop="created_by"
+                            />
+                            <el-table-column
+                                    label="Reference Date"
+                                    width="165px"
+                                    prop="created_at"
+                            />
                         </template>
-                    </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="Actions"
+                                class-name="actions"
+                                width="120">
+                            <template slot-scope="scope">
+                                <a v-if="has_pro" @click="addAfter(scope)">
+                                    <el-tooltip placement="top-end" effect="light" content="Add Data after this row" :open-delay="500">
+                                        <span class="dashicons dashicons-plus"></span>
+                                    </el-tooltip>
+                                </a>
+
+                                <a @click="showUpdateModal(scope)">
+                                    <el-tooltip placement="top-end" effect="light" content="Edit data" :open-delay="500">
+                                        <span class="dashicons dashicons-edit"></span>
+                                    </el-tooltip>
+                                </a>
+
+                                <a @click="duplicateData(scope)">
+                                    <el-tooltip placement="top-end" effect="light" content="Duplicate data"
+                                                :open-delay="500">
+                                        <span class="dashicons dashicons-admin-page"></span>
+                                    </el-tooltip>
+                                </a>
+                                <delete-pop-over @deleted="deleteItem(scope.row.id)"></delete-pop-over>
+                            </template>
+                        </el-table-column>
+                    </template>
                 </el-table>
 
                 <div class="tablenav bottom">
@@ -245,6 +267,7 @@
         data() {
             return {
                 columnModal: false,
+                show_meta: false,
                 new_column: {},
                 has_pro: !!window.ninja_table_admin.hasPro,
                 hasSortable: !!window.ninja_table_admin.hasSortable,
@@ -287,6 +310,8 @@
                 // Used for external data sources
                 isUpdatingTableSettings: false,
                 externalDataSourceUrl: this.config.table.remoteURL,
+                insertAfterId: false,
+                insertAfterHash: false
             }
         },
         watch: {
@@ -358,7 +383,7 @@
                         this.paginate.last_page = parseInt(res.last_page)
                     })
                     .fail((error) => {
-                        console.log(error);
+
                     })
                     .always(() => {
                         this.loading = false;
@@ -459,34 +484,52 @@
                 this.editIndex = null;
                 this.insertAfterPosition = null;
                 this.dataModalType = 'add';
-
+                this.insertAfterId = false;
+                this.insertAfterHash = false;
                 if (success) {
                     this.getData();
                 }
             },
             updateItemOnTable(item) {
                 this.items[this.editIndex].values = item.values;
+                this.items[this.editIndex].settings = item.settings;
+                if(item.created_at) {
+                    this.items[this.editIndex].created_at = item.created_at;
+                }
             },
-            addItemOnTable(item) {
-                let position = item.position;
+            addItemOnTable(item, position) {
+               if(!position) {
+                   position = item.position;
+               }
+
+               if(position == 'last-first') {
+                    if(this.config.settings.default_sorting == 'new_first') {
+                        position = 'first';
+                    } else {
+                        position = 'last';
+                    }
+               }
 
                 if (position) {
-                    if (position === 'last') {
+                    if (position == 'last') {
                         this.items.push(item);
-                    } else if (position === 'first') {
+                    } else if (position == 'first') {
                         this.items.unshift(item);
+                    } else if(this.insertAfterHash !== false) {
+                        this.insertAfterHash++;
+                        this.items.splice(this.insertAfterHash, -1, item);
                     } else {
-                        this.items.splice(position - 1, 0, item);
+                        this.items.push(item);
                     }
                 } else {
                     this.items.unshift(item);
                 }
-
-
                 if (this.insertAfterPosition) {
-                    this.insertAfterPosition += 1;
+                    this.insertAfterPosition = item.position;
                 }
-
+                if (this.insertAfterId) {
+                    this.insertAfterId = item.id;
+                }
                 this.paginate.total++;
             },
             showUpdateModal(item) {
@@ -654,7 +697,9 @@
                 this.updateItem = null;
                 this.addDataModalTitle = 'Add Data';
                 this.dataModalType = 'add-after';
-                this.insertAfterPosition = scope.$index + 1;
+                this.insertAfterPosition = parseInt(scope.row.position);
+                this.insertAfterHash = scope.$index;
+                this.insertAfterId = scope.row.id;
                 this.addDataModal = true;
             },
             addConfigIcon(h, {column, $index}) {
@@ -694,10 +739,14 @@
             duplicateData(item) {
                 this.updateItem = Object.assign({}, item.row);
                 this.updateItem.id = null;
-
                 if (this.hasSortable) {
                     this.insertAfterPosition = item.$index + 1;
                 }
+
+                this.insertAfterPosition = parseInt(item.row.position);
+                this.insertAfterHash = item.$index;
+                this.insertAfterId = item.row.id;
+
                 this.addDataModal = true;
                 this.dataModalType = 'duplicate';
                 this.addDataModalTitle = 'Duplicate Data';
@@ -713,14 +762,12 @@
                 this.config.columns.splice(targetIndex, 1);
                 this.$nextTick(() => this.storeSettings());
             },
-
             renderTableCell(value, column, row) {
-                if (!column.transformed_value) {
-                    return value;
+                if (column.transformed_value && column.transformed_value.trim()) {
+                    return this.getShortcodes(value, column, row);
                 }
-                return this.getShortcodes(value, column, row);
+                return value;
             },
-
             getShortcodes(str, column, row) {
                 let transValue = column.transformed_value;
                 const regEx = /{row.([^\}]*)}/g;

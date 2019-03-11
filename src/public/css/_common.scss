@@ -3,6 +3,32 @@
     padding: 0.92857143em 0.78571429em;
   }
 
+  th.footable-editing {
+    width: auto !important;
+  }
+
+  td.footable-editing {
+    width: auto !important;
+
+    .btn-group {
+      button {
+        padding: 1px 5px;
+        margin: 0;
+        border-radius: 3px;
+
+        &:last-child {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+        &:first-child {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+      }
+    }
+  }
+
   .form-inline {
     display: block !important;
     margin-bottom: 0;
@@ -13,11 +39,13 @@
       text-align: left;
     }
   }
+
   &.ninja_search_right {
     tr.footable-filtering .form-inline {
       text-align: right;
     }
   }
+
   &.ninja_search_center {
     tr.footable-filtering .form-inline {
       text-align: center;
@@ -27,6 +55,7 @@
   td.ninja_temp_cell {
     display: none !important;
   }
+
   span.label.label-default {
     display: none;
     visibility: hidden;
@@ -37,11 +66,13 @@
       text-align: right;
     }
   }
+
   &.footable-paging-center {
     .footable-pagination-wrapper {
       text-align: center;
     }
   }
+
   &.footable-paging-left {
     .footable-pagination-wrapper {
       text-align: left;
@@ -61,14 +92,17 @@
     overflow: visible !important;
     text-overflow: unset !important;
   }
+
   tr.footable-filtering th {
     overflow: visible !important;
   }
+
   .pagination {
     border: none;
     padding: 0px;
     font-weight: 500;
   }
+
   button.btn.btn-default.dropdown-toggle {
     top: 0;
     right: 0px;
@@ -85,35 +119,44 @@
     padding-bottom: 5px;
     color: #333333;
   }
+
   ul.dropdown-menu.dropdown-menu-right li:last-child a {
     border-bottom: 0px !important;
     box-shadow: none;
   }
+
   ul.dropdown-menu.dropdown-menu-right li a:hover {
     -webkit-box-shadow: inset 0 0 0 rgba(0, 0, 0, 0), 0 1px 0 rgba(0, 0, 0, 1);
     box-shadow: inset 0 0 0 rgba(0, 0, 0, 0), 0 1px 0 rgba(0, 0, 0, 1);
   }
+
   span.footable-toggle {
     cursor: pointer;
   }
+
   &.ninjatable_hide_header_row > thead tr.footable-header {
     display: none !important;
     visibility: hidden;
   }
+
   &.hide_all_borders.table {
     border-color: transparent;
+
     thead {
       border-color: transparent !important;
+
       tr, td, tr > th {
         border-color: transparent !important;
         border-width: 0px !important;
       }
     }
+
     tbody {
       th, td, th {
         border-color: transparent !important;
       }
     }
+
     tfoot {
       tr > td {
         border-color: transparent !important;
@@ -126,26 +169,32 @@
     display: none !important;
     visibility: hidden !important;
   }
+
   .form-group.footable-filtering-search .input-group-btn > button {
     margin: 0px !important;
     height: auto !important;
     padding: 6px 12px !important;
   }
+
   .form-group.footable-filtering-search input.form-control {
     margin-bottom: 0px !important;
   }
+
   tbody tr.footable-detail-row {
     > td {
       padding: 5px !important;
     }
+
     td {
       table.footable-details {
         margin-bottom: 0px;
+
         tbody tr:nth-child(even) {
           background: #f7f7f7 !important;
         }
       }
     }
+
     table.inverted {
       tbody {
         tr {
@@ -167,11 +216,29 @@
     max-width: 100%;
   }
 
+  tbody tr {
+    td, th {
+      background-color: transparent;
+    }
+
+    &:nth-child(2n) {
+      td, th {
+        background-color: transparent;
+      }
+    }
+
+    &:nth-child(2n + 1) {
+      td, th {
+        background-color: transparent;
+      }
+    }
+  }
 }
 
 .footable_parent {
   overflow-x: auto;
   width: 100%;
+
   table.foo-table {
     &.vertical_centered {
       thead > tr > th,
@@ -182,10 +249,45 @@
   }
 }
 
+.ninja_table_pro {
+  table.footable-details {
+    tr.nt_has_hide {
+      display: none !important;
+    }
+  }
+
+  &.nt_hide_breakpoint_labels {
+    table.footable-details tbody > tr > th {
+      display: none;
+    }
+  }
+
+  &.nt_search_full_width {
+    .form-group.footable-filtering-search {
+      width: 100%;
+      .input-group {
+        display: block;
+        position: relative;
+        > .form-control {
+          display: inline-block;
+          float: none;
+        }
+        .input-group-btn {
+          position: absolute;
+          right: 0;
+          top: 0;
+          z-index: 999999;
+        }
+      }
+    }
+  }
+}
+
 .loading_ninja_table1 {
   width: 100%;
   height: 200px;
   background: gray !important;
+
   table {
     display: none;
   }
@@ -232,56 +334,84 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
         }
         display: inline-block;
         margin-right: 15px;
+
         &:last-child {
           margin-right: 0;
         }
+
         input {
           margin-right: 10px;
         }
       }
+
       label.ninja_filter_title {
         margin-right: 0;
       }
     }
+
     .ninja_filter_title {
       margin-right: 10px;
     }
   }
+
   .ninja_table_afd_columns {
     thead .footable-filtering th .form-inline {
       display: block;
       width: 100%;
+
       > .form-group {
         text-align: left;
+
         .form-control, .input-group {
           width: 100%;
         }
+
         > .ninja_filter_title {
           display: block;
           font-weight: bold;
         }
+
+        &.ninja_reset_wrapper {
+          margin-top: 24px;
+        }
+
         .input-group {
           width: 100%;
+
           .input-group-btn {
             width: 70px !important;
           }
         }
+
         .ninja_filter_date_range, .ninja_filter_number_range {
           width: 49%;
           margin: 0 2% 0 0;
+
           &:last-child {
             margin-right: 0;
           }
         }
       }
+
       .ninja_filter_title {
         margin-right: 0;
       }
+
       .ninja_filter_date_from, .ninja_filter_number_from {
         margin-right: 10px;
       }
+
       .ninja_filter_date_from, .ninja_filter_number_from, .ninja_filter_date_to, .ninja_filter_number_to {
         margin-bottom: 5px;
+      }
+      .form-group.footable-filtering-search {
+        .sr-only {
+          position: relative;
+          visibility: hidden !important;
+          color: rgba(0, 0, 0, 0);
+          height: 0;
+          width: 0;
+        }
       }
     }
   }
@@ -293,10 +423,17 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
         width: 49%;
         padding: 0 15px 0 0;
         float: left;
+
+        &:last-child {
+          padding-right: 0;
+        }
+
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
+
         &:nth-child(2n + 1) {
           clear: both;
         }
@@ -308,13 +445,20 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     thead .footable-filtering th .form-inline {
       > .form-group {
         margin: 0 0 20px;
-        width: 33%;
+        width: 33.3%;
         padding: 0 15px 0 0;
         float: left;
+
+        &:last-child {
+          padding-right: 0;
+        }
+
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
+
         &:nth-child(3n + 1) {
           clear: both;
         }
@@ -329,10 +473,17 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
         width: 24.9%;
         padding: 0 15px 0 0;
         float: left;
+
+        &:last-child {
+          padding-right: 0;
+        }
+
         @media (max-width: 767px) {
           width: 100%;
           float: none;
+          padding-right: 0;
         }
+
         &:nth-child(4n + 1) {
           clear: both;
         }
@@ -344,6 +495,7 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     color: rgb(255, 255, 255);
     background: rgb(220, 53, 69);
     border-color: rgb(220, 53, 69);
+
     &:hover {
       color: rgb(255, 255, 255);
       background-color: rgb(200, 35, 51);
@@ -355,6 +507,7 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     thead .footable-filtering th .form-inline {
       display: block;
       width: 100%;
+
       > .form-group {
         margin-bottom: 10px;
       }
@@ -365,10 +518,32 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     display: block;
     overflow: hidden;
     clear: both;
-    text-align: right;
+
+    &.ninja_buttons_left {
+      text-align: left;
+    }
+
+    &.ninja_buttons_center {
+      text-align: center;
+    }
+
+    &.ninja_buttons_right {
+      text-align: right;
+    }
+
+    &.after_search_box {
+      margin-top: 10px;
+    }
+
+    &.before_table {
+      margin-bottom: 10px;
+    }
+
     .ninja_button {
       border-radius: 0;
-      border-right: 1px solid rgb(222, 222, 223);
+      border-right: 1px solid;
+      padding: 5px 10px;
+
       &:last-child {
         border-right: none;
       }
@@ -382,6 +557,10 @@ table.ninja_footable col, table.ninja_footable > thead > tr > th {
     .footable_parent {
       overflow-x: hidden !important;
       width: 100%;
+    }
+
+    .footable-editing {
+      display: none !important;
     }
   }
 }

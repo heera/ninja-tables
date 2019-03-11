@@ -88,12 +88,41 @@ class NinjaTablePublic
             wp_send_json_success([], 200);
         }
 
-        $skip = ArrayHelper::get($_REQUEST, 'skip_rows', false);
+        $skip = ArrayHelper::get($_REQUEST, 'skip_rows', 0);
         $limit = ArrayHelper::get($_REQUEST, 'limit_rows', false);
 
-        $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip);
+        if(!$limit && !$skip && isset($_REQUEST['chunk_number'])) {
+            $chunkNumber = ArrayHelper::get($_REQUEST, 'chunk_number', 0);
+            $perChunk = ninjaTablePerChunk($tableId);
+            $skip = $chunkNumber * $perChunk;
+            $limit = $perChunk;
+        }
+
+        $ownOnly = false;
+        if(isset($_REQUEST['own_only']) && $_REQUEST['own_only'] == 'yes') {
+            $ownOnly = true;
+        }
+
+        $formatted_data = ninjaTablesGetTablesDataByID($tableId, $defaultSorting, false, $limit, $skip, $ownOnly);
 
         $formatted_data = apply_filters('ninja_tables_get_public_data', $formatted_data, $tableId);
+
+        $dataProvider = ninja_table_get_data_provider($tableId);
+        if($dataProvider == 'default') {
+            $newStyledData = array();
+            $counter = $skip;
+            foreach ($formatted_data as $index => $datum) {
+                $newStyledData[] = array(
+                    'options' => array(
+                        'classes' => (isset($datum['___id___'])) ? 'ninja_table_row_'.$counter.' nt_row_id_'.$datum['___id___'] : 'ninja_table_row_'.$counter,
+                    ),
+                    'value' => $datum
+                );
+                $counter = $counter + 1;
+            }
+            $formatted_data = $newStyledData;
+        }
+
         wp_send_json($formatted_data, 200);
         wp_die();
     }
@@ -112,7 +141,8 @@ class NinjaTablePublic
     {
         $shortCodeDefaults = array(
             'id' => false,
-            'filter' => false
+            'filter' => false,
+            'use_parent_width' => false
         );
 
         $shortCodeDefaults = apply_filters('ninja_tables_shortcode_defaults', $shortCodeDefaults);
@@ -143,6 +173,8 @@ class NinjaTablePublic
         if (!$tableSettings || !$tableColumns) {
             return;
         }
+
+        $tableSettings['use_parent_width'] = $use_parent_width;
 
         if (isset($tableSettings['columns_only']) && is_array($tableSettings['columns_only'])) {
             $showingColumns = $tableSettings['columns_only'];

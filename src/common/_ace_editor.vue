@@ -1,10 +1,9 @@
 <template>
-    <div v-loading="loading" element-loading-text="Loading CSS Editor...">
+    <div v-loading="loading" element-loading-text="Loading Editor...">
         <div class="ace_container">
-            <div class="ninja_custom_css_editor" id="ninja_custom_css_editor">{{ value }}</div>
+            <div class="ninja_custom_css_editor" id="ninja_custom_css">{{ value }}</div>
         </div>
-        <div  class="editor_errors">
-            <span>Please don't include <code>&lt;style&gt;&lt;/style&gt;</code> tag</span>
+        <div  class="editor_errors" :class="'ninja_'+mode+'_errors'">
             <span v-show="editorError" style="text-align: right; display: inline-block; color: #ff7171; float: right">{{ editorError }}</span>
         </div>
     </div>
@@ -12,7 +11,7 @@
 <script type="text/babel">
     export default {
         name: 'ninja_ace_editor',
-        props: ['value'],
+        props: ['value', 'mode', 'editor_id'],
         data() {
             return {
                 ace_path: window.ninja_table_admin.ace_path_url,
@@ -24,7 +23,6 @@
             loadDependencies() {
                 if(typeof ace == 'undefined') {
                     jQuery.get(this.ace_path + '/ace.min.js', () => {
-                       
                         this.initAce();
                     });
                 } else {
@@ -35,9 +33,9 @@
                 ace.config.set("workerPath", this.ace_path);
                 ace.config.set("modePath", this.ace_path);
                 ace.config.set("themePath", this.ace_path);
-                let editor = ace.edit("ninja_custom_css_editor");
+                let editor = ace.edit('ninja_custom_css');
                 editor.setTheme("ace/theme/monokai");
-                editor.session.setMode("ace/mode/css");
+                editor.session.setMode("ace/mode/"+this.mode);
                 editor.getSession().on("changeAnnotation", () => {
                     var annot = editor.getSession().getAnnotations();
                     this.editorError = '';
@@ -47,12 +45,9 @@
                        }
                     }
                 });
-
                 editor.getSession().on("change", () => {
-                   
                     this.$emit('input', editor.getSession().getValue());
                 });
-                
                 this.loading = false;
             }
         },
@@ -60,14 +55,14 @@
             this.loadDependencies();
         }
     }
-</script> 
+</script>
 
 <style>
     .ninja_custom_css_editor {
        min-height: 350px;
         height: auto;
     }
-    .ace_gutter-cell.ace_warning {
+    .ninja_css_errors .ace_gutter-cell.ace_warning {
         display: none;
     }
 </style>

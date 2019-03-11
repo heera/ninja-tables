@@ -12,7 +12,9 @@
                     </el-radio-button>
                 </el-radio-group>
             </div>
-            <el-button :loading="savingSettings" :disabled="savingSettings" size="small" type="primary" @click="storeSettings()">Update Settings</el-button>
+            <el-button :loading="savingSettings" :disabled="savingSettings" size="small" type="primary"
+                       @click="storeSettings()">Update Settings
+            </el-button>
         </div>
         <div class="ninja_design_wrapper">
             <div v-loading="!app_ready" style="background: white; padding: 10px 20px;" class="design_preview">
@@ -47,6 +49,10 @@
                     </table>
                 </div>
                 <div class="ninja_demo_disclaimer">
+                    <hr />
+                    <p v-if="tableSettings.stackable == 'yes'">
+                        <b>For Stackable Tables, Live preview is disabled here. Please check on preview url</b>
+                    </p>
                     <p>
                         <b>Note: </b> For preview purpose, you are seeing up to 25 latest rows here and and per page 10
                         items if you enable paginate. Also note that, The table style may differ at the frontend as your
@@ -103,15 +109,6 @@
                                     <i class="el-icon-info el-text-info"></i>
                                 </el-tooltip>
                             </label>
-
-                            <label v-if="tableLibs[tableSettings.library].supports.ajax" for="enable_ajax">
-                                <input v-model="tableSettings.enable_ajax" type="checkbox" value="1" id="enable_ajax"/>
-                                {{ $t('Enable Ajax Loading') }}
-                                <el-tooltip placement="top-end" effect="light"
-                                            content="Enable this if you have more than 10,000 records in your table">
-                                    <i class="el-icon-info el-text-info"></i>
-                                </el-tooltip>
-                            </label>
                             <label for="enable_search">
                                 <input v-model="tableSettings.enable_search" type="checkbox" value="1"
                                        id="enable_search"/> {{ $t('Enable the visitor to filter or search the table.')
@@ -128,6 +125,63 @@
                             <label><input v-model="tableSettings.hide_all_borders" type="checkbox">
                                 Hide All Borders
                             </label>
+                            <label><input v-model="tableSettings.hide_on_empty" type="checkbox">
+                                Hide empty items on responsive breakdown <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this then the empty ietems will not show into responsive drawer / Stackable View">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+                            <label><input v-model="tableSettings.hide_responsive_labels" type="checkbox">
+                                Hide Labels on responsive breakdown <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this then columns headings will not show into responsive drawer / Stackable View">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+                        </div>
+
+                        <div class="form_group label-normalize">
+                            <h3 class="ninja_inner_title">
+                                Stackable Table Configuration
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="With stackable table, You can show your rows as list item. You can target by device width">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </h3>
+
+                            <div class="form_group">
+                                <el-checkbox true-label="yes" false-label="no" v-model="tableSettings.stackable">
+                                    Enable Stackable Table
+                                </el-checkbox>
+                                <template v-if="tableSettings.stackable == 'yes'">
+                                    <h3 style="margin-top: 15px" class="ninja_inner_title">Target Devices
+                                        <el-tooltip placement="top-end" effect="light"
+                                                    content="Select the device by width in where the stackable tables will be enabled">
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <el-checkbox-group
+                                            v-model="tableSettings.stacks_devices">
+                                        <el-checkbox label="xs">Mobile Device</el-checkbox>
+                                        <el-checkbox label="sm">Tablet Device</el-checkbox>
+                                        <el-checkbox label="md">Laptop</el-checkbox>
+                                        <el-checkbox label="lg">Large Devices (imac)</el-checkbox>
+                                    </el-checkbox-group>
+
+                                    <h3 style="margin-top: 15px" class="ninja_inner_title">Stacked Appearance
+                                        <el-tooltip placement="top-end" effect="light"
+                                                    content="You can customize the appearance in stacked view of your table">
+                                            <i class="el-icon-info el-text-info"></i>
+                                        </el-tooltip>
+                                    </h3>
+                                    <el-checkbox-group
+                                            v-model="tableSettings.stacks_appearances">
+                                        <el-checkbox label="hide_stacked_th">Hide column headings</el-checkbox>
+                                        <el-checkbox label="ninja_stacked_no_cell_border">Hide internal borders</el-checkbox>
+                                    </el-checkbox-group>
+                                </template>
+                            </div>
                         </div>
                     </el-tab-pane>
                     <el-tab-pane label="Table Colors" name="color_customization">
@@ -310,6 +364,15 @@
                                 <el-radio-button label="center">Center</el-radio-button>
                                 <el-radio-button label="right">Right</el-radio-button>
                             </el-radio-group>
+
+                            <label><input v-model="tableSettings.paginate_to_top" type="checkbox">
+                                Scroll to table top for pagination change <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If you enable this then on pagination change, the table will be scrolled to top">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
+
                         </div>
 
                         <div class="form_group">
@@ -322,14 +385,25 @@
                                 <el-radio-button label="right">Right</el-radio-button>
                                 <el-radio-button label="">Default</el-radio-button>
                             </el-radio-group>
+
+                            <label><input v-model="tableSettings.nt_search_full_width" type="checkbox">
+                                Make search input as full width <span v-show="!has_pro">(Pro Only)</span>
+                                <el-tooltip placement="top-end" effect="light"
+                                            content="If You enable this, Then the search input will take all the available space (100% width)">
+                                    <i class="el-icon-info el-text-info"></i>
+                                </el-tooltip>
+                            </label>
                         </div>
 
                         <div class="form_group">
                             <label>Select Sorting Method</label>
                             <el-radio-group size="mini" v-model="tableSettings.sorting_type">
-                                <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By Created at</el-radio-button>
+                                <el-radio-button :disabled="!config.table.isCreatedSortable" label="by_created_at">By
+                                    Created at
+                                </el-radio-button>
                                 <el-radio-button label="by_column">By Column</el-radio-button>
-                                <el-radio-button :disabled="!config.table.isSortable" label="manual_sort">Manual Sort</el-radio-button>
+                                <el-radio-button :disabled="!config.table.isSortable" label="manual_sort">Manual Sort
+                                </el-radio-button>
                             </el-radio-group>
                             <div v-if="tableSettings.sorting_type == 'by_created_at'" class="">
                                 <span>{{ $t('Sort Type') }}
@@ -359,7 +433,9 @@
                                     checkbox to sort the data using drag and drop feature</p>
                             </div>
 
-                            <el-button v-if="tableSettings.sorting_type"  size="mini" @click="tableSettings.sorting_type = ''">reset</el-button>
+                            <el-button v-if="tableSettings.sorting_type" size="mini"
+                                       @click="tableSettings.sorting_type = ''">reset
+                            </el-button>
 
                         </div>
 
@@ -385,6 +461,26 @@
                                     Expand All
                                     <el-tooltip placement="top-end" effect="light" content="This will automatically expand all rows of the table when displayed on a device that hides
                             any columns.">
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                </el-radio-button>
+                            </el-radio-group>
+                        </div>
+
+                        <div class="form_group">
+                            <label>{{ $t('Toggle Position') }}</label>
+                            <el-radio-group size="mini" v-model="tableSettings.togglePosition">
+                                <el-radio-button label="first">
+                                    First Column
+                                    <el-tooltip placement="top-end" effect="light"
+                                                content="If you use responsive breakdown then the '+' icon will show at the first visible column">
+                                        <i class="el-icon-info el-text-info"></i>
+                                    </el-tooltip>
+                                </el-radio-button>
+                                <el-radio-button label="last">
+                                    Last Column
+                                    <el-tooltip placement="top-end" effect="light"
+                                                content="If you use responsive breakdown then the '+' icon will show at the last visible column">
                                         <i class="el-icon-info el-text-info"></i>
                                     </el-tooltip>
                                 </el-radio-button>
@@ -495,14 +591,24 @@
                 }
                 classes.push('ninja_table_pro');
 
-                if(this.tableSettings.search_position) {
-                    classes.push('ninja_search_'+this.tableSettings.search_position);
+                if (this.tableSettings.search_position) {
+                    classes.push('ninja_search_' + this.tableSettings.search_position);
                 }
 
                 let table_css_classes = [];
                 if (this.tableSettings.css_classes) {
                     table_css_classes = this.availableCssClasses.filter(value => -1 != this.tableSettings.css_classes.indexOf(value));
                 }
+
+                if(this.tableSettings.hide_responsive_labels) {
+                    classes.push('nt_hide_breakpoint_labels');
+                }
+
+                if(this.tableSettings.nt_search_full_width) {
+                    classes.push('nt_search_full_width');
+                }
+
+
 
                 if (this.tableSettings.css_lib == 'semantic_ui') {
                     classes.push('ui');
@@ -593,23 +699,18 @@
                     this.reInitFootables();
                 }
             },
-            showingDevice() {
-                this.$nextTick(() => {
-                    this.reInitFootables();
-                });
+            tableSettings: {
+                handler(val) {
+                    this.$nextTick(() => {
+                        this.generateColorCss();
+                    });
+                },
+                deep: true
             },
             tableClasses: {
                 handler(val) {
                     this.$nextTick(() => {
                         this.reInitFootables();
-                    });
-                },
-                deep: true
-            },
-            tableSettings: {
-                handler(val) {
-                    this.$nextTick(() => {
-                        this.generateColorCss();
                     });
                 },
                 deep: true
@@ -625,6 +726,11 @@
                 });
             },
             'tableSettings.show_all'() {
+                this.$nextTick(() => {
+                    this.reInitFootables();
+                });
+            },
+            'tableSettings.togglePosition'() {
                 this.$nextTick(() => {
                     this.reInitFootables();
                 });
@@ -658,6 +764,14 @@
             },
             activeDesign() {
                 this.checkColorPro();
+            },
+            'tableSettings.stackable'() {
+                if( ! Array.isArray(this.tableSettings.stacks_devices) ) {
+                    this.$set(this.tableSettings, 'stacks_devices', []);
+                }
+                if( ! Array.isArray(this.tableSettings.stacks_appearances) ) {
+                    this.$set(this.tableSettings, 'stacks_appearances', []);
+                }
             }
         },
         methods: {
@@ -709,7 +823,6 @@
                         this.savingSettings = false;
                     });
             },
-
             filterTableSettings(settings) {
                 let validStyles = [];
                 forEach(this.availableStyles, (style) => {
@@ -719,7 +832,6 @@
 
                 return settings;
             },
-
             reInitFootables() {
                 if (!this.app_ready) {
                     return;
@@ -735,61 +847,23 @@
                 jQuery('#footable_' + this.tableId).append(this.tableInnerHtml);
                 this.initFootables();
             },
-
             initFootables() {
-                if (this.footableLoading) {
+                if (this.footableLoading || !this.script_loaded) {
                     return;
                 }
                 this.footableLoading = true;
-
-                let paginateStatus = true;
-                if (this.tableSettings.show_all == 'true' || this.tableSettings.show_all == '1') {
-                    paginateStatus = false;
-                }
-                let perPage = 10;
-                if (this.tableSettings.perPage < 10) {
-                    perPage = this.tableSettings.perPage;
-                }
-
-                let isParentWidth = false;
-                if (this.showingDevice != 'desktop') {
-                    isParentWidth = true;
-                }
-                let initConfig = {
-                    "columns": this.formattedColumns,
-                    "cascade": false,
-                    "useParentWidth": isParentWidth,
-                    "expandFirst": this.tableSettings.expand_type == 'expandFirst',
-                    "expandAll": this.tableSettings.expand_type == 'expandAll',
-                    sorting: {
-                        enabled: !!this.tableSettings.column_sorting
-                    },
-                    filtering: {
-                        "enabled": !!this.tableSettings.enable_search,
-                        "delay": 1,
-                        "connectors": false,
-                        "ignoreCase": true
-                    },
-                    paging: {
-                        "enabled": paginateStatus,
-                        "size": perPage,
-                        "container": "#footable_parent_" + this.tableId + " .paging-ui-container"
-                    }
-                };
+                let NinjaTableApp = window.ninjaTableApp;
                 let $table = jQuery('#footable_' + this.tableId);
-                $table.footable(initConfig);
-                this.generateColorCss();
+
+                if(this.tableSettings.hide_on_empty) {
+                    $table.on('expanded.ft.row', function(e, ft, row){
+                        $table.find('table.footable-details td:empty').parent().addClass('nt_has_hide');
+                    });
+                }
+
+                NinjaTableApp.initTable($table, this.getTableConfig());
                 this.footableLoading = false;
-                jQuery("td:contains('#colspan#')").remove();
-
-                this.config.columns.forEach((column, index) => {
-                    $table.find('th.ninja_column_' + index)
-                        .css('text-align', column.textAlign)
-                        .css('width', column.width + 'px');
-                });
-
             },
-
             dysel(options) {
                 // get options
                 var links = options.links;
@@ -952,12 +1026,41 @@
             generateDefaultCss() {
                 let columnContentCss = this.config.table.custom_css;
                 this.config.columns.forEach((column, index) => {
-                    if(column.background_color || column.text_color || column.contentAlign) {
+                    if (column.background_color || column.text_color || column.contentAlign) {
                         columnContentCss += `#footable_parent_${this.tableId} thead tr th.ninja_column_${index}, #footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { background-color: ${column.background_color}; color: ${column.text_color}; }`;
                         columnContentCss += `#footable_parent_${this.tableId} tbody tr td.ninja_column_${index} { text-align: ${column.contentAlign}; }`;
                     }
                 });
                 jQuery('#ninja_table_designer_common_css').html(columnContentCss);
+            },
+            getTableConfig() {
+                let custom_css = {};
+                this.config.columns.forEach((column, index) => {
+                    custom_css['ninja_column_'+index] = {
+                        'text-align':column.textAlign,
+                        'width' : column.width+'px'
+                    };
+                });
+                return {
+                    columns: this.formattedColumns,
+                    custom_css: custom_css,
+                    settings: {
+                        default_sorting: 'old_first',
+                        defualt_filter: false,
+                        defualt_filter_column: null,
+                        expandAll:  this.tableSettings.expand_type === "expandAll",
+                        expandFirst: this.tableSettings.expand_type === "expandFirst",
+                        filtering: !!this.tableSettings.enable_search,
+                        i18n: {},
+                        use_parent_width: this.showingDevice !== 'desktop',
+                        sorting: !!this.tableSettings.column_sorting,
+                        togglePosition: this.tableSettings.togglePosition
+                    },
+                    render_type: 'legacy_table',
+                    instance_name: 'ninja_table_instance_0',
+                    table_id: this.table_id,
+                    title: ''
+                };
             }
         },
         mounted() {
@@ -970,10 +1073,9 @@
                     this.$set(this.tableSettings, 'table_color_type', 'pre_defined_color');
                 }
             }
-
-            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
-            jQuery(window).on('resize', function(){
-                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width()+'px');
+            jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');
+            jQuery(window).on('resize', function () {
+                jQuery('.ninja_design_wrapper').css('width', jQuery('.wrap').width() + 'px');
             });
             this.generateDefaultCss();
         }
@@ -994,9 +1096,10 @@
         padding: 0px 20px;
         margin: 0 auto;
     }
+
     .design_preview .footable_parent {
         .footable-header th {
-           // word-break: break-all;
+            // word-break: break-all;
         }
     }
 </style>

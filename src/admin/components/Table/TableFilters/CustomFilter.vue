@@ -13,7 +13,7 @@
         </div>
         <div style="margin: 25px 0" v-loading="loading" class="ninja_style_wrapper">
             <div v-if="hasAdvancedFilters" class="section_block">
-                <el-button @click="showAddFilter()" size="small" type="success">Add New Filter</el-button>
+                <el-button @click="showAddFilter()" size="small" type="primary">Add New Filter</el-button>
                 <template v-if="table_filters.length">
                     <table style="margin: 20px 0" class="wp-list-table table-bordered widefat fixed striped">
                         <thead>
@@ -50,7 +50,7 @@
                     <h3>Filter Appearance</h3>
                     <el-radio-group v-model="filter_styling.filter_display_type">
                         <el-radio label="inline">Show filter inputs as inline</el-radio>
-                        <el-radio label="columns">Show filter inputs Column</el-radio>
+                        <el-radio label="columns">Show filter inputs as Columns</el-radio>
                     </el-radio-group>
                     <template v-if="filter_styling.filter_display_type == 'columns'">
                         <h3>Filter Columns</h3>
@@ -60,21 +60,13 @@
                             <el-radio-button label="columns_4">Four Columns</el-radio-button>
                         </el-radio-group>
                     </template>
+                    <div style="margin-top: 20px" class="form_group">
+                        <el-button :loading="saving" size="small" type="success" @click="saveFilters">Update Settings</el-button>
+                    </div>
                 </template>
-
-                <template v-if="table_buttons && table_buttons.csv && table_buttons.print">
-                    <h3>Export / Print Button Settings</h3>
-                    <el-checkbox true-label="yes" false-label="no" v-model="table_buttons.csv.status">CSV Export Button</el-checkbox>
-                    <el-checkbox true-label="yes" false-label="no" v-model="table_buttons.print.status">Print Button</el-checkbox>
-                </template>
-
-                <div style="margin-top: 20px" class="form_group">
-                    <el-button :loading="saving" size="small" type="success" @click="saveFilters">Update Settings</el-button>
-                </div>
-
             </div>
             <div v-else-if="hasPro" class="section_block">
-                <h3>Custom Filters is introduced in version 2.4.0. Please upgrade <b>Ninja tables pro</b> plugin to use
+                <h3>Custom Filters is introduced in version 2.4.0. Please update <b>Ninja tables pro</b> plugin to use
                     this feature</h3>
             </div>
             <div v-else class="section_block text-center">
@@ -88,8 +80,9 @@
                 title="Edit Custom Filter"
                 :visible.sync="editorModal"
                 width="70%"
+                top="50px"
                 :append-to-body="true">
-            <ninja-filter-editor :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
+            <ninja-filter-editor v-if="activeEditor" :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editorModal = false">Cancel</el-button>
                 <el-button type="primary" @click="updateFilter(activeEditor)">Update</el-button>
@@ -100,8 +93,9 @@
                 title="Add New Custom Filter"
                 :visible.sync="addFilterModal"
                 width="70%"
+                top="50px"
                 :append-to-body="true">
-            <ninja-filter-editor :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
+            <ninja-filter-editor v-if="activeEditor" :columns="columns" :columnKeyPairs="columnKeyPairs" :activeEditor="activeEditor"></ninja-filter-editor>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addFilterModal = false">Cancel</el-button>
                 <el-button type="primary" @click="addFilter(activeEditor)">Add</el-button>
@@ -138,18 +132,6 @@
                     filter_display_type: '',
                     filter_columns: 'columns_2',
                     filter_column_label: 'new_line'
-                },
-                table_buttons: {
-                    csv: {
-                        status: 'no',
-                        label: 'CSV',
-                        all_rows: 'no'
-                    },
-                    print: {
-                        status: 'no',
-                        label: 'Print',
-                        all_rows: 'no'
-                    }
                 }
             }
         },
@@ -173,7 +155,6 @@
                     .then((response) => {
                         this.table_filters = response.data.table_filters;
                         this.filter_styling = response.data.filter_styling;
-                        this.table_buttons = response.data.table_buttons;
                     })
                     .fail(error => {
 
@@ -197,8 +178,13 @@
                     return false;
                 }
 
-                if ( filter.type != 'reset_filter' && !filter.columns.length) {
+                if ( filter.type != 'reset_filter' && filter.type != 'select'  && !filter.columns.length) {
                     this.$message.error('Please Select columns that you need to add filter');
+                    return false;
+                }
+
+                if(filter.type == 'select' && filter.select_value_type == 'dynamic_data' && !filter.dynamic_select_column) {
+                    this.$message.error('Please Select Target Column');
                     return false;
                 }
 
@@ -210,8 +196,7 @@
                     action: 'ninjatable_update_custom_table_filters',
                     table_id: this.table_id,
                     ninja_filters: this.table_filters,
-                    filter_styling: this.filter_styling,
-                    table_buttons: this.table_buttons
+                    filter_styling: this.filter_styling
                 })
                     .then((response) => {
                         this.$message.success(response.data.message);
@@ -235,7 +220,7 @@
                     }],
                     type: "select",
                     columns: [],
-                    strict: true,
+                    strict: 'yes',
                     title: ""
                 };
                 this.addFilterModal = true;

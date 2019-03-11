@@ -7,7 +7,7 @@
                          text-color="#fff"
                          :router="true"
                          active-text-color="#ffd04b">
-                    <el-menu-item v-for="menuItem in menuItems" :key="menuItem.route" :index="menuItem.route" :route="{ name: menuItem.route }">
+                    <el-menu-item v-for="menuItem in menuItems" v-if="menuItem.status" :key="menuItem.route" :index="menuItem.route" :route="{ name: menuItem.route }">
                         <i :class="menuItem.icon_class"></i>
                         <span>{{menuItem.title}}</span>
                     </el-menu-item>
@@ -25,7 +25,7 @@
         name: 'Tools',
         data() {
             return {
-                has_pro: window.ninja_table_admin.hasPro,
+                has_pro: !!window.ninja_table_admin.hasPro,
                 active_menu: this.$route.name,
                 menuItems: []
             }
@@ -37,22 +37,32 @@
                         route: 'import_tables',
                         title: this.$t('Import'),
                         icon_class: 'el-icon-upload',
+                        status: true
                     },
                     {
                         route: 'default_table_appearance',
                         title: this.$t('Global Appearance'),
                         icon_class: 'el-icon-star-off',
+                        status: true
                     },
                     {
                         route: 'permission',
                         title: this.$t('Permission'),
                         icon_class: 'el-icon-setting',
+                        status: true
                     },
                     {
                         route: 'licensing',
                         title: this.$t('License'),
                         icon_class: 'dashicons dashicons-shield',
-                    }
+                        status: this.has_pro
+                    },
+                    {
+                        route: 'global_settings',
+                        title: this.$t('Global Settings'),
+                        icon_class: 'el-icon-menu',
+                        status: true
+                    },
                 ]);
             }
         },

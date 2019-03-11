@@ -164,7 +164,7 @@ class NinjaTablesAdmin
                 $submenu['ninja_tables']['activate_license'] = array(
                     '<span style="color:#f39c12;">Activate License</span>',
                     $capability,
-                    'admin.php?page=ninja_tables#/tools?active_menu=license',
+                    'admin.php?page=ninja_tables#/tools/licensing',
                     '',
                     'ninja_table_license_menu'
                 );
@@ -224,6 +224,9 @@ class NinjaTablesAdmin
     {
         if (function_exists('wp_enqueue_editor')) {
             wp_enqueue_editor();
+            wp_enqueue_script('thickbox');
+        }
+        if (function_exists('wp_enqueue_media')) {
             wp_enqueue_media();
         }
 
@@ -239,7 +242,7 @@ class NinjaTablesAdmin
 
         wp_enqueue_script(
             $this->plugin_name,
-            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin.js",
+            plugin_dir_url(__DIR__) . "assets/js/ninja-tables-admin." . NINJA_TABLES_ASSET_VERSION . ".js",
             array('jquery'),
             $this->version,
             true
@@ -310,6 +313,8 @@ class NinjaTablesAdmin
             'preview_required_scripts' => array(
                 plugin_dir_url(__DIR__) . "assets/css/ninjatables-public.css",
                 plugin_dir_url(__DIR__) . "public/libs/footable/js/footable.min.js",
+                plugin_dir_url(__DIR__) . "public/libs/moment/moment.min.js",
+                plugin_dir_url(__DIR__) . "assets/js/ninja-tables-footable." . NINJA_TABLES_ASSET_VERSION . ".js",
             ),
             'activated_features' => apply_filters('ninja_table_activated_features', array(
                 'default_tables' => true,
@@ -348,7 +353,8 @@ class NinjaTablesAdmin
             'duplicate-table' => 'duplicateTable',
             'export-data' => 'exportData',
             'dismiss_fluent_suggest' => 'dismissPluginSuggest',
-            'save_custom_css' => 'saveCustomCSS',
+            'save_custom_css_js' => 'saveCustomCSSJS',
+            'get_custom_css_js' => 'getCustomCSSJS',
             'get_access_roles' => 'getAccessRoles',
             'get_table_preview_html' => 'getTablePreviewHtml',
             'set-external-data-source' => 'createTableWithExternalDataSource',
@@ -357,7 +363,11 @@ class NinjaTablesAdmin
             'save_wp_post_data_source' => 'createTableWithWPPostDataSource',
             'install_fluent_form' => 'installFluentForm',
             'get_default_settings' => 'getDefaultSettings',
-            'save_default_settings' => 'saveDefaultSettings'
+            'save_default_settings' => 'saveDefaultSettings',
+            'get_button_settings' => 'getButtonSettings',
+            'update_button_settings' => 'updateButtonSettings',
+            'get_global_settings' => 'getGlobalSettings',
+            'update_global_settings' => 'updateGlobalSettings',
         );
 
         $importRoutes = array(
@@ -366,6 +376,7 @@ class NinjaTablesAdmin
             'import-table-from-plugin' => 'importTableFromPlugin',
             'get-tables-from-plugin' => 'getTablesFromPlugin',
         );
+
 
         $requested_route = $_REQUEST['target_action'];
         if (isset($valid_routes[$requested_route])) {
@@ -436,8 +447,14 @@ class NinjaTablesAdmin
             ), 423);
         }
 
+        $postId = intval($_REQUEST['tableId']);
+
+        if (isset($_REQUEST['table_caption'])) {
+            update_post_meta($postId, '_ninja_table_caption', sanitize_text_field($_REQUEST['table_caption']));
+        }
+
         wp_send_json(array(
-            'table_id' => $this->saveTable($postId = intval($_REQUEST['tableId'])),
+            'table_id' => $this->saveTable($postId),
             'message' => __('Table ' . ($postId ? 'updated' : 'created') . ' successfully.', 'ninja-tables')
         ), 200);
     }
@@ -463,34 +480,46 @@ class NinjaTablesAdmin
         return $postId;
     }
 
-    public function saveCustomCSS()
+    public function saveCustomCSSJS()
     {
         $tableId = intval($_REQUEST['table_id']);
         $css = $_REQUEST['custom_css'];
+        $js = $_REQUEST['custom_js'];
         $css = wp_strip_all_tags($css);
+        $js = wp_unslash($js);
         update_post_meta($tableId, '_ninja_tables_custom_css', $css);
+        update_post_meta($tableId, '_ninja_tables_custom_js', $js);
 
         wp_send_json_success(array(
-            'message' => 'Custom CSS successfully saved'
+            'message' => 'Custom CSS and JS successfully saved'
+        ), 200);
+    }
+
+    public function getCustomCSSJS()
+    {
+        $tableId = intval($_REQUEST['table_id']);
+        wp_send_json_success(array(
+            'custom_css' => get_post_meta($tableId, '_ninja_tables_custom_css', true),
+            'custom_js' => get_post_meta($tableId, '_ninja_tables_custom_js', true),
         ), 200);
     }
 
     public function getTableSettings()
     {
         $table = get_post($tableID = intval($_REQUEST['table_id']));
-
         if (!$table || $table->post_type != 'ninja-table') {
             wp_send_json_error(array(
                 'message' => __('No Table Found'),
                 'route' => 'home'
             ), 423);
         }
-
         $provider = ninja_table_get_data_provider($table->ID);
 
         $table = apply_filters('ninja_tables_get_table_' . $provider, $table);
 
         $table->custom_css = get_post_meta($tableID, '_ninja_tables_custom_css', true);
+
+        $this->checkDBMigrations();
 
         wp_send_json(array(
             'preview_url' => site_url('?ninjatable_preview=' . $tableID),
@@ -574,6 +603,10 @@ class NinjaTablesAdmin
         $tableId = intval($_REQUEST['id']);
         $table = get_post($tableId);
 
+        if ($table) {
+            $table->table_caption = get_post_meta($tableId, '_ninja_table_caption', true);
+        }
+
         wp_send_json(array(
             'data' => $table
         ), 200);
@@ -616,16 +649,13 @@ class NinjaTablesAdmin
         $search = esc_attr($_REQUEST['search']);
 
         $dataSourceType = ninja_table_get_data_provider($tableId);
-
         if ($dataSourceType == 'default') {
             list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
 
             $query = ninja_tables_DbTable()->where('table_id', $tableId);
-
             if ($search) {
                 $query->search($search, array('value'));
             }
-
             $data = $query->take($perPage)
                 ->skip($skip)
                 ->orderBy($orderByField, $orderByType)
@@ -635,13 +665,36 @@ class NinjaTablesAdmin
 
             $response = array();
 
+            $hasSettings = true;
             foreach ($data as $item) {
+                $hasSettings = property_exists($item, 'settings');
+                $settings = (object)array();
+                if ($hasSettings) {
+                    $settings = maybe_unserialize($item->settings);
+                    if (!is_array($settings)) {
+                        $settings = (object)array();
+                    }
+                }
+
+                $createdBy = '';
+                if (property_exists($item, 'owner_id')) {
+                    $userInfo = get_userdata($item->owner_id);
+                    $createdBy = $userInfo->display_name;
+                }
                 $response[] = array(
                     'id' => $item->id,
+                    'created_at' => $item->created_at,
+                    'settings' => $settings,
+                    'created_by' => $createdBy,
                     'position' => property_exists($item, 'position') ? $item->position : null,
                     'values' => json_decode($item->value, true)
                 );
             }
+
+            if (!$hasSettings) {
+                // We have to migrate the data now
+            }
+
         } else {
             list($response, $total) = apply_filters(
                 'ninja_tables_get_table_data_' . $dataSourceType,
@@ -683,16 +736,15 @@ class NinjaTablesAdmin
     {
         $tableSettings = $tableSettings ?: ninja_table_get_table_settings($tableId, 'admin');
 
-        $orderByField = 'id';
+        $orderByField = 'created_at';
         $orderByType = 'DESC';
 
         if (isset($tableSettings['sorting_type'])) {
             if ($tableSettings['sorting_type'] === 'manual_sort') {
-                $this->migrateDatabaseIfNeeded();
                 $orderByField = 'position';
                 $orderByType = 'ASC';
             } elseif ($tableSettings['sorting_type'] === 'by_created_at') {
-                $orderByField = 'id';
+                $orderByField = 'created_at';
                 if ($tableSettings['default_sorting'] === 'new_first') {
                     $orderByType = 'DESC';
                 } else {
@@ -700,7 +752,6 @@ class NinjaTablesAdmin
                 }
             }
         }
-
         return [$orderByField, $orderByType];
     }
 
@@ -717,18 +768,54 @@ class NinjaTablesAdmin
         $attributes = array(
             'table_id' => $tableId,
             'attribute' => 'value',
-            'value' => json_encode($formattedRow, true),
+            'value' => json_encode($formattedRow, JSON_UNESCAPED_UNICODE),
+            'owner_id' => get_current_user_id(),
             'updated_at' => date('Y-m-d H:i:s')
         );
 
+        if (isset($_REQUEST['settings'])) {
+            $attributes['settings'] = maybe_serialize(wp_unslash($_REQUEST['settings']));
+        }
+
+        if (isset($_REQUEST['created_at']) && $_REQUEST['created_at']) {
+            $attributes['created_at'] = sanitize_text_field($_REQUEST['created_at']);
+        }
+
         if ($id = intval($_REQUEST['id'])) {
+            do_action('ninja_table_before_update_item', $id, $tableId, $attributes);
             ninja_tables_DbTable()->where('id', $id)->update($attributes);
+            do_action('ninja_table_after_update_item', $id, $tableId, $attributes);
         } else {
-            $attributes['created_at'] = date('Y-m-d H:i:s');
+            if (isset($_REQUEST['insert_after_id'])) {
+                list($orderByField, $orderByType) = $this->getTableSortingParams($tableId);
+                if ($orderByField == 'created_at') {
+                    // Calculate the insert position Date
+                    $prevItemId = absint($_REQUEST['insert_after_id']);
+                    $previousItem = ninja_tables_DbTable()
+                        ->where('id', $prevItemId)
+                        ->first();
+                    if ($previousItem) {
+                        if ($orderByType == 'ASC') {
+                            // ASC means, We have to minus time to created_at
+                            $newDateStamp = strtotime($previousItem->created_at) + 1;
+                        } else {
+                            $newDateStamp = strtotime($previousItem->created_at) - 1;
+                        }
+                        $attributes['created_at'] = date('Y-m-d H:i:s', $newDateStamp);
+                        $this->fixCreatedAtDate($tableId, $previousItem->created_at, $orderByType);
+                    }
+                }
+            }
+
+            if (!isset($attributes['created_at'])) {
+                $attributes['created_at'] = date('Y-m-d H:i:s');
+            }
 
             $attributes = apply_filters('ninja_tables_item_attributes', $attributes);
 
+            do_action('ninja_table_before_add_item', $tableId, $attributes);
             $id = $insertId = ninja_tables_DbTable()->insert($attributes);
+            do_action('ninja_table_after_add_item', $insertId, $tableId, $attributes);
         }
 
         $item = ninja_tables_DbTable()->find($id);
@@ -738,6 +825,10 @@ class NinjaTablesAdmin
         update_post_meta($tableId, '_last_edited_by', get_current_user_id());
         update_post_meta($tableId, '_last_edited_time', date('Y-m-d H:i:s'));
 
+        $itemSettings = maybe_unserialize($item->settings);
+        if (!is_array($itemSettings)) {
+            $itemSettings = (object)array();
+        }
 
         wp_send_json(array(
             'message' => __('Successfully saved the data.', 'ninja-tables'),
@@ -745,9 +836,35 @@ class NinjaTablesAdmin
                 'id' => $item->id,
                 'values' => $formattedRow,
                 'row' => json_decode($item->value),
+                'created_at' => $item->created_at,
+                'settings' => $itemSettings,
                 'position' => property_exists($item, 'position') ? $item->position : null
             )
         ), 200);
+    }
+
+    private function fixCreatedAtDate($tableId, $refDate, $orderType )
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix.ninja_tables_db_table_name();
+        if($orderType == 'ASC') {
+            $query = "UPDATE {$tableName}
+                  SET created_at = ADDTIME(created_at, 2)
+                  WHERE table_id = %d
+                  AND created_at > %s";
+        } else {
+            $query = "UPDATE {$tableName}
+                  SET created_at = SUBTIME(created_at, 2)
+                  WHERE table_id = %d
+                  AND created_at < %s";
+        }
+
+        $bindings = [
+            $tableId,
+            $refDate
+        ];
+        $query .= " ORDER BY created_at ".$orderType;
+        $wpdb->query($wpdb->prepare($query, $bindings));
     }
 
     public function deleteData()
@@ -785,9 +902,9 @@ class NinjaTablesAdmin
 
         $tableSettings = ninja_table_get_table_settings($tableId, 'admin');
 
-        $data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true);
-
         if ($format == 'csv') {
+
+            $data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true);
 
             $header = array();
 
@@ -808,22 +925,48 @@ class NinjaTablesAdmin
         } elseif ($format == 'json') {
             $table = get_post($tableId);
 
+            $dataProvider = ninja_table_get_data_provider($tableId);
+            $rows = array();
+            if ($dataProvider == 'default') {
+                $rawRows = ninja_tables_DbTable()
+                    ->select(array('position', 'owner_id', 'attribute', 'value', 'settings', 'created_at', 'updated_at'))
+                    ->where('table_id', $tableId)
+                    ->get();
+                foreach ($rawRows as $row) {
+                    $row->value = json_decode($row->value, true);
+                    $rows[] = $row;
+                }
+            }
+
+            $matas = get_post_meta($tableId);
+            $allMeta = array();
+
+            $excludedMetaKeys = array(
+                '_ninja_table_cache_object',
+                '_ninja_table_cache_html',
+                '_external_cached_data',
+                '_last_external_cached_time',
+                '_last_edited_by',
+                '_last_edited_time'
+            );
+
+            foreach ($matas as $metaKey => $metaValue) {
+                if(!in_array($metaKey, $excludedMetaKeys)) {
+                    if (isset($metaValue[0])) {
+                        $metaValue = maybe_unserialize($metaValue[0]);
+                        $allMeta[$metaKey] = $metaValue;
+                    }
+                }
+            }
+
             $exportData = array(
                 'post' => $table,
                 'columns' => $tableColumns,
                 'settings' => $tableSettings,
-                'data_provider' => ninja_table_get_data_provider($tableId),
-                'metas' => array(
-                    '_ninja_tables_data_provider' => get_post_meta($tableId, '_ninja_tables_data_provider', true),
-                    '_ninja_wp_posts_query_extra' => get_post_meta($tableId, '_ninja_wp_posts_query_extra', true),
-                    '_ninja_table_wpposts_ds_where' => get_post_meta($tableId, '_ninja_table_wpposts_ds_where', true),
-                    '_ninja_table_wpposts_ds_post_types' => get_post_meta($tableId, '_ninja_table_wpposts_ds_post_types', true),
-                    '_ninja_tables_data_provider_url' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
-                    '_ninja_tables_data_provider_ff_form_id' => get_post_meta($tableId, '_ninja_tables_data_provider_url', true),
-                    '_ninja_table_custom_filters' => get_post_meta($tableId, '_ninja_table_custom_filters', true),
-                    '_ninja_custom_filter_styling' => get_post_meta($tableId, '_ninja_custom_filter_styling', true)
-                ),
-                'rows' => $data,
+                'data_provider' => $dataProvider,
+                'metas' => $allMeta,
+                'rows' => array(),
+                'original_rows' => $rows
             );
             $this->exportAsJSON($exportData, $fileName . '.json');
         }
@@ -980,6 +1123,7 @@ class NinjaTablesAdmin
     {
         $oldPostId = intval($_REQUEST['tableId']);
 
+        $this->checkDBMigrations();
         $post = get_post($oldPostId);
 
         // Duplicate table itself.
@@ -1005,8 +1149,8 @@ class NinjaTablesAdmin
         // Duplicate table rows.
         $itemsTable = $wpdb->prefix . ninja_tables_db_table_name();
 
-        $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `attribute`, `value`, `created_at`, `updated_at`)";
-        $sql .= " SELECT `position`, $newPostId, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
+        $sql = "INSERT INTO $itemsTable (`position`, `table_id`, `owner_id`, `settings`, `attribute`, `value`, `created_at`, `updated_at`)";
+        $sql .= " SELECT `position`, $newPostId, `owner_id`, `settings`, `attribute`, `value`, `created_at`, `updated_at` FROM $itemsTable";
         $sql .= " WHERE `table_id` = $oldPostId";
 
         $wpdb->query($sql);
@@ -1054,6 +1198,7 @@ class NinjaTablesAdmin
             $formattedColumns[] = NinjaFooTable::getFormattedColumn($column, $index, $tableSettings, true,
                 'by_created_at');
         }
+
         $formatted_data = ninjaTablesGetTablesDataByID($tableId, $tableSettings['default_sorting'], true, 25);
 
         if (count($formatted_data) > 25) {
@@ -1076,22 +1221,37 @@ class NinjaTablesAdmin
         return ob_get_clean();
     }
 
-    public function migrateDatabaseIfNeeded()
+    public function checkDBMigrations()
+    {
+        $firstRow = ninja_tables_DbTable()->first();
+        if (!$firstRow) {
+            if (get_option('_ninja_table_db_settings_owner_id')) {
+                return true;
+            }
+            $this->migrateSettingColumnIfNeeded();
+            $this->migrateOwnerColumnIfNeeded();
+            update_option('_ninja_table_db_settings_owner_id', true);
+            return true;
+        }
+        if (!property_exists($firstRow, 'owner_id')) {
+            $this->migrateOwnerColumnIfNeeded();
+        }
+        if (!property_exists($firstRow, 'settings')) {
+            $this->migrateSettingColumnIfNeeded();
+        }
+        if (!property_exists($firstRow, 'position')) {
+            $this->migratePositionDatabase();
+        }
+        return true;
+    }
+
+    public function migratePositionDatabase()
     {
         // If the database is already migrated for manual
         // sorting the option table would have a flag.
         $option = '_ninja_tables_sorting_migration';
         global $wpdb;
         $tableName = $wpdb->prefix . ninja_tables_db_table_name();
-
-        $row = $wpdb->get_row("SELECT * FROM $tableName");
-
-        if (!$row) {
-            return;
-        }
-        if (property_exists($row, 'position')) {
-            return;
-        }
 
         // Update the databse to hold the sorting position number.
         $sql = "ALTER TABLE $tableName ADD COLUMN `position` INT(11) AFTER `id`;";
@@ -1100,6 +1260,29 @@ class NinjaTablesAdmin
         // Keep a flag on the options table that the
         // db is migrated to use for manual sorting.
         update_option($option, true);
+    }
+
+    private function migrateSettingColumnIfNeeded()
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix . ninja_tables_db_table_name();
+        // Update the databse to hold the sorting position number.
+        $sql = "ALTER TABLE $tableName ADD COLUMN `settings` LONGTEXT AFTER `value`;";
+        ob_start();
+        $wpdb->query($sql);
+        $maybeError = ob_get_clean();
+        update_option('_ninja_tables_settings_migration', true);
+    }
+
+    private function migrateOwnerColumnIfNeeded()
+    {
+        global $wpdb;
+        $tableName = $wpdb->prefix . ninja_tables_db_table_name();
+        // Update the databse to hold the sorting position number.
+        $sql = "ALTER TABLE $tableName ADD COLUMN `owner_id` int(11) AFTER `table_id`;";
+        ob_start();
+        $wpdb->query($sql);
+        $maybeError = ob_get_clean();
     }
 
     public function getAllPostTypes()
@@ -1152,7 +1335,7 @@ class NinjaTablesAdmin
             );
         }
 
-        if($post_types['private']) {
+        if ($post_types['private']) {
             $post_types = array_merge($post_types['public'], $post_types['private']);
         } else {
             $post_types = $post_types['public'];
@@ -1163,17 +1346,18 @@ class NinjaTablesAdmin
         );
     }
 
-    public function getWPPostTypesAuthor() {
+    public function getWPPostTypesAuthor()
+    {
         $authors = array();
-        if(isset($_REQUEST['post_types'])) {
+        if (isset($_REQUEST['post_types'])) {
             $postTypes = ninja_tables_sanitize_array($_REQUEST['post_types']);
-            if($postTypes) {
+            if ($postTypes) {
                 global $wpdb;
                 $postTypes = implode("','", $postTypes);
-                $authors = $wpdb->get_results("SELECT {$wpdb->prefix}users.ID, {$wpdb->prefix}users.display_name FROM {$wpdb->prefix}posts INNER JOIN {$wpdb->prefix}users ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author WHERE {$wpdb->prefix}posts.post_type IN ('".$postTypes."') GROUP BY {$wpdb->prefix}posts.post_author");
+                $authors = $wpdb->get_results("SELECT {$wpdb->prefix}users.ID, {$wpdb->prefix}users.display_name FROM {$wpdb->prefix}posts INNER JOIN {$wpdb->prefix}users ON {$wpdb->prefix}users.ID = {$wpdb->prefix}posts.post_author WHERE {$wpdb->prefix}posts.post_type IN ('" . $postTypes . "') GROUP BY {$wpdb->prefix}posts.post_author");
             }
         }
-       wp_send_json_success(array(
+        wp_send_json_success(array(
             'authors' => $authors
         ));
     }
@@ -1236,18 +1420,97 @@ class NinjaTablesAdmin
         return activate_plugin($plugin_basename);
     }
 
-    public function getDefaultSettings() {
+    public function getDefaultSettings()
+    {
         $settings = getDefaultNinjaTableSettings();
         wp_send_json_success(array(
             'default_settings' => $settings
         ), 200);
     }
 
-    public function saveDefaultSettings() {
+    public function saveDefaultSettings()
+    {
         $settings = wp_unslash($_REQUEST['default_settings']);
         update_option('_ninja_table_default_appearance_settings', $settings);
         wp_send_json_success(array(
-            'message' => __('Settings successfully updated', 'ninja_tables')
+            'message' => __('Settings successfully updated', 'ninja-tables')
+        ), 200);
+    }
+
+    public function getButtonSettings()
+    {
+        $tableId = absint($_REQUEST['table_id']);
+        $tableButtonDefaults = array(
+            'csv' => array(
+                'status' => 'no',
+                'label' => 'CSV',
+                'all_rows' => 'no',
+                'bg_color' => 'rgb(0,0,0)',
+                'text_color' => 'rgb(255,255,255)'
+            ),
+            'print' => array(
+                'status' => 'no',
+                'label' => 'Print',
+                'all_rows' => 'no',
+                'bg_color' => 'rgb(0,0,0)',
+                'text_color' => 'rgb(255,255,255)'
+            ),
+            'button_position' => 'after_search_box',
+            'button_alignment' => 'ninja_buttons_right'
+        );
+
+        $tableButtons = get_post_meta($tableId, '_ninja_custom_table_buttons', true);
+        if (!$tableButtons) {
+            $tableButtons = array();
+        }
+
+        $tableButtons = wp_parse_args($tableButtons, $tableButtonDefaults);
+
+        wp_send_json_success(array(
+            'button_settings' => $tableButtons
+        ));
+    }
+
+    public function updateButtonSettings()
+    {
+        $tableId = absint($_REQUEST['table_id']);
+        $buttonSettings = wp_unslash($_REQUEST['button_settings']);
+        update_post_meta($tableId, '_ninja_custom_table_buttons', $buttonSettings);
+        wp_send_json_success(array(
+            'message' => __('Settings successfully updated', 'ninja-tables')
+        ), 200);
+    }
+
+    public function add_plugin_action_links($links)
+    {
+
+        if (!defined('NINJATABLESPRO')) {
+            $links[] = '<a style="color: green; font-weight: bold;" target="_blank" href="https://wpmanageninja.com/downloads/ninja-tables-pro-add-on/">Go Pro</a>';
+        }
+
+        $links[] = '<a href="' . admin_url('admin.php?page=ninja_tables#/') . '">' . __('All Tables', 'ninja-tables') . '</a>';
+
+        return $links;
+    }
+
+    public function getGlobalSettings()
+    {
+        $suppressError = get_option('_ninja_suppress_error');
+        if (!$suppressError) {
+            $suppressError = 'no';
+        }
+
+        wp_send_json_success(array(
+            'ninja_suppress_error' => $suppressError
+        ), 200);
+    }
+
+    public function updateGlobalSettings()
+    {
+        $errorHandling = sanitize_text_field($_REQUEST['suppress_error']);
+        update_option('_ninja_suppress_error', $errorHandling, true);
+        wp_send_json_success(array(
+            'message' => __('Settings successfully updated', 'ninja-tables')
         ), 200);
     }
 }

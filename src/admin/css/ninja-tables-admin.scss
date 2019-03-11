@@ -148,6 +148,7 @@ label.form_group {
 .text-right {
   text-align: right;
 }
+
 /* INPUT */
 
 label {
@@ -1144,8 +1145,101 @@ input.form-control::placeholder {
 h2.nav-tab-wrapper {
   margin-bottom: 15px !important;
 }
+
 .doc_link {
   text-decoration: none;
   font-size: 14px;
   color: rgb(128, 128, 128);
+}
+
+.form_row_full {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  .form_row_half {
+    width: 48%;
+    box-sizing: border-box;
+    padding-right: 4%;
+    float: left;
+    display: block;
+    > label {
+      display: block;
+    }
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+.el-tooltip__popper {
+  h3, p {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.el-main-editing {
+  background-color: rgb(255, 255, 255);
+  min-height: 70vh;
+  padding: 15px 25px;
+  display: block;
+  overflow: auto;
+  .ninja_header_editing {
+    display: block;
+    overflow: hidden;
+    margin: -15px -25px 20px;
+    padding: 10px 25px;
+    border-bottom: 1px solid rgb(234, 231, 231);
+    background: rgb(251, 253, 255);
+    h2 {
+      margin: 0;
+      padding: 0;
+      float: left;
+      line-height: 30px;
+    }
+    .heading_actions {
+      float: right;
+    }
+  }
+  .editing_sub_section {
+    display: block;
+    margin-bottom: 40px;
+    .ninja_section_block_header {
+      border-bottom: 1px solid rgb(241, 241, 241);
+      margin-bottom: 20px;
+      > h3 {
+        margin: 0;
+      }
+      p {
+        margin: 5px 0 10px;
+      }
+    }
+  }
+  .editing_body {
+    display: block;
+    overflow: hidden;
+    width: 100%;
+  }
+  table.ninja_editing_table {
+    th {
+      font-weight: 500;
+    }
+    tr td, tr th {
+      border-bottom: 1px solid rgb(234, 234, 234) !important;
+    }
+  }
+}
+
+.el-radio-group.spaced {
+  max-width: 100%;
+  position: relative;
+  > label {
+    display: inline-block;
+  }
+}
+
+.el-radio-group.spaced_new_line > label {
+  display: block;
+  margin-left: 0 !important;
+  margin-bottom: 10px;
 }

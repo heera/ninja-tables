@@ -5,6 +5,7 @@ const ImportTable = require('./components/Tools/Import.vue');
 const PermissionSettings = require('./components/Tools/Privacy');
 const DefaultTableAppearance = require('./components/Tools/DefaultAppearance');
 const LicenseSettings = require('./components/Tools/License');
+const GlobalSettings = require('./components/Tools/GlobalSettings');
 
 
 const TableHome = require('./components/Table/TableHome.vue');
@@ -15,6 +16,7 @@ const UserComponents = require('./components/extras/UserComponents.vue')
 const Help = require('./components/extras/Help.vue');
 const TableAdditionalCss = require('./components/Table/TableAdditionalCss');
 const TableDesignStudio = require('./components/Table/TableDesignStudio');
+const TableEditing = require('./components/Table/Editing/Editing');
 
 export const routes = [
     {
@@ -50,6 +52,11 @@ export const routes = [
                         path: 'licensing',
                         name: 'licensing',
                         component: LicenseSettings
+                    },
+                    {
+                        path: 'global_settings',
+                        name: 'global_settings',
+                        component: GlobalSettings
                     }
                 ]
             },
@@ -91,9 +98,9 @@ export const routes = [
                 component: ExportImport
             },
             {
-                path: 'tab',
-                name: 'custom_tab',
-                component: UserComponents
+                path: 'table_editing',
+                name: 'table_editing',
+                component: TableEditing
             },
         ]
     }

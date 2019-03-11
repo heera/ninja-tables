@@ -2,7 +2,7 @@
     <el-form ref="form" :model="model" label-width="200px" class="form-wrapper">
         <el-tabs v-model="activeTab" @tab-click="onTabClick">
             <!-- Basic Settings -->
-            <el-tab-pane label="Basic Settings" name="basic">
+            <el-tab-pane class="basic_settings" label="Basic Settings" name="basic">
                 <!-- Column Name -->
                 <el-form-item>
                     <template slot="label">
@@ -55,11 +55,15 @@
                             <i class="el-icon-info el-text-info" />
                         </el-tooltip>
                     </template>
-                    <select v-model="model.data_type">
-                        <option v-for="(typeName, typeKey) in dataTypesOptions" :value="typeKey" :key="typeKey">
-                            {{ typeName }}
-                        </option>
-                    </select>
+
+                    <el-select size="mini" v-model="model.data_type" placeholder="Select Data Type of this column">
+                        <el-option
+                                v-for="(typeName, typeKey) in dataTypesOptions"
+                                :key="typeKey"
+                                :label="typeName"
+                                :value="typeKey">
+                        </el-option>
+                    </el-select>
                     <p v-show="hasPro">Select HTML Field if you want to add Link, media or any type of html</p>
                 </el-form-item>
 
@@ -197,11 +201,14 @@
                         </el-tooltip>
                     </template>
 
-                    <select v-model="model.breakpoints">
-                        <option v-for="(option, optionKey) in breakPointsOptions" :value="optionKey" :key="optionKey">
-                            {{ option }}
-                        </option>
-                    </select>
+                    <el-select size="mini" v-model="model.breakpoints" placeholder="Select Responsive Breakpoint">
+                        <el-option
+                                v-for="(option, optionKey) in breakPointsOptions"
+                                :key="optionKey"
+                                :label="option"
+                                :value="optionKey">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
 
                 <wp-post-dynamic-column
@@ -291,12 +298,14 @@
                                 <i class="el-icon-info el-text-info" />
                             </el-tooltip>
                         </template>
-
-                        <select v-model="model.textAlign" :disabled="!hasPro">
-                            <option v-for="(alignmentLabel, alignmentVal) in alignmentOptions"
-                                    :value="alignmentVal" :key="alignmentVal"
-                            >{{ alignmentLabel }}</option>
-                        </select>
+                        <el-select size="mini" v-model="model.textAlign" placeholder="Text Align">
+                            <el-option
+                                    v-for="(alignmentLabel, alignmentVal) in alignmentOptions"
+                                    :key="alignmentVal"
+                                    :label="alignmentLabel"
+                                    :value="alignmentVal">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
 
                     <!-- Content Text alignment -->
@@ -313,11 +322,15 @@
                             </el-tooltip>
                         </template>
 
-                        <select v-model="model.contentAlign" :disabled="!hasPro">
-                            <option v-for="(alignmentLabel, alignmentVal) in contentAlignmentOptions"
-                                    :value="alignmentVal" :key="alignmentVal"
-                            >{{ alignmentLabel }}</option>
-                        </select>
+
+                        <el-select size="mini" v-model="model.contentAlign" placeholder="Content Alignment">
+                            <el-option
+                                    v-for="(alignmentLabel, alignmentVal) in contentAlignmentOptions"
+                                    :key="alignmentVal"
+                                    :label="alignmentLabel"
+                                    :value="alignmentVal">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
 
                     <!-- Enable / Disable Table HTML -->
@@ -675,6 +688,11 @@
         }
         .form_group {
             margin-top: 10px;
+        }
+
+        .basic_settings .el-select {
+            min-width: 400px;
+            max-width: 100%;
         }
     }
 </style>

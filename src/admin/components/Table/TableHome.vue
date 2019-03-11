@@ -122,7 +122,6 @@
                         this.preview_url = response.preview_url;
                     })
                     .fail((error) => {
-                        console.log(error);
                         this.$message.error(error.responseJSON.data.message);
                         if(error.responseJSON.data.route) {
                             this.$router.push({ name: error.responseJSON.data.route });
@@ -155,8 +154,12 @@
                         title: 'Table Design'
                     },
                     {
+                        route: 'table_editing',
+                        title: 'Frontend Editing'
+                    },
+                    {
                         route: 'additional_css',
-                        title: 'Custom CSS'
+                        title: 'Custom CSS/JS'
                     },
                     {
                         route: 'import-export',

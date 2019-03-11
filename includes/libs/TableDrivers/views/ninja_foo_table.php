@@ -6,7 +6,7 @@
 	<?php endif; ?>
 	<?php if ( isset( $settings['show_description'] ) && $settings['show_description'] ) : ?>
 		<?php do_action( 'ninja_tables_before_table_description', $table ); ?>
-        <div class="table_description footable_description"><?php echo wp_kses_post( $table->post_content ); ?></div>
+        <div class="table_description footable_description"><?php echo do_shortcode(wp_kses_post( $table->post_content )); ?></div>
 		<?php do_action( 'ninja_tables_after_table_description',
 			$table ); ?>
 	<?php endif; ?>
@@ -14,6 +14,9 @@
     <table data-ninja_table_instance="<?php echo $table_instance_name; ?>" <?php echo $foo_table_attributes; ?>
            id="footable_<?php echo intval( $table_id ); ?>"
            class=" foo-table ninja_footable foo_table_<?php echo intval( $table_id ); ?> <?php echo esc_attr( $table_classes ); ?>">
+        <?php if($tableCaption): ?>
+        <caption><?php echo $tableCaption; ?></caption>
+        <?php endif; ?>
         <colgroup>
 			<?php foreach ( $formatted_columns as $index => $column ) : ?>
                 <col class="ninja_column_<?php echo $index . ' ' . $column['breakpoints']; ?> "></col>
@@ -21,5 +24,5 @@
         </colgroup>
 		<?php do_action( 'ninja_tables_inside_table_render', $table, $table_vars ); ?>
     </table>
-	<?php do_action( 'ninja_tables_after_table_print', $table ); ?>
+	<?php do_action( 'ninja_tables_after_table_print', $table, $table_vars ); ?>
 </div>

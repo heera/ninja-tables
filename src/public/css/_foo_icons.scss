@@ -39,7 +39,10 @@
   }
 
   [class^="fooicon-"]:before,
-  [class*=" fooicon-"]:before {
+  [class*=" fooicon-"]:before,
+  [class*=" footable-"]:before,
+  [class^="footable-"]:before
+  {
     font-family: "ninja-tables-fontawesome" !important;
     font-style: normal !important;
     font-weight: normal !important;
@@ -75,6 +78,9 @@
   .fooicon-remove:before {
     content: "\f00d";
   }
+  .fooicon-remove-1:before {
+    content: "\f00d";
+  }
   .fooicon-loader-alt:before {
     content: "\f01";
   }
@@ -83,5 +89,27 @@
   }
   .fooicon-loader:before {
     content: "\f01e";
+  }
+  .fooicon-grid:before {
+    content: "\61";
+  }
+  .fooicon-pencil:before {
+    content: "\62";
+  }
+  .fooicon-delete:before {
+    content: "\63";
+  }
+  .footable-delete :before {
+    content: "\63";
+  }
+  .fooicon-view:before {
+    content: "\64";
+  }
+  .footable-view:before {
+    content: "\64";
+  }
+
+  .fooicon-edit:before {
+    content: "\65";
   }
 }

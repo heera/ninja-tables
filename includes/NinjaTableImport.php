@@ -1,5 +1,4 @@
 <?php
-
 namespace NinjaTables\Classes;
 
 use NinjaTables\Classes\Libs\Migrations\NinjaTablesSupsysticTableMigration;
@@ -9,7 +8,6 @@ use NinjaTables\Libs\CSVParser\CSVParser;
 
 class NinjaTableImport
 {
-
     private $cpt_name = 'ninja-table';
 
     public function importTable()
@@ -25,8 +23,7 @@ class NinjaTableImport
         }
 
         wp_send_json(array(
-            'message' => __('No appropriate driver found for the import format.',
-                'ninja-tables')
+            'message' => __('No appropriate driver found for the import format.', 'ninja-tables')
         ), 423);
     }
 
@@ -96,14 +93,10 @@ class NinjaTableImport
                 'breakpoints' => ''
             );
         }
-
         update_post_meta($tableId, '_ninja_table_columns', $ninjaTableColumns);
-
         // ninja_table_settings
         $ninjaTableSettings = ninja_table_get_table_settings($tableId, 'admin');
-
         update_post_meta($tableId, '_ninja_table_settings', $ninjaTableSettings);
-
         ninjaTablesClearTableDataCache($tableId);
     }
 
@@ -119,12 +112,12 @@ class NinjaTableImport
             'application/vnd.msexcel',
             'text/anytext',
             'application/octet-stream',
-            'application/txt',
+            'application/txt'
         );
         if (!in_array($_FILES['file']['type'], $mimes)) {
             wp_send_json_error(array(
                 'errors' => array(),
-                'message' => __('Please upload valid CSV', 'ninja_tables')
+                'message' => __('Please upload valid CSV', 'ninja-tables')
             ), 423);
         }
 
@@ -132,20 +125,23 @@ class NinjaTableImport
         $fileName = sanitize_text_field($_FILES['file']['name']);
 
         $data = file_get_contents($tmpName);
+        if (isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+            $data = utf8_encode($data);
+        }
+
         $csvParser = new CSVParser();
         $csvParser->load_data($data);
         $delimiter = $csvParser->find_delimiter();
         $reader = $csvParser->parse($delimiter);
-
+        
         if ($csvParser->error) {
             wp_send_json_error(array(
                 'errors' => array_values(array_slice($csvParser->error_info, 0, 5)),
-                'message' => __('Something is wrong when parsing the csv', 'ninja_tables')
+                'message' => __('Something is wrong when parsing the csv', 'ninja-tables')
             ), 423);
         }
 
         $header = array_shift($reader);
-        $reader = array_reverse($reader);
 
         $tableId = $this->createTable(array(
             'post_title' => $fileName,
@@ -157,6 +153,7 @@ class NinjaTableImport
         $header = ninja_table_format_header($header);
 
         $this->storeTableConfigWhenImporting($tableId, $header);
+
 
         ninjaTableInsertDataToTable($tableId, $reader, $header);
 
@@ -173,6 +170,7 @@ class NinjaTableImport
         $tmpName = $_FILES['file']['tmp_name'];
 
         $content = json_decode(file_get_contents($tmpName), true);
+
 
         $header = array_keys(array_pop(array_reverse($content)));
 
@@ -195,7 +193,20 @@ class NinjaTableImport
     {
         $tmpName = $_FILES['file']['tmp_name'];
 
-        $content = json_decode(file_get_contents($tmpName), true);
+        $parsedContent = file_get_contents($tmpName);
+
+        $content = json_decode($parsedContent, true);
+
+        if (json_last_error()) {
+            for ($i = 0; $i <= 31; ++$i) {
+                $parsedContent = str_replace(chr($i), "", $parsedContent);
+            }
+            $parsedContent = str_replace(chr(127), "", $parsedContent);
+            if (0 === strpos(bin2hex($parsedContent), 'efbbbf')) {
+                $parsedContent = substr($parsedContent, 3);
+            }
+            $content = json_decode($parsedContent, true);
+        }
 
         // validation
         if (!$content['post'] || !$content['columns'] || !$content['settings']) {
@@ -218,18 +229,24 @@ class NinjaTableImport
 
         update_post_meta($tableId, '_ninja_table_settings', $content['settings']);
 
-        if (isset($content['data_provider']) && $content['data_provider'] != 'default') {
-            $metas = $content['metas'];
-            foreach ($metas as $meta_key => $meta_value) {
-                update_post_meta($tableId, $meta_key, $meta_value);
+        $metas = $content['metas'];
+        foreach ($metas as $meta_key => $meta_value) {
+            update_post_meta($tableId, $meta_key, $meta_value);
+        }
+
+        if ($rows = $content['rows']) {
+            $header = [];
+            foreach ($content['columns'] as $column) {
+                $header[$column['key']] = $column['name'];
             }
-        } else {
-            if ($rows = $content['rows']) {
-                $header = [];
-                foreach ($content['columns'] as $column) {
-                    $header[$column['key']] = $column['name'];
-                }
-                ninjaTableInsertDataToTable($tableId, $rows, $header);
+            ninjaTableInsertDataToTable($tableId, $rows, $header);
+        }
+
+        if (isset($content['original_rows']) && $originalRows = $content['original_rows']) {
+            foreach ($originalRows as $row) {
+                $row['table_id'] = $tableId;
+                $row['value'] = json_encode($row['value'], JSON_UNESCAPED_UNICODE);
+                ninja_tables_DbTable()->insert($row);
             }
         }
 
@@ -257,7 +274,13 @@ class NinjaTableImport
         $tableId = intval($_REQUEST['table_id']);
         $tmpName = $_FILES['file']['tmp_name'];
         $csvParser = new CSVParser();
-        $csvParser->load_data(file_get_contents($tmpName));
+
+        $data = file_get_contents($tmpName);
+        if (isset($_REQUEST['do_unicode']) && $_REQUEST['do_unicode'] == 'yes') {
+            $data = utf8_encode($data);
+        }
+
+        $csvParser->load_data($data);
         $delimiter = $csvParser->find_delimiter();
         $reader = $csvParser->parse($delimiter);
 
@@ -298,17 +321,20 @@ class NinjaTableImport
         }
 
         $data = array();
-        $time = current_time('mysql');
 
+        $userId = get_current_user_id();
+        $timeStamp = time() - ( count($reader) * 100 );
         foreach ($reader as $item) {
             $itemTemp = array_combine($header, $item);
             array_push($data, array(
                 'table_id' => $tableId,
                 'attribute' => 'value',
-                'value' => json_encode($itemTemp),
-                'created_at' => $time,
-                'updated_at' => $time
+                'owner_id' => $userId,
+                'value' => json_encode($itemTemp, JSON_UNESCAPED_UNICODE),
+                'created_at' => date('Y-m-d H:i:s', $timeStamp),
+                'updated_at' => date('Y-m-d H:i:s')
             ));
+            $timeStamp = $timeStamp + 100;
         }
 
         $replace = $_REQUEST['replace'] === 'true';

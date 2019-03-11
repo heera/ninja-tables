@@ -47,11 +47,19 @@
                             </option>
                         </select>
 
-                        <span v-show="imports.format == 'csv'" class="help">
+                        <template v-if="imports.format == 'csv'">
+                            <span  class="help">
                                 Check tutorial for importing data from CSV file <a
-                                href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
-                                target="_blank">here</a>
+                                    href="https://wpmanageninja.com/docs/ninja-tables/import-table-data-from-csv/?utm_source=ninja-tables"
+                                    target="_blank">here</a>
                             </span>
+
+                            <div class="form-item">
+                                <el-checkbox true-label="yes" false-label="no" v-model="do_unicode">Convert to UTF-8 format ( Check this if your csv is non-unicode format )</el-checkbox>
+                            </div>
+                        </template>
+
+
                         <span v-show="imports.format == 'json' || imports.format == 'ninjaJson'"
                               class="help">
                                 Check tutorial for importing Table from JSON file <a
@@ -176,6 +184,7 @@
                     },
                     format: 'csv'
                 },
+                do_unicode: 'no',
                 btnLoading: false,
                 otherPlugins: {
                     'TablePress': 'Table Press',
@@ -218,6 +227,7 @@
                 formData.append('file', file);
                 formData.append('action', 'ninja_tables_ajax_actions');
                 formData.append('target_action', 'import-table');
+                formData.append('do_unicode', this.do_unicode);
 
                 jQuery.ajax({
                     url: ajaxurl,

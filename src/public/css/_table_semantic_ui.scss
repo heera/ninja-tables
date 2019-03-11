@@ -57,7 +57,7 @@
 }
 .ui.table thead th {
   cursor: auto;
- 
+
   text-align: inherit;
   padding: 0.92857143em 0.78571429em;
   vertical-align: inherit;
@@ -338,47 +338,6 @@
           Variations
 *******************************/
 
-
-/*--------------
-    Stackable
----------------*/
-
-@media only screen and (max-width: 991px) {
-  .ui[class*="tablet stackable"].table,
-  .ui[class*="tablet stackable"].table tbody,
-  .ui[class*="tablet stackable"].table tr,
-  .ui[class*="tablet stackable"].table tr > th,
-  .ui[class*="tablet stackable"].table tr > td {
-    width: 100% !important;
-    display: block !important;
-  }
-  .ui[class*="tablet stackable"].table {
-    padding: 0em;
-  }
-  .ui[class*="tablet stackable"].table thead {
-    display: block;
-  }
-  .ui[class*="tablet stackable"].table tfoot {
-    display: block;
-  }
-  .ui[class*="tablet stackable"].table tr {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    box-shadow: 0px -1px 0px 0px rgba(0, 0, 0, 0.1) inset !important;
-  }
-  .ui[class*="tablet stackable"].table tr > th,
-  .ui[class*="tablet stackable"].table tr > td {
-    background: none;
-    border: none !important;
-    padding: 0.25em 0.75em;
-    box-shadow: none !important;
-  }
-
-  /* Definition Table */
-  .ui.definition[class*="tablet stackable"].table thead th:first-child {
-    box-shadow: none !important;
-  }
-}
 
 /*--------------
  Text Alignment

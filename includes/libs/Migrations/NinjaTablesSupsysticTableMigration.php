@@ -17,7 +17,7 @@ class NinjaTablesSupsysticTableMigration extends NinjaTablesMigration
 	public function migrateTable($tableId) {
 	    try {
 			global $wpdb;
-			$table = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}supsystic_tbl_tables WHERE id = {$tableId}");
+			$table = $wpdb->get_row("SELECT * FROM {$wpdb->prefix}supsystic_tbl_tables WHERE id = {$tableId} LIMIT 1");
 			if(!$table) {
 				return new \WP_Error( 'broke', __('No Table Found with the selected table', 'ninja-tables') );
 			}
